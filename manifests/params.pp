@@ -40,6 +40,12 @@ class elasticsearch::params {
   # service status
   $status = 'enabled'
 
+  # Deb version to install
+  $version     = '0.20.2'
+  $dl_base_url = 'http://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-'
+  $provider    = undef
+  $deb_source  = "/tmp/elasticsearch-${version}.deb"
+
   #### Internal module values
 
   # packages

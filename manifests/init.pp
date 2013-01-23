@@ -47,6 +47,19 @@
 #   sake of convenience. Of course, the defined status affects all services if
 #   more than one is managed (see <tt>service.pp</tt> to check if this is the
 #   case).
+# [*version*]
+#   Configure version that elasticsearch deb installs.
+#   Defaults to 0.20.2 (the lastest version).
+# [*dl_base_url*]
+#   Base URL to download .deb from.
+#   Defaults to http://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-'
+# [*provider*]
+#   If set to dpkg, download .deb from elasticsearch site and install with
+#   dpkg provider.
+#   Defaults to undef.
+# [*deb_source*]
+#   Source location of .deb file.
+#   Defaults to /tmp/elasticsearch-${version}.deb
 #
 # The default values for the parameters are set in elasticsearch::params. Have
 # a look at the corresponding <tt>params.pp</tt> manifest file if you need more
@@ -57,6 +70,11 @@
 #
 # * Installation, make sure service is running and will be started at boot time:
 #     class { 'elasticsearch': }
+#
+# * Installation from .deb
+#     class { 'elasticsearch':
+#       provider => dpkg,
+#     }
 #
 # * Removal/decommissioning:
 #     class { 'elasticsearch':
@@ -94,6 +112,10 @@ class elasticsearch(
   $ensure               = $elasticsearch::params::ensure,
   $autoupgrade          = $elasticsearch::params::autoupgrade,
   $status               = $elasticsearch::params::status,
+  $version              = $elasticsearch::params::version,
+  $dl_base_url          = $elasticsearch::params::dl_base_url,
+  $provider             = $elasticsearch::params::provider,
+  $deb_source           = $elasticsearch::params::deb_source,
 ) inherits elasticsearch::params {
 
   #### Validate parameters
