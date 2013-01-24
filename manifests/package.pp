@@ -39,10 +39,10 @@ class elasticsearch::package {
     $package_ensure = 'purged'
   }
 
-  if $elasticsearch::provder == 'dpkg' {
+  if $elasticsearch::provider == 'dpkg' {
     exec { 'download-elasticsearch-deb':
-      command => "/usr/bin/wget -O /tmp/elasticsearch-${elasticsearch::version}.deb",
-      unless  => '/usr/bin/dpkg -i elasticsearch',
+      command => "/usr/bin/wget -O /tmp/elasticsearch-${elasticsearch::version}.deb ${elasticsearch::dl_base_url}${elasticsearch::version}.deb",
+      unless  => '/usr/bin/dpkg -s elasticsearch',
     }
     package { $elasticsearch::params::package:
       ensure   => $package_ensure,
