@@ -111,6 +111,8 @@ class elasticsearch(
     fail("\"${status}\" is not a valid status parameter value")
   }
 
+  # Config
+  validate_hash($config)
 
   #### Manage actions
 
