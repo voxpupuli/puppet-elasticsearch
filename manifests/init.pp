@@ -128,7 +128,7 @@ class elasticsearch(
 
   #### Manage relationships
 
-  if ($ensure in [ 'present', 'latest']) {
+  if $ensure == 'present' {
     # we need the software before configuring it
     Class['elasticsearch::package'] -> Class['elasticsearch::config']
 
