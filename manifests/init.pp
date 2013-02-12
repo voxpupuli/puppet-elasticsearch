@@ -99,7 +99,7 @@ class elasticsearch(
   #### Validate parameters
 
   # ensure
-  if ! ($ensure in [ 'present', 'absent' ]) {
+  if ! ($ensure in [ 'present', 'absent', 'latest']) {
     fail("\"${ensure}\" is not a valid ensure parameter value")
   }
 
