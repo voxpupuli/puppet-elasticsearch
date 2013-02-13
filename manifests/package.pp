@@ -39,9 +39,37 @@ class elasticsearch::package {
     $package_ensure = 'purged'
   }
 
+  if $elasticsearch::package {
+
+    $filenameArray = split($elasticsearch::package, '/')
+    $basefilename = $filenameArray[-1]
+
+    $extArray = split($basefilename, '.')
+    $ext = $extArray[-1]
+
+    $tmpSource = "/tmp/${basefilename}"
+
+    file { $tmpSource:
+      source => $elasticsearch::package,
+      owner  => 'root',
+      group  => 'root'
+    }
+
+    case $ext {
+      'deb':   { $pkg_provider = 'dpkg' }
+      'rpm':   { $pkg_provider = 'rpm'  }
+      default: { $pkg_provider = undef  }
+    }
+  } else {
+    $tmpSource = undef
+    $pkg_provider = undef
+  }
+
   # action
   package { $elasticsearch::params::package:
-    ensure => $package_ensure,
+    ensure   => $package_ensure,
+    source   => $tmpSource,
+    provider => $pkg_provider
   }
 
 }

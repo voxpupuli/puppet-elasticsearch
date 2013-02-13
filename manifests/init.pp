@@ -91,9 +91,12 @@
 #
 class elasticsearch(
   $config,
-  $ensure               = $elasticsearch::params::ensure,
-  $autoupgrade          = $elasticsearch::params::autoupgrade,
-  $status               = $elasticsearch::params::status,
+  $ensure       = $elasticsearch::params::ensure,
+  $autoupgrade  = $elasticsearch::params::autoupgrade,
+  $status       = $elasticsearch::params::status,
+  $pkg_source   = undef,
+  $java_install = true,
+  $java_package = undef
 ) inherits elasticsearch::params {
 
   #### Validate parameters
@@ -125,6 +128,10 @@ class elasticsearch(
   # service(s)
   class { 'elasticsearch::service': }
 
+  if $java_install == true {
+    # Install java
+    class { 'elasticsearch::java': }
+  }
 
   #### Manage relationships
 
