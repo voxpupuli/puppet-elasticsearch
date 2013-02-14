@@ -44,7 +44,7 @@ class elasticsearch::package {
     $filenameArray = split($elasticsearch::pkg_source, '/')
     $basefilename = $filenameArray[-1]
 
-    $extArray = split($basefilename, '.')
+    $extArray = split($basefilename, '\.')
     $ext = $extArray[-1]
 
     $tmpSource = "/tmp/${basefilename}"
