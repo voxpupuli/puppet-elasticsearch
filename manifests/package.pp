@@ -39,9 +39,9 @@ class elasticsearch::package {
     $package_ensure = 'purged'
   }
 
-  if $elasticsearch::package {
+  if $elasticsearch::pkg_source {
 
-    $filenameArray = split($elasticsearch::package, '/')
+    $filenameArray = split($elasticsearch::pkg_source, '/')
     $basefilename = $filenameArray[-1]
 
     $extArray = split($basefilename, '.')
@@ -50,7 +50,7 @@ class elasticsearch::package {
     $tmpSource = "/tmp/${basefilename}"
 
     file { $tmpSource:
-      source => $elasticsearch::package,
+      source => $elasticsearch::pkg_source,
       owner  => 'root',
       group  => 'root'
     }
