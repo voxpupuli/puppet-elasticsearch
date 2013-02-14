@@ -95,7 +95,7 @@ class elasticsearch(
   $autoupgrade  = $elasticsearch::params::autoupgrade,
   $status       = $elasticsearch::params::status,
   $pkg_source   = undef,
-  $java_install = true,
+  $java_install = false,
   $java_package = undef
 ) inherits elasticsearch::params {
 

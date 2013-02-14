@@ -26,7 +26,7 @@ class elasticsearch::java {
   if $elasticsearch::java_package == undef {
     # Default Java package
     case $::operatingsystem {
-      'CentOS', 'Fedora', 'Scientific': {
+      'CentOS', 'Fedora', 'Scientific', 'RedHat', 'Amazon': {
         $package = 'java-1.6.0-openjdk'
       }
       'Debian', 'Ubuntu': {
@@ -41,7 +41,10 @@ class elasticsearch::java {
     $package = $elasticsearch::java_package
   }
 
-  package { $package:
-    ensure => present
+  ## Install the java package unless already specified somewhere else
+  if !defined(Package[$package]) {
+    package { $package:
+      ensure => present
+    }
   }
 }

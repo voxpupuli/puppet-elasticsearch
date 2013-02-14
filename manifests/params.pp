@@ -44,7 +44,7 @@ class elasticsearch::params {
 
   # packages
   case $::operatingsystem {
-    'CentOS', 'Fedora', 'Scientific': {
+    'CentOS', 'Fedora', 'Scientific', 'RedHat', 'Amazon': {
       # main application
       $package = [ 'elasticsearch' ]
     }
@@ -60,7 +60,7 @@ class elasticsearch::params {
 
   # service parameters
   case $::operatingsystem {
-    'CentOS', 'Fedora', 'Scientific': {
+    'CentOS', 'Fedora', 'Scientific', 'RedHat', 'Amazon': {
       $service_name       = 'elasticsearch'
       $service_hasrestart = true
       $service_hasstatus  = true
