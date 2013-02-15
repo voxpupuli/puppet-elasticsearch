@@ -77,7 +77,7 @@
 #         },
 #         'index'                => {
 #           'number_of_replicas' => '0',
-#           'number_of_shareds'  => '5'
+#           'number_of_shards'   => '5'
 #         },
 #         'network' => {
 #           'host'  => $::ipaddress
