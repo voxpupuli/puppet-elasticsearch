@@ -1,0 +1,8 @@
+0.0.2 ( Feb 16, 2013 )
+  Feature to supply a package instead of being dependent on the repository
+  Feature to install java in case one doesn't manage it externally
+  Adding RedHat and Amazon as Operating systems
+  fixed a typo - its a shard not a shared :) ( PR #5 by Martin Seener )
+
+0.0.1 ( Jan 13, 2013 )
+  Initial release of the module
