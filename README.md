@@ -4,7 +4,7 @@ A puppet module for managing elasticsearch nodes
 
 http://www.elasticsearch.org/
 
-[![Build Status](https://travis-ci.org/electrical/puppet-elasticsearch.png?branch=master)](https://travis-ci.org/electrical/elasticsearch)
+[![Build Status](https://travis-ci.org/electrical/puppet-elasticsearch.png?branch=master)](https://travis-ci.org/electrical/puppet-elasticsearch)
 
 ## Usage
 
