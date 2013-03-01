@@ -65,12 +65,14 @@ class elasticsearch::params {
       $service_hasrestart = true
       $service_hasstatus  = true
       $service_pattern    = $service_name
+      $service_provider   = 'redhat'
     }
     'Debian', 'Ubuntu': {
       $service_name       = 'elasticsearch'
       $service_hasrestart = true
       $service_hasstatus  = true
       $service_pattern    = $service_name
+      $service_provider   = 'debian'
     }
     default: {
       fail("\"${module_name}\" provides no service parameters
