@@ -58,7 +58,7 @@ class elasticsearch::package {
     case $ext {
       'deb':   { $pkg_provider = 'dpkg' }
       'rpm':   { $pkg_provider = 'rpm'  }
-      default: { $pkg_provider = undef  }
+      default: { fail("Unknown file extention \"${ext}\"") }
     }
   } else {
     $tmpSource = undef

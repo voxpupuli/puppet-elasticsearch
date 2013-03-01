@@ -2,7 +2,9 @@
 
 A puppet module for managing elasticsearch nodes
 
-This module is puppet 3 tested
+http://www.elasticsearch.org/
+
+[![Build Status](https://travis-ci.org/electrical/puppet-elasticsearch.png?branch=master)](https://travis-ci.org/electrical/elasticsearch)
 
 ## Usage
 
