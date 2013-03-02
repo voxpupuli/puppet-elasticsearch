@@ -1,5 +1,5 @@
 name    'ispavailability-elasticsearch'
-version '0.0.3'
+version '0.0.4'
 source 'https://github.com/electrical/puppet-elasticsearch'
 author 'ispavailability'
 license 'Apache License, Version 2.0'
