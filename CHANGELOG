@@ -1,3 +1,9 @@
+0.0.3 ( Mar 02, 2013 )
+  Adding spec tests
+  Fixed init issue on Ubuntu ( Issue #6 by Marcus Furlong )
+  Fixed config template problem ( Issue #8 by surfchris )
+  New feature to manage templates
+
 0.0.2 ( Feb 16, 2013 )
   Feature to supply a package instead of being dependent on the repository
   Feature to install java in case one doesn't manage it externally

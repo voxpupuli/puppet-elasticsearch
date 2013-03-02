@@ -40,3 +40,33 @@ For the config variable a hash needs to be passed:
          }
        }
      }
+
+## Manage templates
+
+### Add a new template
+
+     elasticsearch::template { 'templatename':
+       file => 'puppet:///path/to/template.json'
+     }
+
+### Delete a template
+
+     elasticsearch::template { 'templatename':
+       delete => true
+     }
+
+### Replace a template
+
+     elasticsearch::template { 'templatename':
+       file    => 'puppet:///path/to/template.json',
+       replace => true
+     }
+
+### Host
+
+  Default it uses localhost:9200 as host. you can change this with the 'host' and 'port' variables
+
+     elasticsearch::template { 'templatename':
+       host => $::ipaddress,
+       port => 9200
+     }
