@@ -1,10 +1,22 @@
-### MANAGED BY PUPPET ###
-<% settings.sort.each do |section, content| -%>
-<%= section %>:
-<% content.sort.each do |key, values| -%>
-<% [values].flatten.sort.each do |value| -%>
-<%= '  '+key -%><%= ": #{value}" %>
-<% end -%>
-<% end -%>
+<%-
+@yml_string = "---\n"
 
-<% end -%>
+def recursive_hash_to_yml_string(hash, depth=0)
+  spacer = ""
+  depth.times { spacer += "  "}
+  hash.keys.sort.each do |sorted_key|
+    @yml_string += spacer + sorted_key + ": "
+    if hash[sorted_key].is_a?(Hash)
+      @yml_string += "\n"
+      recursive_hash_to_yml_string(hash[sorted_key], depth+1)
+    else
+      @yml_string += "#{hash[sorted_key].to_s}\n"
+    end
+  end
+end
+
+recursive_hash_to_yml_string(settings)
+
+-%>
+### MANAGED BY PUPPET ###
+<%= @yml_string -%>

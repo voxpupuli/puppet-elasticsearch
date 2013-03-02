@@ -333,7 +333,7 @@ describe 'elasticsearch', :type => 'class' do
         :config => { 'node' => { 'name' => 'test' }  }
       } end
 
-      it { should contain_file('/etc/elasticsearch/elasticsearch.yml').with_content("### MANAGED BY PUPPET ###\nnode:\n  name: test\n\n") }
+      it { should contain_file('/etc/elasticsearch/elasticsearch.yml').with_content("### MANAGED BY PUPPET ###\n---\nnode: \n  name: test\n") }
 
     end
 
@@ -343,7 +343,7 @@ describe 'elasticsearch', :type => 'class' do
         :config => { 'node' => { 'master' => true }  }
       } end
 
-      it { should contain_file('/etc/elasticsearch/elasticsearch.yml').with_content("### MANAGED BY PUPPET ###\nnode:\n  master: true\n\n") }
+      it { should contain_file('/etc/elasticsearch/elasticsearch.yml').with_content("### MANAGED BY PUPPET ###\n---\nnode: \n  master: true\n") }
 
     end
 
@@ -353,7 +353,16 @@ describe 'elasticsearch', :type => 'class' do
         :config => { 'node' => { 'data' => false }  }
       } end
 
-      it { should contain_file('/etc/elasticsearch/elasticsearch.yml').with_content("### MANAGED BY PUPPET ###\nnode:\n  data: false\n\n") }
+      it { should contain_file('/etc/elasticsearch/elasticsearch.yml').with_content("### MANAGED BY PUPPET ###\n---\nnode: \n  data: false\n") }
+    end
+
+    context "deeper hash and multiple keys" do
+
+      let :params do {
+        :config => { 'index' => { 'routing' => { 'allocation' => { 'include' => 'tag1', 'exclude' => 'tag2' } } }, 'node' => { 'name' => 'somename' } }
+      } end
+
+      it { should contain_file('/etc/elasticsearch/elasticsearch.yml').with_content("### MANAGED BY PUPPET ###\n---\nindex: \n  routing: \n    allocation: \n      exclude: tag2\n      include: tag1\nnode: \n  name: somename\n") }
     end
 
   end
