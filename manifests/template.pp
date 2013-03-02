@@ -39,22 +39,17 @@ define elasticsearch::template(
 
   if $replace == true or $delete == true {
 
-    #if $replace == true {
-      # If we replace it, make sure we first delete it before inserting it
-    #  $before = Exec[ "curl -s -XPUT ${es_url} -d @/etc/elasticsearch/templates/elasticsearch-template-${name}.json" ]
-    #} else {
-    #  $before = undef
-    #}
+    $exec_before = $replace ? {
+      true  => Exec[ 'insert_template' ],
+      false => undef
+    }
 
     # Delete the existing template
     # First check if it exists of course
     exec { 'delete_template':
       command   => "curl -s -XDELETE ${es_url}",
       unless    => "test $(curl -s '${es_url}?pretty=true' | wc -l) -gt 1",
-      before    => $replace ? {
-          true  => Exec[ 'insert_template' ],
-          false => undef
-        }
+      before    => $exec_before
     }
 
   }
