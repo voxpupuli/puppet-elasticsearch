@@ -3,7 +3,7 @@
 <%= section %>:
 <% content.sort.each do |key, values| -%>
 <% [values].flatten.sort.each do |value| -%>
-<%= value == false ? '#' : '' %><%= '  '+key -%><%= ": #{value}" %>
+<%= '  '+key -%><%= ": #{value}" %>
 <% end -%>
 <% end -%>
 

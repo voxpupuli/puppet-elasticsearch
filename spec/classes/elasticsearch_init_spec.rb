@@ -321,5 +321,41 @@ describe 'elasticsearch', :type => 'class' do
 
   end
 
+  context "test content of config file" do
+
+    let :facts do {
+      :operatingsystem => 'CentOS'
+    } end
+
+    context "set a value" do
+
+      let :params do {
+        :config => { 'node' => { 'name' => 'test' }  }
+      } end
+
+      it { should contain_file('/etc/elasticsearch/elasticsearch.yml').with_content("### MANAGED BY PUPPET ###\nnode:\n  name: test\n\n") }
+
+    end
+
+    context "set a value to true" do
+
+      let :params do {
+        :config => { 'node' => { 'master' => true }  }
+      } end
+
+      it { should contain_file('/etc/elasticsearch/elasticsearch.yml').with_content("### MANAGED BY PUPPET ###\nnode:\n  master: true\n\n") }
+
+    end
+
+    context "set a value to false" do
+
+      let :params do {
+        :config => { 'node' => { 'data' => false }  }
+      } end
+
+      it { should contain_file('/etc/elasticsearch/elasticsearch.yml').with_content("### MANAGED BY PUPPET ###\nnode:\n  data: false\n\n") }
+    end
+
+  end
 
 end
