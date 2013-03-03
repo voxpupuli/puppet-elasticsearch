@@ -32,10 +32,9 @@ class elasticsearch::config {
     $content = $settings
   }
 
-  if ($elasticsearch::restart_on_change) {
-    File {
-      notify => Class['elasticsearch::service']
-    }
+  $notify_elasticsearch = $elasticsearch::restart_on_change ? {
+    true  => Class['elasticsearch::service'],
+    false => undef,
   }
 
   file { '/etc/elasticsearch/elasticsearch.yml':
@@ -45,6 +44,7 @@ class elasticsearch::config {
     group   => 'root',
     mode    => '0644',
     require => Class['elasticsearch::package'],
+    notify  => $notify_elasticsearch,
   }
 
 }
