@@ -5,10 +5,20 @@ def recursive_hash_to_yml_string(hash, depth=0)
   spacer = ""
   depth.times { spacer += "  "}
   hash.keys.sort.each do |sorted_key|
-    @yml_string += spacer + sorted_key + ": "
-    if hash[sorted_key].is_a?(Hash)
+  @yml_string += spacer + sorted_key + ": "
+    ## Do we have an array of values ?
+    if hash[sorted_key].is_a?(Array)
+       keyspacer = ""
+       sorted_key.length.times { keyspacer += " " }
+       @yml_string += "\n"
+       hash[sorted_key].each do |item|
+         @yml_string += spacer + keyspacer + "- " + item + "\n"
+       end
+    ## Is it an other hash ?
+    elsif hash[sorted_key].is_a?(Hash)
       @yml_string += "\n"
       recursive_hash_to_yml_string(hash[sorted_key], depth+1)
+    ## Or its a string.
     else
       @yml_string += "#{hash[sorted_key].to_s}\n"
     end

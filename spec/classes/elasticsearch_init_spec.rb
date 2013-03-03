@@ -385,10 +385,10 @@ describe 'elasticsearch', :type => 'class' do
     context "deeper hash and multiple keys" do
 
       let :params do {
-        :config => { 'index' => { 'routing' => { 'allocation' => { 'include' => 'tag1', 'exclude' => 'tag2' } } }, 'node' => { 'name' => 'somename' } }
+        :config => { 'index' => { 'routing' => { 'allocation' => { 'include' => 'tag1', 'exclude' => [ 'tag2', 'tag3' ] } } }, 'node' => { 'name' => 'somename' } }
       } end
 
-      it { should contain_file('/etc/elasticsearch/elasticsearch.yml').with_content("### MANAGED BY PUPPET ###\n---\nindex: \n  routing: \n    allocation: \n      exclude: tag2\n      include: tag1\nnode: \n  name: somename\n") }
+      it { should contain_file('/etc/elasticsearch/elasticsearch.yml').with_content("### MANAGED BY PUPPET ###\n---\nindex: \n  routing: \n    allocation: \n      exclude: \n             - tag2\n             - tag3\n      include: tag1\nnode: \n  name: somename\n") }
     end
 
   end
