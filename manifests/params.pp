@@ -37,6 +37,9 @@ class elasticsearch::params {
   # autoupgrade
   $autoupgrade = false
 
+  # restart on configuration change?
+  $restart_on_change = true
+
   # service status
   $status = 'enabled'
 
