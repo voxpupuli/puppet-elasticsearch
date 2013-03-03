@@ -1,3 +1,6 @@
+0.0.5 ( Mar 03, 2013 )
+  Option to disable restart on config file change ( PR #10 by Chris Boulton )
+
 0.0.4 ( Mar 02, 2013 )
   Fixed a major issue with the config template ( Issue #9 )
 

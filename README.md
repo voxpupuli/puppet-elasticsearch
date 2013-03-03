@@ -24,6 +24,12 @@ Install everything but disable service(s) afterwards:
        status => 'disabled',
      }
 
+Disable automated restart of Elasticsearch on config file change:
+
+     class { 'elasticsearch':
+       restart_on_change => false
+     }
+
 For the config variable a hash needs to be passed:
 
      class { 'elasticsearch':
