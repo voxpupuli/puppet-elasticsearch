@@ -48,6 +48,15 @@
 #   more than one is managed (see <tt>service.pp</tt> to check if this is the
 #   case).
 #
+# [*restart_on_change*]
+#   Boolean that determines if ElasticSearch should be automatically restarted
+#   whenever the configuration changes. Disabling automatic restarts on config
+#   changes may be desired in an environment where you need to ensure restarts
+#   occur in a controlled/rolling manner rather than during a Puppet run.
+#
+#   Defaults to <tt>true</tt>, which will restart ElasticSearch on any config
+#   change. Setting to <tt>false</tt> disables the automatic restart.
+#
 # The default values for the parameters are set in elasticsearch::params. Have
 # a look at the corresponding <tt>params.pp</tt> manifest file if you need more
 # technical information about them.
@@ -91,12 +100,13 @@
 #
 class elasticsearch(
   $config,
-  $ensure       = $elasticsearch::params::ensure,
-  $autoupgrade  = $elasticsearch::params::autoupgrade,
-  $status       = $elasticsearch::params::status,
-  $pkg_source   = undef,
-  $java_install = false,
-  $java_package = undef
+  $ensure            = $elasticsearch::params::ensure,
+  $autoupgrade       = $elasticsearch::params::autoupgrade,
+  $status            = $elasticsearch::params::status,
+  $restart_on_change = $elasticsearch::params::restart_on_change,
+  $pkg_source        = undef,
+  $java_install      = false,
+  $java_package      = undef
 ) inherits elasticsearch::params {
 
   #### Validate parameters
@@ -116,6 +126,7 @@ class elasticsearch(
 
   # Config
   validate_hash($config)
+  validate_bool($restart_on_change)
 
   #### Manage actions
 
