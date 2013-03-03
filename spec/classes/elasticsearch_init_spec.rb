@@ -321,6 +321,32 @@ describe 'elasticsearch', :type => 'class' do
 
   end
 
+  context "test restarts on configuration change" do
+
+    let :facts do {
+      :operatingsystem => 'CentOS'
+    } end
+
+    context "does not restart when restart_on_change is false" do
+      let :params do {
+        :config            => { 'node' => { 'name' => 'test' }  },
+        :restart_on_change => false,
+      } end
+
+      it { should contain_file('/etc/elasticsearch/elasticsearch.yml').without_notify }
+    end
+
+    context "restarts when restart_on_change is true" do
+      let :params do {
+        :config            => { 'node' => { 'name' => 'test' }  },
+        :restart_on_change => true,
+      } end
+
+      it { should contain_file('/etc/elasticsearch/elasticsearch.yml').with_notify("Class[Elasticsearch::Service]") }
+    end
+
+  end
+
   context "test content of config file" do
 
     let :facts do {
