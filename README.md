@@ -47,6 +47,37 @@ For the config variable a hash needs to be passed:
        }
      }
 
+Short write up of the config hash is also possible.
+
+Instead of writing the full hash representation:
+
+     class { 'elasticsearch':
+       config                 => {
+         'cluster'            => {
+           'name'             => 'ClusterName',
+           'routing'          => {
+             'allocation'     => {
+               'awareness'    => {
+                 'attributes' => 'rack'
+               }
+             }
+           }
+         }
+       }
+     }
+
+You can write the dotted key naming:
+
+     class { 'elasticsearch':
+       config => {
+         'cluster' => {
+           'name' => 'ClusterName',
+           'routing.allocation.awareness.attributes' => 'rack'
+         }
+       }
+     }
+         
+
 ## Manage templates
 
 ### Add a new template
