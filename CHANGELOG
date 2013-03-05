@@ -1,3 +1,9 @@
+0.0.6 ( Mar 05, 2013)
+  Fixing issue with configuration not printing out arrays
+  New feature to write the config hash shorter
+  Updated readme to reflect the new feature
+  Adding spec tests for config file generation
+
 0.0.5 ( Mar 03, 2013 )
   Option to disable restart on config file change ( PR #10 by Chris Boulton )
 
