@@ -26,12 +26,6 @@ class elasticsearch::config {
 
   $settings = $elasticsearch::config
 
-  if is_hash($settings) {
-    $content = template("${module_name}/etc/elasticsearch/elasticsearch.yml.erb")
-  } else {
-    $content = $settings
-  }
-
   $notify_elasticsearch = $elasticsearch::restart_on_change ? {
     true  => Class['elasticsearch::service'],
     false => undef,
@@ -39,7 +33,7 @@ class elasticsearch::config {
 
   file { '/etc/elasticsearch/elasticsearch.yml':
     ensure  => file,
-    content => $content,
+    content => template("${module_name}/etc/elasticsearch/elasticsearch.yml.erb"),
     owner   => 'root',
     group   => 'root',
     mode    => '0644',
