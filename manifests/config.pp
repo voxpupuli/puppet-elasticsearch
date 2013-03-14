@@ -31,13 +31,20 @@ class elasticsearch::config {
     false => undef,
   }
 
+  file { '/etc/elasticsearch':
+    ensure  => directory,
+    owner   => 'root',
+    group   => 'root',
+    mode    => '0644',
+  }
+
   file { '/etc/elasticsearch/elasticsearch.yml':
     ensure  => file,
     content => template("${module_name}/etc/elasticsearch/elasticsearch.yml.erb"),
     owner   => 'root',
     group   => 'root',
     mode    => '0644',
-    require => Class['elasticsearch::package'],
+    require => [ Class['elasticsearch::package'], File['/etc/elasticsearch'] ],
     notify  => $notify_elasticsearch,
   }
 
