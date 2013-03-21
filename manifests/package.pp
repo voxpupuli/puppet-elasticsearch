@@ -52,7 +52,8 @@ class elasticsearch::package {
     file { $tmpSource:
       source => $elasticsearch::pkg_source,
       owner  => 'root',
-      group  => 'root'
+      group  => 'root',
+      backup => false
     }
 
     case $ext {
