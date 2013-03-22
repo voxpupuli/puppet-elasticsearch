@@ -31,9 +31,10 @@ define elasticsearch::template(
 
     # place the template file in /tmp
     file { "/etc/elasticsearch/templates/elasticsearch-template-${name}.json":
-      ensure => present,
-      source => $file,
-      notify => Exec[ 'insert_template' ]
+      ensure  => present,
+      source  => $file,
+      notify  => Exec[ 'insert_template' ],
+      require => Exec['mkdir -p /etc/elasticsearch/templates'],
     }
   }
 
