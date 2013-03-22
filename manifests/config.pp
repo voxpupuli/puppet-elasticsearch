@@ -24,6 +24,8 @@
 #
 class elasticsearch::config {
 
+  include elasticsearch
+
   $settings = $elasticsearch::config
 
   $notify_elasticsearch = $elasticsearch::restart_on_change ? {

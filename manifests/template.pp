@@ -6,6 +6,8 @@ define elasticsearch::template(
   $port    = 9200
 ) {
 
+  include elasticsearch
+
   Exec {
     path => [ '/bin', '/usr/bin', '/usr/local/bin' ]
   }
