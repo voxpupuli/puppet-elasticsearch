@@ -6,6 +6,8 @@ define elasticsearch::template(
   $port    = 9200
 ) {
 
+  include 'elasticsearch::params'
+
   Exec {
     path => [ '/bin', '/usr/bin', '/usr/local/bin' ]
   }
@@ -15,9 +17,10 @@ define elasticsearch::template(
     fail('Replace and Delete cant be used together')
   }
 
-  exec { 'mkdir -p /etc/elasticsearch/templates':
+  exec { 'mkdir_templates':
+    command => "mkdir -p ${elasticsearch::params::confdir}",
     cwd     => '/',
-    creates => '/etc/elasticsearch/templates'
+    creates => "${elasticsearch::params::confdir}/templates",
   }
 
   # Build up the url
@@ -30,11 +33,11 @@ define elasticsearch::template(
     }
 
     # place the template file in /tmp
-    file { "/etc/elasticsearch/templates/elasticsearch-template-${name}.json":
+    file { "${elasticsearch::params::confdir}/templates/elasticsearch-template-${name}.json":
       ensure  => present,
       source  => $file,
       notify  => Exec[ 'insert_template' ],
-      require => Exec['mkdir -p /etc/elasticsearch/templates'],
+      require => Exec['mkdir_templates'],
     }
   }
 
@@ -59,7 +62,7 @@ define elasticsearch::template(
   # Before inserting we check if a template exists with that same name
   if $delete == false {
     exec { 'insert_template':
-      command     => "curl -s -XPUT ${es_url} -d @/etc/elasticsearch/templates/elasticsearch-template-${name}.json",
+      command     => "curl -s -XPUT ${es_url} -d @${elasticsearch::params::confdir}/templates/elasticsearch-template-${name}.json",
       unless      => "test $(curl -s '${es_url}?pretty=true' | wc -l) -gt 1",
       refreshonly => true
     }

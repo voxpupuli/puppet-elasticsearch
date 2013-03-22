@@ -57,6 +57,10 @@
 #   Defaults to <tt>true</tt>, which will restart ElasticSearch on any config
 #   change. Setting to <tt>false</tt> disables the automatic restart.
 #
+# [*confdir*]
+#   Path to directory containing the elasticsearch configuration.
+#   Use this setting if your packages deviate from the norm (/etc/elasticsearch)
+#
 # The default values for the parameters are set in elasticsearch::params. Have
 # a look at the corresponding <tt>params.pp</tt> manifest file if you need more
 # technical information about them.
@@ -104,6 +108,7 @@ class elasticsearch(
   $autoupgrade       = $elasticsearch::params::autoupgrade,
   $status            = $elasticsearch::params::status,
   $restart_on_change = $elasticsearch::params::restart_on_change,
+  $confdir           = $elasticsearch::params::confdir,
   $pkg_source        = undef,
   $java_install      = false,
   $java_package      = undef
