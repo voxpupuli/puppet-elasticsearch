@@ -403,4 +403,19 @@ describe 'elasticsearch', :type => 'class' do
 
   end
 
+  context "try with different configdir" do
+
+    let :facts do {
+      :operatingsystem => 'CentOS'
+    } end
+
+    let :params do {
+      :config => { 'node' => { 'name' => 'test' }  },
+      :confdir => '/opt/elasticsearch/etc'
+    } end
+
+    it { should contain_file('/opt/elasticsearch/etc/elasticsearch.yml') }
+
+  end
+
 end

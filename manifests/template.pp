@@ -6,7 +6,7 @@ define elasticsearch::template(
   $port    = 9200
 ) {
 
-  include elasticsearch
+  require elasticsearch
 
   Exec {
     path => [ '/bin', '/usr/bin', '/usr/local/bin' ]
@@ -37,7 +37,7 @@ define elasticsearch::template(
       ensure  => present,
       source  => $file,
       notify  => Exec[ 'insert_template' ],
-      require => Exec['mkdir_templates'],
+      require => Exec[' mkdir_templates' ],
     }
   }
 
@@ -51,9 +51,9 @@ define elasticsearch::template(
     # Delete the existing template
     # First check if it exists of course
     exec { 'delete_template':
-      command   => "curl -s -XDELETE ${es_url}",
-      unless    => "test $(curl -s '${es_url}?pretty=true' | wc -l) -gt 1",
-      before    => $exec_before
+      command => "curl -s -XDELETE ${es_url}",
+      unless  => "test $(curl -s '${es_url}?pretty=true' | wc -l) -gt 1",
+      before  => $exec_before
     }
 
   }

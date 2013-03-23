@@ -42,7 +42,7 @@ class elasticsearch::config {
 
   file { "${elasticsearch::confdir}/elasticsearch.yml":
     ensure  => file,
-    content => template("${module_name}${elasticsearch::confdir}/elasticsearch.yml.erb"),
+    content => template("${module_name}/etc/elasticsearch/elasticsearch.yml.erb"),
     owner   => 'root',
     group   => 'root',
     mode    => '0644',
