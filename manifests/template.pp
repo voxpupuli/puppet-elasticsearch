@@ -37,7 +37,7 @@ define elasticsearch::template(
       ensure  => present,
       source  => $file,
       notify  => Exec[ 'insert_template' ],
-      require => Exec[' mkdir_templates' ],
+      require => Exec[ 'mkdir_templates' ],
     }
   }
 
