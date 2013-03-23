@@ -1,3 +1,9 @@
+0.0.7 ( Mar 23, 2013)
+  Ensure config directory is created and managed ( PR #13 by Martin Seener )
+  Dont backup package if it changes
+  Create explicit dependency on template directory ( PR #16 by Igor Galić )
+  Make the config directory variable ( PR #17 by Igor Galić and PR #18 by Vincent Janelle )
+
 0.0.6 ( Mar 05, 2013)
   Fixing issue with configuration not printing out arrays
   New feature to write the config hash shorter
