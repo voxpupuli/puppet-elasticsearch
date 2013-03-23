@@ -199,7 +199,7 @@ describe 'elasticsearch', :type => 'class' do
 
     end
 
-    context "with a redhat package" do
+    context "with an unsupported package" do
 
       let :facts do {
         :operatingsystem => 'CentOS'
