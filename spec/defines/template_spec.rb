@@ -3,6 +3,8 @@ require 'spec_helper'
 describe 'elasticsearch::template', :type => 'define' do
 
   let(:title) { 'foo' }
+  let(:facts) { {:operatingsystem => 'CentOS' }}
+  let(:pre_condition) { 'class {"elasticsearch": config => { "node" => {"name" => "test" }}}'}
 
   context "Add a template" do
 
