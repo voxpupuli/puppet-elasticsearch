@@ -24,6 +24,8 @@
 #
 class elasticsearch::config {
 
+  include elasticsearch
+
   $settings = $elasticsearch::config
 
   $notify_elasticsearch = $elasticsearch::restart_on_change ? {
@@ -31,20 +33,20 @@ class elasticsearch::config {
     false => undef,
   }
 
-  file { '/etc/elasticsearch':
+  file { $elasticsearch::confdir:
     ensure  => directory,
     owner   => 'root',
     group   => 'root',
     mode    => '0644',
   }
 
-  file { '/etc/elasticsearch/elasticsearch.yml':
+  file { "${elasticsearch::confdir}/elasticsearch.yml":
     ensure  => file,
-    content => template("${module_name}/etc/elasticsearch/elasticsearch.yml.erb"),
+    content => template("${module_name}${elasticsearch::confdir}/elasticsearch.yml.erb"),
     owner   => 'root',
     group   => 'root',
     mode    => '0644',
-    require => [ Class['elasticsearch::package'], File['/etc/elasticsearch'] ],
+    require => [ Class['elasticsearch::package'], File[$elasticsearch::confdir] ],
     notify  => $notify_elasticsearch,
   }
 

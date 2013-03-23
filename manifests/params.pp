@@ -43,6 +43,9 @@ class elasticsearch::params {
   # service status
   $status = 'enabled'
 
+  # configuration directory
+  $confdir = '/etc/elasticsearch'
+
   #### Internal module values
 
   # packages
