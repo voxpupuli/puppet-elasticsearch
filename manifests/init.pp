@@ -61,6 +61,9 @@
 #   Path to directory containing the elasticsearch configuration.
 #   Use this setting if your packages deviate from the norm (/etc/elasticsearch)
 #
+# [*initfile*]
+#   Source file to be used as the elasticsearch init script.
+#
 # The default values for the parameters are set in elasticsearch::params. Have
 # a look at the corresponding <tt>params.pp</tt> manifest file if you need more
 # technical information about them.
@@ -111,7 +114,8 @@ class elasticsearch(
   $confdir           = $elasticsearch::params::confdir,
   $pkg_source        = undef,
   $java_install      = false,
-  $java_package      = undef
+  $java_package      = undef,
+  $initfile          = undef,
 ) inherits elasticsearch::params {
 
   #### Validate parameters

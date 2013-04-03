@@ -72,6 +72,18 @@ class elasticsearch::service {
 
   }
 
+  if $elasticsearch::status != 'unmanaged' and $elasticsearch::initfile != undef {
+    # Write service file
+    file { '/etc/init.d/elasticsearch':
+      ensure  => present,
+      source  => $elasticsearch::initfile,
+      owner   => 'root',
+      group   => 'root',
+      mode    => '0555',
+      before  => Service[ "elasticsearch" ]
+    }
+  }
+
   # action
   service { 'elasticsearch':
     ensure     => $service_ensure,

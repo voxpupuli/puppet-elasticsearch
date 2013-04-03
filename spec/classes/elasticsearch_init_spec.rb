@@ -11,7 +11,7 @@ describe 'elasticsearch', :type => 'class' do
     let :facts do {
       :operatingsystem => 'Debian'
     } end
-   
+
     # init.pp
     it { should contain_class('elasticsearch::package') }
     it { should contain_class('elasticsearch::config') }
@@ -45,7 +45,7 @@ describe 'elasticsearch', :type => 'class' do
     it { should contain_service('elasticsearch') }
 
     # config.pp
-  
+
   end
 
   context "On CentOS OS" do
@@ -66,7 +66,7 @@ describe 'elasticsearch', :type => 'class' do
     it { should contain_service('elasticsearch') }
 
     # config.pp
-   
+
   end
 
   context "On RedHat OS" do
@@ -87,7 +87,7 @@ describe 'elasticsearch', :type => 'class' do
     it { should contain_service('elasticsearch') }
 
     # config.pp
-    
+
   end
 
   context "On Fedora OS" do
@@ -108,7 +108,7 @@ describe 'elasticsearch', :type => 'class' do
     it { should contain_service('elasticsearch') }
 
     # config.pp
-  
+
   end
 
   context "On Scientific OS" do
@@ -129,7 +129,7 @@ describe 'elasticsearch', :type => 'class' do
     it { should contain_service('elasticsearch') }
 
     # config.pp
-   
+
   end
 
   context "On Amazon OS" do
@@ -150,7 +150,7 @@ describe 'elasticsearch', :type => 'class' do
     it { should contain_service('elasticsearch') }
 
     # config.pp
-   
+
   end
 
   context "On an unknown OS" do
@@ -158,7 +158,7 @@ describe 'elasticsearch', :type => 'class' do
     let :facts do {
       :operatingsystem => 'Darwin'
     } end
- 
+
     it { expect { should raise_error(Puppet::Error) } }
 
   end
@@ -415,6 +415,47 @@ describe 'elasticsearch', :type => 'class' do
     } end
 
     it { should contain_file('/opt/elasticsearch/etc/elasticsearch.yml') }
+
+  end
+
+  context "install init script" do
+
+    let :facts do {
+      :operatingsystem => 'CentOS'
+    } end
+
+    context "default" do
+
+      let :params do {
+        :config => { 'node' => { 'name' => 'test' }  }
+      } end
+
+      it { should_not contain_file('/etc/init.d/elasticsearch') }
+
+    end
+
+    context "when unmanaged" do
+
+      let :params do {
+        :config => { 'node' => { 'name' => 'test' }  },
+        :status => 'unmanaged',
+        :initfile => 'puppet:///data/elasticsearch/elasticsearch.init'
+      } end
+
+      it { should_not contain_file('/etc/init.d/elasticsearch') }
+
+    end
+
+    context "when not unmanaged" do
+
+      let :params do {
+        :config => { 'node' => { 'name' => 'test' }  },
+        :initfile => 'puppet:///data/elasticsearch/elasticsearch.init'
+      } end
+
+      it { should contain_file('/etc/init.d/elasticsearch').with_source('puppet:///data/elasticsearch/elasticsearch.init') }
+
+    end
 
   end
 
