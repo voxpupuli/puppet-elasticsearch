@@ -61,6 +61,11 @@
 #   Path to directory containing the elasticsearch configuration.
 #   Use this setting if your packages deviate from the norm (/etc/elasticsearch)
 #
+# [*service_settings*]
+#   A hash to define the default service settings. Values must be consistent 
+#   with those defined in the init script and overwritten from the default 
+#   file (/etc/default/elasticsearch or /etc/sysconfig/elasticsearch).
+#
 # [*initfile*]
 #   Source file to be used as the elasticsearch init script.
 #
@@ -112,6 +117,7 @@ class elasticsearch(
   $status            = $elasticsearch::params::status,
   $restart_on_change = $elasticsearch::params::restart_on_change,
   $confdir           = $elasticsearch::params::confdir,
+  $service_settings  = $elasticsearch::params::service_settings, 
   $pkg_source        = undef,
   $java_install      = false,
   $java_package      = undef,
