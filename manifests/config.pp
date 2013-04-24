@@ -40,16 +40,6 @@ class elasticsearch::config {
     mode    => '0644',
   }
 
-  file {$elasticsearch::params::service_settings_path:
-    ensure  => file,
-    content => template("${module_name}/etc/default/elasticsearch.erb"),
-    owner   => 'root',
-    group   => 'root',
-    mode    => '0644',
-    require => Class['elasticsearch::package'],
-    notify  => $notify_elasticsearch,
-  }
-
   file { "${elasticsearch::confdir}/elasticsearch.yml":
     ensure  => file,
     content => template("${module_name}/etc/elasticsearch/elasticsearch.yml.erb"),
