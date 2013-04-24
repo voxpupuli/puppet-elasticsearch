@@ -72,6 +72,15 @@ class elasticsearch::service {
 
   }
 
+  file {$elasticsearch::params::service_settings_path:
+    ensure  => file,
+    content => template("${module_name}/etc/default/elasticsearch.erb"),
+    owner   => 'root',
+    group   => 'root',
+    mode    => '0644',
+    notify  => Service['elasticsearch'],
+  }
+
   if $elasticsearch::status != 'unmanaged' and $elasticsearch::initfile != undef {
     # Write service file
     file { '/etc/init.d/elasticsearch':
@@ -92,7 +101,7 @@ class elasticsearch::service {
     hasstatus  => $elasticsearch::params::service_hasstatus,
     hasrestart => $elasticsearch::params::service_hasrestart,
     pattern    => $elasticsearch::params::service_pattern,
-    provider   => $elasticsearch::params::service_provider
+    provider   => $elasticsearch::params::service_provider,
   }
 
 }
