@@ -347,6 +347,48 @@ describe 'elasticsearch', :type => 'class' do
 
   end
 
+  context "test content of default service file" do
+
+    context "On a CentOS OS" do
+
+      let :facts do {
+        :operatingsystem => 'CentOS'
+      } end
+
+      context "set a value" do
+
+        let :params do {
+          :config           => { 'node' => { 'name' => 'test' }  },
+          :service_settings => { 'ES_USER' => 'elasticsearch' }
+        } end
+
+        it { should contain_file('/etc/sysconfig/elasticsearch').with_content("### MANAGED BY PUPPET ###\n\nES_USER=elasticsearch\n") }
+
+      end
+
+    end
+
+    context "On a Debian OS" do
+
+      let :facts do {
+        :operatingsystem => 'Debian'
+      } end
+
+      context "set a value" do
+
+        let :params do {
+          :config           => { 'node' => { 'name' => 'test' }  },
+          :service_settings => { 'ES_USER' => 'elasticsearch' }
+        } end
+
+        it { should contain_file('/etc/default/elasticsearch').with_content("### MANAGED BY PUPPET ###\n\nES_USER=elasticsearch\n") }
+
+      end
+
+    end
+
+  end
+
   context "test content of config file" do
 
     let :facts do {
