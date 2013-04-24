@@ -76,7 +76,14 @@ You can write the dotted key naming:
          }
        }
      }
-         
+
+## Defaults file
+
+You can populate the defaults file ( /etc/defaults/elasticsearch or /etc/sysconfig/elasticsearch )
+
+     class { 'elasticsearch':
+       service_settings => { 'ES_USER' => 'elasticsearch', 'ES_GROUP' => 'elasticsearch' }
+     }
 
 ## Manage templates
 

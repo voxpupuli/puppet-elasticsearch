@@ -1,3 +1,8 @@
+0.0.8 ( xxx xx, 2013)
+  Populate .gitignore ( PR #19 by Igor Galić )
+  Add ability to install initfile ( PR #20 by Justin Lambert )
+  Add ability to manage default file* service parameters ( PR #21 by Mathieu Bornoz )
+
 0.0.7 ( Mar 23, 2013)
   Ensure config directory is created and managed ( PR #13 by Martin Seener )
   Dont backup package if it changes
