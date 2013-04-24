@@ -78,6 +78,7 @@ class elasticsearch::service {
     owner   => 'root',
     group   => 'root',
     mode    => '0644',
+    notify  => Service['elasticsearch'],
   }
 
   if $elasticsearch::status != 'unmanaged' and $elasticsearch::initfile != undef {
@@ -101,7 +102,6 @@ class elasticsearch::service {
     hasrestart => $elasticsearch::params::service_hasrestart,
     pattern    => $elasticsearch::params::service_pattern,
     provider   => $elasticsearch::params::service_provider,
-    subscribe  => File[$elasticsearch::params::service_settings_path],
   }
 
 }
