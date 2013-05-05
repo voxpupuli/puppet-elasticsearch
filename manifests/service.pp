@@ -104,4 +104,15 @@ class elasticsearch::service {
     provider   => $elasticsearch::params::service_provider,
   }
 
+  # Monitoring
+  if $service_enable {
+    case $elasticsearch::monitoring {
+      'sensu':  {
+        include elasticsearch::monitoring::sensu
+      }
+      default : {}
+    }
+  }
+
+
 }

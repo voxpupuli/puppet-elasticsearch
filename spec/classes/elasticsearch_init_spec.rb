@@ -501,4 +501,28 @@ describe 'elasticsearch', :type => 'class' do
 
   end
 
+  context "monitoring" do
+
+    let :facts do {
+      :operatingsystem => 'CentOS'
+    } end
+
+    context "not set" do
+
+      it { should_not include_class('elasticsearch::monitoring::sensu') }
+
+    end
+
+    context "sensu" do
+      let :params do {
+        :config => { 'node' => { 'name' => 'test' }  },
+        :monitoring => 'sensu'
+        } end
+
+      it { should include_class('elasticsearch::monitoring::sensu') }
+
+    end
+
+  end
+
 end
