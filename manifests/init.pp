@@ -73,6 +73,10 @@
 # a look at the corresponding <tt>params.pp</tt> manifest file if you need more
 # technical information about them.
 #
+# [*monitoring*]
+#   What monitoring system should be used to monitor this node.  The available
+#   options can be found in the <tt>manifests/monitoring</tt> directory.
+#
 #
 # === Examples
 #
@@ -122,6 +126,7 @@ class elasticsearch(
   $java_install      = false,
   $java_package      = undef,
   $initfile          = undef,
+  $monitoring        = undef,
 ) inherits elasticsearch::params {
 
   #### Validate parameters
