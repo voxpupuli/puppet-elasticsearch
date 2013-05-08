@@ -159,6 +159,11 @@ class elasticsearch(
   if $java_install == true {
     # Install java
     class { 'elasticsearch::java': }
+
+    # ensure we first java java and then manage the service
+    Anchor['elasticsearch::begin']
+    -> Class['elasticsearch::java']
+    -> Class['elasticsearch::service']
   }
 
   #### Manage relationships
