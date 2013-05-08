@@ -144,7 +144,9 @@ class elasticsearch(
   validate_bool($restart_on_change)
 
   #### Manage actions
-
+  anchor {'elasticsearch::begin': }
+  anchor {'elasticsearch::end': }
+  
   # package(s)
   class { 'elasticsearch::package': }
 
@@ -163,16 +165,23 @@ class elasticsearch(
 
   if $ensure == 'present' {
     # we need the software before configuring it
-    Class['elasticsearch::package'] -> Class['elasticsearch::config']
+    Anchor['elasticsearch::begin']
+    -> Class['elasticsearch::package']
+    -> Class['elasticsearch::config']
 
     # we need the software before running a service
     Class['elasticsearch::package'] -> Class['elasticsearch::service']
     Class['elasticsearch::config']  -> Class['elasticsearch::service']
-
+    
+    Class['elasticsearch::service']
+    -> Anchor['elasticsearch::end']
   } else {
 
     # make sure all services are getting stopped before software removal
-    Class['elasticsearch::service'] -> Class['elasticsearch::package']
+    Anchor['elasticsearch::begin']
+    -> Class['elasticsearch::service']
+    -> Class['elasticsearch::package']
+    -> Anchor['elasticsearch::end']
   }
 
 }
