@@ -146,7 +146,7 @@ class elasticsearch(
   #### Manage actions
   anchor {'elasticsearch::begin': }
   anchor {'elasticsearch::end': }
-  
+
   # package(s)
   class { 'elasticsearch::package': }
 
@@ -172,7 +172,7 @@ class elasticsearch(
     # we need the software before running a service
     Class['elasticsearch::package'] -> Class['elasticsearch::service']
     Class['elasticsearch::config']  -> Class['elasticsearch::service']
-    
+
     Class['elasticsearch::service']
     -> Anchor['elasticsearch::end']
   } else {

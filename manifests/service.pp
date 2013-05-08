@@ -89,7 +89,7 @@ class elasticsearch::service {
       owner   => 'root',
       group   => 'root',
       mode    => '0555',
-      before  => Service[ "elasticsearch" ]
+      before  => Service[ 'elasticsearch' ]
     }
   }
 
