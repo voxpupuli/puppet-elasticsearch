@@ -69,6 +69,11 @@
 # [*initfile*]
 #   Source file to be used as the elasticsearch init script.
 #
+# [*version*]
+#   String to set the specific version you want to install.
+#   Defaults to <tt>false</tt>.
+#
+#
 # The default values for the parameters are set in elasticsearch::params. Have
 # a look at the corresponding <tt>params.pp</tt> manifest file if you need more
 # technical information about them.
@@ -119,6 +124,7 @@ class elasticsearch(
   $confdir           = $elasticsearch::params::confdir,
   $service_settings  = $elasticsearch::params::service_settings,
   $pkg_source        = undef,
+  $version           = false,
   $java_install      = false,
   $java_package      = undef,
   $initfile          = undef,
