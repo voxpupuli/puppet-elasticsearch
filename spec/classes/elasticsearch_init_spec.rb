@@ -513,7 +513,7 @@ describe 'elasticsearch', :type => 'class' do
         :config => { 'node' => { 'name' => 'test' }  }
       } end
 
-      it { should contain_package('elasticsearch').with_ensure('present') }
+      it { should contain_package('elasticsearch').with(:ensure => 'present') }
 
     end
 
@@ -524,7 +524,7 @@ describe 'elasticsearch', :type => 'class' do
         :autoupgrade  => true
       } end
 
-      it { should contain_package('elasticsearch').with_ensure('latest') }
+      it { should contain_package('elasticsearch').with(:ensure => 'latest') }
 
     end
 
@@ -535,7 +535,7 @@ describe 'elasticsearch', :type => 'class' do
         :version  => '0.20.5'
       } end
 
-      it { should contain_package('elasticsearch').with_ensure('0.20.5') }
+      it { should contain_package('elasticsearch').with(:ensure => '0.20.5') }
 
     end
 
@@ -546,7 +546,7 @@ describe 'elasticsearch', :type => 'class' do
         :ensure => 'absent'
       } end
 
-      it { should contain_package('elasticsearch').with_ensure('purged') }
+      it { should contain_package('elasticsearch').with(:ensure => 'purged') }
 
     end
 
