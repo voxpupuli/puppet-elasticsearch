@@ -501,4 +501,56 @@ describe 'elasticsearch', :type => 'class' do
 
   end
 
+  context "package options" do
+
+    let :facts do {
+      :operatingsystem => 'CentOS'
+    } end
+
+    context "default" do
+
+      let :params do {
+        :config => { 'node' => { 'name' => 'test' }  }
+      } end
+
+      it { should contain_package('elasticsearch').with_ensure('present') }
+
+    end
+
+    context "when autoupgrade is true" do
+
+      let :params do {
+        :config       => { 'node' => { 'name' => 'test' }  },
+        :autoupgrade  => true
+      } end
+
+      it { should contain_package('elasticsearch').with_ensure('latest') }
+
+    end
+
+    context "when version is set" do
+
+      let :params do {
+        :config   => { 'node' => { 'name' => 'test' }  },
+        :version  => '0.20.5'
+      } end
+
+      it { should contain_package('elasticsearch').with_ensure('0.20.5') }
+
+    end
+
+    context "when abset" do
+
+      let :params do {
+        :config => { 'node' => { 'name' => 'test' }  },
+        :ensure => 'absent'
+      } end
+
+      it { should contain_package('elasticsearch').with_ensure('purged') }
+
+    end
+
+  end
+
 end
+

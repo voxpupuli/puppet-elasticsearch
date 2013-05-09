@@ -29,9 +29,17 @@ class elasticsearch::package {
   # set params: in operation
   if $elasticsearch::ensure == 'present' {
 
-    $package_ensure = $elasticsearch::autoupgrade ? {
-      true  => 'latest',
-      false => 'present',
+    if $elasticsearch::version == false {
+
+      $package_ensure = $elasticsearch::autoupgrade ? {
+        true  => 'latest',
+        false => 'present',
+      }
+
+    }  else {
+
+      $package_ensure = $elasticsearch::version
+
     }
 
   # set params: removal
