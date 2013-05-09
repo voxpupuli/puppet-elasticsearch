@@ -539,7 +539,7 @@ describe 'elasticsearch', :type => 'class' do
 
     end
 
-    context "when abset" do
+    context "when absent" do
 
       let :params do {
         :config => { 'node' => { 'name' => 'test' }  },
