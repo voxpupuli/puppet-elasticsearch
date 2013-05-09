@@ -1,16 +1,19 @@
-0.0.8 ( xxx xx, 2013)
+0.1.0 ( May 09, 2013 )
   Populate .gitignore ( PR #19 by Igor Galić )
   Add ability to install initfile ( PR #20 by Justin Lambert )
   Add ability to manage default file* service parameters ( PR #21 by Mathieu Bornoz )
+  Providing complete containment of the module ( PR #24 by Brian Lalor )
+  Add ability to specify package version ( PR #25 by Justin Lambert )
+  Adding license file
 
-0.0.7 ( Mar 23, 2013)
+0.0.7 ( Mar 23, 2013 )
   Ensure config directory is created and managed ( PR #13 by Martin Seener )
   Dont backup package if it changes
   Create explicit dependency on template directory ( PR #16 by Igor Galić )
   Make the config directory variable ( PR #17 by Igor Galić and PR #18 by Vincent Janelle )
   Fixing template define
 
-0.0.6 ( Mar 05, 2013)
+0.0.6 ( Mar 05, 2013 )
   Fixing issue with configuration not printing out arrays
   New feature to write the config hash shorter
   Updated readme to reflect the new feature

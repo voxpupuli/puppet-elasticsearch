@@ -12,6 +12,12 @@ Installation, make sure service is running and will be started at boot time:
 
      class { 'elasticsearch': }
 
+Install a certain version:
+
+     class { 'elasticsearch':
+       version => '0.20.6'
+     }
+
 Removal/decommissioning:
 
      class { 'elasticsearch':
