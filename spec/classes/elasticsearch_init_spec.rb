@@ -153,6 +153,27 @@ describe 'elasticsearch', :type => 'class' do
 
   end
 
+  context "On OracleLinux OS" do
+
+    let :facts do {
+      :operatingsystem => 'OracleLinux'
+    } end
+
+    # init.pp
+    it { should contain_class('elasticsearch::package') }
+    it { should contain_class('elasticsearch::config') }
+    it { should contain_class('elasticsearch::service') }
+
+    # package.pp
+    it { should contain_package('elasticsearch') }
+
+    # service.pp
+    it { should contain_service('elasticsearch') }
+
+    # config.pp
+
+  end
+
   context "On an unknown OS" do
 
     let :facts do {
@@ -287,6 +308,16 @@ describe 'elasticsearch', :type => 'class' do
 
       let :facts do {
         :operatingsystem => 'Amazon'
+      } end
+
+      it { should contain_package('java-1.6.0-openjdk') }
+
+    end
+
+    context "On a OracleLinux OS " do
+
+      let :facts do {
+        :operatingsystem => 'OracleLinux'
       } end
 
       it { should contain_package('java-1.6.0-openjdk') }
