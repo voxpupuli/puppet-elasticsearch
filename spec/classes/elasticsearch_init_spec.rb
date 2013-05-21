@@ -373,7 +373,7 @@ describe 'elasticsearch', :type => 'class' do
         :restart_on_change => true,
       } end
 
-      it { should contain_file('/etc/elasticsearch/elasticsearch.yml').with_notify("Class[Elasticsearch::Service]") }
+      it { should contain_file('/etc/elasticsearch/elasticsearch.yml').with(:notify => "Class[Elasticsearch::Service]") }
     end
 
   end
@@ -390,10 +390,10 @@ describe 'elasticsearch', :type => 'class' do
 
         let :params do {
           :config           => { 'node' => { 'name' => 'test' }  },
-          :service_settings => { 'ES_USER' => 'elasticsearch' }
+          :service_settings => { 'ES_USER' => 'elasticsearch', 'ES_GROUP' => 'elasticsearch' }
         } end
 
-        it { should contain_file('/etc/sysconfig/elasticsearch').with_content("### MANAGED BY PUPPET ###\n\nES_USER=elasticsearch\n") }
+        it { should contain_file('/etc/sysconfig/elasticsearch').with(:content => "### MANAGED BY PUPPET ###\n\nES_GROUP=elasticsearch\nES_USER=elasticsearch\n") }
 
       end
 
@@ -409,10 +409,10 @@ describe 'elasticsearch', :type => 'class' do
 
         let :params do {
           :config           => { 'node' => { 'name' => 'test' }  },
-          :service_settings => { 'ES_USER' => 'elasticsearch' }
+          :service_settings => { 'ES_USER' => 'elasticsearch', 'ES_GROUP' => 'elasticsearch' }
         } end
 
-        it { should contain_file('/etc/default/elasticsearch').with_content("### MANAGED BY PUPPET ###\n\nES_USER=elasticsearch\n") }
+        it { should contain_file('/etc/default/elasticsearch').with(:content => "### MANAGED BY PUPPET ###\n\nES_GROUP=elasticsearch\nES_USER=elasticsearch\n") }
 
       end
 
@@ -432,7 +432,7 @@ describe 'elasticsearch', :type => 'class' do
         :config => { 'node' => { 'name' => 'test' }  }
       } end
 
-      it { should contain_file('/etc/elasticsearch/elasticsearch.yml').with_content("### MANAGED BY PUPPET ###\n---\nnode: \n  name: test\n") }
+      it { should contain_file('/etc/elasticsearch/elasticsearch.yml').with(:content => "### MANAGED BY PUPPET ###\n---\nnode: \n  name: test\n") }
 
     end
 
@@ -442,7 +442,7 @@ describe 'elasticsearch', :type => 'class' do
         :config => { 'node' => { 'master' => true }  }
       } end
 
-      it { should contain_file('/etc/elasticsearch/elasticsearch.yml').with_content("### MANAGED BY PUPPET ###\n---\nnode: \n  master: true\n") }
+      it { should contain_file('/etc/elasticsearch/elasticsearch.yml').with(:content => "### MANAGED BY PUPPET ###\n---\nnode: \n  master: true\n") }
 
     end
 
@@ -452,7 +452,7 @@ describe 'elasticsearch', :type => 'class' do
         :config => { 'node' => { 'data' => false }  }
       } end
 
-      it { should contain_file('/etc/elasticsearch/elasticsearch.yml').with_content("### MANAGED BY PUPPET ###\n---\nnode: \n  data: false\n") }
+      it { should contain_file('/etc/elasticsearch/elasticsearch.yml').with(:content => "### MANAGED BY PUPPET ###\n---\nnode: \n  data: false\n") }
     end
 
     context "deeper hash and multiple keys" do
@@ -461,7 +461,7 @@ describe 'elasticsearch', :type => 'class' do
         :config => { 'index' => { 'routing' => { 'allocation' => { 'include' => 'tag1', 'exclude' => [ 'tag2', 'tag3' ] } } }, 'node' => { 'name' => 'somename' } }
       } end
 
-      it { should contain_file('/etc/elasticsearch/elasticsearch.yml').with_content("### MANAGED BY PUPPET ###\n---\nindex: \n  routing: \n    allocation: \n      exclude: \n             - tag2\n             - tag3\n      include: tag1\nnode: \n  name: somename\n") }
+      it { should contain_file('/etc/elasticsearch/elasticsearch.yml').with(:content => "### MANAGED BY PUPPET ###\n---\nindex: \n  routing: \n    allocation: \n      exclude: \n             - tag2\n             - tag3\n      include: tag1\nnode: \n  name: somename\n") }
     end
 
     context "Combination of full hash and shorted write up keys" do
@@ -470,7 +470,7 @@ describe 'elasticsearch', :type => 'class' do
         :config => { 'node' => { 'name' => 'NodeName', 'rack' => 46 }, 'boostrap.mlockall' => true, 'cluster' => { 'name' => 'ClusterName', 'routing.allocation.awareness.attributes' => 'rack' }, 'discovery.zen' => { 'ping.unicast.hosts'=> [ "host1", "host2" ], 'minimum_master_nodes' => 3, 'ping.multicast.enabled' => false }, 'gateway' => { 'expected_nodes' => 4, 'recover_after_nodes' => 3 }, 'network.host' => '123.123.123.123' }
        } end
 
-       it { should contain_file('/etc/elasticsearch/elasticsearch.yml').with_content("### MANAGED BY PUPPET ###\n---\nboostrap: \n  mlockall: true\ncluster: \n  name: ClusterName\n  routing: \n    allocation: \n      awareness: \n        attributes: rack\ndiscovery: \n  zen: \n    minimum_master_nodes: 3\n    ping: \n      multicast: \n        enabled: false\n      unicast: \n        hosts: \n             - host1\n             - host2\ngateway: \n  expected_nodes: 4\n  recover_after_nodes: 3\nnetwork: \n  host: 123.123.123.123\nnode: \n  name: NodeName\n  rack: 46\n") }
+       it { should contain_file('/etc/elasticsearch/elasticsearch.yml').with(:content => "### MANAGED BY PUPPET ###\n---\nboostrap: \n  mlockall: true\ncluster: \n  name: ClusterName\n  routing: \n    allocation: \n      awareness: \n        attributes: rack\ndiscovery: \n  zen: \n    minimum_master_nodes: 3\n    ping: \n      multicast: \n        enabled: false\n      unicast: \n        hosts: \n             - host1\n             - host2\ngateway: \n  expected_nodes: 4\n  recover_after_nodes: 3\nnetwork: \n  host: 123.123.123.123\nnode: \n  name: NodeName\n  rack: 46\n") }
 
      end
 
@@ -526,7 +526,7 @@ describe 'elasticsearch', :type => 'class' do
         :initfile => 'puppet:///data/elasticsearch/elasticsearch.init'
       } end
 
-      it { should contain_file('/etc/init.d/elasticsearch').with_source('puppet:///data/elasticsearch/elasticsearch.init') }
+      it { should contain_file('/etc/init.d/elasticsearch').with(:source => 'puppet:///data/elasticsearch/elasticsearch.init') }
 
     end
 
