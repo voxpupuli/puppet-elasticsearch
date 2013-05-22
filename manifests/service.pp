@@ -28,6 +28,13 @@
 #
 class elasticsearch::service {
 
+  include elasticsearch
+
+  $notify_elasticsearch = $elasticsearch::restart_on_change ? {
+    true  => Class['elasticsearch::service'],
+    false => undef,
+  }
+
   #### Service management
 
   # set params: in operation
@@ -78,7 +85,7 @@ class elasticsearch::service {
     owner   => 'root',
     group   => 'root',
     mode    => '0644',
-    notify  => Service['elasticsearch'],
+    notify  => $notify_elasticsearch,
   }
 
   if $elasticsearch::status != 'unmanaged' and $elasticsearch::initfile != undef {
