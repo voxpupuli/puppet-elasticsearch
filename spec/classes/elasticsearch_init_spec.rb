@@ -426,6 +426,15 @@ describe 'elasticsearch', :type => 'class' do
       :operatingsystem => 'CentOS'
     } end
 
+    context "with nothing set" do
+
+      let :params do {
+      } end
+
+      it { should contain_file('/etc/elasticsearch/elasticsearch.yml').with(:content => "### MANAGED BY PUPPET ###\n") }
+
+    end
+
     context "set a value" do
 
       let :params do {

@@ -69,19 +69,25 @@
   end
 
   # initial string
-  @yml_string = "### MANAGED BY PUPPET ###\n---\n"
+  @yml_string = "### MANAGED BY PUPPET ###\n"
 
-  ## Transform shorted keys into full write up
-  transformed_config = transform(settings)
+  if !settings.empty?
 
-  # Merge it back into a hash
-  tmphash = { }
-  transformed_config.each do |subhash|
-    tmphash = tmphash.deep_merge_with_array_values_concatenated(subhash)
+    @yml_string += "---\n"
+
+    ## Transform shorted keys into full write up
+    transformed_config = transform(settings)
+
+    # Merge it back into a hash
+    tmphash = { }
+    transformed_config.each do |subhash|
+      tmphash = tmphash.deep_merge_with_array_values_concatenated(subhash)
+    end
+
+    # Transform it into yaml
+    recursive_hash_to_yml_string(tmphash)
+
   end
-
-  # Transform it into yaml
-  recursive_hash_to_yml_string(tmphash)
 
 -%>
 <%= @yml_string -%>

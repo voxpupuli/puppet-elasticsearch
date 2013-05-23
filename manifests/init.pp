@@ -116,7 +116,7 @@
 # * Richard Pijnenburg <mailto:richard@ispavailability.com>
 #
 class elasticsearch(
-  $config,
+  $config            = {},
   $ensure            = $elasticsearch::params::ensure,
   $autoupgrade       = $elasticsearch::params::autoupgrade,
   $status            = $elasticsearch::params::status,
@@ -127,7 +127,7 @@ class elasticsearch(
   $version           = false,
   $java_install      = false,
   $java_package      = undef,
-  $initfile          = undef,
+  $initfile          = undef
 ) inherits elasticsearch::params {
 
   #### Validate parameters
