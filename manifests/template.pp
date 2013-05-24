@@ -75,9 +75,7 @@ define elasticsearch::template(
     exec { 'insert_template':
       command     => "curl -s -XPUT ${es_url} -d @${elasticsearch::confdir}/templates/elasticsearch-template-${name}.json",
       unless      => "test $(curl -s '${es_url}?pretty=true' | wc -l) -gt 1",
-      refreshonly => true,
-      tries       => 3,
-      try_sleep   => 10
+      refreshonly => true
     }
   }
 }
