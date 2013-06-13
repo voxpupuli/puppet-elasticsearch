@@ -76,7 +76,7 @@
     @yml_string += "---\n"
 
     ## Transform shorted keys into full write up
-    transformed_config = transform(settings)
+    transformed_config = transform(@settings)
 
     # Merge it back into a hash
     tmphash = { }

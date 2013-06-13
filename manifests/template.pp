@@ -28,9 +28,9 @@ define elasticsearch::template(
   }
 
   exec { 'mkdir_templates':
-    command => "mkdir -p ${elasticsearch::confdir}/templates",
+    command => "mkdir -p ${elasticsearch::confdir}/templates_import",
     cwd     => '/',
-    creates => "${elasticsearch::confdir}/templates",
+    creates => "${elasticsearch::confdir}/templates_import",
   }
 
   $file_ensure = $delete ? {
@@ -44,7 +44,7 @@ define elasticsearch::template(
   }
 
   # place the template file
-  file { "${elasticsearch::confdir}/templates/elasticsearch-template-${name}.json":
+  file { "${elasticsearch::confdir}/templates_import/elasticsearch-template-${name}.json":
     ensure  => $file_ensure,
     source  => $file,
     notify  => $file_notify,
@@ -73,7 +73,7 @@ define elasticsearch::template(
   # Before inserting we check if a template exists with that same name
   if $delete == false {
     exec { 'insert_template':
-      command     => "curl -s -XPUT ${es_url} -d @${elasticsearch::confdir}/templates/elasticsearch-template-${name}.json",
+      command     => "curl -s -XPUT ${es_url} -d @${elasticsearch::confdir}/templates_import/elasticsearch-template-${name}.json",
       unless      => "test $(curl -s '${es_url}?pretty=true' | wc -l) -gt 1",
       refreshonly => true,
       tries       => 3,
