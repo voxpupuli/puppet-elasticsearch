@@ -1,3 +1,13 @@
+0.1.1 ( Jun 14, 2013 )
+  Add Oracle Linux to the OS list ( PR #25 by Stas Alekseev )
+  Respect the restart_on_change on the defaults ( PR #29 by Simon Effenberg )
+  Make sure the config can be empty as advertised in the readme
+  Remove dependency cycle when the defaults file is updated ( PR #31 by Bruce Morrison )
+  Enable retry on the template insert in case ES isn't started yet ( PR #32 by Bruce Morrison )
+  Update templates to avoid deprecation notice with Puppet 3.2.x
+  Update template define to avoid auto insert issue with ES
+  Update spec tests to reflect changes to template define
+
 0.1.0 ( May 09, 2013 )
   Populate .gitignore ( PR #19 by Igor Galić )
   Add ability to install initfile ( PR #20 by Justin Lambert )
