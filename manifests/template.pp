@@ -1,3 +1,43 @@
+# == Define: elasticsearch::template
+#
+#  This define allows you to insert, update or delete templates that are used within Elasticsearch for the indexes
+#
+# === Parameters
+#
+# [*file*]
+#   File path of the template ( json file )
+#   Value type is string
+#   Default value: undef
+#   This variable is optional
+#
+# [*replace*]
+#   Set to 'true' if you intend to replace the existing template
+#   Value type is boolean
+#   Default value: false
+#   This variable is optional
+#
+# [*delete*]
+#   Set to 'true' if you intend to delete the existing template
+#   Value type is boolean
+#   Default value: false
+#   This variable is optional
+#
+# [*host*]
+#   Host name or IP address of the ES instance to connect to
+#   Value type is string
+#   Default value: localhost
+#   This variable is optional
+#
+# [*port*]
+#   Port number of the ES instance to connect to
+#   Value type is number
+#   Default value: 9200
+#   This variable is optional
+#
+# === Authors
+#
+# * Richard Pijnenburg <mailto:richard@ispavailability.com>
+#
 define elasticsearch::template(
   $file    = undef,
   $replace = false,
