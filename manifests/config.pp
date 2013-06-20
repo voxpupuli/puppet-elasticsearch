@@ -24,22 +24,30 @@
 #
 class elasticsearch::config {
 
+  include elasticsearch
+
   $settings = $elasticsearch::config
 
-  if is_hash($settings) {
-    $content = template("${module_name}/etc/elasticsearch/elasticsearch.yml.erb")
-  } else {
-    $content = $settings
+  $notify_elasticsearch = $elasticsearch::restart_on_change ? {
+    true  => Class['elasticsearch::service'],
+    false => undef,
   }
 
-  file { '/etc/elasticsearch/elasticsearch.yml':
-    ensure  => file,
-    content => $content,
+  file { $elasticsearch::confdir:
+    ensure  => directory,
     owner   => 'root',
     group   => 'root',
     mode    => '0644',
-    require => Class['elasticsearch::package'],
-    notify  => Class['elasticsearch::service']
+  }
+
+  file { "${elasticsearch::confdir}/elasticsearch.yml":
+    ensure  => file,
+    content => template("${module_name}/etc/elasticsearch/elasticsearch.yml.erb"),
+    owner   => 'root',
+    group   => 'root',
+    mode    => '0644',
+    require => [ Class['elasticsearch::package'], File[$elasticsearch::confdir] ],
+    notify  => $notify_elasticsearch,
   }
 
 }

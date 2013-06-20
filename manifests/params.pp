@@ -37,14 +37,26 @@ class elasticsearch::params {
   # autoupgrade
   $autoupgrade = false
 
+  # restart on configuration change?
+  $restart_on_change = true
+
   # service status
   $status = 'enabled'
+
+  # configuration directory
+  $confdir = '/etc/elasticsearch'
+
+  # default service settings
+  $service_settings = {
+    'ES_USER'      => 'elasticsearch',
+    'ES_GROUP'     => 'elasticsearch',
+  }
 
   #### Internal module values
 
   # packages
   case $::operatingsystem {
-    'CentOS', 'Fedora', 'Scientific': {
+    'CentOS', 'Fedora', 'Scientific', 'RedHat', 'Amazon', 'OracleLinux': {
       # main application
       $package = [ 'elasticsearch' ]
     }
@@ -60,17 +72,21 @@ class elasticsearch::params {
 
   # service parameters
   case $::operatingsystem {
-    'CentOS', 'Fedora', 'Scientific': {
-      $service_name       = 'elasticsearch'
-      $service_hasrestart = true
-      $service_hasstatus  = true
-      $service_pattern    = $service_name
+    'CentOS', 'Fedora', 'Scientific', 'RedHat', 'Amazon', 'OracleLinux': {
+      $service_name          = 'elasticsearch'
+      $service_hasrestart    = true
+      $service_hasstatus     = true
+      $service_pattern       = $service_name
+      $service_provider      = 'redhat'
+      $service_settings_path = "/etc/sysconfig/${service_name}"
     }
     'Debian', 'Ubuntu': {
-      $service_name       = 'elasticsearch'
-      $service_hasrestart = true
-      $service_hasstatus  = true
-      $service_pattern    = $service_name
+      $service_name          = 'elasticsearch'
+      $service_hasrestart    = true
+      $service_hasstatus     = true
+      $service_pattern       = $service_name
+      $service_provider      = 'debian'
+      $service_settings_path = "/etc/default/${service_name}"
     }
     default: {
       fail("\"${module_name}\" provides no service parameters

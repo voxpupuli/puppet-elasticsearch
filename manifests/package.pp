@@ -29,9 +29,17 @@ class elasticsearch::package {
   # set params: in operation
   if $elasticsearch::ensure == 'present' {
 
-    $package_ensure = $elasticsearch::autoupgrade ? {
-      true  => 'latest',
-      false => 'present',
+    if $elasticsearch::version == false {
+
+      $package_ensure = $elasticsearch::autoupgrade ? {
+        true  => 'latest',
+        false => 'present',
+      }
+
+    }  else {
+
+      $package_ensure = $elasticsearch::version
+
     }
 
   # set params: removal
@@ -39,9 +47,38 @@ class elasticsearch::package {
     $package_ensure = 'purged'
   }
 
+  if $elasticsearch::pkg_source {
+
+    $filenameArray = split($elasticsearch::pkg_source, '/')
+    $basefilename = $filenameArray[-1]
+
+    $extArray = split($basefilename, '\.')
+    $ext = $extArray[-1]
+
+    $tmpSource = "/tmp/${basefilename}"
+
+    file { $tmpSource:
+      source => $elasticsearch::pkg_source,
+      owner  => 'root',
+      group  => 'root',
+      backup => false
+    }
+
+    case $ext {
+      'deb':   { $pkg_provider = 'dpkg' }
+      'rpm':   { $pkg_provider = 'rpm'  }
+      default: { fail("Unknown file extention \"${ext}\"") }
+    }
+  } else {
+    $tmpSource = undef
+    $pkg_provider = undef
+  }
+
   # action
   package { $elasticsearch::params::package:
-    ensure => $package_ensure,
+    ensure   => $package_ensure,
+    source   => $tmpSource,
+    provider => $pkg_provider
   }
 
 }

@@ -48,6 +48,32 @@
 #   more than one is managed (see <tt>service.pp</tt> to check if this is the
 #   case).
 #
+# [*restart_on_change*]
+#   Boolean that determines if ElasticSearch should be automatically restarted
+#   whenever the configuration changes. Disabling automatic restarts on config
+#   changes may be desired in an environment where you need to ensure restarts
+#   occur in a controlled/rolling manner rather than during a Puppet run.
+#
+#   Defaults to <tt>true</tt>, which will restart ElasticSearch on any config
+#   change. Setting to <tt>false</tt> disables the automatic restart.
+#
+# [*confdir*]
+#   Path to directory containing the elasticsearch configuration.
+#   Use this setting if your packages deviate from the norm (/etc/elasticsearch)
+#
+# [*service_settings*]
+#   A hash to define the default service settings. Values must be consistent
+#   with those defined in the init script and overwritten from the default
+#   file (/etc/default/elasticsearch or /etc/sysconfig/elasticsearch).
+#
+# [*initfile*]
+#   Source file to be used as the elasticsearch init script.
+#
+# [*version*]
+#   String to set the specific version you want to install.
+#   Defaults to <tt>false</tt>.
+#
+#
 # The default values for the parameters are set in elasticsearch::params. Have
 # a look at the corresponding <tt>params.pp</tt> manifest file if you need more
 # technical information about them.
@@ -77,7 +103,7 @@
 #         },
 #         'index'                => {
 #           'number_of_replicas' => '0',
-#           'number_of_shareds'  => '5'
+#           'number_of_shards'   => '5'
 #         },
 #         'network' => {
 #           'host'  => $::ipaddress
@@ -90,10 +116,18 @@
 # * Richard Pijnenburg <mailto:richard@ispavailability.com>
 #
 class elasticsearch(
-  $config,
-  $ensure               = $elasticsearch::params::ensure,
-  $autoupgrade          = $elasticsearch::params::autoupgrade,
-  $status               = $elasticsearch::params::status,
+  $config            = {},
+  $ensure            = $elasticsearch::params::ensure,
+  $autoupgrade       = $elasticsearch::params::autoupgrade,
+  $status            = $elasticsearch::params::status,
+  $restart_on_change = $elasticsearch::params::restart_on_change,
+  $confdir           = $elasticsearch::params::confdir,
+  $service_settings  = $elasticsearch::params::service_settings,
+  $pkg_source        = undef,
+  $version           = false,
+  $java_install      = false,
+  $java_package      = undef,
+  $initfile          = undef
 ) inherits elasticsearch::params {
 
   #### Validate parameters
@@ -113,8 +147,11 @@ class elasticsearch(
 
   # Config
   validate_hash($config)
+  validate_bool($restart_on_change)
 
   #### Manage actions
+  anchor {'elasticsearch::begin': }
+  anchor {'elasticsearch::end': }
 
   # package(s)
   class { 'elasticsearch::package': }
@@ -125,21 +162,37 @@ class elasticsearch(
   # service(s)
   class { 'elasticsearch::service': }
 
+  if $java_install == true {
+    # Install java
+    class { 'elasticsearch::java': }
+
+    # ensure we first java java and then manage the service
+    Anchor['elasticsearch::begin']
+    -> Class['elasticsearch::java']
+    -> Class['elasticsearch::service']
+  }
 
   #### Manage relationships
 
   if $ensure == 'present' {
     # we need the software before configuring it
-    Class['elasticsearch::package'] -> Class['elasticsearch::config']
+    Anchor['elasticsearch::begin']
+    -> Class['elasticsearch::package']
+    -> Class['elasticsearch::config']
 
     # we need the software before running a service
     Class['elasticsearch::package'] -> Class['elasticsearch::service']
     Class['elasticsearch::config']  -> Class['elasticsearch::service']
 
+    Class['elasticsearch::service']
+    -> Anchor['elasticsearch::end']
   } else {
 
     # make sure all services are getting stopped before software removal
-    Class['elasticsearch::service'] -> Class['elasticsearch::package']
+    Anchor['elasticsearch::begin']
+    -> Class['elasticsearch::service']
+    -> Class['elasticsearch::package']
+    -> Anchor['elasticsearch::end']
   }
 
 }

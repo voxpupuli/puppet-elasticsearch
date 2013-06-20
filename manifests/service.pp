@@ -28,6 +28,13 @@
 #
 class elasticsearch::service {
 
+  include elasticsearch
+
+  $notify_elasticsearch = $elasticsearch::restart_on_change ? {
+    true  => Service['elasticsearch'],
+    false => undef,
+  }
+
   #### Service management
 
   # set params: in operation
@@ -72,6 +79,27 @@ class elasticsearch::service {
 
   }
 
+  file {$elasticsearch::params::service_settings_path:
+    ensure  => file,
+    content => template("${module_name}/etc/default/elasticsearch.erb"),
+    owner   => 'root',
+    group   => 'root',
+    mode    => '0644',
+    notify  => $notify_elasticsearch,
+  }
+
+  if $elasticsearch::status != 'unmanaged' and $elasticsearch::initfile != undef {
+    # Write service file
+    file { '/etc/init.d/elasticsearch':
+      ensure  => present,
+      source  => $elasticsearch::initfile,
+      owner   => 'root',
+      group   => 'root',
+      mode    => '0555',
+      before  => Service[ 'elasticsearch' ]
+    }
+  }
+
   # action
   service { 'elasticsearch':
     ensure     => $service_ensure,
@@ -80,6 +108,7 @@ class elasticsearch::service {
     hasstatus  => $elasticsearch::params::service_hasstatus,
     hasrestart => $elasticsearch::params::service_hasrestart,
     pattern    => $elasticsearch::params::service_pattern,
+    provider   => $elasticsearch::params::service_provider,
   }
 
 }
