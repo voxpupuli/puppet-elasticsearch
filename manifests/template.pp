@@ -74,7 +74,7 @@ define elasticsearch::template(
 
   $file_notify = $delete ? {
     true  => undef,
-    false => Exec[ 'insert_template' ]
+    false => Exec[ "insert_template ${name}" ]
   }
 
   # place the template file
@@ -89,7 +89,7 @@ define elasticsearch::template(
 
     # Only notify the insert_template call when we do a replace.
     $exec_notify = $replace ? {
-      true  => Exec[ 'insert_template' ],
+      true  => Exec[ "insert_template ${name}" ],
       false => undef
     }
 
@@ -106,7 +106,7 @@ define elasticsearch::template(
   # Insert the template if we don't delete an existing one
   # Before inserting we check if a template exists with that same name
   if $delete == false {
-    exec { 'insert_template':
+    exec { "insert_template ${name}":
       command     => "curl -s -XPUT ${es_url} -d @${elasticsearch::confdir}/templates_import/elasticsearch-template-${name}.json",
       unless      => "test $(curl -s '${es_url}?pretty=true' | wc -l) -gt 1",
       refreshonly => true,
