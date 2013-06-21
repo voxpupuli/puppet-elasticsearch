@@ -95,7 +95,7 @@ define elasticsearch::template(
 
     # Delete the existing template
     # First check if it exists of course
-    exec { 'delete_template':
+    exec { "delete_template ${name}":
       command => "curl -s -XDELETE ${es_url}",
       onlyif  => "test $(curl -s '${es_url}?pretty=true' | wc -l) -gt 1",
       notify  => $exec_notify
