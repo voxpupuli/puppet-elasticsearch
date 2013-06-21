@@ -67,12 +67,6 @@ define elasticsearch::template(
     }
   }
 
-  exec { 'mkdir_templates':
-    command => "mkdir -p ${elasticsearch::confdir}/templates_import",
-    cwd     => '/',
-    creates => "${elasticsearch::confdir}/templates_import",
-  }
-
   $file_ensure = $delete ? {
     true  => 'absent',
     false => 'present'
@@ -80,7 +74,7 @@ define elasticsearch::template(
 
   $file_notify = $delete ? {
     true  => undef,
-    false => Exec[ 'insert_template' ]
+    false => Exec[ "insert_template ${name}" ]
   }
 
   # place the template file
@@ -95,13 +89,13 @@ define elasticsearch::template(
 
     # Only notify the insert_template call when we do a replace.
     $exec_notify = $replace ? {
-      true  => Exec[ 'insert_template' ],
+      true  => Exec[ "insert_template ${name}" ],
       false => undef
     }
 
     # Delete the existing template
     # First check if it exists of course
-    exec { 'delete_template':
+    exec { "delete_template ${name}":
       command => "curl -s -XDELETE ${es_url}",
       onlyif  => "test $(curl -s '${es_url}?pretty=true' | wc -l) -gt 1",
       notify  => $exec_notify
@@ -112,7 +106,7 @@ define elasticsearch::template(
   # Insert the template if we don't delete an existing one
   # Before inserting we check if a template exists with that same name
   if $delete == false {
-    exec { 'insert_template':
+    exec { "insert_template ${name}":
       command     => "curl -s -XPUT ${es_url} -d @${elasticsearch::confdir}/templates_import/elasticsearch-template-${name}.json",
       unless      => "test $(curl -s '${es_url}?pretty=true' | wc -l) -gt 1",
       refreshonly => true,
