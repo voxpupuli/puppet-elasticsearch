@@ -67,12 +67,6 @@ define elasticsearch::template(
     }
   }
 
-  exec { 'mkdir_templates':
-    command => "mkdir -p ${elasticsearch::confdir}/templates_import",
-    cwd     => '/',
-    creates => "${elasticsearch::confdir}/templates_import",
-  }
-
   $file_ensure = $delete ? {
     true  => 'absent',
     false => 'present'
