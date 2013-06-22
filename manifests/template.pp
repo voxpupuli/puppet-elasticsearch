@@ -98,8 +98,7 @@ define elasticsearch::template(
     exec { "delete_template ${name}":
       command => "curl -s -XDELETE ${es_url}",
       onlyif  => "test $(curl -s '${es_url}?pretty=true' | wc -l) -gt 1",
-      notify  => $exec_notify,
-      path    => '/usr/bin:/bin',
+      notify  => $exec_notify
     }
 
   }
@@ -112,8 +111,7 @@ define elasticsearch::template(
       unless      => "test $(curl -s '${es_url}?pretty=true' | wc -l) -gt 1",
       refreshonly => true,
       tries       => 3,
-      try_sleep   => 10,
-      path        => '/usr/bin:/bin',
+      try_sleep   => 10
     }
   }
 }
