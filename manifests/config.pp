@@ -51,7 +51,7 @@ class elasticsearch::config {
   }
 
   exec { 'mkdir_templates':
-    command => "mkdir -p ${elasticsearch::confdir}/templates_import",
+    command => "/bin/mkdir -p ${elasticsearch::confdir}/templates_import",
     cwd     => '/',
     creates => "${elasticsearch::confdir}/templates_import",
     path    => '/usr/bin:/bin',
