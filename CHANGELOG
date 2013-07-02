@@ -1,3 +1,8 @@
+0.1.2 ( Jun 21, 2013 )
+  Update rake file to ignore the param inherit
+  Added missing documentation to the template define
+  Fix for template define to allow multiple templates ( PR #36 by Bruce Morrison )
+
 0.1.1 ( Jun 14, 2013 )
   Add Oracle Linux to the OS list ( PR #25 by Stas Alekseev )
   Respect the restart_on_change on the defaults ( PR #29 by Simon Effenberg )
