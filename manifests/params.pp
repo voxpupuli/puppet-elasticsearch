@@ -45,7 +45,7 @@ class elasticsearch::params {
 
   # configuration directory
   $confdir = '/etc/elasticsearch'
-  
+
   # plugins directory
   $plugindir = '/usr/share/elasticsearch/plugins'
 
