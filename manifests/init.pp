@@ -61,6 +61,14 @@
 #   Path to directory containing the elasticsearch configuration.
 #   Use this setting if your packages deviate from the norm (/etc/elasticsearch)
 #
+# [*plugindir*]
+#   Path to directory containing the elasticsearch plugins
+#   Use this setting if your packages deviate from the norm (/usr/share/elasticsearch/plugins)
+#
+# [*plugintool*]
+#   Path to directory containing the elasticsearch plugin installation script
+#   Use this setting if your packages deviate from the norm (/usr/share/elasticsearch/bin/plugin)
+#
 # [*service_settings*]
 #   A hash to define the default service settings. Values must be consistent
 #   with those defined in the init script and overwritten from the default
@@ -122,6 +130,8 @@ class elasticsearch(
   $status            = $elasticsearch::params::status,
   $restart_on_change = $elasticsearch::params::restart_on_change,
   $confdir           = $elasticsearch::params::confdir,
+  $plugindir         = $elasticsearch::params::plugindir,
+  $plugintool        = $elasticsearch::params::plugintool,
   $service_settings  = $elasticsearch::params::service_settings,
   $pkg_source        = undef,
   $version           = false,

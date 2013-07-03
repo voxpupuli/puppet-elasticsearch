@@ -46,6 +46,12 @@ class elasticsearch::params {
   # configuration directory
   $confdir = '/etc/elasticsearch'
 
+  # plugins directory
+  $plugindir = '/usr/share/elasticsearch/plugins'
+
+  # plugins helper binary
+  $plugintool = '/usr/share/elasticsearch/bin/plugin'
+
   # default service settings
   $service_settings = {
     'ES_USER'      => 'elasticsearch',
