@@ -46,10 +46,15 @@
 #
 define elasticsearch::plugin(
     $module_dir,
-    $ensure = 'present',
-    $url    = '',
+    $ensure      = 'present',
+    $url         = ''
 ) {
+
   require elasticsearch::params
+
+  Exec {
+    path => [ '/bin', '/sbin', '/usr/bin', '/usr/sbin' ]
+  }
 
   $notify_elasticsearch = $elasticsearch::restart_on_change ? {
     true  => Class['elasticsearch::service'],
@@ -59,21 +64,21 @@ define elasticsearch::plugin(
   if ($module_dir != '') {
       validate_string($module_dir)
   } else {
-      fail("module_dir undefined for plugin ${title}")
+      fail("module_dir undefined for plugin ${name}")
   }
 
   if ($url != '') {
     validate_string($url)
-    $install_cmd = "${elasticsearch::plugintool} -install ${title} -url ${url}"
+    $install_cmd = "${elasticsearch::plugintool} -install ${name} -url ${url}"
     $exec_rets = [0,1]
   } else {
-    $install_cmd = "${elasticsearch::plugintool} -install ${title}"
+    $install_cmd = "${elasticsearch::plugintool} -install ${name}"
     $exec_rets = [0,]
   }
 
   case $ensure {
     'installed', 'present': {
-      exec {"install-plugin-${title}":
+      exec {"install-plugin-${name}":
         command  => $install_cmd,
         creates  => "${elasticsearch::plugindir}/${module_dir}",
         returns  => $exec_rets,
@@ -81,8 +86,7 @@ define elasticsearch::plugin(
       }
     }
     default: {
-      exec {"remove-plugin-${title}":
-        path    => ['/bin', '/usr/bin'],
+      exec {"remove-plugin-${name}":
         command => "${elasticsearch::plugintool} --remove ${module_dir}",
         onlyif  => "test -d ${elasticsearch::plugindir}/${module_dir}",
         notify  => $notify_elasticsearch,
