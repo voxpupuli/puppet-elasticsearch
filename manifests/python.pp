@@ -1,7 +1,7 @@
 # there are many python bindings for elasticsearch. This provides all
 # the ones we know about http://www.elasticsearch.org/guide/clients/
 define elasticsearch::python (
-  $pkg_name = $title,
+  $pkg_name = $name,
   $ensure   = "installed",
 ) {
 
