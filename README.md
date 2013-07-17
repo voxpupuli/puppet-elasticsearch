@@ -120,3 +120,9 @@ You can populate the defaults file ( /etc/defaults/elasticsearch or /etc/sysconf
        host => $::ipaddress,
        port => 9200
      }
+
+### Bindings / clients
+
+Install [a variety of python bindings](http://www.elasticsearch.org/guide/clients/):
+
+     elasticsearch::python { "rawes" }
