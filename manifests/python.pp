@@ -24,7 +24,7 @@ define elasticsearch::python (
       $provider = "pip"
     }
     default: {
-      fail("unknown python binding package '${pkgname}'")
+      fail("unknown python binding package '${pkg_name}'")
     }
   }
 
