@@ -1,13 +1,13 @@
 # there are many python bindings for elasticsearch. This provides all
 # the ones we know about http://www.elasticsearch.org/guide/clients/
 define elasticsearch::python (
-  $pkg_name = $name,
+  $name,
   $ensure   = "installed",
 ) {
 
   # make sure the package name is valid and setup the provider as
   # necessary
-  case $pkg_name {
+  case $name {
     "pyes": {
       $provider = "pip"
     }
@@ -24,11 +24,11 @@ define elasticsearch::python (
       $provider = "pip"
     }
     default: {
-      fail("unknown python binding package '${pkg_name}'")
+      fail("unknown python binding package '${name}'")
     }
   }
 
-  package { $pkg_name:
+  package { $name:
     ensure => $ensure,
     provider => $provider,
   }
