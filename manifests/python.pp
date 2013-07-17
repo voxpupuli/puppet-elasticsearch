@@ -9,19 +9,19 @@ class elasticsearch::python (
   # necessary
   case $pkg_name {
     "pyes": {
-      $provider => "pip"
+      $provider = "pip"
     }
     "rawes": {
-      $provider => "pip"
+      $provider = "pip"
     }
     "pyelasticsearch": {
-      $provider => "pip"
+      $provider = "pip"
     }
     "ESClient": {
-      $provider => "pip"
+      $provider = "pip"
     }
     "elasticutils": {
-      $provider => "pip"
+      $provider = "pip"
     }
     default: {
       fail("unknown python binding package '${pkgname}'")
