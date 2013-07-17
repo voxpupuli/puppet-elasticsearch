@@ -18,6 +18,29 @@ Install a certain version:
        version => '0.20.6'
      }
 
+Installing the
+[latest and greatest elasticsearch version](http://www.elasticsearch.org/download/)
+using a debian package, taking inspiration from
+[this gist](https://gist.github.com/wingdspur/2026107)
+
+     $es_version = "0.90.2" # replace version as necessary
+     $deb_dir = "/tmp"
+     $es_deb_filename = "elasticsearch-${es_version}.deb"
+     package { "openjdk-7-jre-headless":
+       ensure => installed,
+     }
+     exec { "wget elasticsearch.deb":
+       command => "wget https://download.elasticsearch.org/elasticsearch/elasticsearch/${es_deb_filename}",
+       cwd     => "${deb_dir}",
+       path    => ["/usr/bin"],
+       creates => "${deb_dir}/${es_deb_filename}",
+     }
+     class { "elasticsearch":
+       pkg_source => "${deb_dir}/${es_deb_filename}",
+       require => [ Exec["wget elasticsearch.deb"],
+                    Package["openjdk-7-jre-headless"] ],
+     }
+
 Removal/decommissioning:
 
      class { 'elasticsearch':
