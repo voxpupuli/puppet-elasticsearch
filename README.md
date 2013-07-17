@@ -125,4 +125,4 @@ You can populate the defaults file ( /etc/defaults/elasticsearch or /etc/sysconf
 
 Install [a variety of python bindings](http://www.elasticsearch.org/guide/clients/):
 
-     elasticsearch::python { "rawes" }
+     elasticsearch::python { "rawes": }
