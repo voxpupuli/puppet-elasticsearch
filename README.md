@@ -8,7 +8,11 @@ http://www.elasticsearch.org/
 
 ## Usage
 
-Installation, make sure service is running and will be started at boot time:
+By default, elasticsearch assumes you've already installed java. The
+following uses your native java installation, installs the
+[latest version of elasticsearch](http://www.elasticsearch.org/download/),
+and makes sure the service is running and will be started at boot
+time:
 
      class { 'elasticsearch': }
 
@@ -17,6 +21,12 @@ Install a certain version:
      class { 'elasticsearch':
        version => '0.20.6'
      }
+
+No java? No problem.
+
+     class { 'elasticsearch':
+	   java_install => true,
+	 }
 
 Removal/decommissioning:
 
