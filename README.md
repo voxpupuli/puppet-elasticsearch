@@ -8,7 +8,11 @@ http://www.elasticsearch.org/
 
 ## Usage
 
-Installation, make sure service is running and will be started at boot time:
+By default, elasticsearch assumes you've already installed java. The
+following uses your native java installation, installs the
+[latest version of elasticsearch](http://www.elasticsearch.org/download/),
+and makes sure the service is running and will be started at boot
+time:
 
      class { 'elasticsearch': }
 
@@ -23,25 +27,6 @@ No java? No problem.
      class { 'elasticsearch':
 	   java_install => true,
 	 }
-
-Installing the
-[latest and greatest elasticsearch version](http://www.elasticsearch.org/download/)
-using a debian package, taking inspiration from
-[this gist](https://gist.github.com/wingdspur/2026107)
-
-     $es_version = "0.90.2" # replace version as necessary
-     $deb_dir = "/tmp"
-     $es_deb_filename = "elasticsearch-${es_version}.deb"
-     exec { "wget elasticsearch.deb":
-       command => "wget https://download.elasticsearch.org/elasticsearch/elasticsearch/${es_deb_filename}",
-       cwd     => "${deb_dir}",
-       path    => ["/usr/bin"],
-       creates => "${deb_dir}/${es_deb_filename}",
-     }
-     class { "elasticsearch":
-       pkg_source => "${deb_dir}/${es_deb_filename}",
-       require    => Exec["wget elasticsearch.deb"],
-     }
 
 Removal/decommissioning:
 
