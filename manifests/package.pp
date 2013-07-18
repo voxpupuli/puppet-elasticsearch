@@ -52,14 +52,13 @@ class elasticsearch::package {
   if $elasticsearch::pkg_source {
     $pkg_source = $elasticsearch::pkg_source
   } else {
-    $es_version = "0.90.2"
     $pkg_dir = "/tmp"
     case $elasticsearch::params::service_provider {
       "redhat": { $pkg_ext = "rpm" }
       "debian": { $pkg_ext = "deb" }
       default:  { fail("Unknown service_provider") }
     }
-    $pkg_filename = "elasticsearch-${es_version}.${pkg_ext}"
+    $pkg_filename = "elasticsearch-${::es_version}.${pkg_ext}"
     $pkg_source = "${pkg_dir}/${pkg_filename}"
     exec { "wget ${pkg_filename}":
       command => "wget https://download.elasticsearch.org/elasticsearch/elasticsearch/${pkg_filename}",
