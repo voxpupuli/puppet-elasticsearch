@@ -49,9 +49,9 @@ class elasticsearch::package {
 
   # if a pkg_source isn't specified, get the right version
   # https://gist.github.com/wingdspur/2026107
-  # if $elasticsearch::pkg_source {
-  #   $pkg_source = $elasticsearch::pkg_source
-  # } else {
+  if $elasticsearch::pkg_source {
+    $pkg_source = $elasticsearch::pkg_source
+  } else {
     $es_version = "0.90.2"
     $pkg_dir = "/tmp"
     case $elasticsearch::params::service_provider {
@@ -67,7 +67,7 @@ class elasticsearch::package {
       path    => ["/usr/bin"],
       creates => $pkg_source
     }
-  # }
+  }
   
   $filenameArray = split($pkg_source, '/')
   $basefilename = $filenameArray[-1]
