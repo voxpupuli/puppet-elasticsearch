@@ -74,10 +74,19 @@ class elasticsearch::package {
     $pkg_provider = undef
   }
 
+  # quick 'n dirty check to see if elasticsearch has java
+  exec { "java-test":
+    logoutput => on_failure,
+    command   => "echo 'java not installed. try setting java_install=true' && exit 1",
+    unless    => "which java",
+    path      => ["/usr/bin", "/bin"],
+  }
+  
   # action
   package { $elasticsearch::params::package:
     ensure   => $package_ensure,
     source   => $tmpSource,
+    require  => Exec["java-test"],
     provider => $pkg_provider
   }
 
