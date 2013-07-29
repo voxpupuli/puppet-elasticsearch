@@ -8,10 +8,6 @@ define elasticsearch::template(
 
   require elasticsearch
 
-  Exec {
-    path => [ '/bin', '/usr/bin', '/usr/local/bin' ]
-  }
-
   # Build up the url
   $es_url = "http://${host}:${port}/_template/${name}"
 
@@ -29,6 +25,7 @@ define elasticsearch::template(
 
   exec { 'mkdir_templates':
     command => "mkdir -p ${elasticsearch::confdir}/templates",
+    path => [ '/bin', '/usr/bin', '/usr/local/bin' ]
     cwd     => '/',
     creates => "${elasticsearch::confdir}/templates",
   }
@@ -63,6 +60,7 @@ define elasticsearch::template(
     # First check if it exists of course
     exec { 'delete_template':
       command => "curl -s -XDELETE ${es_url}",
+      path => [ '/bin', '/usr/bin', '/usr/local/bin' ]
       onlyif  => "test $(curl -s '${es_url}?pretty=true' | wc -l) -gt 1",
       notify  => $exec_notify
     }
@@ -74,6 +72,7 @@ define elasticsearch::template(
   if $delete == false {
     exec { 'insert_template':
       command     => "curl -s -XPUT ${es_url} -d @${elasticsearch::confdir}/templates/elasticsearch-template-${name}.json",
+      path => [ '/bin', '/usr/bin', '/usr/local/bin' ]
       unless      => "test $(curl -s '${es_url}?pretty=true' | wc -l) -gt 1",
       refreshonly => true,
       tries       => 3,
