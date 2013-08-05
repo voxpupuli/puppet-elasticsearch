@@ -49,7 +49,8 @@ define elasticsearch::template(
   require elasticsearch
 
   Exec {
-    path => [ '/bin', '/usr/bin', '/usr/local/bin' ]
+    path => [ '/bin', '/usr/bin', '/usr/local/bin' ],
+    cwd  => '/',
   }
 
   # Build up the url
@@ -97,7 +98,6 @@ define elasticsearch::template(
     # First check if it exists of course
     exec { "delete_template ${name}":
       command => "curl -s -XDELETE ${es_url}",
-      path    => [ '/bin', '/usr/bin', '/usr/local/bin' ],
       onlyif  => "test $(curl -s '${es_url}?pretty=true' | wc -l) -gt 1",
       notify  => $exec_notify
     }
@@ -109,7 +109,6 @@ define elasticsearch::template(
   if $delete == false {
     exec { "insert_template ${name}":
       command     => "curl -s -XPUT ${es_url} -d @${elasticsearch::confdir}/templates_import/elasticsearch-template-${name}.json",
-      path        => [ '/bin', '/usr/bin', '/usr/local/bin' ],
       unless      => "test $(curl -s '${es_url}?pretty=true' | wc -l) -gt 1",
       refreshonly => true,
       tries       => 3,

@@ -53,7 +53,8 @@ define elasticsearch::plugin(
   require elasticsearch::params
 
   Exec {
-    path => [ '/bin', '/sbin', '/usr/bin', '/usr/sbin' ]
+    path => [ '/bin', '/usr/bin', '/usr/local/bin' ],
+    cwd  => '/',
   }
 
   $notify_elasticsearch = $elasticsearch::restart_on_change ? {

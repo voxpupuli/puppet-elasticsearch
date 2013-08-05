@@ -26,6 +26,11 @@ class elasticsearch::config {
 
   include elasticsearch
 
+  Exec {
+    path => [ '/bin', '/usr/bin', '/usr/local/bin' ],
+    cwd  => '/',
+  }
+
   $settings = $elasticsearch::config
 
   $notify_elasticsearch = $elasticsearch::restart_on_change ? {
@@ -52,8 +57,6 @@ class elasticsearch::config {
 
   exec { 'mkdir_templates':
     command => "mkdir -p ${elasticsearch::confdir}/templates_import",
-    path    => [ '/bin', '/usr/bin', '/usr/local/bin' ],
-    cwd     => '/',
     creates => "${elasticsearch::confdir}/templates_import"
   }
 
