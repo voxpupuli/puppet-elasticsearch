@@ -57,8 +57,8 @@ define elasticsearch::plugin(
   }
 
   $notify_elasticsearch = $elasticsearch::restart_on_change ? {
-    true  => Class['elasticsearch::service'],
-    false => undef,
+    false   => undef,
+    default => Class['elasticsearch::service'],
   }
 
   if ($module_dir != '') {
