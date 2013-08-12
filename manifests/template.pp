@@ -68,13 +68,13 @@ define elasticsearch::template(
   }
 
   $file_ensure = $delete ? {
-    true  => 'absent',
-    false => 'present'
+    true    => 'absent',
+    default => 'present'
   }
 
   $file_notify = $delete ? {
-    true  => undef,
-    false => Exec[ "insert_template ${name}" ]
+    true    => undef,
+    default => Exec[ "insert_template ${name}" ]
   }
 
   # place the template file
@@ -89,8 +89,8 @@ define elasticsearch::template(
 
     # Only notify the insert_template call when we do a replace.
     $exec_notify = $replace ? {
-      true  => Exec[ "insert_template ${name}" ],
-      false => undef
+      true    => Exec[ "insert_template ${name}" ],
+      default => undef
     }
 
     # Delete the existing template

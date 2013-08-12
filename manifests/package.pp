@@ -32,8 +32,8 @@ class elasticsearch::package {
     if $elasticsearch::version == false {
 
       $package_ensure = $elasticsearch::autoupgrade ? {
-        true  => 'latest',
-        false => 'present',
+        true    => 'latest',
+        default => 'present',
       }
 
     }  else {

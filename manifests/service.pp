@@ -31,8 +31,8 @@ class elasticsearch::service {
   include elasticsearch
 
   $notify_elasticsearch = $elasticsearch::restart_on_change ? {
-    true  => Service['elasticsearch'],
-    false => undef,
+    false   => undef,
+    default => Service['elasticsearch'],
   }
 
   #### Service management
