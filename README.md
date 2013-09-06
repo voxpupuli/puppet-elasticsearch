@@ -4,7 +4,7 @@ A puppet module for managing elasticsearch nodes
 
 http://www.elasticsearch.org/
 
-[![Build Status](https://travis-ci.org/electrical/puppet-elasticsearch.png?branch=master)](https://travis-ci.org/electrical/puppet-elasticsearch)
+[![Build Status](https://travis-ci.org/elasticsearch/puppet-elasticsearch.png?branch=master)](https://travis-ci.org/elasticsearch/puppet-elasticsearch)
 
 ## Usage
 
@@ -15,7 +15,7 @@ Installation, make sure service is running and will be started at boot time:
 Install a certain version:
 
      class { 'elasticsearch':
-       version => '0.20.6'
+       version => '0.90.3'
      }
 
 Removal/decommissioning:
@@ -121,8 +121,27 @@ You can populate the defaults file ( /etc/defaults/elasticsearch or /etc/sysconf
        port => 9200
      }
 
-### Bindings / clients
+## Bindings / clients
 
 Install [a variety of python bindings](http://www.elasticsearch.org/guide/clients/):
 
      elasticsearch::python { "rawes": }
+
+
+## Plugins
+
+Install [a variety of plugins](http://www.elasticsearch.org/guide/clients/):
+
+### From official repository:
+
+     elasticsearch::plugin{'mobz/elasticsearch-head':
+       module_dir => 'head'
+     }
+
+### From custom url:
+
+     elasticsearch::plugin{ 'elasticsearch-jetty':
+       module_dir => 'elasticsearch-jetty',
+       url        => 'https://oss-es-plugins.s3.amazonaws.com/elasticsearch-jetty/elasticsearch-jetty-0.90.0.zip'
+     }
+
