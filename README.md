@@ -17,6 +17,12 @@ Install a certain version:
      class { 'elasticsearch':
        version => '0.90.3'
      }
+     
+This assumes an elasticsearch package is already available to your distribution's package manager. To use a local deb or rpm, specify it like so:
+
+     class { 'elasticsearch':
+       pkg_source => 'puppet:///path_to_file'
+     }
 
 Removal/decommissioning:
 
