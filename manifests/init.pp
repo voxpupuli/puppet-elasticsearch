@@ -135,8 +135,6 @@ class elasticsearch(
   $service_settings  = $elasticsearch::params::service_settings,
   $pkg_source        = undef,
   $version           = false,
-  $java_install      = false,
-  $java_package      = undef,
   $initfile          = undef
 ) inherits elasticsearch::params {
 
@@ -171,16 +169,6 @@ class elasticsearch(
 
   # service(s)
   class { 'elasticsearch::service': }
-
-  if $java_install == true {
-    # Install java
-    class { 'elasticsearch::java': }
-
-    # ensure we first java java and then manage the service
-    Anchor['elasticsearch::begin']
-    -> Class['elasticsearch::java']
-    -> Class['elasticsearch::service']
-  }
 
   #### Manage relationships
 
