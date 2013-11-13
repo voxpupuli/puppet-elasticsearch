@@ -24,20 +24,23 @@
 #
 class elasticsearch::package {
 
+
   #### Package management
 
   # set params: in operation
   if $elasticsearch::ensure == 'present' {
 
+    # Check if we want to install a specific version or not
     if $elasticsearch::version == false {
 
       $package_ensure = $elasticsearch::autoupgrade ? {
-        true    => 'latest',
-        default => 'present',
+        true  => 'latest',
+        false => 'present',
       }
 
-    }  else {
+    } else {
 
+      # install specific version
       $package_ensure = $elasticsearch::version
 
     }
@@ -47,37 +50,88 @@ class elasticsearch::package {
     $package_ensure = 'purged'
   }
 
-  if $elasticsearch::pkg_source {
+  # action
+  if ($elasticsearch::package_url != undef) {
 
-    $filenameArray = split($elasticsearch::pkg_source, '/')
+    $package_dir = $elasticsearch::package_dir
+
+    # Create directory to place the package file
+    exec { 'create_package_dir':
+      cwd     => '/',
+      path    => ['/usr/bin', '/bin'],
+      command => "mkdir -p ${elasticsearch::package_dir}",
+      creates => $elasticsearch::package_dir;
+    }
+
+    file { $package_dir:
+      ensure  => 'directory',
+      purge   => $elasticsearch::purge_package_dir,
+      force   => $elasticsearch::purge_package_dir,
+      require => Exec['create_package_dir'],
+    }
+
+    $filenameArray = split($elasticsearch::package_url, '/')
     $basefilename = $filenameArray[-1]
+
+    $sourceArray = split($elasticsearch::package_url, ':')
+    $protocol_type = $sourceArray[0]
 
     $extArray = split($basefilename, '\.')
     $ext = $extArray[-1]
 
-    $tmpSource = "/tmp/${basefilename}"
+    case $protocol_type {
+      puppet: {
 
-    file { $tmpSource:
-      source => $elasticsearch::pkg_source,
-      owner  => 'root',
-      group  => 'root',
-      backup => false
+        file { "${package_dir}/${basefilename}":
+          ensure  => present,
+          source  => $elasticsearch::package_url,
+          require => File[$package_dir],
+          backup  => false,
+        }
+
+      }
+      ftp, https, http: {
+
+        exec { 'download-package':
+          command => "${elasticsearch::params::dlcmd} ${package_dir}/${basefilename} ${elasticsearch::package_url} 2> /dev/null",
+          path    => ['/usr/bin', '/bin'],
+          creates => "${package_dir}/${basefilename}",
+          require => File[$package_dir]
+        }
+
+      }
+      file: {
+
+        $source_path = $sourceArray[1]
+        file { "${package_dir}/${basefilename}":
+          ensure  => present,
+          source  => $source_path,
+          require => File[$package_dir],
+          backup  => false
+        }
+
+      }
+      default: {
+        fail("Protocol must be puppet, file, http, https, or ftp. You have given \"${protocol_type}\"")
+      }
     }
 
     case $ext {
       'deb':   { $pkg_provider = 'dpkg' }
       'rpm':   { $pkg_provider = 'rpm'  }
-      default: { fail("Unknown file extention \"${ext}\"") }
+      default: { fail("Unknown file extention \"${ext}\".") }
     }
+
+    $pkg_source = "${package_dir}/${basefilename}"
+
   } else {
-    $tmpSource = undef
+    $pkg_source = undef
     $pkg_provider = undef
   }
 
-  # action
   package { $elasticsearch::params::package:
     ensure   => $package_ensure,
-    source   => $tmpSource,
+    source   => $pkg_source,
     provider => $pkg_provider
   }
 

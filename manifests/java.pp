@@ -27,10 +27,10 @@ class elasticsearch::java {
     # Default Java package
     case $::operatingsystem {
       'CentOS', 'Fedora', 'Scientific', 'RedHat', 'Amazon', 'OracleLinux': {
-        $package = 'java-1.6.0-openjdk'
+        $package = 'java-1.7.0-openjdk'
       }
       'Debian', 'Ubuntu': {
-        $package = 'openjdk-6-jre-headless'
+        $package = 'openjdk-7-jre-headless'
       }
       default: {
         fail("\"${module_name}\" provides no java package

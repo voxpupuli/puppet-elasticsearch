@@ -37,11 +37,29 @@ class elasticsearch::params {
   # autoupgrade
   $autoupgrade = false
 
+  # service status
+  $status = 'enabled'
+
   # restart on configuration change?
   $restart_on_change = true
 
-  # service status
-  $status = 'enabled'
+  # Package dir. Temporary place to download the package to for installation
+  $package_dir = '/var/lib/elasticsearch'
+
+  # User and Group for the files and user to run the service as.
+  $elasticsearch_user  = 'elasticsearch'
+  $elasticsearch_group = 'elasticsearch'
+
+  # Purge configuration directory
+  $purge_confdir = true
+
+  ## init service provider
+
+  # init defaults
+  $init_defaults = {
+    'ES_USER'  => 'elasticsearch',
+    'ES_GROUP' => 'elasticsearch',
+  }
 
   # configuration directory
   $confdir = '/etc/elasticsearch'
@@ -52,17 +70,16 @@ class elasticsearch::params {
   # plugins helper binary
   $plugintool = '/usr/share/elasticsearch/bin/plugin'
 
-  # default service settings
-  $service_settings = {
-    'ES_USER'      => 'elasticsearch',
-    'ES_GROUP'     => 'elasticsearch',
-  }
+  # Download tool
+  $dlcmd = 'wget -O'
+
+  $purge_package_dir = false
 
   #### Internal module values
 
   # packages
   case $::operatingsystem {
-    'CentOS', 'Fedora', 'Scientific', 'RedHat', 'Amazon', 'OracleLinux': {
+    'RedHat', 'CentOS', 'Fedora', 'Scientific', 'Amazon', 'OracleLinux': {
       # main application
       $package = [ 'elasticsearch' ]
     }
@@ -78,21 +95,29 @@ class elasticsearch::params {
 
   # service parameters
   case $::operatingsystem {
-    'CentOS', 'Fedora', 'Scientific', 'RedHat', 'Amazon', 'OracleLinux': {
-      $service_name          = 'elasticsearch'
-      $service_hasrestart    = true
-      $service_hasstatus     = true
-      $service_pattern       = $service_name
-      $service_provider      = 'redhat'
-      $service_settings_path = "/etc/sysconfig/${service_name}"
+    'RedHat', 'CentOS', 'Fedora', 'Scientific', 'Amazon', 'OracleLinux': {
+      $service_name       = 'elasticsearch'
+      $service_hasrestart = true
+      $service_hasstatus  = true
+      $service_pattern    = $service_name
+      $service_providers  = [ 'init' ]
+      $defaults_location  = '/etc/sysconfig'
     }
     'Debian', 'Ubuntu': {
-      $service_name          = 'elasticsearch'
-      $service_hasrestart    = true
-      $service_hasstatus     = true
-      $service_pattern       = $service_name
-      $service_provider      = 'debian'
-      $service_settings_path = "/etc/default/${service_name}"
+      $service_name       = 'elasticsearch'
+      $service_hasrestart = true
+      $service_hasstatus  = true
+      $service_pattern    = $service_name
+      $service_providers  = [ 'init' ]
+      $defaults_location  = '/etc/default'
+    }
+    'Darwin': {
+      $service_name       = 'FIXME/TODO'
+      $service_hasrestart = true
+      $service_hasstatus  = true
+      $service_pattern    = $service_name
+      $service_providers  = [ 'launchd' ]
+      $defaults_location  = false
     }
     default: {
       fail("\"${module_name}\" provides no service parameters

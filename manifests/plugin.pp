@@ -50,14 +50,14 @@ define elasticsearch::plugin(
     $url         = ''
 ) {
 
-  require elasticsearch::params
+  require elasticsearch
 
   Exec {
     path => [ '/bin', '/usr/bin', '/usr/local/bin' ],
     cwd  => '/',
   }
 
-  $notify_elasticsearch = $elasticsearch::restart_on_change ? {
+  $notify_service = $elasticsearch::restart_on_change ? {
     false   => undef,
     default => Class['elasticsearch::service'],
   }
@@ -83,14 +83,14 @@ define elasticsearch::plugin(
         command  => $install_cmd,
         creates  => "${elasticsearch::plugindir}/${module_dir}",
         returns  => $exec_rets,
-        notify   => $notify_elasticsearch,
+        notify   => $notify_service,
       }
     }
     default: {
       exec {"remove-plugin-${name}":
         command => "${elasticsearch::plugintool} --remove ${module_dir}",
         onlyif  => "test -d ${elasticsearch::plugindir}/${module_dir}",
-        notify  => $notify_elasticsearch,
+        notify  => $notify_service,
       }
     }
   }

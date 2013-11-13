@@ -24,36 +24,35 @@
 #
 class elasticsearch::config {
 
-  include elasticsearch
+  #### Configuration
+
+  File {
+    owner => $elasticsearch::elasticsearch_user,
+    group => $elasticsearch::elasticsearch_group
+  }
 
   Exec {
     path => [ '/bin', '/usr/bin', '/usr/local/bin' ],
     cwd  => '/',
   }
 
-  $settings = $elasticsearch::config
-
-  $notify_elasticsearch = $elasticsearch::restart_on_change ? {
-    false   => undef,
-    default => Class['elasticsearch::service'],
-
+  $notify_service = $elasticsearch::restart_on_change ? {
+    true  => Class['elasticsearch::service'],
+    false => undef,
   }
 
   file { $elasticsearch::confdir:
-    ensure  => directory,
-    owner   => 'root',
-    group   => 'root',
-    mode    => '0644',
+    ensure => directory,
+    owner  => 'root',
+    group  => 'root',
+    mode   => '0644'
   }
 
   file { "${elasticsearch::confdir}/elasticsearch.yml":
     ensure  => file,
     content => template("${module_name}/etc/elasticsearch/elasticsearch.yml.erb"),
-    owner   => 'root',
-    group   => 'root',
     mode    => '0644',
-    require => [ Class['elasticsearch::package'], File[$elasticsearch::confdir] ],
-    notify  => $notify_elasticsearch,
+    notify  => $notify_service
   }
 
   exec { 'mkdir_templates':
