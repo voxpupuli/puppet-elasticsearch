@@ -129,7 +129,7 @@ describe 'elasticsearch', :type => 'class' do
               :init_defaults => { 'SERVICE_USER' => 'root', 'SERVICE_GROUP' => 'root' }
             } end
 
-            it { should contain_file('/etc/default/elasticsearch').with(:content => "### MANAGED BY PUPPET ###\n\nSERVICE_GROUP=root\nSERVICE_USER=root\n") }
+            it { should contain_file('/etc/default/elasticsearch').with(:content => "### MANAGED BY PUPPET ###\n\nSERVICE_GROUP=root\nSERVICE_USER=root\n", :notify => 'Service[elasticsearch]') }
 
           end
 
@@ -139,9 +139,20 @@ describe 'elasticsearch', :type => 'class' do
               :init_defaults_file => 'puppet:///path/to/elasticsearch.defaults'
             } end
 
-            it { should contain_file('/etc/default/elasticsearch').with(:source => 'puppet:///path/to/elasticsearch.defaults') }
+            it { should contain_file('/etc/default/elasticsearch').with(:source => 'puppet:///path/to/elasticsearch.defaults', :notify => 'Service[elasticsearch]') }
 
           end
+
+          context 'no service restart when defaults change' do
+
+           let :params do {
+              :init_defaults     => { 'SERVICE_USER' => 'root', 'SERVICE_GROUP' => 'root' },
+              :restart_on_change => false
+            } end
+
+            it { should contain_file('/etc/default/elasticsearch').with(:content => "### MANAGED BY PUPPET ###\n\nSERVICE_GROUP=root\nSERVICE_USER=root\n").without_notify }
+
+          end 
 
           context 'and set init file via template' do
 
@@ -149,13 +160,25 @@ describe 'elasticsearch', :type => 'class' do
               :init_template => "elasticsearch/etc/init.d/elasticsearch.Debian.erb"
             } end
 
-            it { should contain_file('/etc/init.d/elasticsearch') }
+            it { should contain_file('/etc/init.d/elasticsearch').with(:notify => 'Service[elasticsearch]') }
 
           end
 
-        end
+          context 'No service restart when restart_on_change is false' do
+
+            let :params do {
+              :init_template     => "elasticsearch/etc/init.d/elasticsearch.Debian.erb",
+              :restart_on_change => false
+            } end
+
+            it { should contain_file('/etc/init.d/elasticsearch').without_notify }
+
+          end
+
+        end # provider init
 
       end # Services
+
     end
 
   end
