@@ -45,7 +45,7 @@ class elasticsearch::config {
 
     file { $elasticsearch::confdir:
       ensure => directory,
-      mode   => '0644'
+      mode   => '0644',
       purge  => $elasticsearch::purge_confdir,
       force  => $elasticsearch::purge_confdir
     }

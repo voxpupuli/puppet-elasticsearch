@@ -25,6 +25,8 @@ task :parser_validate do
     result = `puppet parser validate #{puppetfile}`
     if $?.exitstatus == 0
       res = 'OK'
+    else
+      res = 'ERR'
     end
 
     puts "#{res}"
