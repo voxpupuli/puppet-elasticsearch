@@ -16,7 +16,7 @@ env:
 matrix:
   allow_failures:
     - rvm: 2.0.0
-gemfile: .gemfile
+gemfile: Gemfile
 notifications:
   email:
     recipients:
