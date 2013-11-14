@@ -17,23 +17,43 @@ Install a certain version:
      class { 'elasticsearch':
        version => '0.90.3'
      }
-     
-This assumes an elasticsearch package is already available to your distribution's package manager. To use a local deb or rpm, specify it like so:
+
+This assumes an elasticsearch package is already available to your distribution's package manager. To install it in a different way:
+
+To download from http/https/ftp source:
 
      class { 'elasticsearch':
-       pkg_source => 'puppet:///path_to_file'
+       package_url => 'https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-0.90.7.deb'
+     }
+
+To download from a puppet:// source:
+
+     class { 'elasticsearch':
+       package_url => 'puppet:///path/to/elasticsearch-0.90.7.deb'
+     }
+
+Or use a local file source:
+
+     class { 'elasticsearch':
+       package_url => 'file:/path/to/elasticsearch-0.90.7.deb'
+     }
+
+Automatic upgrade of the software ( default set to false ):
+
+     class { 'elasticsearch':
+       autoupgrade => true
      }
 
 Removal/decommissioning:
 
      class { 'elasticsearch':
-       ensure => 'absent',
+       ensure => 'absent'
      }
 
 Install everything but disable service(s) afterwards:
 
      class { 'elasticsearch':
-       status => 'disabled',
+       status => 'disabled'
      }
 
 Disable automated restart of Elasticsearch on config file change:
@@ -89,17 +109,12 @@ You can write the dotted key naming:
        }
      }
 
-## Defaults file
-
-You can populate the defaults file ( /etc/defaults/elasticsearch or /etc/sysconfig/elasticsearch )
-
-     class { 'elasticsearch':
-       service_settings => { 'ES_USER' => 'elasticsearch', 'ES_GROUP' => 'elasticsearch' }
-     }
 
 ## Manage templates
 
 ### Add a new template
+
+This will install and/or replace the template in Elasticearch
 
      elasticsearch::template { 'templatename':
        file => 'puppet:///path/to/template.json'
@@ -108,14 +123,7 @@ You can populate the defaults file ( /etc/defaults/elasticsearch or /etc/sysconf
 ### Delete a template
 
      elasticsearch::template { 'templatename':
-       delete => true
-     }
-
-### Replace a template
-
-     elasticsearch::template { 'templatename':
-       file    => 'puppet:///path/to/template.json',
-       replace => true
+       ensure => 'absent'
      }
 
 ### Host
@@ -149,5 +157,42 @@ Install [a variety of plugins](http://www.elasticsearch.org/guide/clients/):
      elasticsearch::plugin{ 'elasticsearch-jetty':
        module_dir => 'elasticsearch-jetty',
        url        => 'https://oss-es-plugins.s3.amazonaws.com/elasticsearch-jetty/elasticsearch-jetty-0.90.0.zip'
+     }
+
+## Java install
+
+For those that have no separate module for installation of java:
+
+     class { 'elasticsearch':
+       java_install => true
+     }
+
+If you want a specific java package/version:
+
+     class { 'elasticsearch':
+       java_install => true,
+       java_package => 'packagename'
+     }
+
+## Service providers
+
+Currently only the 'init' service provider is supported but others can be implemented quite easy.
+
+### init
+
+#### Defaults file
+
+You can populate the defaults file ( /etc/defaults/elasticsearch or /etc/sysconfig/elasticsearch )
+
+##### hash representation
+
+     class { 'elasticsearch':
+       init_defaults => { 'ES_USER' => 'elasticsearch', 'ES_GROUP' => 'elasticsearch' }
+     }
+
+##### file source
+
+     class { 'elasticsearch':
+       init_defaults_file => 'puppet:///path/to/defaults'
      }
 
