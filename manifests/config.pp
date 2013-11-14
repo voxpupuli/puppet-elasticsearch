@@ -70,9 +70,9 @@ class elasticsearch::config {
   } elsif ( $elasticsearch::ensure == 'absent' ) {
 
     file { $elasticsearch::confdir:
-      ensure => 'absent',
-      purge  => true,
-      force  => true
+      ensure  => 'absent',
+      recurse => true,
+      force   => true
     }
 
   }
