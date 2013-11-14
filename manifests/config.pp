@@ -36,28 +36,45 @@ class elasticsearch::config {
     cwd  => '/',
   }
 
-  $notify_service = $elasticsearch::restart_on_change ? {
-    true  => Class['elasticsearch::service'],
-    false => undef,
-  }
+  if ( $elasticsearch::ensure == 'present' ) {
 
-  file { $elasticsearch::confdir:
-    ensure => directory,
-    owner  => 'root',
-    group  => 'root',
-    mode   => '0644'
-  }
+    $notify_service = $elasticsearch::restart_on_change ? {
+      true  => Class['elasticsearch::service'],
+      false => undef,
+    }
 
-  file { "${elasticsearch::confdir}/elasticsearch.yml":
-    ensure  => file,
-    content => template("${module_name}/etc/elasticsearch/elasticsearch.yml.erb"),
-    mode    => '0644',
-    notify  => $notify_service
-  }
+    file { $elasticsearch::confdir:
+      ensure => directory,
+      mode   => '0644'
+      purge  => $elasticsearch::purge_confdir,
+      force  => $elasticsearch::purge_confdir
+    }
 
-  exec { 'mkdir_templates':
-    command => "mkdir -p ${elasticsearch::confdir}/templates_import",
-    creates => "${elasticsearch::confdir}/templates_import"
+    file { "${elasticsearch::confdir}/elasticsearch.yml":
+      ensure  => file,
+      content => template("${module_name}/etc/elasticsearch/elasticsearch.yml.erb"),
+      mode    => '0644',
+      notify  => $notify_service
+    }
+
+    exec { 'mkdir_templates':
+      command => "mkdir -p ${elasticsearch::confdir}/templates_import",
+      creates => "${elasticsearch::confdir}/templates_import"
+    }
+
+    file { "${elasticsearch::confdir}/templates_import":
+      ensure => 'directory',
+      mode   => '0644'
+    }
+
+  } elsif ( $elasticsearch::ensure == 'absent' ) {
+
+    file { $elasticsearch::confdir:
+      ensure => 'absent',
+      purge  => true,
+      force  => true
+    }
+
   }
 
 }

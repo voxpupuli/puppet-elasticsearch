@@ -5,6 +5,7 @@ rvm:
   - 2.0.0
 script:
   - "rake lint"
+  - "rake parser_validate"
   - "rake template_verify"
   - "rake spec SPEC_OPTS='--format documentation'"
 env:

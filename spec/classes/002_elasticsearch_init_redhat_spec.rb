@@ -175,9 +175,32 @@ describe 'elasticsearch', :type => 'class' do
 
           end
 
+          context 'when its unmanaged do nothing with it' do
+
+            let :params do {
+              :status => 'unmanaged'
+            } end
+
+            it { should contain_service('elasticsearch').with(:ensure => nil, :enable => false) }
+
+          end
+
         end
 
       end # Services
+
+      context 'when setting the module to absent' do
+
+         let :params do {
+           :ensure => 'absent'
+         } end
+
+         it { should contain_file('/etc/elasticsearch').with(:ensure => 'absent', :force => true, :recurse => true) }
+         it { should contain_package('elasticsearch').with(:ensure => 'purged') }
+         it { should contain_service('elasticsearch').with(:ensure => 'stopped', :enable => false) }
+
+      end
+
     end
 
   end
