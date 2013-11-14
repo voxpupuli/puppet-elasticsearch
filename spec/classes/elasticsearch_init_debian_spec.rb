@@ -146,7 +146,7 @@ describe 'elasticsearch', :type => 'class' do
           context 'and set init file via template' do
 
             let :params do {
-              :init_template => '${module_name}/path/to/init.erb'
+              :init_template => "elasticsearch/etc/init.d/elasticsearch.Debian.erb"
             } end
 
             it { should contain_file('/etc/init.d/elasticsearch') }
