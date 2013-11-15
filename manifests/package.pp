@@ -87,6 +87,7 @@ class elasticsearch::package {
           source  => $elasticsearch::package_url,
           require => File[$package_dir],
           backup  => false,
+          before  => Package[$elasticsearch::params::package]
         }
 
       }
@@ -96,7 +97,8 @@ class elasticsearch::package {
           command => "${elasticsearch::params::dlcmd} ${package_dir}/${basefilename} ${elasticsearch::package_url} 2> /dev/null",
           path    => ['/usr/bin', '/bin'],
           creates => "${package_dir}/${basefilename}",
-          require => File[$package_dir]
+          require => File[$package_dir],
+          before  => Package[$elasticsearch::params::package]
         }
 
       }
@@ -107,7 +109,8 @@ class elasticsearch::package {
           ensure  => present,
           source  => $source_path,
           require => File[$package_dir],
-          backup  => false
+          backup  => false,
+          before  => Package[$elasticsearch::params::package]
         }
 
       }
