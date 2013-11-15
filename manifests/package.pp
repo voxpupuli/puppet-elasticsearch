@@ -45,50 +45,46 @@ class elasticsearch::package {
 
     }
 
-  # set params: removal
-  } else {
-    $package_ensure = 'purged'
-  }
+    # action
+    if ($elasticsearch::package_url != undef) {
 
-  # action
-  if ($elasticsearch::package_url != undef) {
+      $package_dir = $elasticsearch::package_dir
 
-    $package_dir = $elasticsearch::package_dir
+      # Create directory to place the package file
+      exec { 'create_package_dir':
+        cwd     => '/',
+        path    => ['/usr/bin', '/bin'],
+        command => "mkdir -p ${elasticsearch::package_dir}",
+        creates => $elasticsearch::package_dir;
+      }
 
-    # Create directory to place the package file
-    exec { 'create_package_dir':
-      cwd     => '/',
-      path    => ['/usr/bin', '/bin'],
-      command => "mkdir -p ${elasticsearch::package_dir}",
-      creates => $elasticsearch::package_dir;
-    }
+      file { $package_dir:
+        ensure  => 'directory',
+        purge   => $elasticsearch::purge_package_dir,
+        force   => $elasticsearch::purge_package_dir,
+        require => Exec['create_package_dir'],
+      }
 
-    file { $package_dir:
-      ensure  => 'directory',
-      purge   => $elasticsearch::purge_package_dir,
-      force   => $elasticsearch::purge_package_dir,
-      require => Exec['create_package_dir'],
-    }
+      $filenameArray = split($elasticsearch::package_url, '/')
+      $basefilename = $filenameArray[-1]
 
-    $filenameArray = split($elasticsearch::package_url, '/')
-    $basefilename = $filenameArray[-1]
+      $sourceArray = split($elasticsearch::package_url, ':')
+      $protocol_type = $sourceArray[0]
 
-    $sourceArray = split($elasticsearch::package_url, ':')
-    $protocol_type = $sourceArray[0]
+      $extArray = split($basefilename, '\.')
+      $ext = $extArray[-1]
 
-    $extArray = split($basefilename, '\.')
-    $ext = $extArray[-1]
+      case $protocol_type {
 
-    case $protocol_type {
-      puppet: {
+       puppet: {
 
-        file { "${package_dir}/${basefilename}":
-          ensure  => present,
-          source  => $elasticsearch::package_url,
-          require => File[$package_dir],
-          backup  => false,
-          before  => Package[$elasticsearch::params::package]
-        }
+         file { "${package_dir}/${basefilename}":
+           ensure  => present,
+           source  => $elasticsearch::package_url,
+           require => File[$package_dir],
+           backup  => false,
+           before  => Package[$elasticsearch::params::package]
+         }
 
       }
       ftp, https, http: {
@@ -125,11 +121,19 @@ class elasticsearch::package {
       default: { fail("Unknown file extention \"${ext}\".") }
     }
 
-    $pkg_source = "${package_dir}/${basefilename}"
+      $pkg_source = "${package_dir}/${basefilename}"
 
+    } else {
+      $pkg_source = undef
+      $pkg_provider = undef
+    }
+
+  # Package removal
   } else {
+
     $pkg_source = undef
     $pkg_provider = undef
+    $package_ensure = 'purged'
   }
 
   package { $elasticsearch::params::package:

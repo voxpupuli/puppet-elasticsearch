@@ -71,10 +71,10 @@ define elasticsearch::service::init{
     false => undef,
   }
 
-  # defaults file content. Either from a hash or file
 
   if ( $elasticsearch::status != 'unmanaged' ) {
 
+    # defaults file content. Either from a hash or file
     if ($elasticsearch::init_defaults_file != undef) {
       $defaults_content = undef
       $defaults_source  = $elasticsearch::init_defaults_file
@@ -90,7 +90,7 @@ define elasticsearch::service::init{
     if ( $defaults_content != undef or $defaults_source != undef ) {
 
       file { "${elasticsearch::params::defaults_location}/${name}":
-        ensure  => $elasticsearch::present,
+        ensure  => $elasticsearch::ensure,
         source  => $defaults_source,
         content => $defaults_content,
         owner   => 'root',
@@ -106,7 +106,7 @@ define elasticsearch::service::init{
     if ($elasticsearch::init_template != undef) {
 
       file { "/etc/init.d/${name}":
-        ensure  => $elasticsearch::present,
+        ensure  => $elasticsearch::ensure,
         content => template($elasticsearch::init_template),
         owner   => 'root',
         group   => 'root',
