@@ -76,50 +76,50 @@ class elasticsearch::package {
 
       case $protocol_type {
 
-       puppet: {
+        puppet: {
 
-         file { "${package_dir}/${basefilename}":
-           ensure  => present,
-           source  => $elasticsearch::package_url,
-           require => File[$package_dir],
-           backup  => false,
-           before  => Package[$elasticsearch::params::package]
-         }
+          file { "${package_dir}/${basefilename}":
+            ensure  => present,
+            source  => $elasticsearch::package_url,
+            require => File[$package_dir],
+            backup  => false,
+            before  => Package[$elasticsearch::params::package]
+          }
 
-      }
-      ftp, https, http: {
-
-        exec { 'download-package':
-          command => "${elasticsearch::params::dlcmd} ${package_dir}/${basefilename} ${elasticsearch::package_url} 2> /dev/null",
-          path    => ['/usr/bin', '/bin'],
-          creates => "${package_dir}/${basefilename}",
-          require => File[$package_dir],
-          before  => Package[$elasticsearch::params::package]
         }
+        ftp, https, http: {
 
-      }
-      file: {
+          exec { 'download-package':
+            command => "${elasticsearch::params::dlcmd} ${package_dir}/${basefilename} ${elasticsearch::package_url} 2> /dev/null",
+            path    => ['/usr/bin', '/bin'],
+            creates => "${package_dir}/${basefilename}",
+            require => File[$package_dir],
+            before  => Package[$elasticsearch::params::package]
+          }
 
-        $source_path = $sourceArray[1]
-        file { "${package_dir}/${basefilename}":
-          ensure  => present,
-          source  => $source_path,
-          require => File[$package_dir],
-          backup  => false,
-          before  => Package[$elasticsearch::params::package]
         }
+        file: {
 
-      }
-      default: {
-        fail("Protocol must be puppet, file, http, https, or ftp. You have given \"${protocol_type}\"")
-      }
-    }
+          $source_path = $sourceArray[1]
+          file { "${package_dir}/${basefilename}":
+            ensure  => present,
+            source  => $source_path,
+            require => File[$package_dir],
+            backup  => false,
+            before  => Package[$elasticsearch::params::package]
+          }
 
-    case $ext {
-      'deb':   { $pkg_provider = 'dpkg' }
-      'rpm':   { $pkg_provider = 'rpm'  }
-      default: { fail("Unknown file extention \"${ext}\".") }
-    }
+        }
+        default: {
+          fail("Protocol must be puppet, file, http, https, or ftp. You have given \"${protocol_type}\"")
+        }
+      }
+
+      case $ext {
+        'deb':   { $pkg_provider = 'dpkg' }
+        'rpm':   { $pkg_provider = 'rpm'  }
+        default: { fail("Unknown file extention \"${ext}\".") }
+      }
 
       $pkg_source = "${package_dir}/${basefilename}"
 
