@@ -50,8 +50,6 @@ define elasticsearch::plugin(
     $url         = ''
 ) {
 
-  require elasticsearch
-
   Exec {
     path => [ '/bin', '/usr/bin', '/usr/local/bin' ],
     cwd  => '/',
@@ -59,7 +57,7 @@ define elasticsearch::plugin(
 
   $notify_service = $elasticsearch::restart_on_change ? {
     false   => undef,
-    default => Class['elasticsearch::service'],
+    default => Service['elasticsearch'],
   }
 
   if ($module_dir != '') {
@@ -84,6 +82,7 @@ define elasticsearch::plugin(
         creates  => "${elasticsearch::plugindir}/${module_dir}",
         returns  => $exec_rets,
         notify   => $notify_service,
+        require  => Class['elasticsearch::package']
       }
     }
     default: {

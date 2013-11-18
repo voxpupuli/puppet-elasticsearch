@@ -57,10 +57,16 @@ class elasticsearch::params {
 
   # init defaults
   $init_defaults = {
-    'ES_USER'  => 'elasticsearch',
-    'ES_GROUP' => 'elasticsearch',
+    'ES_HOME'            => '/usr/share/elasticsearch',
+    'ES_USER'            => 'root',
+    'MAX_OPEN_FILES'     => '65535',
+    'LOG_DIR'            => '/var/log/elasticsearch',
+    'DATA_DIR'           => '/var/lib/elasticsearch',
+    'WORK_DIR'           => '/tmp/elasticsearch',
+    'CONF_DIR'           => '/etc/elasticsearch',
+    'CONF_FILE'          => '/etc/elasticsearch/elasticsearch.yml',
+    'RESTART_ON_UPGRADE' => false
   }
-
   # configuration directory
   $confdir = '/etc/elasticsearch'
 
