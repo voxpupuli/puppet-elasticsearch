@@ -57,6 +57,9 @@ define elasticsearch::python (
     'elasticutils': {
       $provider = 'pip'
     }
+    'elasticsearch': {
+      $provider = 'pip'
+    }
     default: {
       fail("unknown python binding package '${name}'")
     }
