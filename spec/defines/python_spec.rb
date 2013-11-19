@@ -4,7 +4,7 @@ describe 'elasticsearch::python', :type => 'define' do
 
   let(:facts) { {:operatingsystem => 'CentOS' }}
 
-  [ 'pyes', 'rawes', 'pyelasticsearch', 'ESClient', 'elasticutils' ].each do |pythonlib|
+  [ 'pyes', 'rawes', 'pyelasticsearch', 'ESClient', 'elasticutils', 'elasticsearch' ].each do |pythonlib|
 
     context "installation of library #{pythonlib}" do
 
