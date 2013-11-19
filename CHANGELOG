@@ -1,3 +1,22 @@
+0.2.0 ( Nov 19, 2013 )
+  Large rewrite of the entire module described below
+  Make the core more dynamic for different service providers and multi instance capable
+  Add better testing and devided into different files
+  Fix template function. Replace of template is now only done when the file is changed
+  Add different ways to install the package except from the repository ( puppet/http/https/ftp/file )
+  Update java class to install openjdk 1.7
+  Add tests for python function
+  Update config file template to fix scoping issue ( from PR #57 )
+  Add validation of templates
+  Small changes for preperation for system tests
+  Update readme for new functionality
+  Added more test scenario's
+  Added puppet parser validate task for added checking
+  Ensure we don't add stuff when removing the module
+  Update python client define
+  Add ruby client define
+  Add tests for ruby clients and update python client tests
+
 0.1.3 ( Sep 06, 2013 )
   Exec path settings has been updated to fix warnings ( PR #37, #47 )
   Adding define to install python bindings ( PR #43 )

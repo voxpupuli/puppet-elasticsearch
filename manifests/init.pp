@@ -5,9 +5,6 @@
 #
 # === Parameters
 #
-# [*config*]
-#   Hash. Hash that defines the configuration.
-#
 # [*ensure*]
 #   String. Controls if the managed resources shall be <tt>present</tt> or
 #   <tt>absent</tt>. If set to <tt>absent</tt>:
@@ -48,13 +45,17 @@
 #   more than one is managed (see <tt>service.pp</tt> to check if this is the
 #   case).
 #
+# [*version*]
+#   String to set the specific version you want to install.
+#   Defaults to <tt>false</tt>.
+#
 # [*restart_on_change*]
-#   Boolean that determines if ElasticSearch should be automatically restarted
+#   Boolean that determines if the application should be automatically restarted
 #   whenever the configuration changes. Disabling automatic restarts on config
 #   changes may be desired in an environment where you need to ensure restarts
 #   occur in a controlled/rolling manner rather than during a Puppet run.
 #
-#   Defaults to <tt>true</tt>, which will restart ElasticSearch on any config
+#   Defaults to <tt>true</tt>, which will restart the application on any config
 #   change. Setting to <tt>false</tt> disables the automatic restart.
 #
 # [*confdir*]
@@ -69,23 +70,9 @@
 #   Path to directory containing the elasticsearch plugin installation script
 #   Use this setting if your packages deviate from the norm (/usr/share/elasticsearch/bin/plugin)
 #
-# [*service_settings*]
-#   A hash to define the default service settings. Values must be consistent
-#   with those defined in the init script and overwritten from the default
-#   file (/etc/default/elasticsearch or /etc/sysconfig/elasticsearch).
-#
-# [*initfile*]
-#   Source file to be used as the elasticsearch init script.
-#
-# [*version*]
-#   String to set the specific version you want to install.
-#   Defaults to <tt>false</tt>.
-#
-#
 # The default values for the parameters are set in elasticsearch::params. Have
 # a look at the corresponding <tt>params.pp</tt> manifest file if you need more
 # technical information about them.
-#
 #
 # === Examples
 #
@@ -102,43 +89,39 @@
 #       status => 'disabled',
 #     }
 #
-# * For the config variable a hash needs to be passed:
-#
-#     class { 'elasticsearch':
-#       config     => {
-#         'node'   => {
-#           'name' => 'elasticsearch001'
-#         },
-#         'index'                => {
-#           'number_of_replicas' => '0',
-#           'number_of_shards'   => '5'
-#         },
-#         'network' => {
-#           'host'  => $::ipaddress
-#         }
-#       }
-#     }
 #
 # === Authors
 #
 # * Richard Pijnenburg <mailto:richard@ispavailability.com>
 #
 class elasticsearch(
-  $config            = {},
-  $ensure            = $elasticsearch::params::ensure,
-  $autoupgrade       = $elasticsearch::params::autoupgrade,
-  $status            = $elasticsearch::params::status,
-  $restart_on_change = $elasticsearch::params::restart_on_change,
-  $confdir           = $elasticsearch::params::confdir,
-  $plugindir         = $elasticsearch::params::plugindir,
-  $plugintool        = $elasticsearch::params::plugintool,
-  $service_settings  = $elasticsearch::params::service_settings,
-  $pkg_source        = undef,
-  $version           = false,
-  $java_install      = false,
-  $java_package      = undef,
-  $initfile          = undef
+  $ensure              = $elasticsearch::params::ensure,
+  $status              = $elasticsearch::params::status,
+  $restart_on_change   = $elasticsearch::params::restart_on_change,
+  $autoupgrade         = $elasticsearch::params::autoupgrade,
+  $version             = false,
+  $package_provider    = 'package',
+  $package_url         = undef,
+  $package_dir         = $elasticsearch::params::package_dir,
+  $purge_package_dir   = $elasticsearch::params::purge_package_dir,
+  $elasticsearch_user  = $elasticsearch::params::elasticsearch_user,
+  $elasticsearch_group = $elasticsearch::params::elasticsearch_group,
+  $purge_confdir       = $elasticsearch::params::purge_confdir,
+  $service_provider    = 'init',
+  $init_defaults       = $elasticsearch::params::init_defaults,
+  $init_defaults_file  = undef,
+  $init_template       = undef,
+  $config              = {},
+  $confdir             = $elasticsearch::params::confdir,
+  $plugindir           = $elasticsearch::params::plugindir,
+  $plugintool          = $elasticsearch::params::plugintool,
+  $java_install        = false,
+  $java_package        = undef
 ) inherits elasticsearch::params {
+
+  anchor {'elasticsearch::begin': }
+  anchor {'elasticsearch::end': }
+
 
   #### Validate parameters
 
@@ -155,18 +138,28 @@ class elasticsearch(
     fail("\"${status}\" is not a valid status parameter value")
   }
 
-  # Config
-  validate_hash($config)
+  # restart on change
   validate_bool($restart_on_change)
 
+  # purge conf dir
+  validate_bool($purge_confdir)
+
+  if ! ($service_provider in $elasticsearch::params::service_providers) {
+    fail("\"${service_provider}\" is not a valid provider for \"${::operatingsystem}\"")
+  }
+
+  # validate config hash
+  validate_hash($config)
+
+  # java install validation
+  validate_bool($java_install)
+
   #### Manage actions
-  anchor {'elasticsearch::begin': }
-  anchor {'elasticsearch::end': }
 
   # package(s)
   class { 'elasticsearch::package': }
 
-  # config
+  # configuration
   class { 'elasticsearch::config': }
 
   # service(s)
@@ -185,17 +178,18 @@ class elasticsearch(
   #### Manage relationships
 
   if $ensure == 'present' {
+
     # we need the software before configuring it
     Anchor['elasticsearch::begin']
     -> Class['elasticsearch::package']
     -> Class['elasticsearch::config']
 
-    # we need the software before running a service
+    # we need the software and a working configuration before running a service
     Class['elasticsearch::package'] -> Class['elasticsearch::service']
     Class['elasticsearch::config']  -> Class['elasticsearch::service']
 
-    Class['elasticsearch::service']
-    -> Anchor['elasticsearch::end']
+    Class['elasticsearch::service'] -> Anchor['elasticsearch::end']
+
   } else {
 
     # make sure all services are getting stopped before software removal
@@ -203,6 +197,7 @@ class elasticsearch(
     -> Class['elasticsearch::service']
     -> Class['elasticsearch::package']
     -> Anchor['elasticsearch::end']
+
   }
 
 }

@@ -24,41 +24,57 @@
 #
 class elasticsearch::config {
 
-  include elasticsearch
+  #### Configuration
+
+  File {
+    owner => $elasticsearch::elasticsearch_user,
+    group => $elasticsearch::elasticsearch_group
+  }
 
   Exec {
     path => [ '/bin', '/usr/bin', '/usr/local/bin' ],
     cwd  => '/',
   }
 
-  $settings = $elasticsearch::config
+  if ( $elasticsearch::ensure == 'present' ) {
 
-  $notify_elasticsearch = $elasticsearch::restart_on_change ? {
-    false   => undef,
-    default => Class['elasticsearch::service'],
+    $notify_service = $elasticsearch::restart_on_change ? {
+      true  => Class['elasticsearch::service'],
+      false => undef,
+    }
 
-  }
+    file { $elasticsearch::confdir:
+      ensure => directory,
+      mode   => '0644',
+      purge  => $elasticsearch::purge_confdir,
+      force  => $elasticsearch::purge_confdir
+    }
 
-  file { $elasticsearch::confdir:
-    ensure  => directory,
-    owner   => 'root',
-    group   => 'root',
-    mode    => '0644',
-  }
+    file { "${elasticsearch::confdir}/elasticsearch.yml":
+      ensure  => file,
+      content => template("${module_name}/etc/elasticsearch/elasticsearch.yml.erb"),
+      mode    => '0644',
+      notify  => $notify_service
+    }
 
-  file { "${elasticsearch::confdir}/elasticsearch.yml":
-    ensure  => file,
-    content => template("${module_name}/etc/elasticsearch/elasticsearch.yml.erb"),
-    owner   => 'root',
-    group   => 'root',
-    mode    => '0644',
-    require => [ Class['elasticsearch::package'], File[$elasticsearch::confdir] ],
-    notify  => $notify_elasticsearch,
-  }
+    exec { 'mkdir_templates':
+      command => "mkdir -p ${elasticsearch::confdir}/templates_import",
+      creates => "${elasticsearch::confdir}/templates_import"
+    }
 
-  exec { 'mkdir_templates':
-    command => "mkdir -p ${elasticsearch::confdir}/templates_import",
-    creates => "${elasticsearch::confdir}/templates_import"
+    file { "${elasticsearch::confdir}/templates_import":
+      ensure => 'directory',
+      mode   => '0644'
+    }
+
+  } elsif ( $elasticsearch::ensure == 'absent' ) {
+
+    file { $elasticsearch::confdir:
+      ensure  => 'absent',
+      recurse => true,
+      force   => true
+    }
+
   }
 
 }

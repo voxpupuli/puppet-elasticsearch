@@ -1,5 +1,0 @@
-### MANAGED BY PUPPET ###
-
-<% scope.lookupvar('elasticsearch::service_settings').sort.map do |key, value| -%>
-<%= key %>=<%= value %>
-<% end -%>

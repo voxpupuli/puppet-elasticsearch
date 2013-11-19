@@ -1,6 +1,6 @@
-# == Define: elasticsearch::python
+# == Define: elasticsearch::ruby
 #
-# there are many python bindings for elasticsearch. This provides all
+# there are many ruby bindings for elasticsearch. This provides all
 # the ones we know about http://www.elasticsearch.org/guide/clients/
 #
 #
@@ -24,14 +24,14 @@
 #
 # === Examples
 #
-# elasticsearch::python { 'pyes':; }
+# elasticsearch::ruby { 'elasticsearch':; }
 #
 #
 # === Authors
 #
 # * Richard Pijnenburg <mailto:richard@ispavailability.com>
 #
-define elasticsearch::python (
+define elasticsearch::ruby (
   $ensure = 'present'
 ) {
 
@@ -42,26 +42,20 @@ define elasticsearch::python (
   # make sure the package name is valid and setup the provider as
   # necessary
   case $name {
-    'pyes': {
-      $provider = 'pip'
+    'tire': {
+      $provider = 'gem'
     }
-    'rawes': {
-      $provider = 'pip'
+    'stretcher': {
+      $provider = 'gem'
     }
-    'pyelasticsearch': {
-      $provider = 'pip'
-    }
-    'ESClient': {
-      $provider = 'pip'
-    }
-    'elasticutils': {
-      $provider = 'pip'
+    'elastic_searchable': {
+      $provider = 'gem'
     }
     'elasticsearch': {
-      $provider = 'pip'
+      $provider = 'gem'
     }
     default: {
-      fail("unknown python binding package '${name}'")
+      fail("unknown ruby client package '${name}'")
     }
   }
 

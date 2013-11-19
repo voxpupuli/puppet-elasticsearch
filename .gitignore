@@ -1,2 +1,2 @@
 *.swp
-Gemfile.lock
+spec/fixtures
