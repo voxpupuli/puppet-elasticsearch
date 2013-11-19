@@ -137,10 +137,15 @@ This will install and/or replace the template in Elasticearch
 
 ## Bindings / clients
 
-Install [a variety of python bindings](http://www.elasticsearch.org/guide/clients/):
+Install a variety of [clients/bindings](http://www.elasticsearch.org/guide/clients/):
 
-     elasticsearch::python { "rawes": }
+### Python
 
+     elasticsearch::python { 'rawes': }
+
+### Ruby
+
+     elasticsearch::ruby { 'elasticsearch': }
 
 ## Plugins
 
