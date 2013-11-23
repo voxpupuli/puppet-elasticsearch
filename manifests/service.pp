@@ -109,6 +109,7 @@ class elasticsearch::service {
     hasrestart => $elasticsearch::params::service_hasrestart,
     pattern    => $elasticsearch::params::service_pattern,
     provider   => $elasticsearch::params::service_provider,
+    require    => Class['java'],
   }
 
 }

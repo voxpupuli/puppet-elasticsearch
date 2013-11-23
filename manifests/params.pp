@@ -56,6 +56,9 @@ class elasticsearch::params {
   $service_settings = {
     'ES_USER'      => 'elasticsearch',
     'ES_GROUP'     => 'elasticsearch',
+    'path'         => {
+      
+    }
   }
 
   #### Internal module values

@@ -36,7 +36,6 @@ class elasticsearch::config {
   $notify_elasticsearch = $elasticsearch::restart_on_change ? {
     false   => undef,
     default => Class['elasticsearch::service'],
-
   }
 
   file { $elasticsearch::confdir:
