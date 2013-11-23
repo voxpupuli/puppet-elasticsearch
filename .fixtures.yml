@@ -1,5 +1,7 @@
 fixtures:
   repositories:
     stdlib: git://github.com/puppetlabs/puppetlabs-stdlib.git
+    mergehashes: git://github.com/haf/puppet-mergehashes.git
+    java: git://github.com/puppetlabs/puppetlabs-java.git
   symlinks:
     elasticsearch: "#{source_dir}"

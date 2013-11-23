@@ -5,7 +5,3 @@ sets:
     nodes:
       'single.centos':
         prefab: 'centos-64-x64'
-  'debian-70rc1-x64':
-    nodes:
-      'single.debian':
-        prefab: 'debian-70rc1-x64'

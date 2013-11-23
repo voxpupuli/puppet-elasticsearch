@@ -1,0 +1,6 @@
+---
+'centos-64-x64':
+  provider_specifics:
+    vagrant_virtualbox:
+      box: 'CentOS-6.4-x86_64-puppet'
+      box_url: 'http://puppet-vagrant-boxes.puppetlabs.com/centos-64-x64-vbox4210.box'
