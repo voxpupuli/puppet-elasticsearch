@@ -108,7 +108,7 @@ class elasticsearch(
   $elasticsearch_group = $elasticsearch::params::elasticsearch_group,
   $purge_confdir       = $elasticsearch::params::purge_confdir,
   $service_provider    = 'init',
-  $init_defaults       = $elasticsearch::params::init_defaults,
+  $init_defaults       = undef,
   $init_defaults_file  = undef,
   $init_template       = undef,
   $config              = {},
