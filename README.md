@@ -160,7 +160,7 @@ Install [a variety of plugins](http://www.elasticsearch.org/guide/clients/):
 ### From custom url:
 
      elasticsearch::plugin{ 'elasticsearch-jetty':
-       module_dir => 'elasticsearch-jetty',
+       module_dir => 'jetty',
        url        => 'https://oss-es-plugins.s3.amazonaws.com/elasticsearch-jetty/elasticsearch-jetty-0.90.0.zip'
      }
 
