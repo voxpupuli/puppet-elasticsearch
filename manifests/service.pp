@@ -26,9 +26,10 @@
 #
 # * Richard Pijnenburg <mailto:richard@ispavailability.com>
 #
-class elasticsearch::service {
-
-  include elasticsearch
+class elasticsearch::service(
+  $service_name = 'elasticsearch',
+  $pattern      = 'elasticsearch',
+) {
 
   $notify_elasticsearch = $elasticsearch::restart_on_change ? {
     false   => undef,
@@ -79,7 +80,14 @@ class elasticsearch::service {
 
   }
 
-  file {$elasticsearch::params::service_settings_path:
+  $service_settings = $elasticsearch::_service_settings
+
+  $service_settings_path = $::osfamily ? {
+    'Debian' => "/etc/default/${service_name}",
+    default  => "/etc/sysconfig/${service_name}" # RedHat
+  }
+
+  file { $service_settings_path:
     ensure  => file,
     content => template("${module_name}/etc/default/elasticsearch.erb"),
     owner   => 'root',
@@ -104,12 +112,10 @@ class elasticsearch::service {
   service { 'elasticsearch':
     ensure     => $service_ensure,
     enable     => $service_enable,
-    name       => $elasticsearch::params::service_name,
-    hasstatus  => $elasticsearch::params::service_hasstatus,
-    hasrestart => $elasticsearch::params::service_hasrestart,
-    pattern    => $elasticsearch::params::service_pattern,
-    provider   => $elasticsearch::params::service_provider,
+    name       => $service_name,
+    hasstatus  => true,
+    hasrestart => true,
+    pattern    => $pattern,
     require    => Class['java'],
   }
-
 }

@@ -50,8 +50,6 @@ define elasticsearch::plugin(
     $url         = ''
 ) {
 
-  require elasticsearch::params
-
   Exec {
     path => [ '/bin', '/usr/bin', '/usr/local/bin' ],
     cwd  => '/',

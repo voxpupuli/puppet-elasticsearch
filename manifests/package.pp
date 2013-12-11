@@ -75,7 +75,7 @@ class elasticsearch::package {
   }
 
   # action
-  package { $elasticsearch::params::package:
+  package { 'elasticsearch':
     ensure   => $package_ensure,
     source   => $tmpSource,
     provider => $pkg_provider

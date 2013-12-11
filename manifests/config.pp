@@ -23,41 +23,69 @@
 # * Richard Pijnenburg <mailto:richard@ispavailability.com>
 #
 class elasticsearch::config {
-
-  include elasticsearch
-
-  Exec {
-    path => [ '/bin', '/usr/bin', '/usr/local/bin' ],
-    cwd  => '/',
-  }
-
-  $settings = $elasticsearch::config
+  $settings = $elasticsearch::_config
+  $ports    = [9200, 9300]
 
   $notify_elasticsearch = $elasticsearch::restart_on_change ? {
     false   => undef,
     default => Class['elasticsearch::service'],
   }
 
-  file { $elasticsearch::confdir:
+  # Configuration
+  file { $elasticsearch::conf_dir:
     ensure  => directory,
     owner   => 'root',
     group   => 'root',
-    mode    => '0644',
+    mode    => '0755',
   }
 
-  file { "${elasticsearch::confdir}/elasticsearch.yml":
+  file { "${elasticsearch::conf_dir}/templates_import":
+    ensure => directory,
+    owner  => 'root',
+    group  => 'root',
+    mode   => '0755',
+    require => File[$elasticsearch::conf_dir],
+  }
+
+  file { "${elasticsearch::conf_dir}/elasticsearch.yml":
     ensure  => file,
     content => template("${module_name}/etc/elasticsearch/elasticsearch.yml.erb"),
     owner   => 'root',
     group   => 'root',
     mode    => '0644',
-    require => [ Class['elasticsearch::package'], File[$elasticsearch::confdir] ],
+    require => [
+      Class['elasticsearch::package'],
+      File[$elasticsearch::conf_dir]
+    ],
     notify  => $notify_elasticsearch,
   }
 
-  exec { 'mkdir_templates':
-    command => "mkdir -p ${elasticsearch::confdir}/templates_import",
-    creates => "${elasticsearch::confdir}/templates_import"
+  $user = $elasticsearch::user
+  $group = $elasticsearch::group
+
+  # Data
+  file { $elasticsearch::data_dir:
+    ensure => directory,
+    owner  => $user,
+    group  => $group,
+    mode   => '0755',
   }
 
+  # Logs
+  file { $elasticsearch::log_dir:
+    ensure => directory,
+    owner  => $user,
+    group  => $group,
+    mode   => '0755',
+  }
+
+  if $elasticsearch::manage_firewall {
+    firewall { "101 allow elasticsearch ports:$ports":
+      proto   => 'tcp',
+      state   => ['NEW'],
+      dport   => $ports,
+      action  => 'accept',
+      source  => $elasticsearch::firewall_subnet,
+    } 
+  }
 }

@@ -57,11 +57,11 @@
 #   Defaults to <tt>true</tt>, which will restart ElasticSearch on any config
 #   change. Setting to <tt>false</tt> disables the automatic restart.
 #
-# [*confdir*]
+# [*conf_dir*]
 #   Path to directory containing the elasticsearch configuration.
 #   Use this setting if your packages deviate from the norm (/etc/elasticsearch)
 #
-# [*plugindir*]
+# [*plugin_dir*]
 #   Path to directory containing the elasticsearch plugins
 #   Use this setting if your packages deviate from the norm (/usr/share/elasticsearch/plugins)
 #
@@ -125,18 +125,29 @@
 #
 class elasticsearch(
   $config            = {},
-  $ensure            = $elasticsearch::params::ensure,
-  $autoupgrade       = $elasticsearch::params::autoupgrade,
-  $status            = $elasticsearch::params::status,
-  $restart_on_change = $elasticsearch::params::restart_on_change,
-  $confdir           = $elasticsearch::params::confdir,
-  $plugindir         = $elasticsearch::params::plugindir,
-  $plugintool        = $elasticsearch::params::plugintool,
-  $service_settings  = $elasticsearch::params::service_settings,
+  $ensure            = 'present',
+  $autoupgrade       = false,
+  $status            = 'enabled',
+  $restart_on_change = true,
+  $home              = '/usr/share/elasticsearch',
+  $conf_dir          = '/etc/elasticsearch',
+  $data_dir          = '/var/lib/elasticsearch',
+  $log_dir           = '/var/log/elasticsearch',
+  $work_dir          = '/tmp/elasticsearch',
+  # plugins helper binary
+  $plugintool        = '/usr/share/elasticsearch/bin/plugin',
+  $service_settings  = {},
+  $cluster_name      = 'asimov',
+  $user              = 'elasticsearch',
+  $group             = 'elasticsearach',
   $pkg_source        = undef,
   $version           = false,
-  $initfile          = undef
-) inherits elasticsearch::params {
+  $initfile          = undef,
+  $heap_size         = '1g',
+  $port              = 9200,
+  $manage_firewall   = hiera('manage_firewall', false),
+  $firewall_subnet   = '0.0.0.0/0',
+) {
 
   #### Validate parameters
 
@@ -157,17 +168,42 @@ class elasticsearch(
   validate_hash($config)
   validate_bool($restart_on_change)
 
+  $plugin_dir        = "$home/plugins"
+
+  # https://github.com/elasticsearch/elasticsearch/blob/master/src/rpm/sysconfig/elasticsearch
+  $_service_settings = merge_hashes({
+    'ES_USER'        => $user,
+    'ES_GROUP'       => $group,
+    'ES_HEAP_SIZE'   => $heap_size,
+    'ES_HOME'        => '',
+    'MAX_MAP_COUNT'  => 65535,
+    'LOG_DIR'        => $log_dir,
+    'DATA_DIR'       => $data_dir,
+    'WORK_DIR'       => $work_dir,
+    'CONF_DIR'       => $conf_dir
+  }, $service_settings)
+
+  $_config = merge_hashes({
+    'path' => {
+      'data' => $data_dir,
+      'logs' => $log_dir
+    },
+    'cluster' => {
+      'name' => $cluster_name
+    }
+  }, $config)
+
   #### Manage actions
   anchor {'elasticsearch::begin': }
   anchor {'elasticsearch::end': }
 
-  # package(s)
+  group { $group:
+    ensure => $ensure,
+    system => true,
+  }
+
   class { 'elasticsearch::package': }
-
-  # config
   class { 'elasticsearch::config': }
-
-  # service(s)
   class { 'elasticsearch::service': }
 
   #### Manage relationships
@@ -175,6 +211,7 @@ class elasticsearch(
   if $ensure == 'present' {
     # we need the software before configuring it
     Anchor['elasticsearch::begin']
+    -> Group[$group]
     -> Class['elasticsearch::package']
     -> Class['elasticsearch::config']
 
@@ -192,5 +229,4 @@ class elasticsearch(
     -> Class['elasticsearch::package']
     -> Anchor['elasticsearch::end']
   }
-
 }
