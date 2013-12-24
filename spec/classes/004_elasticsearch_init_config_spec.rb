@@ -15,7 +15,7 @@ describe 'elasticsearch', :type => 'class' do
 
       it { should contain_file('/etc/elasticsearch/elasticsearch.yml').with(:content => "### MANAGED BY PUPPET ###\n") }
 
-    end  
+    end
 
     context "set a value" do
 
@@ -91,6 +91,21 @@ describe 'elasticsearch', :type => 'class' do
       } end
 
       it { should contain_file('/etc/elasticsearch/elasticsearch.yml').with(:notify => "Class[Elasticsearch::Service]") }
+    end
+
+  end
+
+  context 'data directory' do
+    let(:facts) do {
+      :operatingsystem => 'CentOS'
+    } end
+
+    context 'should allow creating datadir' do
+      let(:params) do {
+        :datadir => '/foo'
+      } end
+
+      it { should contain_file('/foo').with(:ensure => 'directory') }
     end
 
   end

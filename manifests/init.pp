@@ -113,6 +113,7 @@ class elasticsearch(
   $init_template       = undef,
   $config              = {},
   $confdir             = $elasticsearch::params::confdir,
+  $datadir             = undef,
   $plugindir           = $elasticsearch::params::plugindir,
   $plugintool          = $elasticsearch::params::plugintool,
   $java_install        = false,
