@@ -67,6 +67,15 @@ class elasticsearch::config {
       mode   => '0644'
     }
 
+    if ( $elasticsearch::datadir != undef ) {
+      file { $elasticsearch::datadir:
+        ensure  => 'directory',
+        owner   => $elasticsearch::elasticsearch_user,
+        group   => $elasticsearch::elasticsearch_group,
+        mode    => '0770',
+      }
+    }
+
   } elsif ( $elasticsearch::ensure == 'absent' ) {
 
     file { $elasticsearch::confdir:
