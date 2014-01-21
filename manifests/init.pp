@@ -149,6 +149,10 @@ class elasticsearch(
     fail("\"${service_provider}\" is not a valid provider for \"${::operatingsystem}\"")
   }
 
+  if ($package_url != undef and $version != false) {
+    fail('Unable to set the version number when using package_url option.')
+  }
+
   # validate config hash
   validate_hash($config)
 

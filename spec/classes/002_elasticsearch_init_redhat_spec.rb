@@ -49,6 +49,17 @@ describe 'elasticsearch', :type => 'class' do
 
         end
 
+        context 'when setting package version and package_url' do
+
+          let :params do {
+            :version     => '0.90.10',
+            :package_url => 'puppet:///path/to/some/elasticsearch-0.90.10.rpm'
+          } end
+
+          it { expect { should raise_error(Puppet::Error) } }
+
+        end
+
         context 'via package_url setting' do
 
           context 'using puppet:/// schema' do
