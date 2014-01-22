@@ -1,3 +1,9 @@
+0.2.1 ( Jan 22, 2014 )
+  Simplify the management of the defaults file ( PR #64 )
+  Doc improvements for the plugin define ( PR #66 )
+  Allow creation of data directory ( PR #68 )
+  Fail early when package version and package_url are defined
+
 0.2.0 ( Nov 19, 2013 )
   Large rewrite of the entire module described below
   Make the core more dynamic for different service providers and multi instance capable
