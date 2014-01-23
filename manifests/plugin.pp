@@ -77,7 +77,7 @@ define elasticsearch::plugin(
 
   case $ensure {
     'installed', 'present': {
-      exec {"install-plugin-${name}":
+      exec {"install_plugin_${name}":
         command  => $install_cmd,
         creates  => "${elasticsearch::plugindir}/${module_dir}",
         returns  => $exec_rets,
@@ -86,7 +86,7 @@ define elasticsearch::plugin(
       }
     }
     default: {
-      exec {"remove-plugin-${name}":
+      exec {"remove_plugin_${name}":
         command => "${elasticsearch::plugintool} --remove ${module_dir}",
         onlyif  => "test -d ${elasticsearch::plugindir}/${module_dir}",
         notify  => $notify_service,

@@ -57,14 +57,15 @@ class elasticsearch::config {
       notify  => $notify_service
     }
 
-    exec { 'mkdir_templates':
+    exec { 'mkdir_templates_elasticsearch':
       command => "mkdir -p ${elasticsearch::confdir}/templates_import",
       creates => "${elasticsearch::confdir}/templates_import"
     }
 
     file { "${elasticsearch::confdir}/templates_import":
-      ensure => 'directory',
-      mode   => '0644'
+      ensure  => 'directory',
+      mode    => '0644',
+      require => Exec['mkdir_templates_elasticsearch']
     }
 
     if ( $elasticsearch::datadir != undef ) {

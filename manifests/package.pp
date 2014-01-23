@@ -51,7 +51,7 @@ class elasticsearch::package {
       $package_dir = $elasticsearch::package_dir
 
       # Create directory to place the package file
-      exec { 'create_package_dir':
+      exec { 'create_package_dir_elasticsearch':
         cwd     => '/',
         path    => ['/usr/bin', '/bin'],
         command => "mkdir -p ${elasticsearch::package_dir}",
@@ -62,7 +62,7 @@ class elasticsearch::package {
         ensure  => 'directory',
         purge   => $elasticsearch::purge_package_dir,
         force   => $elasticsearch::purge_package_dir,
-        require => Exec['create_package_dir'],
+        require => Exec['create_package_dir_elasticsearch'],
       }
 
       $filenameArray = split($elasticsearch::package_url, '/')
@@ -89,7 +89,7 @@ class elasticsearch::package {
         }
         ftp, https, http: {
 
-          exec { 'download-package':
+          exec { 'download_package_elasticsearch':
             command => "${elasticsearch::params::dlcmd} ${package_dir}/${basefilename} ${elasticsearch::package_url} 2> /dev/null",
             path    => ['/usr/bin', '/bin'],
             creates => "${package_dir}/${basefilename}",
