@@ -1,3 +1,7 @@
+0.2.2 ( Jan 23, 2014 )
+  Ensure exec names are unique. This caused issues when using our logstash module
+  Add spec tests for plugin define
+
 0.2.1 ( Jan 22, 2014 )
   Simplify the management of the defaults file ( PR #64 )
   Doc improvements for the plugin define ( PR #66 )
