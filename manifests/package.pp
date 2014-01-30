@@ -74,11 +74,13 @@ class elasticsearch::package {
       $extArray = split($basefilename, '\.')
       $ext = $extArray[-1]
 
+      $pkg_source = "${package_dir}/${basefilename}"
+
       case $protocol_type {
 
         puppet: {
 
-          file { "${package_dir}/${basefilename}":
+          file { $pkg_source:
             ensure  => present,
             source  => $elasticsearch::package_url,
             require => File[$package_dir],
@@ -90,9 +92,9 @@ class elasticsearch::package {
         ftp, https, http: {
 
           exec { 'download_package_elasticsearch':
-            command => "${elasticsearch::params::dlcmd} ${package_dir}/${basefilename} ${elasticsearch::package_url} 2> /dev/null",
+            command => "${elasticsearch::params::dlcmd} ${pkg_source} ${elasticsearch::package_url} 2> /dev/null",
             path    => ['/usr/bin', '/bin'],
-            creates => "${package_dir}/${basefilename}",
+            creates => $pkg_source,
             require => File[$package_dir],
             before  => Package[$elasticsearch::params::package]
           }
@@ -101,7 +103,7 @@ class elasticsearch::package {
         file: {
 
           $source_path = $sourceArray[1]
-          file { "${package_dir}/${basefilename}":
+          file { $pkg_source:
             ensure  => present,
             source  => $source_path,
             require => File[$package_dir],
@@ -120,8 +122,6 @@ class elasticsearch::package {
         'rpm':   { $pkg_provider = 'rpm'  }
         default: { fail("Unknown file extention \"${ext}\".") }
       }
-
-      $pkg_source = "${package_dir}/${basefilename}"
 
     } else {
       $pkg_source = undef
