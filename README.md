@@ -1,12 +1,18 @@
 # puppet-elasticsearch
 
-A puppet module for managing elasticsearch nodes
-
-http://www.elasticsearch.org/
+A Puppet module for managing [elasticsearch nodes](http://www.elasticsearch.org/).
 
 [![Build Status](https://travis-ci.org/elasticsearch/puppet-elasticsearch.png?branch=master)](https://travis-ci.org/elasticsearch/puppet-elasticsearch)
 
-## Usage
+## Requirements
+
+* Puppet 2.7.x or better.
+* The [stdlib](https://forge.puppetlabs.com/puppetlabs/stdlib) Puppet library.
+
+Optional:
+* The [apt](http://forge.puppetlabs.com/puppetlabs/apt) Puppet library when using repo management on Debian/Ubuntu.
+
+## Usage examples
 
 Installation, make sure service is running and will be started at boot time:
 
@@ -164,36 +170,41 @@ Install [a variety of plugins](http://www.elasticsearch.org/guide/clients/):
        url        => 'https://oss-es-plugins.s3.amazonaws.com/elasticsearch-jetty/elasticsearch-jetty-0.90.0.zip'
      }
 
-## Java install
+## Java Install
 
-For those that have no separate module for installation of java:
+Most sites will manage Java seperately; however, this module can attempt to install Java as well.
 
      class { 'elasticsearch':
        java_install => true
      }
 
-If you want a specific java package/version:
+Specify a particular Java package (version) to be installed:
 
      class { 'elasticsearch':
        java_install => true,
        java_package => 'packagename'
      }
 
-## Service providers
+## Repository management
 
-Currently only the 'init' service provider is supported but others can be implemented quite easy.
+Most sites will manage repositories seperately; however, this module can manage the repository for you.
+
+  class { 'elasticsearch':
+    manage_repo  => true,
+    repo_version => '1.0'
+  }
+
+Note: When using this on Debian/Ubuntu you will need to add the [Puppetlabs/apt](http://forge.puppetlabs.com/puppetlabs/apt) module to your modules.
+
+## Service Management
+
+Currently only the basic SysV-style [init](https://en.wikipedia.org/wiki/Init) service provider is supported but other systems could be implemented as necessary (pull requests welcome).
 
 ### init
 
-#### Defaults file
+#### Defaults File
 
-You can populate the defaults file ( /etc/defaults/elasticsearch or /etc/sysconfig/elasticsearch )
-
-##### hash representation
-
-     class { 'elasticsearch':
-       init_defaults => { 'ES_USER' => 'elasticsearch', 'ES_GROUP' => 'elasticsearch' }
-     }
+The *defaults* file (`/etc/defaults/elasticsearch` or `/etc/sysconfig/elasticsearch`) for the Logstash service can be populated as necessary. This can either be a static file resource or a simple key value-style  [hash](http://docs.puppetlabs.com/puppet/latest/reference/lang_datatypes.html#hashes) object, the latter being particularly well-suited to pulling out of a data source such as Hiera.
 
 ##### file source
 
@@ -201,3 +212,17 @@ You can populate the defaults file ( /etc/defaults/elasticsearch or /etc/sysconf
        init_defaults_file => 'puppet:///path/to/defaults'
      }
 
+##### hash representation
+
+     $config_hash = {
+       'ES_USER' => 'elasticsearch',
+       'ES_GROUP' => 'elasticsearch',
+     }
+
+     class { 'elasticsearch':
+       init_defaults => $config_hash
+     }
+
+## Support
+
+Need help? Join us in `#elasticsearch` on Freenode IRC or subscribe to the `elasticsearch@googlegroups.com` mailing list.

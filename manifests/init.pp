@@ -117,7 +117,9 @@ class elasticsearch(
   $plugindir           = $elasticsearch::params::plugindir,
   $plugintool          = $elasticsearch::params::plugintool,
   $java_install        = false,
-  $java_package        = undef
+  $java_package        = undef,
+  $manage_repo         = false,
+  $repo_version        = undef
 ) inherits elasticsearch::params {
 
   anchor {'elasticsearch::begin': }
@@ -159,6 +161,12 @@ class elasticsearch(
   # java install validation
   validate_bool($java_install)
 
+  validate_bool($manage_repo)
+
+  if ($manage_repo == true) {
+    validate_string($repo_version)
+  }
+
   #### Manage actions
 
   # package(s)
@@ -178,6 +186,17 @@ class elasticsearch(
     Anchor['elasticsearch::begin']
     -> Class['elasticsearch::java']
     -> Class['elasticsearch::service']
+  }
+
+  if ($manage_repo == true) {
+    # Set up repositories
+    class { 'elasticsearch::repo': }
+
+    # Ensure that we set up the repositories before trying to install
+    # the packages
+    Anchor['elasticsearch::begin']
+    -> Class['elasticsearch::repo']
+    -> Class['elasticsearch::package']
   }
 
   #### Manage relationships

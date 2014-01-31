@@ -7,7 +7,8 @@ describe 'elasticsearch', :type => 'class' do
     context "on #{distro} OS" do
 
       let :facts do {
-        :operatingsystem => distro
+        :operatingsystem => distro,
+        :osfamily => 'Debian'
       } end
 
       context 'main class tests' do
@@ -209,6 +210,18 @@ describe 'elasticsearch', :type => 'class' do
          it { should contain_file('/etc/elasticsearch').with(:ensure => 'absent', :force => true, :recurse => true) }
          it { should contain_package('elasticsearch').with(:ensure => 'purged') }
          it { should contain_service('elasticsearch').with(:ensure => 'stopped', :enable => false) }
+
+      end
+
+      context 'When managing the repository' do
+
+        let :params do {
+          :manage_repo => true,
+          :repo_version => '1.0'
+        } end
+
+        it { should contain_class('apt') }
+        it { should contain_apt__source('elasticsearch').with(:release => 'stable', :repos => 'main', :location => 'http://packages.elasticsearch.org/elasticsearch/1.0/debian') }
 
       end
 
