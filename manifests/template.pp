@@ -100,7 +100,7 @@ define elasticsearch::template(
       ensure  => 'present',
       source  => $file,
       notify  => Exec[ "delete_template_${name}" ],
-      require => Exec[ 'mkdir_templates' ],
+      require => Exec[ 'mkdir_templates_elasticsearch' ],
     }
 
     exec { "insert_template_${name}":

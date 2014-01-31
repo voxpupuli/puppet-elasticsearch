@@ -13,7 +13,7 @@ describe 'elasticsearch::template', :type => 'define' do
       :file   => 'puppet:///path/to/foo.json',
     } end
 
-    it { should contain_file('/etc/elasticsearch/templates_import/elasticsearch-template-foo.json').with(:source => 'puppet:///path/to/foo.json', :notify => "Exec[delete_template_foo]", :require => "Exec[mkdir_templates]") }
+    it { should contain_file('/etc/elasticsearch/templates_import/elasticsearch-template-foo.json').with(:source => 'puppet:///path/to/foo.json', :notify => "Exec[delete_template_foo]", :require => "Exec[mkdir_templates_elasticsearch]") }
     it { should contain_exec('insert_template_foo').with(:command => 'curl -s -XPUT http://localhost:9200/_template/foo -d @/etc/elasticsearch/templates_import/elasticsearch-template-foo.json', :unless => 'test $(curl -s \'http://localhost:9200/_template/foo?pretty=true\' | wc -l) -gt 1') }
   end
 
