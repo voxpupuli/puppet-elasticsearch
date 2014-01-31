@@ -1,3 +1,6 @@
+0.2.3 ( xxx xx, xxxx )
+  Add repository management feature
+
 0.2.2 ( Jan 23, 2014 )
   Ensure exec names are unique. This caused issues when using our logstash module
   Add spec tests for plugin define
