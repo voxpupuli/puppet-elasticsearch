@@ -1,5 +1,8 @@
 0.2.3 ( xxx xx, xxxx )
   Add repository management feature
+  Improve testing coverage and implement basic resource coverage reporting
+  Add puppet 3.4.x testing
+  Doc fix ( PR #72 )
 
 0.2.2 ( Jan 23, 2014 )
   Ensure exec names are unique. This caused issues when using our logstash module
