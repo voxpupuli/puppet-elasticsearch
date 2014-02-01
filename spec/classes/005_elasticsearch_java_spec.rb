@@ -15,6 +15,8 @@ describe 'elasticsearch', :type => 'class' do
         :operatingsystem => 'Debian'
       } end
 
+      it { should contain_class('elasticsearch::java').that_requires('Anchor[elasticsearch::begin]') }
+      it { should contain_class('elasticsearch::service').that_requires('Class[elasticsearch::java]') }
       it { should contain_package('openjdk-7-jre-headless') }
 
     end
@@ -25,6 +27,7 @@ describe 'elasticsearch', :type => 'class' do
         :operatingsystem => 'Ubuntu'
       } end
 
+      it { should contain_class('elasticsearch::java') }
       it { should contain_package('openjdk-7-jre-headless') }
 
     end
@@ -35,6 +38,7 @@ describe 'elasticsearch', :type => 'class' do
         :operatingsystem => 'CentOS'
       } end
 
+      it { should contain_class('elasticsearch::java') }
       it { should contain_package('java-1.7.0-openjdk') }
 
     end
@@ -45,6 +49,7 @@ describe 'elasticsearch', :type => 'class' do
         :operatingsystem => 'Redhat'
       } end
 
+      it { should contain_class('elasticsearch::java') }
       it { should contain_package('java-1.7.0-openjdk') }
 
     end
@@ -55,6 +60,7 @@ describe 'elasticsearch', :type => 'class' do
         :operatingsystem => 'Fedora'
       } end
 
+      it { should contain_class('elasticsearch::java') }
       it { should contain_package('java-1.7.0-openjdk') }
 
     end
@@ -65,6 +71,7 @@ describe 'elasticsearch', :type => 'class' do
         :operatingsystem => 'Scientific'
       } end
 
+      it { should contain_class('elasticsearch::java') }
       it { should contain_package('java-1.7.0-openjdk') }
 
     end
@@ -75,6 +82,7 @@ describe 'elasticsearch', :type => 'class' do
         :operatingsystem => 'Amazon'
       } end
 
+      it { should contain_class('elasticsearch::java') }
       it { should contain_package('java-1.7.0-openjdk') }
 
     end
@@ -85,6 +93,7 @@ describe 'elasticsearch', :type => 'class' do
         :operatingsystem => 'OracleLinux'
       } end
 
+      it { should contain_class('elasticsearch::java') }
       it { should contain_package('java-1.7.0-openjdk') }
 
     end
@@ -111,6 +120,7 @@ describe 'elasticsearch', :type => 'class' do
         :config => { 'node' => { 'name' => 'test' }  }
       } end
 
+      it { should contain_class('elasticsearch::java') }
       it { should contain_package('java-1.6.0-openjdk') }
 
     end
