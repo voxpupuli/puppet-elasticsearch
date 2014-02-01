@@ -15,11 +15,11 @@ describe 'elasticsearch', :type => 'class' do
 
         # init.pp
         it { should contain_anchor('elasticsearch::begin') }
-        it { should contain_anchor('elasticsearch::end') }
+        it { should contain_anchor('elasticsearch::end').that_requires('Class[elasticsearch::service]') }
         it { should contain_class('elasticsearch::params') }
-        it { should contain_class('elasticsearch::package') }
-        it { should contain_class('elasticsearch::config') }
-        it { should contain_class('elasticsearch::service') }
+        it { should contain_class('elasticsearch::package').that_requires('Anchor[elasticsearch::begin]') }
+        it { should contain_class('elasticsearch::config').that_requires('Class[elasticsearch::package]') }
+        it { should contain_class('elasticsearch::service').that_requires('Class[elasticsearch::package]').that_requires('Class[elasticsearch::config]') }
 
         # Base directories
         it { should contain_file('/etc/elasticsearch') }
@@ -231,7 +231,7 @@ describe 'elasticsearch', :type => 'class' do
           :repo_version => '1.0'
         } end
 
-        it { should contain_class('elasticsearch::repo') }
+        it { should contain_class('elasticsearch::repo').that_requires('Anchor[elasticsearch::begin]') }
         it { should contain_yumrepo('elasticsearch').with(:baseurl => 'http://packages.elasticsearch.org/elasticsearch/1.0/centos', :gpgkey => 'http://packages.elasticsearch.org/GPG-KEY-elasticsearch', :enabled => 1) }
 
       end

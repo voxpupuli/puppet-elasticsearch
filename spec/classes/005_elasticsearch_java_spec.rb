@@ -15,7 +15,8 @@ describe 'elasticsearch', :type => 'class' do
         :operatingsystem => 'Debian'
       } end
 
-      it { should contain_class('elasticsearch::java') }
+      it { should contain_class('elasticsearch::java').that_requires('Anchor[elasticsearch::begin]') }
+      it { should contain_class('elasticsearch::service').that_requires('Class[elasticsearch::java]') }
       it { should contain_package('openjdk-7-jre-headless') }
 
     end
