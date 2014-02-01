@@ -14,9 +14,18 @@ describe 'elasticsearch', :type => 'class' do
       context 'Main class' do
 
         # init.pp
+        it { should contain_anchor('elasticsearch::begin') }
+        it { should contain_anchor('elasticsearch::end') }
+        it { should contain_class('elasticsearch::params') }
         it { should contain_class('elasticsearch::package') }
         it { should contain_class('elasticsearch::config') }
         it { should contain_class('elasticsearch::service') }
+
+        # Base directories
+        it { should contain_file('/etc/elasticsearch') }
+        it { should contain_file('/etc/elasticsearch/elasticsearch.yml') }
+        it { should contain_exec('mkdir_templates_elasticsearch').with(:command => 'mkdir -p /etc/elasticsearch/templates_import', :creates => '/etc/elasticsearch/templates_import') }
+        it { should contain_file('/etc/elasticsearch/templates_import').with(:require => 'Exec[mkdir_templates_elasticsearch]') }
 
       end
 
@@ -129,6 +138,8 @@ describe 'elasticsearch', :type => 'class' do
 
         context 'with provider \'init\'' do
 
+          it { should contain_elasticsearch__service__init('elasticsearch') }
+
           context 'and default settings' do
 
             it { should contain_service('elasticsearch').with(:ensure => 'running') }
@@ -220,6 +231,7 @@ describe 'elasticsearch', :type => 'class' do
           :repo_version => '1.0'
         } end
 
+        it { should contain_class('elasticsearch::repo') }
         it { should contain_yumrepo('elasticsearch').with(:baseurl => 'http://packages.elasticsearch.org/elasticsearch/1.0/centos', :gpgkey => 'http://packages.elasticsearch.org/GPG-KEY-elasticsearch', :enabled => 1) }
 
       end

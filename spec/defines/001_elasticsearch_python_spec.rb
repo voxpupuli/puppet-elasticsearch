@@ -10,6 +10,7 @@ describe 'elasticsearch::python', :type => 'define' do
 
       let(:title) { pythonlib }
 
+      it { should contain_elasticsearch__python(pythonlib) }
       it { should contain_package(pythonlib).with(:provider => 'pip') }
 
     end

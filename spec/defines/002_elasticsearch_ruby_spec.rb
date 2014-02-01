@@ -10,6 +10,7 @@ describe 'elasticsearch::ruby', :type => 'define' do
 
       let(:title) { rubylib }
 
+      it { should contain_elasticsearch__ruby(rubylib) }
       it { should contain_package(rubylib).with(:provider => 'gem') }
 
     end
