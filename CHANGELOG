@@ -1,8 +1,9 @@
-0.2.3 ( xxx xx, xxxx )
+0.2.3 ( Feb 06, 2014 )
   Add repository management feature
   Improve testing coverage and implement basic resource coverage reporting
   Add puppet 3.4.x testing
-  Doc fix ( PR #72 )
+  Fix dependency in template define ( PR #72 )
+  For apt repo change from key server to key file
 
 0.2.2 ( Jan 23, 2014 )
   Ensure exec names are unique. This caused issues when using our logstash module
