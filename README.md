@@ -189,10 +189,10 @@ Specify a particular Java package (version) to be installed:
 
 Most sites will manage repositories seperately; however, this module can manage the repository for you.
 
-  class { 'elasticsearch':
-    manage_repo  => true,
-    repo_version => '1.0'
-  }
+    class { 'elasticsearch':
+      manage_repo  => true,
+      repo_version => '1.0',
+    }
 
 Note: When using this on Debian/Ubuntu you will need to add the [Puppetlabs/apt](http://forge.puppetlabs.com/puppetlabs/apt) module to your modules.
 
