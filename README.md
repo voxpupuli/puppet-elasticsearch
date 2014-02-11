@@ -225,4 +225,4 @@ The *defaults* file (`/etc/defaults/elasticsearch` or `/etc/sysconfig/elasticsea
 
 ## Support
 
-Need help? Join us in `#elasticsearch` on Freenode IRC or subscribe to the `elasticsearch@googlegroups.com` mailing list.
+Need help? Join us in [#elasticsearch](https://webchat.freenode.net?channels=%23elasticsearch) on Freenode IRC or subscribe to the [elasticsearch@googlegroups.com](https://groups.google.com/forum/#!forum/elasticsearch) mailing list.
