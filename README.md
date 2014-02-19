@@ -155,7 +155,7 @@ Install a variety of [clients/bindings](http://www.elasticsearch.org/guide/clien
 
 ## Plugins
 
-Install [a variety of plugins](http://www.elasticsearch.org/guide/clients/):
+Install [a variety of plugins](http://www.elasticsearch.org/guide/plugins/):
 
 ### From official repository:
 
