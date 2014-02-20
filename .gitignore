@@ -3,3 +3,5 @@ spec/fixtures
 .bundle
 .vendor
 Gemfile.lock
+.vagrant
+.ruby-version
