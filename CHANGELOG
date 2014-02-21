@@ -1,3 +1,11 @@
+0.2.4 ( Feb 21, 2014 )
+  Set puppetlabs-stdlib dependency version from 3.0.0 to 3.2.0 to be inline with other modules
+  Let puppet run fail when template insert fails
+  Documentation improvements ( PR #77, #78, #83 )
+  Added beaker system tests
+  Fixed template define after failing system tests
+  Some fixes so variables are more inline with intended structure
+
 0.2.3 ( Feb 06, 2014 )
   Add repository management feature
   Improve testing coverage and implement basic resource coverage reporting
