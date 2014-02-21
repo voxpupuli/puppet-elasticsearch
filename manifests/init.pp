@@ -104,22 +104,23 @@ class elasticsearch(
   $package_url         = undef,
   $package_dir         = $elasticsearch::params::package_dir,
   $purge_package_dir   = $elasticsearch::params::purge_package_dir,
+  $package_dl_timeout  = $elasticsearch::params::package_dl_timeout,
   $elasticsearch_user  = $elasticsearch::params::elasticsearch_user,
   $elasticsearch_group = $elasticsearch::params::elasticsearch_group,
-  $purge_confdir       = $elasticsearch::params::purge_confdir,
+  $configdir           = $elasticsearch::params::configdir,
+  $purge_configdir     = $elasticsearch::params::purge_configdir,
   $service_provider    = 'init',
   $init_defaults       = undef,
   $init_defaults_file  = undef,
   $init_template       = undef,
   $config              = {},
-  $confdir             = $elasticsearch::params::confdir,
   $datadir             = undef,
   $plugindir           = $elasticsearch::params::plugindir,
   $plugintool          = $elasticsearch::params::plugintool,
   $java_install        = false,
   $java_package        = undef,
   $manage_repo         = false,
-  $repo_version        = undef
+  $repo_version        = false
 ) inherits elasticsearch::params {
 
   anchor {'elasticsearch::begin': }
@@ -145,7 +146,7 @@ class elasticsearch(
   validate_bool($restart_on_change)
 
   # purge conf dir
-  validate_bool($purge_confdir)
+  validate_bool($purge_configdir)
 
   if ! ($service_provider in $elasticsearch::params::service_providers) {
     fail("\"${service_provider}\" is not a valid provider for \"${::operatingsystem}\"")
@@ -185,7 +186,7 @@ class elasticsearch(
     # ensure we first java java and then manage the service
     Anchor['elasticsearch::begin']
     -> Class['elasticsearch::java']
-    -> Class['elasticsearch::service']
+    -> Class['elasticsearch::package']
   }
 
   if ($manage_repo == true) {

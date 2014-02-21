@@ -8,6 +8,7 @@ describe 'elasticsearch', :type => 'class' do
 
       let :facts do {
         :operatingsystem => distro,
+        :kernel => 'Linux',
         :osfamily => 'Debian'
       } end
 
@@ -77,8 +78,8 @@ describe 'elasticsearch', :type => 'class' do
               :package_url => 'puppet:///path/to/package.deb'
             } end
 
-            it { should contain_file('/var/lib/elasticsearch/package.deb').with(:source => 'puppet:///path/to/package.deb', :backup => false) }
-            it { should contain_package('elasticsearch').with(:ensure => 'present', :source => '/var/lib/elasticsearch/package.deb', :provider => 'dpkg') }
+            it { should contain_file('/opt/elasticsearch/swdl/package.deb').with(:source => 'puppet:///path/to/package.deb', :backup => false) }
+            it { should contain_package('elasticsearch').with(:ensure => 'present', :source => '/opt/elasticsearch/swdl/package.deb', :provider => 'dpkg') }
           end
 
           context 'using http:// schema' do
@@ -87,10 +88,10 @@ describe 'elasticsearch', :type => 'class' do
               :package_url => 'http://www.domain.com/path/to/package.deb'
             } end
 
-            it { should contain_exec('create_package_dir_elasticsearch').with(:command => 'mkdir -p /var/lib/elasticsearch') }
-            it { should contain_file('/var/lib/elasticsearch').with(:purge => false, :force => false, :require => "Exec[create_package_dir_elasticsearch]") }
-            it { should contain_exec('download_package_elasticsearch').with(:command => 'wget -O /var/lib/elasticsearch/package.deb http://www.domain.com/path/to/package.deb 2> /dev/null', :require => 'File[/var/lib/elasticsearch]') }
-            it { should contain_package('elasticsearch').with(:ensure => 'present', :source => '/var/lib/elasticsearch/package.deb', :provider => 'dpkg') }
+            it { should contain_exec('create_package_dir_elasticsearch').with(:command => 'mkdir -p /opt/elasticsearch/swdl') }
+            it { should contain_file('/opt/elasticsearch/swdl').with(:purge => false, :force => false, :require => "Exec[create_package_dir_elasticsearch]") }
+            it { should contain_exec('download_package_elasticsearch').with(:command => 'wget -O /opt/elasticsearch/swdl/package.deb http://www.domain.com/path/to/package.deb 2> /dev/null', :require => 'File[/opt/elasticsearch/swdl]') }
+            it { should contain_package('elasticsearch').with(:ensure => 'present', :source => '/opt/elasticsearch/swdl/package.deb', :provider => 'dpkg') }
           end
 
           context 'using https:// schema' do
@@ -99,10 +100,10 @@ describe 'elasticsearch', :type => 'class' do
               :package_url => 'https://www.domain.com/path/to/package.deb'
             } end
 
-            it { should contain_exec('create_package_dir_elasticsearch').with(:command => 'mkdir -p /var/lib/elasticsearch') }
-            it { should contain_file('/var/lib/elasticsearch').with(:purge => false, :force => false, :require => 'Exec[create_package_dir_elasticsearch]') }
-            it { should contain_exec('download_package_elasticsearch').with(:command => 'wget -O /var/lib/elasticsearch/package.deb https://www.domain.com/path/to/package.deb 2> /dev/null', :require => 'File[/var/lib/elasticsearch]') }
-            it { should contain_package('elasticsearch').with(:ensure => 'present', :source => '/var/lib/elasticsearch/package.deb', :provider => 'dpkg') }
+            it { should contain_exec('create_package_dir_elasticsearch').with(:command => 'mkdir -p /opt/elasticsearch/swdl') }
+            it { should contain_file('/opt/elasticsearch/swdl').with(:purge => false, :force => false, :require => 'Exec[create_package_dir_elasticsearch]') }
+            it { should contain_exec('download_package_elasticsearch').with(:command => 'wget -O /opt/elasticsearch/swdl/package.deb https://www.domain.com/path/to/package.deb 2> /dev/null', :require => 'File[/opt/elasticsearch/swdl]') }
+            it { should contain_package('elasticsearch').with(:ensure => 'present', :source => '/opt/elasticsearch/swdl/package.deb', :provider => 'dpkg') }
           end
 
           context 'using ftp:// schema' do
@@ -111,10 +112,10 @@ describe 'elasticsearch', :type => 'class' do
               :package_url => 'ftp://www.domain.com/path/to/package.deb'
             } end
 
-            it { should contain_exec('create_package_dir_elasticsearch').with(:command => 'mkdir -p /var/lib/elasticsearch') }
-            it { should contain_file('/var/lib/elasticsearch').with(:purge => false, :force => false, :require => 'Exec[create_package_dir_elasticsearch]') }
-            it { should contain_exec('download_package_elasticsearch').with(:command => 'wget -O /var/lib/elasticsearch/package.deb ftp://www.domain.com/path/to/package.deb 2> /dev/null', :require => 'File[/var/lib/elasticsearch]') }
-            it { should contain_package('elasticsearch').with(:ensure => 'present', :source => '/var/lib/elasticsearch/package.deb', :provider => 'dpkg') }
+            it { should contain_exec('create_package_dir_elasticsearch').with(:command => 'mkdir -p /opt/elasticsearch/swdl') }
+            it { should contain_file('/opt/elasticsearch/swdl').with(:purge => false, :force => false, :require => 'Exec[create_package_dir_elasticsearch]') }
+            it { should contain_exec('download_package_elasticsearch').with(:command => 'wget -O /opt/elasticsearch/swdl/package.deb ftp://www.domain.com/path/to/package.deb 2> /dev/null', :require => 'File[/opt/elasticsearch/swdl]') }
+            it { should contain_package('elasticsearch').with(:ensure => 'present', :source => '/opt/elasticsearch/swdl/package.deb', :provider => 'dpkg') }
           end
 
           context 'using file:// schema' do
@@ -123,10 +124,10 @@ describe 'elasticsearch', :type => 'class' do
               :package_url => 'file:/path/to/package.deb'
             } end
 
-            it { should contain_exec('create_package_dir_elasticsearch').with(:command => 'mkdir -p /var/lib/elasticsearch') }
-            it { should contain_file('/var/lib/elasticsearch').with(:purge => false, :force => false, :require => 'Exec[create_package_dir_elasticsearch]') }
-            it { should contain_file('/var/lib/elasticsearch/package.deb').with(:source => '/path/to/package.deb', :backup => false) }
-            it { should contain_package('elasticsearch').with(:ensure => 'present', :source => '/var/lib/elasticsearch/package.deb', :provider => 'dpkg') }
+            it { should contain_exec('create_package_dir_elasticsearch').with(:command => 'mkdir -p /opt/elasticsearch/swdl') }
+            it { should contain_file('/opt/elasticsearch/swdl').with(:purge => false, :force => false, :require => 'Exec[create_package_dir_elasticsearch]') }
+            it { should contain_file('/opt/elasticsearch/swdl/package.deb').with(:source => '/path/to/package.deb', :backup => false) }
+            it { should contain_package('elasticsearch').with(:ensure => 'present', :source => '/opt/elasticsearch/swdl/package.deb', :provider => 'dpkg') }
           end
 
         end

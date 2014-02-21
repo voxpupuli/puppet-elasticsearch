@@ -43,14 +43,14 @@ class elasticsearch::config {
       false => undef,
     }
 
-    file { $elasticsearch::confdir:
+    file { $elasticsearch::configdir:
       ensure => directory,
       mode   => '0644',
-      purge  => $elasticsearch::purge_confdir,
-      force  => $elasticsearch::purge_confdir
+      purge  => $elasticsearch::purge_configdir,
+      force  => $elasticsearch::purge_configdir
     }
 
-    file { "${elasticsearch::confdir}/elasticsearch.yml":
+    file { "${elasticsearch::configdir}/elasticsearch.yml":
       ensure  => file,
       content => template("${module_name}/etc/elasticsearch/elasticsearch.yml.erb"),
       mode    => '0644',
@@ -58,11 +58,11 @@ class elasticsearch::config {
     }
 
     exec { 'mkdir_templates_elasticsearch':
-      command => "mkdir -p ${elasticsearch::confdir}/templates_import",
-      creates => "${elasticsearch::confdir}/templates_import"
+      command => "mkdir -p ${elasticsearch::configdir}/templates_import",
+      creates => "${elasticsearch::configdir}/templates_import"
     }
 
-    file { "${elasticsearch::confdir}/templates_import":
+    file { "${elasticsearch::configdir}/templates_import":
       ensure  => 'directory',
       mode    => '0644',
       require => Exec['mkdir_templates_elasticsearch']
@@ -79,7 +79,7 @@ class elasticsearch::config {
 
   } elsif ( $elasticsearch::ensure == 'absent' ) {
 
-    file { $elasticsearch::confdir:
+    file { $elasticsearch::configdir:
       ensure  => 'absent',
       recurse => true,
       force   => true

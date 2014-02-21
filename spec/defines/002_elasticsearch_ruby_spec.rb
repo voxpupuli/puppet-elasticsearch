@@ -2,7 +2,11 @@ require 'spec_helper'
 
 describe 'elasticsearch::ruby', :type => 'define' do
 
-  let(:facts) { {:operatingsystem => 'CentOS' }}
+  let :facts do {
+    :operatingsystem => 'CentOS',
+    :kernel => 'Linux',
+    :osfamily => 'RedHat'
+  } end
 
   [ 'tire', 'stretcher', 'elastic_searchable', 'elasticsearch'].each do |rubylib|
 

@@ -3,7 +3,11 @@ require 'spec_helper'
 describe 'elasticsearch::plugin', :type => 'define' do
 
   let(:title) { 'mobz/elasticsearch-head' }
-  let(:facts) { {:operatingsystem => 'CentOS' }}
+  let :facts do {
+    :operatingsystem => 'CentOS',
+    :kernel => 'Linux',
+    :osfamily => 'RedHat'
+  } end
   let(:pre_condition) { 'class {"elasticsearch": config => { "node" => {"name" => "test" }}}'}
 
   context "Add a plugin" do
