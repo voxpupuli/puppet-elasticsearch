@@ -3,7 +3,9 @@ require 'spec_helper'
 describe 'elasticsearch', :type => 'class' do
 
   let :facts do {
-    :operatingsystem => 'CentOS'
+    :operatingsystem => 'CentOS',
+    :kernel => 'Linux',
+    :osfamily => 'RedHat'
   } end
 
   context "config file content" do
@@ -72,8 +74,10 @@ describe 'elasticsearch', :type => 'class' do
   context "service restarts" do
 
    let :facts do {
-     :operatingsystem => 'CentOS'
-    } end
+     :operatingsystem => 'CentOS',
+     :kernel => 'Linux',
+     :osfamily => 'RedHat'
+   } end
 
     context "does not restart when restart_on_change is false" do
       let :params do {
@@ -97,8 +101,10 @@ describe 'elasticsearch', :type => 'class' do
 
   context 'data directory' do
     let(:facts) do {
-      :operatingsystem => 'CentOS'
-    } end
+      :operatingsystem => 'CentOS',
+      :kernel => 'Linux',
+      :osfamily => 'RedHat'
+   } end
 
     context 'should allow creating datadir' do
       let(:params) do {

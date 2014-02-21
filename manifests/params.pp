@@ -43,33 +43,61 @@ class elasticsearch::params {
   # restart on configuration change?
   $restart_on_change = true
 
-  # Package dir. Temporary place to download the package to for installation
-  $package_dir = '/var/lib/elasticsearch'
-
-  # User and Group for the files and user to run the service as.
-  $elasticsearch_user  = 'elasticsearch'
-  $elasticsearch_group = 'elasticsearch'
-
   # Purge configuration directory
-  $purge_confdir = true
-
-  ## init service provider
-
-  # configuration directory
-  $confdir = '/etc/elasticsearch'
-
-  # plugins directory
-  $plugindir = '/usr/share/elasticsearch/plugins'
-
-  # plugins helper binary
-  $plugintool = '/usr/share/elasticsearch/bin/plugin'
-
-  # Download tool
-  $dlcmd = 'wget -O'
+  $purge_configdir = false
 
   $purge_package_dir = false
 
+  # package download timeout
+  $package_dl_timeout = 300 # 300 seconds is default of puppet
+
   #### Internal module values
+
+  # User and Group for the files and user to run the service as.
+  case $::kernel {
+    'Linux': {
+      $elasticsearch_user  = 'elasticsearch'
+      $elasticsearch_group = 'elasticsearch'
+    }
+    'Darwin': {
+      $elasticsearch_user  = 'elasticsearch'
+      $elasticsearch_group = 'elasticsearch'
+    }
+    default: {
+      fail("\"${module_name}\" provides no user/group default value
+           for \"${::kernel}\"")
+    }
+  }
+
+  # Download tool
+
+  case $::kernel {
+    'Linux': {
+      $download_tool = 'wget -O'
+    }
+    'Darwin': {
+      $download_tool = 'curl -o'
+    }
+    default: {
+      fail("\"${module_name}\" provides no download tool default value
+           for \"${::kernel}\"")
+    }
+  }
+
+  # Different path definitions
+  case $::kernel {
+    'Linux': {
+      $configdir   = '/etc/elasticsearch'
+      $package_dir = '/opt/elasticsearch/swdl'
+      $installpath = '/opt/elasticsearch'
+      $plugindir   = '/usr/share/elasticsearch/plugins'
+      $plugintool  = '/usr/share/elasticsearch/bin/plugin'
+    }
+    default: {
+      fail("\"${module_name}\" provides no config directory default value
+           for \"${::kernel}\"")
+    }
+  }
 
   # packages
   case $::operatingsystem {

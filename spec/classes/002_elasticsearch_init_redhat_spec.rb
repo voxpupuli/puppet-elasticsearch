@@ -8,6 +8,7 @@ describe 'elasticsearch', :type => 'class' do
 
       let :facts do {
         :operatingsystem => distro,
+        :kernel => 'Linux',
         :osfamily => 'RedHat'
       } end
 
@@ -78,8 +79,8 @@ describe 'elasticsearch', :type => 'class' do
               :package_url => 'puppet:///path/to/package.rpm'
             } end
 
-            it { should contain_file('/var/lib/elasticsearch/package.rpm').with(:source => 'puppet:///path/to/package.rpm', :backup => false) }
-            it { should contain_package('elasticsearch').with(:ensure => 'present', :source => '/var/lib/elasticsearch/package.rpm', :provider => 'rpm') }
+            it { should contain_file('/opt/elasticsearch/swdl/package.rpm').with(:source => 'puppet:///path/to/package.rpm', :backup => false) }
+            it { should contain_package('elasticsearch').with(:ensure => 'present', :source => '/opt/elasticsearch/swdl/package.rpm', :provider => 'rpm') }
           end
 
           context 'using http:// schema' do
@@ -88,10 +89,10 @@ describe 'elasticsearch', :type => 'class' do
               :package_url => 'http://www.domain.com/path/to/package.rpm'
             } end
 
-            it { should contain_exec('create_package_dir_elasticsearch').with(:command => 'mkdir -p /var/lib/elasticsearch') }
-            it { should contain_file('/var/lib/elasticsearch').with(:purge => false, :force => false, :require => "Exec[create_package_dir_elasticsearch]") }
-            it { should contain_exec('download_package_elasticsearch').with(:command => 'wget -O /var/lib/elasticsearch/package.rpm http://www.domain.com/path/to/package.rpm 2> /dev/null', :require => 'File[/var/lib/elasticsearch]') }
-            it { should contain_package('elasticsearch').with(:ensure => 'present', :source => '/var/lib/elasticsearch/package.rpm', :provider => 'rpm') }
+            it { should contain_exec('create_package_dir_elasticsearch').with(:command => 'mkdir -p /opt/elasticsearch/swdl') }
+            it { should contain_file('/opt/elasticsearch/swdl').with(:purge => false, :force => false, :require => "Exec[create_package_dir_elasticsearch]") }
+            it { should contain_exec('download_package_elasticsearch').with(:command => 'wget -O /opt/elasticsearch/swdl/package.rpm http://www.domain.com/path/to/package.rpm 2> /dev/null', :require => 'File[/opt/elasticsearch/swdl]') }
+            it { should contain_package('elasticsearch').with(:ensure => 'present', :source => '/opt/elasticsearch/swdl/package.rpm', :provider => 'rpm') }
           end
 
           context 'using https:// schema' do
@@ -100,10 +101,10 @@ describe 'elasticsearch', :type => 'class' do
               :package_url => 'https://www.domain.com/path/to/package.rpm'
             } end
 
-            it { should contain_exec('create_package_dir_elasticsearch').with(:command => 'mkdir -p /var/lib/elasticsearch') }
-            it { should contain_file('/var/lib/elasticsearch').with(:purge => false, :force => false, :require => 'Exec[create_package_dir_elasticsearch]') }
-            it { should contain_exec('download_package_elasticsearch').with(:command => 'wget -O /var/lib/elasticsearch/package.rpm https://www.domain.com/path/to/package.rpm 2> /dev/null', :require => 'File[/var/lib/elasticsearch]') }
-            it { should contain_package('elasticsearch').with(:ensure => 'present', :source => '/var/lib/elasticsearch/package.rpm', :provider => 'rpm') }
+            it { should contain_exec('create_package_dir_elasticsearch').with(:command => 'mkdir -p /opt/elasticsearch/swdl') }
+            it { should contain_file('/opt/elasticsearch/swdl').with(:purge => false, :force => false, :require => 'Exec[create_package_dir_elasticsearch]') }
+            it { should contain_exec('download_package_elasticsearch').with(:command => 'wget -O /opt/elasticsearch/swdl/package.rpm https://www.domain.com/path/to/package.rpm 2> /dev/null', :require => 'File[/opt/elasticsearch/swdl]') }
+            it { should contain_package('elasticsearch').with(:ensure => 'present', :source => '/opt/elasticsearch/swdl/package.rpm', :provider => 'rpm') }
           end
 
           context 'using ftp:// schema' do
@@ -112,10 +113,10 @@ describe 'elasticsearch', :type => 'class' do
               :package_url => 'ftp://www.domain.com/path/to/package.rpm'
             } end
 
-            it { should contain_exec('create_package_dir_elasticsearch').with(:command => 'mkdir -p /var/lib/elasticsearch') }
-            it { should contain_file('/var/lib/elasticsearch').with(:purge => false, :force => false, :require => 'Exec[create_package_dir_elasticsearch]') }
-            it { should contain_exec('download_package_elasticsearch').with(:command => 'wget -O /var/lib/elasticsearch/package.rpm ftp://www.domain.com/path/to/package.rpm 2> /dev/null', :require => 'File[/var/lib/elasticsearch]') }
-            it { should contain_package('elasticsearch').with(:ensure => 'present', :source => '/var/lib/elasticsearch/package.rpm', :provider => 'rpm') }
+            it { should contain_exec('create_package_dir_elasticsearch').with(:command => 'mkdir -p /opt/elasticsearch/swdl') }
+            it { should contain_file('/opt/elasticsearch/swdl').with(:purge => false, :force => false, :require => 'Exec[create_package_dir_elasticsearch]') }
+            it { should contain_exec('download_package_elasticsearch').with(:command => 'wget -O /opt/elasticsearch/swdl/package.rpm ftp://www.domain.com/path/to/package.rpm 2> /dev/null', :require => 'File[/opt/elasticsearch/swdl]') }
+            it { should contain_package('elasticsearch').with(:ensure => 'present', :source => '/opt/elasticsearch/swdl/package.rpm', :provider => 'rpm') }
           end
 
           context 'using file:// schema' do
@@ -124,10 +125,10 @@ describe 'elasticsearch', :type => 'class' do
               :package_url => 'file:/path/to/package.rpm'
             } end
 
-            it { should contain_exec('create_package_dir_elasticsearch').with(:command => 'mkdir -p /var/lib/elasticsearch') }
-            it { should contain_file('/var/lib/elasticsearch').with(:purge => false, :force => false, :require => 'Exec[create_package_dir_elasticsearch]') }
-            it { should contain_file('/var/lib/elasticsearch/package.rpm').with(:source => '/path/to/package.rpm', :backup => false) }
-            it { should contain_package('elasticsearch').with(:ensure => 'present', :source => '/var/lib/elasticsearch/package.rpm', :provider => 'rpm') }
+            it { should contain_exec('create_package_dir_elasticsearch').with(:command => 'mkdir -p /opt/elasticsearch/swdl') }
+            it { should contain_file('/opt/elasticsearch/swdl').with(:purge => false, :force => false, :require => 'Exec[create_package_dir_elasticsearch]') }
+            it { should contain_file('/opt/elasticsearch/swdl/package.rpm').with(:source => '/path/to/package.rpm', :backup => false) }
+            it { should contain_package('elasticsearch').with(:ensure => 'present', :source => '/opt/elasticsearch/swdl/package.rpm', :provider => 'rpm') }
           end
 
         end
