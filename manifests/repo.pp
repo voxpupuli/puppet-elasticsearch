@@ -42,11 +42,11 @@ class elasticsearch::repo {
     }
     'RedHat': {
       yumrepo { 'elasticsearch':
-        descr     =>  'elasticsearch repo',
-        baseurl   =>  "http://packages.elasticsearch.org/elasticsearch/${elasticsearch::repo_version}/centos",
-        gpgcheck  =>  1,
-        gpgkey    =>  'http://packages.elasticsearch.org/GPG-KEY-elasticsearch',
-        enabled   =>  1,
+        descr    => 'elasticsearch repo',
+        baseurl  => "http://packages.elasticsearch.org/elasticsearch/${elasticsearch::repo_version}/centos",
+        gpgcheck => 1,
+        gpgkey   => 'http://packages.elasticsearch.org/GPG-KEY-elasticsearch',
+        enabled  => 1,
       }
     }
     default: {
