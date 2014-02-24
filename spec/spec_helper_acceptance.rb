@@ -31,6 +31,9 @@ RSpec.configure do |c|
       if fact('osfamily') == 'Debian'
         on host, puppet('module','install','puppetlabs-apt'), { :acceptable_exit_codes => [0,1] }
       end
+      if fact('osfamily') == 'Suse'
+        on host, puppet('module','install','darin-zypprepo'), { :acceptable_exit_codes => [0,1] }
+      end
     end
   end
 end
