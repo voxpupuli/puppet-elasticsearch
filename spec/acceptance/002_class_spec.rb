@@ -3,12 +3,15 @@ require 'spec_helper_acceptance'
 describe "elasticsearch class:" do
 
   case fact('osfamily')
-  when 'RedHat'
-    package_name = 'elasticsearch'
-    service_name = 'elasticsearch'
-  when 'Debian'
-    package_name = 'elasticsearch'
-    service_name = 'elasticsearch'
+    when 'RedHat'
+      package_name = 'elasticsearch'
+      service_name = 'elasticsearch'
+    when 'Debian'
+      package_name = 'elasticsearch'
+      service_name = 'elasticsearch'
+    when 'Suse'
+      package_name = 'elasticsearch'
+      service_name = 'elasticsearch'
   end
 
   describe "default parameters" do

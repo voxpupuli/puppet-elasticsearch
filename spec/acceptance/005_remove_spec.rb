@@ -1,12 +1,15 @@
 require 'spec_helper_acceptance'
 
   case fact('osfamily')
-  when 'RedHat'
-    package_name = 'elasticsearch'
-    service_name = 'elasticsearch'
-  when 'Debian'
-    package_name = 'elasticsearch'
-    service_name = 'elasticsearch'
+    when 'RedHat'
+      package_name = 'elasticsearch'
+      service_name = 'elasticsearch'
+    when 'Debian'
+      package_name = 'elasticsearch'
+      service_name = 'elasticsearch'
+    when 'Suse'
+      package_name = 'elasticsearch'
+      service_name = 'elasticsearch'
   end
 
 describe "module removal" do
