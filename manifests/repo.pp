@@ -56,7 +56,7 @@ class elasticsearch::repo {
     'Suse': {
       exec { 'elasticsearch_suse_import_gpg':
         command => 'rpmkey --import http://packages.elasticsearch.org/GPG-KEY-elasticsearch',
-        unless  => 'test rpm -qa gpg-pubkey | grep -i "D88E42B4"'
+        unless  => 'test rpm -qa gpg-pubkey | grep -i "D88E42B4"',
         notify  => [ Zypprepo['elasticsearch'] ]
       }
 
