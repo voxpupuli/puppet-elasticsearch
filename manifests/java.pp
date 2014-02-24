@@ -32,6 +32,9 @@ class elasticsearch::java {
       'Debian', 'Ubuntu': {
         $package = 'openjdk-7-jre-headless'
       }
+      'OpenSuSE': {
+        $package = 'java-1_6_0-openjdk'
+      }
       default: {
         fail("\"${module_name}\" provides no java package
               for \"${::operatingsystem}\"")

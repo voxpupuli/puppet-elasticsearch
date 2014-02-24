@@ -25,6 +25,11 @@
 #
 class elasticsearch::repo {
 
+  Exec {
+    path      => [ '/bin', '/usr/bin', '/usr/local/bin' ],
+    cwd       => '/',
+  }
+
   case $::osfamily {
     'Debian': {
       if !defined(Class['apt']) {
@@ -47,6 +52,23 @@ class elasticsearch::repo {
         gpgcheck => 1,
         gpgkey   => 'http://packages.elasticsearch.org/GPG-KEY-elasticsearch',
         enabled  => 1,
+      }
+    }
+    'Suse': {
+      exec { 'elasticsearch_suse_import_gpg':
+        command => 'rpmkeys --import http://packages.elasticsearch.org/GPG-KEY-elasticsearch',
+        unless  => 'test $(rpm -qa gpg-pubkey | grep -i "D88E42B4" | wc -l) -eq 1 ',
+        notify  => [ Zypprepo['elasticsearch'] ]
+      }
+
+      zypprepo { 'elasticsearch':
+        baseurl     => "http://packages.elasticsearch.org/elasticsearch/${elasticsearch::repo_version}/centos",
+        enabled     => 1,
+        autorefresh => 1,
+        name        => 'elasticsearch',
+        gpgcheck    => 1,
+        gpgkey      => 'http://packages.elasticsearch.org/GPG-KEY-elasticsearch',
+        type        => 'yum'
       }
     }
     default: {

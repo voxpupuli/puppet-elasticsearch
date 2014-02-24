@@ -3,12 +3,15 @@ require 'spec_helper_acceptance'
 describe "elasticsearch class:" do
 
   case fact('osfamily')
-  when 'RedHat'
-    package_name = 'elasticsearch'
-    service_name = 'elasticsearch'
-  when 'Debian'
-    package_name = 'elasticsearch'
-    service_name = 'elasticsearch'
+    when 'RedHat'
+      package_name = 'elasticsearch'
+      service_name = 'elasticsearch'
+    when 'Debian'
+      package_name = 'elasticsearch'
+      service_name = 'elasticsearch'
+    when 'Suse'
+      package_name = 'elasticsearch'
+      service_name = 'elasticsearch'
   end
 
   describe "default parameters" do
@@ -21,15 +24,16 @@ describe "elasticsearch class:" do
       expect(apply_manifest(pp, :catch_failures => true).exit_code).to be_zero
     end
 
-    describe service(service_name) do
-      it { should be_enabled }
-      it { should be_running } 
-    end
+    if fact('osfamily') != 'Suse'
+      describe service(service_name) do
+        it { should be_enabled }
+        it { should be_running } 
+      end
 
-    describe package(package_name) do
-      it { should be_installed }
+      describe package(package_name) do
+        it { should be_installed }
+      end
     end
-
 
     describe port(9200) do
       it {

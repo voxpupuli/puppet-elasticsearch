@@ -28,12 +28,14 @@
 #
 class elasticsearch::service {
 
-  case $elasticsearch::service_provider {
+  case $elasticsearch::real_service_provider {
 
     init: {
       elasticsearch::service::init { 'elasticsearch': }
     }
-
+    systemd: {
+      elasticsearch::service::systemd { 'elasticsearch': }
+    }
     default: {
       fail("Unknown service provider ${elasticsearch::service_provider}")
     }
