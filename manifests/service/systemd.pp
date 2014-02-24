@@ -102,7 +102,6 @@ define elasticsearch::service::systemd{
   service { "${name}.service":
     ensure     => $service_ensure,
     enable     => $service_enable,
-    name       => $elasticsearch::params::service_name,
     hasstatus  => $elasticsearch::params::service_hasstatus,
     hasrestart => $elasticsearch::params::service_hasrestart,
     pattern    => $elasticsearch::params::service_pattern,
