@@ -55,6 +55,8 @@ class elasticsearch::repo {
         autorefresh => 1,
         name        => 'elasticsearch',
         gpgcheck    => 1,
+
+        gpgkey      => 'http://packages.elasticsearch.org/GPG-KEY-elasticsearch',
         type        => 'yum'
       }
     }
