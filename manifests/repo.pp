@@ -48,6 +48,16 @@ class elasticsearch::repo {
         enabled  => 1,
       }
     }
+    'Suse': {
+      zypprepo { 'elasticsearch':
+        baseurl     => "http://packages.elasticsearch.org/elasticsearch/${elasticsearch::repo_version}/centos",
+        enabled     => 1,
+        autorefresh => 1,
+        name        => 'elasticsearch',
+        gpgcheck    => 1,
+        type        => 'yum'
+      }
+    }
     default: {
       fail("\"${module_name}\" provides no repository information for OSfamily \"${::osfamily}\"")
     }

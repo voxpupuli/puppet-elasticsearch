@@ -109,6 +109,9 @@ class elasticsearch::params {
       # main application
       $package = [ 'elasticsearch' ]
     }
+    'OpenSuSE': {
+      $package = [ 'elasticsearch' ]
+    }
     default: {
       fail("\"${module_name}\" provides no package default value
             for \"${::operatingsystem}\"")
@@ -140,6 +143,14 @@ class elasticsearch::params {
       $service_pattern    = $service_name
       $service_providers  = [ 'launchd' ]
       $defaults_location  = false
+    }
+    'OpenSuSE': {
+      $service_name       = 'elasticsearch'
+      $service_hasrestart = true
+      $service_hasstatus  = true
+      $service_pattern    = $service_name
+      $service_providers  = 'systemd'
+      $defaults_location  = '/etc/sysconfig'
     }
     default: {
       fail("\"${module_name}\" provides no service parameters
