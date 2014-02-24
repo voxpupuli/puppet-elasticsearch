@@ -63,7 +63,7 @@ define elasticsearch::service::systemd{
   }
 
   $notify_service = $elasticsearch::restart_on_change ? {
-    true  => Service["${name}.service"],
+    true  => Service['elasticsearch'],
     false => undef,
   }
 
@@ -91,7 +91,7 @@ define elasticsearch::service::systemd{
         owner   => 'root',
         group   => 'root',
         mode    => '0644',
-        before  => Service["${name}.service"],
+        before  => Service['elasticsearch'],
         notify  => $notify_service
       }
 
@@ -99,9 +99,10 @@ define elasticsearch::service::systemd{
   }
 
   # action
-  service { "${name}.service":
+  service { 'elasticsearch':
     ensure     => $service_ensure,
     enable     => $service_enable,
+    name       => "${elasticsearch::params::service_name}.service",
     hasstatus  => $elasticsearch::params::service_hasstatus,
     hasrestart => $elasticsearch::params::service_hasrestart,
     pattern    => $elasticsearch::params::service_pattern,

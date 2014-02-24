@@ -143,7 +143,7 @@ describe 'elasticsearch', :type => 'class' do
 
           context 'and default settings' do
 
-            it { should contain_service('elasticsearch.service').with(:ensure => 'running') }
+            it { should contain_service('elasticsearch').with(:ensure => 'running') }
 
           end
 
@@ -153,7 +153,7 @@ describe 'elasticsearch', :type => 'class' do
               :init_defaults => { 'SERVICE_USER' => 'root', 'SERVICE_GROUP' => 'root' }
             } end
 
-            it { should contain_file('/etc/sysconfig/elasticsearch').with(:content => "### MANAGED BY PUPPET ###\n\nSERVICE_GROUP=root\nSERVICE_USER=root\n", :notify => 'Service[elasticsearch.service]') }
+            it { should contain_file('/etc/sysconfig/elasticsearch').with(:content => "### MANAGED BY PUPPET ###\n\nSERVICE_GROUP=root\nSERVICE_USER=root\n", :notify => 'Service[elasticsearch]') }
 
           end
 
@@ -163,7 +163,7 @@ describe 'elasticsearch', :type => 'class' do
               :init_defaults_file => 'puppet:///path/to/elasticsearch.defaults'
             } end
 
-            it { should contain_file('/etc/sysconfig/elasticsearch').with(:source => 'puppet:///path/to/elasticsearch.defaults', :notify => 'Service[elasticsearch.service]') }
+            it { should contain_file('/etc/sysconfig/elasticsearch').with(:source => 'puppet:///path/to/elasticsearch.defaults', :notify => 'Service[elasticsearch]') }
 
           end
 
@@ -184,7 +184,7 @@ describe 'elasticsearch', :type => 'class' do
               :status => 'unmanaged'
             } end
 
-            it { should contain_service('elasticsearch.service').with(:ensure => nil, :enable => false) }
+            it { should contain_service('elasticsearch').with(:ensure => nil, :enable => false) }
 
           end
 
@@ -200,7 +200,7 @@ describe 'elasticsearch', :type => 'class' do
 
          it { should contain_file('/etc/elasticsearch').with(:ensure => 'absent', :force => true, :recurse => true) }
          it { should contain_package('elasticsearch').with(:ensure => 'purged') }
-         it { should contain_service('elasticsearch.service').with(:ensure => 'stopped', :enable => false) }
+         it { should contain_service('elasticsearch').with(:ensure => 'stopped', :enable => false) }
 
       end
 

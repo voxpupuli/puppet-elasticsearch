@@ -34,7 +34,7 @@ class elasticsearch::service {
       elasticsearch::service::init { 'elasticsearch': }
     }
     systemd: {
-      elasticsearch::service::systemd { $elasticsearch::params::service_name: }
+      elasticsearch::service::systemd { 'elasticsearch': }
     }
     default: {
       fail("Unknown service provider ${elasticsearch::service_provider}")
