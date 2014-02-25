@@ -144,6 +144,15 @@ class elasticsearch::package {
     $pkg_source = undef
     $pkg_provider = undef
     $package_ensure = 'purged'
+
+    $package_dir = $elasticsearch::package_dir
+
+    file { $package_dir:
+      ensure => 'absent',
+      purge  => true,
+      force  => true
+    }
+
   }
 
   if ($elasticsearch::package_provider == 'package') {
