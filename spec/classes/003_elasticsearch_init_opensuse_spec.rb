@@ -212,6 +212,7 @@ describe 'elasticsearch', :type => 'class' do
         } end
 
         it { should contain_class('elasticsearch::repo').that_requires('Anchor[elasticsearch::begin]') }
+        it { should contain_exec('elasticsearch_suse_import_gpg') }
         it { should contain_zypprepo('elasticsearch').with(:baseurl => 'http://packages.elasticsearch.org/elasticsearch/1.0/centos') }
 
       end

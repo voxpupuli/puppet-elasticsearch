@@ -9,7 +9,8 @@ describe 'elasticsearch', :type => 'class' do
       let :facts do {
         :operatingsystem => distro,
         :kernel => 'Linux',
-        :osfamily => 'Debian'
+        :osfamily => 'Debian',
+        :lsbdistid => distro.downcase
       } end
 
       context 'main class tests' do

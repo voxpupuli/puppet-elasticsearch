@@ -49,7 +49,7 @@ class elasticsearch::params {
   $purge_package_dir = false
 
   # package download timeout
-  $package_dl_timeout = 300 # 300 seconds is default of puppet
+  $package_dl_timeout = 600 # 300 seconds is default of puppet
 
   #### Internal module values
 
