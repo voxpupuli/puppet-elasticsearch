@@ -71,31 +71,26 @@ define elasticsearch::service::systemd{
 
     # defaults file content. Either from a hash or file
     if ($elasticsearch::init_defaults_file != undef) {
-      $defaults_content = undef
-      $defaults_source  = $elasticsearch::init_defaults_file
-    } elsif ($elasticsearch::init_defaults != undef and is_hash($elasticsearch::init_defaults) ) {
-      $defaults_content = template("${module_name}/etc/sysconfig/defaults.erb")
-      $defaults_source  = undef
-    } else {
-      $defaults_content = undef
-      $defaults_source  = undef
-    }
-
-    # Check if we are going to manage the defaults file.
-    if ( $defaults_content != undef or $defaults_source != undef ) {
-
       file { "${elasticsearch::params::defaults_location}/${name}":
         ensure  => $elasticsearch::ensure,
-        source  => $defaults_source,
-        content => $defaults_content,
+        source  => $elasticsearch::init_defaults_file,
         owner   => 'root',
         group   => 'root',
         mode    => '0644',
-        before  => Service['elasticsearch'],
+        before  => Service[$name],
+        notify  => $notify_service
+      }
+
+    } elsif ($elasticsearch::init_defaults != undef and is_hash($elasticsearch::init_defaults) ) {
+      augeas { "defaults_${name}":
+        context => "/files${elasticsearch::params::defaults_location}/${name}",
+        changes => template("${module_name}/etc/sysconfig/defaults.erb"),
+        before  => Service[$name],
         notify  => $notify_service
       }
 
     }
+
   }
 
   # action

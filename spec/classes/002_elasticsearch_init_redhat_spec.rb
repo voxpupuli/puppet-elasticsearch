@@ -153,7 +153,7 @@ describe 'elasticsearch', :type => 'class' do
               :init_defaults => { 'SERVICE_USER' => 'root', 'SERVICE_GROUP' => 'root' }
             } end
 
-            it { should contain_file('/etc/sysconfig/elasticsearch').with(:content => "### MANAGED BY PUPPET ###\n\nSERVICE_GROUP=root\nSERVICE_USER=root\n", :notify => 'Service[elasticsearch]') }
+            it { should contain_augeas('defaults_elasticsearch').with(:notify => 'Service[elasticsearch]', :context  => '/files/etc/sysconfig/elasticsearch', :changes => "set SERVICE_GROUP root\nset SERVICE_USER root\n") }
 
           end
 
@@ -174,7 +174,7 @@ describe 'elasticsearch', :type => 'class' do
               :restart_on_change => false
             } end
 
-            it { should contain_file('/etc/sysconfig/elasticsearch').with(:content => "### MANAGED BY PUPPET ###\n\nSERVICE_GROUP=root\nSERVICE_USER=root\n").without_notify }
+            it { should contain_augeas('defaults_elasticsearch').with(:context => '/files/etc/sysconfig/elasticsearch', :changes => "set SERVICE_GROUP root\nset SERVICE_USER root\n").without_notify }
 
           end
 
