@@ -87,6 +87,10 @@ define elasticsearch::service::init{
       }
 
     } elsif ($elasticsearch::init_defaults != undef and is_hash($elasticsearch::init_defaults) ) {
+
+      $init_defaults_pre_hash = { 'ES_USER' => $elasticsearch::elasticsearch_user, 'ES_GROUP' => $elasticsearch::elasticsearch_group }
+      $init_defaults = merge($init_defaults_pre_hash, $elasticsearch::init_defaults)
+
       augeas { "defaults_${name}":
         context => "/files${elasticsearch::params::defaults_location}/${name}",
         changes => template("${module_name}/etc/sysconfig/defaults.erb"),

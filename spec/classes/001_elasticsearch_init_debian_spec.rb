@@ -150,10 +150,10 @@ describe 'elasticsearch', :type => 'class' do
           context 'and set defaults via hash param' do
 
             let :params do {
-              :init_defaults => { 'SERVICE_USER' => 'root', 'SERVICE_GROUP' => 'root' }
+              :init_defaults => { 'ES_USER' => 'root', 'ES_GROUP' => 'root' }
             } end
 
-            it { should contain_augeas('defaults_elasticsearch').with(:notify => 'Service[elasticsearch]', :context => '/files/etc/default/elasticsearch', :changes => "set SERVICE_GROUP root\nset SERVICE_USER root\n") }
+            it { should contain_augeas('defaults_elasticsearch').with(:notify => 'Service[elasticsearch]', :context => '/files/etc/default/elasticsearch', :changes => "set ES_GROUP root\nset ES_USER root\n") }
 
           end
 
@@ -170,11 +170,11 @@ describe 'elasticsearch', :type => 'class' do
           context 'no service restart when defaults change' do
 
            let :params do {
-              :init_defaults     => { 'SERVICE_USER' => 'root', 'SERVICE_GROUP' => 'root' },
+              :init_defaults     => { 'ES_USER' => 'root', 'ES_GROUP' => 'root' },
               :restart_on_change => false
             } end
 
-            it { should contain_augeas('defaults_elasticsearch').with(:context => '/files/etc/default/elasticsearch', :changes => "set SERVICE_GROUP root\nset SERVICE_USER root\n").without_notify }
+            it { should contain_augeas('defaults_elasticsearch').with(:context => '/files/etc/default/elasticsearch', :changes => "set ES_GROUP root\nset ES_USER root\n").without_notify }
 
           end 
 
