@@ -12,7 +12,7 @@ hosts.each do |host|
     on host, "mkdir -p #{host['distmoduledir']}"
 
     if fact('osfamily') == 'Debian'
-      install_package host, 'ruby-dev libaugeas-dev'
+      install_package host, 'pkg-config ruby-dev libaugeas-dev'
     end
     if fact('osfamily') == 'RedHat'
       install_package host, 'ruby-devel augeas-devel'
