@@ -11,7 +11,7 @@ hosts.each do |host|
     install_package host, 'ruby-devel'
     install_package host, 'augeas-devel'
     on host, "gem install puppet --no-ri --no-rdoc --version '~> #{puppetversion}'"
-    on host, "gem install ruby-augeas augeas --no-ri --no-rdoc"
+    on host, "gem install ruby-augeas --no-ri --no-rdoc"
     on host, "mkdir -p #{host['distmoduledir']}"
   end
 end
