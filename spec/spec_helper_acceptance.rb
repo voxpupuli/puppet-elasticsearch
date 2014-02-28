@@ -9,6 +9,7 @@ hosts.each do |host|
     puppetversion = ENV['VM_PUPPET_VERSION']
     install_package host, 'rubygems'
     on host, "gem install puppet --no-ri --no-rdoc --version '~> #{puppetversion}'"
+    on host, "gem install ruby-augeas augeas --no-ri --no-rdoc"
     on host, "mkdir -p #{host['distmoduledir']}"
   end
 end
