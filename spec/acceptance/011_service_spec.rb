@@ -16,7 +16,7 @@ describe "Service tests:" do
 
     context "Change the defaults file" do
       it 'should run successfully' do
-        pp = "class { 'elasticsearch': manage_repo => true, repo_version => '1.0', java_install => true, config => { 'node.name' => 'elasticsearch001' }, init_defaults => { 'USER' => 'root' } }"
+        pp = "class { 'elasticsearch': manage_repo => true, repo_version => '1.0', java_install => true, config => { 'node.name' => 'elasticsearch001' }, init_defaults => { 'ES_USER' => 'root' } }"
 
         # Run it twice and test for idempotency
         apply_manifest(pp, :catch_failures => true)
@@ -25,11 +25,11 @@ describe "Service tests:" do
       end
     end
 
-    context "Make sure we have USER=root" do
+    context "Make sure we have ES_USER=root" do
 
       describe file(defaults_file) do
-        it { should contain 'USER=root' }
-        it { should_not contain 'USER=elasticsearch' }
+        it { should contain 'ES_USER=root' }
+        it { should_not contain 'ES_USER=elasticsearch' }
       end
 
     end
