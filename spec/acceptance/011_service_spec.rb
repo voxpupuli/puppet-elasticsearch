@@ -28,8 +28,8 @@ describe "Service tests:" do
     context "Make sure we have ES_USER=root" do
 
       describe file(defaults_file) do
-        it { should contain 'ES_USER=root' }
-        it { should_not contain 'ES_USER=elasticsearch' }
+        its(:content) { should match /^ES_USER=root/ }
+        its(:content) { should_not match /^ES_USER=elasticsearch/ }
       end
 
     end
