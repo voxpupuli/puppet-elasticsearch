@@ -8,8 +8,16 @@ hosts.each do |host|
   else
     puppetversion = ENV['VM_PUPPET_VERSION']
     install_package host, 'rubygems'
-    install_package host, 'ruby-devel'
-    install_package host, 'augeas-devel'
+
+    if fact('osfamily') == 'Debian'
+      install_package host, 'ruby-dev libaugeas-dev'
+    end
+    if fact('osfamily') == 'RedHat'
+      install_package host, 'ruby-devel augeas-devel'
+    end
+    if fact('osfamily') == 'Suse'
+      install_package host, 'ruby-devel augeas-devel'
+    end
     on host, "gem install puppet --no-ri --no-rdoc --version '~> #{puppetversion}'"
     on host, "gem install ruby-augeas --no-ri --no-rdoc"
     on host, "mkdir -p #{host['distmoduledir']}"
