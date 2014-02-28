@@ -8,6 +8,8 @@ hosts.each do |host|
   else
     puppetversion = ENV['VM_PUPPET_VERSION']
     install_package host, 'rubygems'
+    on host, "gem install puppet --no-ri --no-rdoc --version '~> #{puppetversion}'"
+    on host, "mkdir -p #{host['distmoduledir']}"
 
     if fact('osfamily') == 'Debian'
       install_package host, 'ruby-dev libaugeas-dev'
@@ -18,9 +20,9 @@ hosts.each do |host|
     if fact('osfamily') == 'Suse'
       install_package host, 'ruby-devel augeas-devel'
     end
-    on host, "gem install puppet --no-ri --no-rdoc --version '~> #{puppetversion}'"
+
     on host, "gem install ruby-augeas --no-ri --no-rdoc"
-    on host, "mkdir -p #{host['distmoduledir']}"
+
   end
 end
 
@@ -36,6 +38,7 @@ RSpec.configure do |c|
     # Install module and dependencies
     puppet_module_install(:source => proj_root, :module_name => 'elasticsearch')
     hosts.each do |host|
+
       if !host.is_pe?
         on host, puppet('module','install','puppetlabs-stdlib', '-v 3.2.0'), { :acceptable_exit_codes => [0,1] }
       end
