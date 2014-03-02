@@ -24,6 +24,12 @@
 #
 class elasticsearch::package {
 
+  Exec {
+    path      => [ '/bin', '/usr/bin', '/usr/local/bin' ],
+    cwd       => '/',
+    tries     => 3,
+    try_sleep => 10
+  }
 
   #### Package management
 
@@ -98,7 +104,6 @@ class elasticsearch::package {
 
           exec { 'download_package_elasticsearch':
             command => "${elasticsearch::params::download_tool} ${pkg_source} ${elasticsearch::package_url} 2> /dev/null",
-            path    => ['/usr/bin', '/bin'],
             creates => $pkg_source,
             timeout => $elasticsearch::package_dl_timeout,
             require => File[$package_dir],
