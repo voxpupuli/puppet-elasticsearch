@@ -12,13 +12,13 @@ hosts.each do |host|
     on host, "mkdir -p #{host['distmoduledir']}"
 
     if fact('osfamily') == 'Debian'
-      install_package host, 'pkg-config ruby-dev libaugeas-dev'
+      install_package host, 'pkg-config ruby1.8-dev libaugeas-dev'
     end
     if fact('osfamily') == 'RedHat'
       install_package host, 'ruby-devel augeas-devel'
     end
     if fact('osfamily') == 'Suse'
-      install_package host, 'ruby-devel augeas-devel'
+      install_package host, 'ruby-devel augeas-devel libxml2-devel'
     end
 
     on host, "gem install ruby-augeas --no-ri --no-rdoc"
