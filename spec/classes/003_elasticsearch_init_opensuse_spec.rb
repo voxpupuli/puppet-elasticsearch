@@ -153,7 +153,7 @@ describe 'elasticsearch', :type => 'class' do
               :init_defaults => { 'ES_USER' => 'root', 'ES_GROUP' => 'root' }
             } end
 
-            it { should contain_augeas('defaults_elasticsearch').with(:notify => 'Service[elasticsearch]', :context  => '/files/etc/sysconfig/elasticsearch', :changes => "set ES_GROUP root\nset ES_USER root\n") }
+            it { should contain_augeas('defaults_elasticsearch').with(:notify => 'Service[elasticsearch]', :incl  => '/etc/sysconfig/elasticsearch', :changes => "set ES_GROUP root\nset ES_USER root\n") }
 
           end
 
@@ -174,7 +174,7 @@ describe 'elasticsearch', :type => 'class' do
               :restart_on_change => false
             } end
 
-            it { should contain_augeas('defaults_elasticsearch').with(:context => '/files/etc/sysconfig/elasticsearch', :changes => "set ES_GROUP root\nset ES_USER root\n").without_notify }
+            it { should contain_augeas('defaults_elasticsearch').with(:incl => '/etc/sysconfig/elasticsearch', :changes => "set ES_GROUP root\nset ES_USER root\n").without_notify }
 
           end
 
