@@ -74,7 +74,13 @@ class elasticsearch::config {
       $logging_content = undef
     } else {
       # use our template, merge the defaults with custom logging
-      $logging_hash    = merge($elasticsearch::params::logging_defaults, $elasticsearch::logging_config)
+
+      if(is_hash($elasticsearch::logging_config)) {
+        $logging_hash = merge($elasticsearch::params::logging_defaults, $elasticsearch::logging_config)
+      } else {
+        $logging_hash = $elasticsearch::params::logging_defaults
+      }
+
       $logging_content = template("${module_name}/etc/elasticsearch/logging.yml.erb")
       $logging_source  = undef
     }
