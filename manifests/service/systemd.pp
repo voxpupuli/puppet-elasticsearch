@@ -88,7 +88,7 @@ define elasticsearch::service::systemd{
 
       augeas { "defaults_${name}":
         incl     => "${elasticsearch::params::defaults_location}/${name}",
-        lens     => "Shellvars.lns",
+        lens     => 'Shellvars.lns',
         changes  => template("${module_name}/etc/sysconfig/defaults.erb"),
         before   => Service[$name],
         notify   => $notify_service
