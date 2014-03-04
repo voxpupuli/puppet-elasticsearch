@@ -68,6 +68,25 @@ class elasticsearch::config {
       require => Exec['mkdir_templates_elasticsearch']
     }
 
+    if ( $elasticsearch::logging_file != undef ) {
+      # Use the file provided
+      $logging_source  = $elasticsearch::logging_file
+      $logging_content = undef
+    } else {
+      # use our template, merge the defaults with custom logging
+      $logging_hash    = merge($elasticsearch::params::logging_defaults, $elasticsearch::logging_config)
+      $logging_content = template("${module_name}/etc/elasticsearch/logging.yml.erb")
+      $logging_source  = undef
+    }
+     
+    file { "${elasticsearch::configdir}/logging.yml":
+      ensure  => file,
+      content => $logging_content,
+      source  => $logging_source,
+      mode    => '0644',
+      notify  => $notify_service
+    }
+
     if ( $elasticsearch::datadir != undef ) {
       file { $elasticsearch::datadir:
         ensure  => 'directory',

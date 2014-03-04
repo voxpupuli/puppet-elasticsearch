@@ -51,6 +51,15 @@ class elasticsearch::params {
   # package download timeout
   $package_dl_timeout = 600 # 300 seconds is default of puppet
 
+  $default_logging_level = 'INFO'
+
+  $logging_defaults = {
+    'action'                 => 'DEBUG',
+    'com.amazonaws'          => 'WARN',
+    'index.search.slowlog'   => 'TRACE, index_search_slow_log_file',
+    'index.indexing.slowlog' => 'TRACE, index_indexing_slow_log_file'
+  }
+
   #### Internal module values
 
   # User and Group for the files and user to run the service as.
