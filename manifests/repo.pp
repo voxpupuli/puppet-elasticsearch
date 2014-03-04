@@ -21,7 +21,7 @@
 # === Authors
 #
 # * Phil Fenstermacher <mailto:phillip.fenstermacher@gmail.com>
-# * Ricahrd Pijnenburg <mailto:richard.pijnenburg@elasticsearch.com>
+# * Richard Pijnenburg <mailto:richard.pijnenburg@elasticsearch.com>
 #
 class elasticsearch::repo {
 
