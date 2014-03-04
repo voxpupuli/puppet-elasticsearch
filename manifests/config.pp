@@ -84,7 +84,7 @@ class elasticsearch::config {
       $logging_content = template("${module_name}/etc/elasticsearch/logging.yml.erb")
       $logging_source  = undef
     }
-     
+
     file { "${elasticsearch::configdir}/logging.yml":
       ensure  => file,
       content => $logging_content,
