@@ -426,6 +426,14 @@ class { 'elasticsearch':
 }
 ```
 
+### Upgrade/reinstall plugin
+
+elasticsearch::plugin{'mobz/elasticsearch-head':
+  module_dir => 'head',
+    ensure => 'reinstalled'
+}
+
+Remember to change `reinstalled` to `present` after, otherwise, the plugin will be reinstalled every time.
 
 ##Limitations
 
