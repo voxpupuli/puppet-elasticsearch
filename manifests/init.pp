@@ -234,11 +234,13 @@ class elasticsearch(
     fail('Unable to set the version number when using package_url option.')
   }
 
-  # validate config hash
-  if ($config == undef) {
-    fail("Missing config hash")
-  } else {
-    validate_hash($config)
+  if $ensure == 'present' {
+    # validate config hash
+    if ($config == undef) {
+      fail("Missing config hash")
+    } else {
+      validate_hash($config)
+    }
   }
 
   # java install validation
