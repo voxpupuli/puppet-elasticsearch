@@ -13,6 +13,7 @@ describe 'elasticsearch', :type => 'class' do
     context "with nothing set" do
 
       let :params do {
+        :config => { }
       } end
 
       it { should contain_file('/etc/elasticsearch/elasticsearch.yml').with(:content => "### MANAGED BY PUPPET ###\n") }
@@ -108,6 +109,7 @@ describe 'elasticsearch', :type => 'class' do
 
     context 'should allow creating datadir' do
       let(:params) do {
+        :config  => { },
         :datadir => '/foo'
       } end
 
