@@ -58,7 +58,7 @@
 #   Defaults to <tt>true</tt>, which will restart the application on any config
 #   change. Setting to <tt>false</tt> disables the automatic restart.
 #
-# [*confdir*]
+# [*configdir*]
 #   Path to directory containing the elasticsearch configuration.
 #   Use this setting if your packages deviate from the norm (/etc/elasticsearch)
 #
@@ -69,6 +69,74 @@
 # [*plugintool*]
 #   Path to directory containing the elasticsearch plugin installation script
 #   Use this setting if your packages deviate from the norm (/usr/share/elasticsearch/bin/plugin)
+#
+# [*package_url*]
+#   Url to the package to download.
+#   This can be a http,https or ftp resource for remote packages
+#   puppet:// resource or file:/ for local packages
+#
+# [*package_provider*]
+#   Way to install the packages, currently only packages are supported.
+#
+# [*package_dir*]
+#   Directory where the packages are downloaded to
+#
+# [*purge_package_dir*]
+#   Purge package directory on removal
+#
+# [*package_dl_timeout*]
+#   For http,https and ftp downloads you can set howlong the exec resource may take.
+#   Defaults to: 600 seconds
+#
+# [*elasticsearch_user*]
+#   The user Elasticsearch should run as. This also sets the file rights.
+#
+# [*elasticsearch_group*]
+#   The group Elasticsearch should run as. This also sets the file rights
+#
+# [*purge_configdir*]
+#   Purge the config directory for any unmanaged files
+#
+# [*service_provider*]
+#   Service provider to use. By Default when a single service provider is possibe that one is selected.
+#
+# [*init_defaults*]
+#   Defaults file content in hash representation
+#
+# [*init_defaults_file*]
+#   Defaults file as puppet resource
+#
+# [*init_template*]
+#   Service file as a template
+#
+# [*config*]
+#   Elasticsearch configuration hash
+#
+# [*datadir*]
+#   Allows you to set the data directory of Elasticsearch
+#
+# [*java_install*]
+#  Install java which is required for Elasticsearch.
+#  Defaults to: false
+#
+# [*java_package*]
+#   If you like to install a custom java package, put the name here.
+#
+# [*manage_repo*]
+#   Enable repo management by enabling our official repositories
+#
+# [*repo_version*]
+#   Our repositories are versioned per major version (0.90, 1.0) select here which version you want
+#
+# [*logging_config*]
+#   Hash representation of information you want in the logging.yml file
+#
+# [*logging_file*]
+#   Instead of a hash you can supply a puppet:// file source for the logging.yml file
+#
+# [*default_logging_level*]
+#   Default logging level for Elasticsearch.
+#   Defaults to: INFO
 #
 # The default values for the parameters are set in elasticsearch::params. Have
 # a look at the corresponding <tt>params.pp</tt> manifest file if you need more
@@ -113,7 +181,7 @@ class elasticsearch(
   $init_defaults         = undef,
   $init_defaults_file    = undef,
   $init_template         = undef,
-  $config                = {},
+  $config                = undef,
   $datadir               = undef,
   $plugindir             = $elasticsearch::params::plugindir,
   $plugintool            = $elasticsearch::params::plugintool,
@@ -167,7 +235,11 @@ class elasticsearch(
   }
 
   # validate config hash
-  validate_hash($config)
+  if ($config == undef) {
+    fail("Missing config hash")
+  } else {
+    validate_hash($config)
+  }
 
   # java install validation
   validate_bool($java_install)
