@@ -30,7 +30,14 @@ class elasticsearch::java {
         $package = 'java-1.7.0-openjdk'
       }
       'Debian', 'Ubuntu': {
-        $package = 'openjdk-7-jre-headless'
+        case $::lsbdistcodename {
+          'squeeze': {
+            $package = 'openjdk-6-jre-headless'
+          }
+          default: {
+            $package = 'openjdk-7-jre-headless'
+          }
+        }
       }
       'OpenSuSE': {
         $package = 'java-1_6_0-openjdk'
