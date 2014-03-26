@@ -24,11 +24,26 @@ describe 'elasticsearch', :type => 'class' do
 
     end
 
+    context "On Debian OS (6.0 Squeeze)" do
+
+      let :facts do {
+        :operatingsystem => 'Debian',
+        :kernel => 'Linux',
+        :osfamily => 'Debian',
+        :lsbdistcodename => 'squeeze'
+
+      } end
+
+      it { should contain_class('elasticsearch::java').that_requires('Anchor[elasticsearch::begin]') }
+      it { should contain_class('elasticsearch::package').that_requires('Class[elasticsearch::java]') }
+      it { should contain_package('openjdk-6-jre-headless') }
+
+    end
     context "On Ubuntu OS" do
 
       let :facts do {
         :operatingsystem => 'Ubuntu',
-         :kernel => 'Linux',
+        :kernel => 'Linux',
         :osfamily => 'Debian'
 
       } end
