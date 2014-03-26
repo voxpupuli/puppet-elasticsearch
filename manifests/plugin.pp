@@ -82,6 +82,7 @@ define elasticsearch::plugin(
         creates  => "${elasticsearch::plugindir}/${module_dir}",
         returns  => $exec_rets,
         notify   => $notify_service,
+        user     => $elasticsearch::elasticsearch_user,
         require  => Class['elasticsearch::package']
       }
     }
@@ -90,6 +91,7 @@ define elasticsearch::plugin(
         command => "${elasticsearch::plugintool} --remove ${module_dir}",
         onlyif  => "test -d ${elasticsearch::plugindir}/${module_dir}",
         notify  => $notify_service,
+        user    => $elasticsearch::elasticsearch_user,
       }
     }
   }
