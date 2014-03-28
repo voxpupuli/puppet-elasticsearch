@@ -1,0 +1,6 @@
+source 'https://rubygems.org'
+
+gem 'puppet'
+gem 'puppetlabs_spec_helper', '>= 0.1.0'
+gem 'rspec_junit_formatter'
+gem 'puppet-doc-lint', :git => 'https://github.com/petems/puppet-doc-lint.git'

@@ -2,13 +2,17 @@ require 'spec_helper_acceptance'
 
 describe "elasticsearch class:" do
 
+  cluster_name = SecureRandom.hex(10)
+
   case fact('osfamily')
     when 'RedHat'
       package_name = 'elasticsearch'
       service_name = 'elasticsearch'
+			pid_file     = '/var/run/elasticsearch/elasticsearch.pid'
     when 'Debian'
       package_name = 'elasticsearch'
       service_name = 'elasticsearch'
+			pid_file     = '/var/run/elasticsearch.pid'
     when 'Suse'
       package_name = 'elasticsearch'
       service_name = 'elasticsearch'
@@ -17,7 +21,7 @@ describe "elasticsearch class:" do
   describe "default parameters" do
 
     it 'should run successfully' do
-      pp = "class { 'elasticsearch': config => { 'node.name' => 'elasticsearch001' }, manage_repo => true, repo_version => '1.0', java_install => true }"
+			pp = "class { 'elasticsearch': config => { 'node.name' => 'elasticsearch001', 'cluster.name' => '#{cluster_name}'}, manage_repo => true, repo_version => '1.0', java_install => true }"
 
       # Run it twice and test for idempotency
       apply_manifest(pp, :catch_failures => true)
@@ -33,6 +37,11 @@ describe "elasticsearch class:" do
       describe package(package_name) do
         it { should be_installed }
       end
+
+			describe file(pid_file) do
+	      it { should be_file }
+				its(:content) { should match /[0-9]+/ }
+			end
     end
 
     describe port(9200) do

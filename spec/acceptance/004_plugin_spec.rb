@@ -2,16 +2,54 @@ require 'spec_helper_acceptance'
 
 describe "elasticsearch plugin define:" do
 
+  cluster_name = SecureRandom.hex(10)
+
+  case fact('osfamily')
+    when 'RedHat'
+			service_name  = 'elasticsearch'
+			package_name  = 'elasticsearch'
+			pid_file      = '/var/run/elasticsearch/elasticsearch.pid'
+    when 'Debian'
+			service_name  = 'elasticsearch'
+			package_name  = 'elasticsearch'
+			pid_file      = '/var/run/elasticsearch.pid'
+  end
+
+
   describe "Install a plugin from official repository" do
 
     it 'should run successfully' do
-      pp = "class { 'elasticsearch': config => { 'node.name' => 'elasticsearch001' }, manage_repo => true, repo_version => '1.0', java_install => true }
+			pp = "class { 'elasticsearch': config => { 'node.name' => 'elasticsearch001', 'cluster.name' => '#{cluster_name}' }, manage_repo => true, repo_version => '1.0', java_install => true }
             elasticsearch::plugin{'mobz/elasticsearch-head': module_dir => 'head' }
            "
 
       # Run it twice and test for idempotency
       apply_manifest(pp, :catch_failures => true)
+			sleep 5
       expect(apply_manifest(pp, :catch_failures => true).exit_code).to be_zero
+    end
+
+    if fact('osfamily') != 'Suse'
+      describe service(service_name) do
+        it { should be_enabled }
+        it { should be_running } 
+      end
+
+      describe package(package_name) do
+        it { should be_installed }
+      end
+
+			describe file(pid_file) do
+	      it { should be_file }
+				its(:content) { should match /[0-9]+/ }
+			end
+    end
+
+    describe port(9200) do
+      it {
+        sleep 10
+        should be_listening
+      }
     end
 
     it 'make sure the directory exists' do
@@ -44,7 +82,7 @@ describe "elasticsearch plugin define:" do
     describe "Install a non existing plugin" do
 
       it 'should run successfully' do
-        pp = "class { 'elasticsearch': config => { 'node.name' => 'elasticearch001' }, manage_repo => true, repo_version => '1.0', java_install => true }
+				pp = "class { 'elasticsearch': config => { 'node.name' => 'elasticearch001', 'cluster.name' => '#{cluster_name}' }, manage_repo => true, repo_version => '1.0', java_install => true }
               elasticsearch::plugin{'elasticsearch/non-existing': module_dir => 'non-existing' }
 	     "
         #  Run it twice and test for idempotency
@@ -60,4 +98,3 @@ describe "elasticsearch plugin define:" do
 
 
 end
-

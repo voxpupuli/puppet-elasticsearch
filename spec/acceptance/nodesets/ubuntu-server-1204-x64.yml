@@ -1,11 +1,11 @@
 HOSTS:
-  ubuntu-13-10:
+  ubuntu-12-04:
     roles:
       - master
       - database
       - dashboard
-    platform: ubuntu-13.10-amd64
-    image: jordansissel/system:ubuntu-13.10
+    platform: ubuntu-12.04-amd64
+    image: jordansissel/system:ubuntu-12.04
     hypervisor: docker
     docker_cmd: '["/sbin/init"]'
     extra_commands:
