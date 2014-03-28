@@ -4,6 +4,7 @@ rvm:
   - 1.9.3
   - 2.0.0
 before_install: rm Gemfile.lock || true
+bundler_args: --without doclint beaker
 script:
  - "bundle exec rake lint"
  - "bundle exec rake syntax"
