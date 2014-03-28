@@ -53,6 +53,7 @@ define elasticsearch::plugin(
   Exec {
     path => [ '/bin', '/usr/bin', '/usr/local/bin' ],
     cwd  => '/',
+    user => $elasticsearch::elasticsearch_user,
   }
 
   $notify_service = $elasticsearch::restart_on_change ? {
