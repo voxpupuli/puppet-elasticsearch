@@ -93,6 +93,11 @@ class elasticsearch::config {
       notify  => $notify_service
     }
 
+    file { $elasticsearch::params::plugindir:
+      ensure => 'directory',
+      mode   => '0644'
+    }
+
     if ( $elasticsearch::datadir != undef ) {
       file { $elasticsearch::datadir:
         ensure  => 'directory',
