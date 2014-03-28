@@ -175,11 +175,11 @@ describe 'elasticsearch', :type => 'class' do
 
             let (:params) {
               default_params.merge({
-                :init_defaults => { 'ES_USER' => 'root', 'ES_GROUP' => 'root' }
+                :init_defaults => { 'ES_USER' => 'root', 'ES_GROUP' => 'root', 'ES_JAVA_OPTS' => '"-server -XX:+UseTLAB -XX:+CMSClassUnloadingEnabled"' }
               })
             }
 
-            it { should contain_augeas('defaults_elasticsearch').with(:notify => 'Service[elasticsearch]', :incl  => '/etc/sysconfig/elasticsearch', :changes => "set ES_GROUP root\nset ES_USER root\n") }
+            it { should contain_augeas('defaults_elasticsearch').with(:notify => 'Service[elasticsearch]', :incl  => '/etc/sysconfig/elasticsearch', :changes => "set ES_GROUP 'root'\nset ES_JAVA_OPTS '\"-server -XX:+UseTLAB -XX:+CMSClassUnloadingEnabled\"'\nset ES_USER 'root'\n") }
 
           end
 
@@ -199,12 +199,12 @@ describe 'elasticsearch', :type => 'class' do
 
             let (:params) {
               default_params.merge({
-                :init_defaults     => { 'ES_USER' => 'root', 'ES_GROUP' => 'root' },
+                :init_defaults     => { 'ES_USER' => 'root', 'ES_GROUP' => 'root', 'ES_JAVA_OPTS' => '"-server -XX:+UseTLAB -XX:+CMSClassUnloadingEnabled"' },
                 :restart_on_change => false
               })
             }
 
-            it { should contain_augeas('defaults_elasticsearch').with(:incl => '/etc/sysconfig/elasticsearch', :changes => "set ES_GROUP root\nset ES_USER root\n").without_notify }
+            it { should contain_augeas('defaults_elasticsearch').with(:incl => '/etc/sysconfig/elasticsearch', :changes => "set ES_GROUP 'root'\nset ES_JAVA_OPTS '\"-server -XX:+UseTLAB -XX:+CMSClassUnloadingEnabled\"'\nset ES_USER 'root'\n").without_notify }
 
           end
 
