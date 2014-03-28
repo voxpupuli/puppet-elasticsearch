@@ -1,0 +1,7 @@
+source 'https://rubygems.org'
+
+gem 'beaker', :git => 'https://github.com/electrical/beaker.git', :branch => 'docker_test'
+gem 'beaker-rspec'
+gem 'pry'
+gem 'docker-api'
+gem 'rubysl-securerandom'
