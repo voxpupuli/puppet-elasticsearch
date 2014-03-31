@@ -120,7 +120,7 @@ You can write the dotted key naming:
 
 ### Add a new template
 
-This will install and/or replace the template in Elasticearch
+This will install and/or replace the template in Elasticsearch
 
      elasticsearch::template { 'templatename':
        file => 'puppet:///path/to/template.json'
@@ -172,7 +172,7 @@ Install [a variety of plugins](http://www.elasticsearch.org/guide/plugins/):
 
 ## Java Install
 
-Most sites will manage Java seperately; however, this module can attempt to install Java as well.
+Most sites will manage Java separately; however, this module can attempt to install Java as well.
 
      class { 'elasticsearch':
        java_install => true
@@ -187,18 +187,18 @@ Specify a particular Java package (version) to be installed:
 
 ## Repository management
 
-Most sites will manage repositories seperately; however, this module can manage the repository for you.
+Most sites will manage repositories separately; however, this module can manage the repository for you.
 
     class { 'elasticsearch':
       manage_repo  => true,
       repo_version => '1.0',
     }
 
-Note: When using this on Debian/Ubuntu you will need to add the [Puppetlabs/apt](http://forge.puppetlabs.com/puppetlabs/apt) module to your modules.
+Note: When using this on Debian/Ubuntu, you will need to add the [Puppetlabs/apt](http://forge.puppetlabs.com/puppetlabs/apt) module to your modules.
 
 ## Service Management
 
-Currently only the basic SysV-style [init](https://en.wikipedia.org/wiki/Init) service provider is supported but other systems could be implemented as necessary (pull requests welcome).
+Currently only the basic SysV-style [init](https://en.wikipedia.org/wiki/Init) service provider is supported, but other systems could be implemented as necessary (pull requests welcome).
 
 ### init
 
