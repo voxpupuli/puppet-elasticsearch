@@ -69,7 +69,7 @@ describe "Service tests:" do
 
       describe file(defaults_file) do
         its(:content) { should match /^ES_USER=root/ }
-				its(:content) { should match /^ES_JAVA_OPTS="-server -XX:+UseTLAB -XX:+CMSClassUnloadingEnabled"/ }
+				its(:content) { should match /^ES_JAVA_OPTS="-server -XX:\+UseTLAB -XX:\+CMSClassUnloadingEnabled"/ }
         its(:content) { should_not match /^ES_USER=elasticsearch/ }
       end
 
