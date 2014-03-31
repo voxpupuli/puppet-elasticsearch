@@ -24,7 +24,7 @@ describe "Service tests:" do
 
     context "Change the defaults file" do
       it 'should run successfully' do
-				pp = "class { 'elasticsearch': manage_repo => true, repo_version => '1.0', java_install => true, config => { 'node.name' => 'elasticsearch001', 'cluster.name' => '#{cluster_name}' }, init_defaults => { 'ES_USER' => 'root' } }"
+				pp = "class { 'elasticsearch': manage_repo => true, repo_version => '1.0', java_install => true, config => { 'node.name' => 'elasticsearch001', 'cluster.name' => '#{cluster_name}' }, init_defaults => { 'ES_USER' => 'root', 'ES_JAVA_OPTS' => '\"-server -XX:+UseTLAB -XX:+CMSClassUnloadingEnabled\"' } }"
 
         # Run it twice and test for idempotency
         apply_manifest(pp, :catch_failures => true)
@@ -69,6 +69,7 @@ describe "Service tests:" do
 
       describe file(defaults_file) do
         its(:content) { should match /^ES_USER=root/ }
+				its(:content) { should match /^ES_JAVA_OPTS="-server -XX:+UseTLAB -XX:+CMSClassUnloadingEnabled"/ }
         its(:content) { should_not match /^ES_USER=elasticsearch/ }
       end
 
