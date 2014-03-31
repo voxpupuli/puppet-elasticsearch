@@ -5,3 +5,4 @@ spec/fixtures
 .gemfiles/Gemfile.*.lock
 .vagrant
 .ruby-version
+pkg/
