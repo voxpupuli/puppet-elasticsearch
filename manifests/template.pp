@@ -61,7 +61,7 @@ define elasticsearch::template(
   Exec {
     path      => [ '/bin', '/usr/bin', '/usr/local/bin' ],
     cwd       => '/',
-    tries     => 3,
+    tries     => 6,
     try_sleep => 10
   }
 
@@ -108,7 +108,8 @@ define elasticsearch::template(
     exec { "insert_template_${name}":
       command     => "curl -sL -w \"%{http_code}\\n\" -XPUT ${es_url} -d @${elasticsearch::configdir}/templates_import/elasticsearch-template-${name}.json -o /dev/null | egrep \"(200|201)\" > /dev/null",
       unless      => "test $(curl -s '${es_url}?pretty=true' | wc -l) -gt 1",
-      refreshonly => true
+      refreshonly => true,
+      loglevel    => 'debug'
     }
 
   }
