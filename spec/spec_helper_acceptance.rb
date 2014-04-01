@@ -11,6 +11,10 @@ hosts.each do |host|
     install_package host, 'rubygems'
     on host, "gem install puppet --no-ri --no-rdoc --version '~> #{puppetversion}'"
     on host, "mkdir -p #{host['distmoduledir']}"
+
+		if fact('osfamily') == 'Suse'
+		  install_package host, 'ruby-devel augeas-devel libxml2-devel'
+		end
   end
 end
 
