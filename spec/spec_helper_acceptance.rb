@@ -14,6 +14,7 @@ hosts.each do |host|
 
 		if fact('osfamily') == 'Suse'
 		  install_package host, 'ruby-devel augeas-devel libxml2-devel'
+			on host, 'gem install ruby-augeas --no-ri --no-rdoc'
 		end
   end
 end
