@@ -98,6 +98,16 @@ define elasticsearch::service::systemd{
 
   }
 
+  file { '/usr/lib/systemd/system/elasticsearch.service':
+    notify => Exec['systemd_reload'],
+    before => Service[$name]
+  }
+
+  exec { 'systemd_reload':
+    command     => '/bin/systemctl daemon-reload',
+    refreshonly => true,
+  }
+
   # action
   service { 'elasticsearch':
     ensure     => $service_ensure,
