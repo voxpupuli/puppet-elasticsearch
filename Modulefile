@@ -1,5 +1,5 @@
 name    'elasticsearch-elasticsearch'
-version '0.2.4'
+version '0.3.0'
 source 'https://github.com/elasticsearch/puppet-elasticsearch'
 author 'elasticsearch'
 license 'Apache License, Version 2.0'

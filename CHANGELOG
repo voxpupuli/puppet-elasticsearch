@@ -1,3 +1,20 @@
+0.3.0 ( April 2, 2014 )
+  Fix minor issue with yumrepo in repo class ( PR #92 )
+  Implement OpenSuse support
+  Implement Junit reporting for tests
+  Adding more system tests and convert to Docker images
+  Use Augeas for managing the defaults file
+  Add retry to package download exec
+  Add management to manage the logging.yml file
+  Improve inline documentation
+  Improve support for Debian 6
+  Improve augeas for values with spaces
+  Run plugin install as ES user ( PR #108 )
+  Fix rights for the plugin directory
+  Pin Rake for Ruby 1.8.7
+  Adding new metadata for Forge.
+  Increase time for retry to insert the template
+
 0.2.4 ( Feb 21, 2014 )
   Set puppetlabs-stdlib dependency version from 3.0.0 to 3.2.0 to be inline with other modules
   Let puppet run fail when template insert fails
