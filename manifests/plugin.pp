@@ -45,7 +45,7 @@
 # * Dennis Konert <mailto:dkonert@gmail.com>
 #
 define elasticsearch::plugin(
-    $module_dir,
+    $module_dir  = ${name},
     $ensure      = 'present',
     $url         = ''
 ) {
@@ -83,7 +83,7 @@ define elasticsearch::plugin(
         creates  => "${elasticsearch::plugindir}/${module_dir}",
         returns  => $exec_rets,
         notify   => $notify_service,
-        require  => Class['elasticsearch::package']
+        require  => Class['elasticsearch::package'],
       }
     }
     default: {
