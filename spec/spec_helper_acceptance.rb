@@ -2,6 +2,8 @@ require 'beaker-rspec'
 require 'pry'
 require 'securerandom'
 
+files_dir = ENV['files_dir'] || '/home/jenkins/puppet'
+
 hosts.each do |host|
   # Install Puppet
   if host.is_pe?
@@ -33,7 +35,6 @@ RSpec.configure do |c|
   # Project root
   proj_root = File.expand_path(File.join(File.dirname(__FILE__), '..'))
 
-  files_dir = ENV['files_dir'] || '/home/jenkins/puppet'
   # Readable test descriptions
   c.formatter = :documentation
 
