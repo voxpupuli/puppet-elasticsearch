@@ -83,7 +83,7 @@ define elasticsearch::plugin(
         creates  => "${elasticsearch::plugindir}/${module_dir}",
         returns  => $exec_rets,
         notify   => $notify_service,
-        require  => Class['elasticsearch::package']
+        require  => File[$elasticsearch::params::plugindir]
       }
     }
     default: {
