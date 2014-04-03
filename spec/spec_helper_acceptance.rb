@@ -19,16 +19,17 @@ hosts.each do |host|
 			on host, 'gem install ruby-augeas --no-ri --no-rdoc'
 		end
 
-    # Copy over some files
-		if fact('osfamily') == 'Debian'
-			scp_to(host, "#{files_dir}/elasticsearch-1.1.0.deb", '/tmp/elasticsearch-1.1.0.deb')
-		end
-
-		if fact('osfamily') == 'RedHat'
-			scp_to(host, "#{files_dir}/elasticsearch-1.1.0.noarch.rpm", '/tmp/elasticsearch-1.1.0.noarch.rpm')
-		end
-
   end
+
+  # Copy over some files
+  if fact('osfamily') == 'Debian'
+		scp_to(host, "#{files_dir}/elasticsearch-1.1.0.deb", '/tmp/elasticsearch-1.1.0.deb')
+	end
+
+	if fact('osfamily') == 'RedHat'
+		scp_to(host, "#{files_dir}/elasticsearch-1.1.0.noarch.rpm", '/tmp/elasticsearch-1.1.0.noarch.rpm')
+	end
+
 end
 
 RSpec.configure do |c|
