@@ -23,7 +23,7 @@ describe 'elasticsearch', :type => 'class' do
 
       context 'main class tests' do
 
-				it { should compile.with_all_deps }
+        it { should compile.with_all_deps }
         # init.pp
         it { should contain_anchor('elasticsearch::begin') }
         it { should contain_anchor('elasticsearch::end').that_requires('Class[elasticsearch::service]') }
@@ -37,7 +37,7 @@ describe 'elasticsearch', :type => 'class' do
         it { should contain_file('/etc/elasticsearch/elasticsearch.yml') }
         it { should contain_exec('mkdir_templates_elasticsearch').with(:command => 'mkdir -p /etc/elasticsearch/templates_import', :creates => '/etc/elasticsearch/templates_import') }
         it { should contain_file('/etc/elasticsearch/templates_import').with(:require => 'Exec[mkdir_templates_elasticsearch]') }
-				it { should contain_file('/usr/share/elasticsearch/plugins') }
+        it { should contain_file('/usr/share/elasticsearch/plugins') }
       end
 
       context 'package installation' do
@@ -46,7 +46,7 @@ describe 'elasticsearch', :type => 'class' do
 
           context 'with default settings' do
 
-           it { should contain_package('elasticsearch').with(:ensure => 'present') }
+            it { should contain_package('elasticsearch').with(:ensure => 'present') }
 
           end
 
@@ -199,7 +199,7 @@ describe 'elasticsearch', :type => 'class' do
 
           context 'no service restart when defaults change' do
 
-           let (:params) {
+            let (:params) {
               default_params.merge({
                 :init_defaults     => { 'ES_USER' => 'root', 'ES_GROUP' => 'root', 'ES_JAVA_OPTS' => '"-server -XX:+UseTLAB -XX:+CMSClassUnloadingEnabled"' },
                 :restart_on_change => false
@@ -253,15 +253,15 @@ describe 'elasticsearch', :type => 'class' do
 
       context 'when setting the module to absent' do
 
-         let (:params) {
-           default_params.merge({
-             :ensure => 'absent'
-           })
-         }
+        let (:params) {
+          default_params.merge({
+            :ensure => 'absent'
+          })
+        }
 
-         it { should contain_file('/etc/elasticsearch').with(:ensure => 'absent', :force => true, :recurse => true) }
-         it { should contain_package('elasticsearch').with(:ensure => 'purged') }
-         it { should contain_service('elasticsearch').with(:ensure => 'stopped', :enable => false) }
+        it { should contain_file('/etc/elasticsearch').with(:ensure => 'absent', :force => true, :recurse => true) }
+        it { should contain_package('elasticsearch').with(:ensure => 'purged') }
+        it { should contain_service('elasticsearch').with(:ensure => 'stopped', :enable => false) }
 
       end
 

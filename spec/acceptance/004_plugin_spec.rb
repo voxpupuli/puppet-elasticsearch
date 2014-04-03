@@ -6,13 +6,13 @@ describe "elasticsearch plugin define:" do
 
   case fact('osfamily')
     when 'RedHat'
-			service_name  = 'elasticsearch'
-			package_name  = 'elasticsearch'
-			pid_file      = '/var/run/elasticsearch/elasticsearch.pid'
+      service_name  = 'elasticsearch'
+      package_name  = 'elasticsearch'
+      pid_file      = '/var/run/elasticsearch/elasticsearch.pid'
     when 'Debian'
-			service_name  = 'elasticsearch'
-			package_name  = 'elasticsearch'
-			pid_file      = '/var/run/elasticsearch.pid'
+      service_name  = 'elasticsearch'
+      package_name  = 'elasticsearch'
+      pid_file      = '/var/run/elasticsearch.pid'
   end
 
 
@@ -25,7 +25,7 @@ describe "elasticsearch plugin define:" do
 
       # Run it twice and test for idempotency
       apply_manifest(pp, :catch_failures => true)
-			sleep 5
+      sleep 5
       expect(apply_manifest(pp, :catch_failures => true).exit_code).to be_zero
     end
 
@@ -39,10 +39,10 @@ describe "elasticsearch plugin define:" do
         it { should be_installed }
       end
 
-			describe file(pid_file) do
-	      it { should be_file }
-				its(:content) { should match /[0-9]+/ }
-			end
+      describe file(pid_file) do
+        it { should be_file }
+        its(:content) { should match /[0-9]+/ }
+      end
     end
 
     describe port(9200) do
@@ -82,9 +82,9 @@ describe "elasticsearch plugin define:" do
     describe "Install a non existing plugin" do
 
       it 'should run successfully' do
-				pp = "class { 'elasticsearch': config => { 'node.name' => 'elasticearch001', 'cluster.name' => '#{cluster_name}' }, manage_repo => true, repo_version => '1.0', java_install => true }
+        pp = "class { 'elasticsearch': config => { 'node.name' => 'elasticearch001', 'cluster.name' => '#{cluster_name}' }, manage_repo => true, repo_version => '1.0', java_install => true }
               elasticsearch::plugin{'elasticsearch/non-existing': module_dir => 'non-existing' }
-	     "
+        "
         #  Run it twice and test for idempotency
         apply_manifest(pp, :expect_failures => true)
       end
@@ -100,13 +100,13 @@ describe "elasticsearch plugin define:" do
   describe "install plugin while running ES under user 'root'" do
 
     it 'should run successfully' do
-			pp = "class { 'elasticsearch': config => { 'node.name' => 'elasticsearch001', 'cluster.name' => '#{cluster_name}' }, manage_repo => true, repo_version => '1.0', java_install => true, elasticsearch_user => 'root', elasticsearch_group => 'root' }
+      pp = "class { 'elasticsearch': config => { 'node.name' => 'elasticsearch001', 'cluster.name' => '#{cluster_name}' }, manage_repo => true, repo_version => '1.0', java_install => true, elasticsearch_user => 'root', elasticsearch_group => 'root' }
             elasticsearch::plugin{'lmenezes/elasticsearch-kopf': module_dir => 'kopf' }
-           "
+      "
 
       # Run it twice and test for idempotency
       apply_manifest(pp, :catch_failures => true)
-			sleep 5
+      sleep 5
       expect(apply_manifest(pp, :catch_failures => true).exit_code).to be_zero
     end
 
@@ -120,10 +120,10 @@ describe "elasticsearch plugin define:" do
         it { should be_installed }
       end
 
-			describe file(pid_file) do
-	      it { should be_file }
-				its(:content) { should match /[0-9]+/ }
-			end
+      describe file(pid_file) do
+        it { should be_file }
+        its(:content) { should match /[0-9]+/ }
+      end
     end
 
     describe port(9200) do
@@ -142,6 +142,6 @@ describe "elasticsearch plugin define:" do
       shell("/usr/bin/curl http://localhost:9200/_nodes/?plugin | grep kopf", {:acceptable_exit_codes => 0})
     end
 
-	end
+  end
 
 end

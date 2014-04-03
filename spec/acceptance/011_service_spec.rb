@@ -7,14 +7,14 @@ describe "Service tests:" do
   case fact('osfamily')
     when 'RedHat'
       defaults_file = '/etc/sysconfig/elasticsearch'
-			service_name  = 'elasticsearch'
-			package_name  = 'elasticsearch'
-			pid_file      = '/var/run/elasticsearch/elasticsearch.pid'
+      service_name  = 'elasticsearch'
+      package_name  = 'elasticsearch'
+      pid_file      = '/var/run/elasticsearch/elasticsearch.pid'
     when 'Debian'
       defaults_file = '/etc/default/elasticsearch'
-			service_name  = 'elasticsearch'
-			package_name  = 'elasticsearch'
-			pid_file      = '/var/run/elasticsearch.pid'
+      service_name  = 'elasticsearch'
+      package_name  = 'elasticsearch'
+      pid_file      = '/var/run/elasticsearch.pid'
     when 'Suse'
       defaults_file = '/etc/sysconfig/elasticsearch'
   end
@@ -24,7 +24,7 @@ describe "Service tests:" do
 
     context "Change the defaults file" do
       it 'should run successfully' do
-				pp = "class { 'elasticsearch': manage_repo => true, repo_version => '1.0', java_install => true, config => { 'node.name' => 'elasticsearch001', 'cluster.name' => '#{cluster_name}' }, init_defaults => { 'ES_USER' => 'root', 'ES_JAVA_OPTS' => '\"-server -XX:+UseTLAB -XX:+CMSClassUnloadingEnabled\"' } }"
+        pp = "class { 'elasticsearch': manage_repo => true, repo_version => '1.0', java_install => true, config => { 'node.name' => 'elasticsearch001', 'cluster.name' => '#{cluster_name}' }, init_defaults => { 'ES_USER' => 'root', 'ES_JAVA_OPTS' => '\"-server -XX:+UseTLAB -XX:+CMSClassUnloadingEnabled\"' } }"
 
         # Run it twice and test for idempotency
         apply_manifest(pp, :catch_failures => true)
@@ -43,10 +43,10 @@ describe "Service tests:" do
         it { should be_installed }
       end
 
-			describe file(pid_file) do
-	      it { should be_file }
-				its(:content) { should match /[0-9]+/ }
-			end
+      describe file(pid_file) do
+        it { should be_file }
+        its(:content) { should match /[0-9]+/ }
+      end
     end
 
     describe port(9200) do
@@ -69,7 +69,7 @@ describe "Service tests:" do
 
       describe file(defaults_file) do
         its(:content) { should match /^ES_USER=root/ }
-				its(:content) { should match /^ES_JAVA_OPTS="-server -XX:\+UseTLAB -XX:\+CMSClassUnloadingEnabled"/ }
+        its(:content) { should match /^ES_JAVA_OPTS="-server -XX:\+UseTLAB -XX:\+CMSClassUnloadingEnabled"/ }
         its(:content) { should_not match /^ES_USER=elasticsearch/ }
       end
 
