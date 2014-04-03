@@ -10,21 +10,20 @@ describe "Elasticsearch class:" do
   when 'RedHat'
     package_name = 'elasticsearch'
 		service_name = 'elasticsearch'
-    url          = 'https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-1.0.0.noarch.rpm'
-    local        = '/tmp/elasticsearch-1.0.0.noarch.rpm'
-    puppet       = 'elasticsearch-1.0.0.noarch.rpm'
+    url          = 'https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-1.1.0.noarch.rpm'
+    local        = '/tmp/elasticsearch-1.1.0.noarch.rpm'
+    puppet       = 'elasticsearch-1.1.0.noarch.rpm'
 		pid_file     = '/var/run/elasticsearch/elasticsearch.pid'
   when 'Debian'
     package_name = 'elasticsearch'
 		service_name = 'elasticsearch'
-    url          = 'https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-1.0.0.deb'
-    local        = '/tmp/elasticsearch-1.0.0.deb'
-    puppet       = 'elasticsearch-1.0.0.deb'
+    url          = 'https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-1.1.0.deb'
+    local        = '/tmp/elasticsearch-1.1.0.deb'
+    puppet       = 'elasticsearch-1.1.0.deb'
 		pid_file     = '/var/run/elasticsearch.pid'
   end
 
   shell("mkdir -p #{default['distmoduledir']}/another/files")
-  curl_with_retries('Download package for local file test', default, "#{url} -o #{local}", 0)
   shell("cp #{local} #{default['distmoduledir']}/another/files/#{puppet}")
 
   context "install via http resource" do

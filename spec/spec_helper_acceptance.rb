@@ -16,6 +16,16 @@ hosts.each do |host|
 		  install_package host, 'ruby-devel augeas-devel libxml2-devel'
 			on host, 'gem install ruby-augeas --no-ri --no-rdoc'
 		end
+
+    # Copy over some files
+		if fact('osfamily') == 'Debian'
+			scp_to(host, "#{files_dir}/elasticsearch-1.1.0.deb", '/tmp/elasticsearch-1.1.0.deb')
+		end
+
+		if fact('osfamily') == 'RedHat'
+			scp_to(host, "#{files_dir}/elasticsearch-1.1.0.noarch.rpm", '/tmp/elasticsearch-1.1.0.noarch.rpm')
+		end
+
   end
 end
 
@@ -23,6 +33,7 @@ RSpec.configure do |c|
   # Project root
   proj_root = File.expand_path(File.join(File.dirname(__FILE__), '..'))
 
+  files_dir = ENV['files_dir'] || '/home/jenkins/puppet'
   # Readable test descriptions
   c.formatter = :documentation
 
@@ -33,11 +44,11 @@ RSpec.configure do |c|
     hosts.each do |host|
 
       if !host.is_pe?
-				scp_to(host, '/home/jenkins/puppet/puppetlabs-stdlib-3.2.0.tar.gz', '/tmp/puppetlabs-stdlib-3.2.0.tar.gz')
+				scp_to(host, "#{files_dir}/puppetlabs-stdlib-3.2.0.tar.gz", '/tmp/puppetlabs-stdlib-3.2.0.tar.gz')
 				on host, puppet('module','install','/tmp/puppetlabs-stdlib-3.2.0.tar.gz'), { :acceptable_exit_codes => [0,1] }
       end
       if fact('osfamily') == 'Debian'
-				scp_to(host, '/home/jenkins/puppet/puppetlabs-apt-1.4.2.tar.gz', '/tmp/puppetlabs-apt-1.4.2.tar.gz')
+				scp_to(host, "#{files_dir}/puppetlabs-apt-1.4.2.tar.gz", '/tmp/puppetlabs-apt-1.4.2.tar.gz')
 				on host, puppet('module','install','/tmp/puppetlabs-apt-1.4.2.tar.gz'), { :acceptable_exit_codes => [0,1] }
       end
       if fact('osfamily') == 'Suse'
