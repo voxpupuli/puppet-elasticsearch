@@ -6,6 +6,7 @@ gem 'puppet-lint'
 gem 'rspec-puppet', :git => 'https://github.com/rodjek/rspec-puppet.git'
 gem 'puppetlabs_spec_helper', '>= 0.1.0'
 gem 'rspec_junit_formatter'
+gem 'puppet-syntax'
 
 case RUBY_VERSION
 when '1.8.7'

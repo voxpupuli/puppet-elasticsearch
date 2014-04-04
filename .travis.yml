@@ -8,7 +8,6 @@ gemfile: .gemfiles/Gemfile.rspec
 script:
  - "bundle exec rake lint"
  - "bundle exec rake syntax"
- - "bundle exec rake template"
  - "bundle exec rake spec SPEC_OPTS='--format documentation'"
 env:
   - PUPPET_VERSION="~> 2.7.0"
