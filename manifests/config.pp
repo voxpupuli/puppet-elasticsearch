@@ -95,6 +95,8 @@ class elasticsearch::config {
 
     file { $elasticsearch::params::plugindir:
       ensure => 'directory',
+      owner   => $elasticsearch::elasticsearch_user,
+      group   => $elasticsearch::elasticsearch_group,
       mode   => '0644'
     }
 
