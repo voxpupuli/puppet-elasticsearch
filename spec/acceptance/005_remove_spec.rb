@@ -19,7 +19,6 @@ if fact('osfamily') != 'Suse'
       pp = "class { 'elasticsearch': ensure => 'absent' }"
 
       apply_manifest(pp, :catch_failures => true)
-      sleep 10
     end
 
     describe file('/etc/elasticsearch') do
@@ -32,7 +31,6 @@ if fact('osfamily') != 'Suse'
 
     describe port(9200) do
       it {
-        sleep 10
         should_not be_listening
       }
     end

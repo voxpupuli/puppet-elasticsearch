@@ -10,14 +10,14 @@ describe "Elasticsearch class:" do
   when 'RedHat'
     package_name = 'elasticsearch'
     service_name = 'elasticsearch'
-    url          = 'https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-1.1.0.noarch.rpm'
+    url          = 'http://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-1.1.0.noarch.rpm'
     local        = '/tmp/elasticsearch-1.1.0.noarch.rpm'
     puppet       = 'elasticsearch-1.1.0.noarch.rpm'
     pid_file     = '/var/run/elasticsearch/elasticsearch.pid'
   when 'Debian'
     package_name = 'elasticsearch'
     service_name = 'elasticsearch'
-    url          = 'https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-1.1.0.deb'
+    url          = 'http://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-1.1.0.deb'
     local        = '/tmp/elasticsearch-1.1.0.deb'
     puppet       = 'elasticsearch-1.1.0.deb'
     pid_file     = '/var/run/elasticsearch.pid'
@@ -33,7 +33,7 @@ describe "Elasticsearch class:" do
 
       # Run it twice and test for idempotency
       apply_manifest(pp, :catch_failures => true)
-      sleep 10
+      sleep 5 
       expect(apply_manifest(pp, :catch_failures => true).exit_code).to be_zero
 
     end
@@ -60,7 +60,7 @@ describe "Elasticsearch class:" do
 
     describe port(9200) do
       it {
-        sleep 10
+        sleep 5
         should_not be_listening
       }
     end
@@ -79,7 +79,7 @@ describe "Elasticsearch class:" do
 
       # Run it twice and test for idempotency
       apply_manifest(pp, :catch_failures => true)
-      sleep 10
+      sleep 5
       expect(apply_manifest(pp, :catch_failures => true).exit_code).to be_zero
 
     end
@@ -106,7 +106,7 @@ describe "Elasticsearch class:" do
 
     describe port(9200) do
       it {
-        sleep 10
+        sleep 5
         should_not be_listening
       }
     end
@@ -125,7 +125,7 @@ describe "Elasticsearch class:" do
 
       # Run it twice and test for idempotency
       apply_manifest(pp, :catch_failures => true)
-      sleep 10
+      sleep 5
       expect(apply_manifest(pp, :catch_failures => true).exit_code).to be_zero
 
     end
@@ -152,7 +152,7 @@ describe "Elasticsearch class:" do
 
     describe port(9200) do
       it {
-        sleep 10
+        sleep 5
         should_not be_listening
       }
     end

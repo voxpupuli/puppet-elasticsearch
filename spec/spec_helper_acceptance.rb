@@ -4,6 +4,11 @@ require 'securerandom'
 
 files_dir = ENV['files_dir'] || '/home/jenkins/puppet'
 
+proxy_host = ENV['proxy_host'] || ''
+
+gem_proxy = ''
+gem_proxy = "http_proxy=http://#{proxy_host}" unless proxy_host.empty?
+
 hosts.each do |host|
   # Install Puppet
   if host.is_pe?
@@ -11,14 +16,22 @@ hosts.each do |host|
   else
     puppetversion = ENV['VM_PUPPET_VERSION']
     install_package host, 'rubygems'
-    on host, "gem install puppet --no-ri --no-rdoc --version '~> #{puppetversion}'"
+    on host, "#{gem_proxy} gem install puppet --no-ri --no-rdoc --version '~> #{puppetversion}'"
     on host, "mkdir -p #{host['distmoduledir']}"
 
     if fact('osfamily') == 'Suse'
       install_package host, 'ruby-devel augeas-devel libxml2-devel'
-      on host, 'gem install ruby-augeas --no-ri --no-rdoc'
+      on host, "#{gem_proxy} gem install ruby-augeas --no-ri --no-rdoc"
     end
 
+  end
+
+  # Setup proxy if its enabled
+  if fact('osfamily') == 'Debian'
+	  on host, "echo 'Acquire::http::Proxy \"#{proxy_host}/\";' >> /etc/apt/apt.conf.d/10proxy" unless proxy_host.empty?
+  end
+  if fact('osfamily') == 'RedHat'
+    on host, "echo 'proxy=http://#{proxy_host}/' >> /etc/yum.conf" unless proxy_host.empty?
   end
 
   # Copy over some files

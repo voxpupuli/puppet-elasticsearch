@@ -46,7 +46,7 @@ describe "elasticsearch class:" do
 
     describe port(9200) do
       it {
-        sleep 10
+        sleep 5 
         should be_listening
       }
     end
