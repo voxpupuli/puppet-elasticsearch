@@ -28,7 +28,7 @@ hosts.each do |host|
 
   # Setup proxy if its enabled
   if fact('osfamily') == 'Debian'
-	  on host, "echo 'Acquire::http::Proxy \"#{proxy_host}/\";' >> /etc/apt/apt.conf.d/10proxy" unless proxy_host.empty?
+	  on host, "echo 'Acquire::http::Proxy \"http://#{proxy_host}/\";' >> /etc/apt/apt.conf.d/10proxy" unless proxy_host.empty?
   end
   if fact('osfamily') == 'RedHat'
     on host, "echo 'proxy=http://#{proxy_host}/' >> /etc/yum.conf" unless proxy_host.empty?

@@ -73,6 +73,7 @@ class elasticsearch::package {
         ensure  => 'directory',
         purge   => $elasticsearch::purge_package_dir,
         force   => $elasticsearch::purge_package_dir,
+        backup  => false,
         require => Exec['create_package_dir_elasticsearch'],
       }
 
@@ -155,7 +156,8 @@ class elasticsearch::package {
     file { $package_dir:
       ensure => 'absent',
       purge  => true,
-      force  => true
+      force  => true,
+      backup => false
     }
 
   }
