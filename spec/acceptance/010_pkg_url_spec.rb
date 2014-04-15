@@ -33,7 +33,6 @@ describe "Elasticsearch class:" do
 
       # Run it twice and test for idempotency
       apply_manifest(pp, :catch_failures => true)
-      sleep 5 
       expect(apply_manifest(pp, :catch_failures => true).exit_code).to be_zero
 
     end
@@ -45,6 +44,18 @@ describe "Elasticsearch class:" do
     describe file(pid_file) do
       it { should be_file }
       its(:content) { should match /[0-9]+/ }
+    end
+
+    describe port(9200) do
+      it {
+        sleep 10
+        should be_listening
+      }
+    end
+
+    describe service(service_name) do
+      it { should be_enabled }
+      it { should be_running }
     end
 
   end
@@ -60,7 +71,7 @@ describe "Elasticsearch class:" do
 
     describe port(9200) do
       it {
-        sleep 5
+        sleep 10
         should_not be_listening
       }
     end
@@ -79,7 +90,6 @@ describe "Elasticsearch class:" do
 
       # Run it twice and test for idempotency
       apply_manifest(pp, :catch_failures => true)
-      sleep 5
       expect(apply_manifest(pp, :catch_failures => true).exit_code).to be_zero
 
     end
@@ -91,6 +101,18 @@ describe "Elasticsearch class:" do
     describe file(pid_file) do
       it { should be_file }
       its(:content) { should match /[0-9]+/ }
+    end
+
+    describe port(9200) do
+      it {
+        sleep 10
+        should be_listening
+      }
+    end
+
+    describe service(service_name) do
+      it { should be_enabled }
+      it { should be_running }
     end
 
   end
@@ -106,7 +128,7 @@ describe "Elasticsearch class:" do
 
     describe port(9200) do
       it {
-        sleep 5
+        sleep 10
         should_not be_listening
       }
     end
@@ -137,6 +159,18 @@ describe "Elasticsearch class:" do
     describe file(pid_file) do
       it { should be_file }
       its(:content) { should match /[0-9]+/ }
+    end
+
+    describe port(9200) do
+      it {
+        sleep 10
+        should be_listening
+      }
+    end
+
+    describe service(service_name) do
+      it { should be_enabled }
+      it { should be_running }
     end
 
   end

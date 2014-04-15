@@ -28,7 +28,6 @@ describe "Service tests:" do
 
         # Run it twice and test for idempotency
         apply_manifest(pp, :catch_failures => true)
-        sleep 5
         expect(apply_manifest(pp, :catch_failures => true).exit_code).to be_zero
       end
     end
@@ -51,7 +50,7 @@ describe "Service tests:" do
 
     describe port(9200) do
       it {
-        sleep 5
+        sleep 10
         should be_listening
       }
     end
