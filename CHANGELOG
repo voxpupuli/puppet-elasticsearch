@@ -1,3 +1,7 @@
+0.3.1 ( April 22, 2014 )
+  Ensure we create the plugin directory before installing plugins
+  Added Puppet 3.5.x to rspec and system tests
+
 0.3.0 ( April 2, 2014 )
   Fix minor issue with yumrepo in repo class ( PR #92 )
   Implement OpenSuse support
