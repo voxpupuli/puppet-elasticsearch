@@ -80,7 +80,7 @@ define elasticsearch::plugin(
     'installed', 'present': {
       exec {"install_plugin_${name}":
         command  => $install_cmd,
-        creates  => "${elasticsearch::plugindir}/${module_dir}",
+        creates  => "${elasticsearch::params::plugindir}/${module_dir}",
         returns  => $exec_rets,
         notify   => $notify_service,
         require  => File[$elasticsearch::params::plugindir]
@@ -89,7 +89,7 @@ define elasticsearch::plugin(
     default: {
       exec {"remove_plugin_${name}":
         command => "${elasticsearch::plugintool} --remove ${module_dir}",
-        onlyif  => "test -d ${elasticsearch::plugindir}/${module_dir}",
+        onlyif  => "test -d ${elasticsearch::params::plugindir}/${module_dir}",
         notify  => $notify_service,
       }
     }
