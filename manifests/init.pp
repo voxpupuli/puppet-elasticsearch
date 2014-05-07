@@ -181,7 +181,7 @@ class elasticsearch(
   $init_defaults         = undef,
   $init_defaults_file    = undef,
   $init_template         = undef,
-  $config                = undef,
+  $config                = {},
   $datadir               = undef,
   $plugindir             = $elasticsearch::params::plugindir,
   $plugintool            = $elasticsearch::params::plugintool,
