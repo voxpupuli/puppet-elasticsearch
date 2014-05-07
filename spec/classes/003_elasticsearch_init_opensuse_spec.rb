@@ -46,7 +46,8 @@ describe 'elasticsearch', :type => 'class' do
 
           context 'with default settings' do
 
-           it { should contain_package('elasticsearch').with(:ensure => 'present') }
+            it { should contain_package('elasticsearch').with(:ensure => 'present') }
+            it { should_not contain_package('my-elasticsearch').with(:ensure => 'present') }
 
           end
 
@@ -59,6 +60,18 @@ describe 'elasticsearch', :type => 'class' do
             }
 
             it { should contain_package('elasticsearch').with(:ensure => '1.0') }
+          end
+
+          context 'with specified package name' do
+
+            let (:params) {
+              default_params.merge({
+                :package_name => 'my-elasticsearch'
+              })
+            }
+
+            it { should contain_package('my-elasticsearch').with(:ensure => 'present') }
+            it { should_not contain_package('elasticsearch').with(:ensure => 'present') }
           end
 
           context 'with auto upgrade enabled' do

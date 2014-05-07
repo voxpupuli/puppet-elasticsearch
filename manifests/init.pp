@@ -81,6 +81,9 @@
 # [*package_dir*]
 #   Directory where the packages are downloaded to
 #
+# [*package_name*]
+#   Name of the package to install
+#
 # [*purge_package_dir*]
 #   Purge package directory on removal
 #
@@ -171,6 +174,7 @@ class elasticsearch(
   $package_provider      = 'package',
   $package_url           = undef,
   $package_dir           = $elasticsearch::params::package_dir,
+  $package_name          = $elasticsearch::params::package,
   $purge_package_dir     = $elasticsearch::params::purge_package_dir,
   $package_dl_timeout    = $elasticsearch::params::package_dl_timeout,
   $elasticsearch_user    = $elasticsearch::params::elasticsearch_user,

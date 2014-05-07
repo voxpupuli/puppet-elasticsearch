@@ -55,7 +55,7 @@ class elasticsearch::package {
     if ($elasticsearch::package_url != undef) {
 
       case $elasticsearch::package_provider {
-        'package': { $before = Package[$elasticsearch::params::package]  }
+        'package': { $before = Package[$elasticsearch::package_name]  }
         default:   { fail("software provider \"${elasticsearch::software_provider}\".") }
       }
 
@@ -164,7 +164,7 @@ class elasticsearch::package {
 
   if ($elasticsearch::package_provider == 'package') {
 
-    package { $elasticsearch::params::package:
+    package { $elasticsearch::package_name:
       ensure   => $package_ensure,
       source   => $pkg_source,
       provider => $pkg_provider
