@@ -47,6 +47,7 @@ describe 'elasticsearch', :type => 'class' do
           context 'with default settings' do
 
             it { should contain_package('elasticsearch').with(:ensure => 'present') }
+            it { should_not contain_package('my-elasticsearch').with(:ensure => 'present') }
 
           end
 
@@ -59,6 +60,18 @@ describe 'elasticsearch', :type => 'class' do
             }
 
             it { should contain_package('elasticsearch').with(:ensure => '1.0') }
+          end
+
+          context 'with specified package name' do
+
+            let (:params) {
+              default_params.merge({
+                :package_name => 'my-elasticsearch'
+              })
+            }
+
+            it { should contain_package('my-elasticsearch').with(:ensure => 'present') }
+            it { should_not contain_package('elasticsearch').with(:ensure => 'present') }
           end
 
           context 'with auto upgrade enabled' do
@@ -208,7 +221,7 @@ describe 'elasticsearch', :type => 'class' do
 
             it { should contain_augeas('defaults_elasticsearch').with(:incl => '/etc/default/elasticsearch', :changes => "set ES_GROUP 'root'\nset ES_JAVA_OPTS '\"-server -XX:+UseTLAB -XX:+CMSClassUnloadingEnabled\"'\nset ES_USER 'root'\n").without_notify }
 
-          end 
+          end
 
           context 'and set init file via template' do
 
@@ -229,7 +242,7 @@ describe 'elasticsearch', :type => 'class' do
                 :init_template     => "elasticsearch/etc/init.d/elasticsearch.Debian.erb",
                 :restart_on_change => false
               })
-            } 
+            }
 
             it { should contain_file('/etc/init.d/elasticsearch').without_notify }
 
