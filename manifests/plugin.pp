@@ -50,6 +50,8 @@ define elasticsearch::plugin(
     $url         = ''
 ) {
 
+  include elasticsearch
+
   Exec {
     path => [ '/bin', '/usr/bin', '/usr/local/bin' ],
     cwd  => '/',
@@ -78,12 +80,20 @@ define elasticsearch::plugin(
 
   case $ensure {
     'installed', 'present': {
+      unless defined (File[$elasticsearch::plugindir]) {
+        file { $elasticsearch::plugindir:
+          ensure => directory,
+          mode   => '0644',
+          owner  => $elasticsearch::elasticsearch_user,
+          group  => $elasticsearch::elasticsearch_group,
+        }
+      }
       exec {"install_plugin_${name}":
         command  => $install_cmd,
         creates  => "${elasticsearch::plugindir}/${module_dir}",
         returns  => $exec_rets,
         notify   => $notify_service,
-        require  => File[$elasticsearch::params::plugindir]
+        require  => File[$elasticsearch::plugindir]
       }
     }
     default: {
