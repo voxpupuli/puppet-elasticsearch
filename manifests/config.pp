@@ -93,7 +93,7 @@ class elasticsearch::config {
       notify  => $notify_service
     }
 
-    file { $elasticsearch::params::plugindir:
+    file { $elasticsearch::plugindir:
       ensure => 'directory',
       mode   => '0644'
     }
