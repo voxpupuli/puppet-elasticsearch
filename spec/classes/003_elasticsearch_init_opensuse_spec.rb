@@ -22,7 +22,7 @@ describe 'elasticsearch', :type => 'class' do
 
       context 'Main class' do
 
-				it { should compile.with_all_deps }
+        it { should compile.with_all_deps }
         # init.pp
         it { should contain_anchor('elasticsearch::begin') }
         it { should contain_anchor('elasticsearch::end').that_requires('Class[elasticsearch::service]') }
@@ -36,7 +36,7 @@ describe 'elasticsearch', :type => 'class' do
         it { should contain_file('/etc/elasticsearch/elasticsearch.yml') }
         it { should contain_exec('mkdir_templates_elasticsearch').with(:command => 'mkdir -p /etc/elasticsearch/templates_import', :creates => '/etc/elasticsearch/templates_import') }
         it { should contain_file('/etc/elasticsearch/templates_import').with(:require => 'Exec[mkdir_templates_elasticsearch]') }
-				it { should contain_file('/usr/share/elasticsearch/plugins') }
+        it { should contain_file('/usr/share/elasticsearch/plugins') }
 
       end
 
@@ -179,6 +179,8 @@ describe 'elasticsearch', :type => 'class' do
         context 'with provider \'systemd\'' do
 
           it { should contain_elasticsearch__service__systemd('elasticsearch') }
+          it { should contain_exec('systemd_reload').with(:command => '/bin/systemctl daemon-reload') }
+          it { should contain_file('/usr/lib/systemd/system/elasticsearch.service').with(:notify => 'Exec[systemd_reload]', :before => 'Service[elasticsearch]') }
 
           context 'and default settings' do
 
