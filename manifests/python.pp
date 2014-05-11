@@ -56,9 +56,6 @@ define elasticsearch::python (
     'elasticsearch': {
       $provider = 'pip'
     }
-    'pyelasticsearch': {
-      $provider => 'pip'
-    }
     default: {
       fail("unknown python binding package '${name}'")
     }

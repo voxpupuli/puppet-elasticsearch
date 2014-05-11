@@ -8,14 +8,14 @@ describe 'elasticsearch::ruby', :type => 'define' do
     :osfamily => 'RedHat'
   } end
 
-  [ 'tire', 'stretcher', 'elastic_searchable', 'elasticsearch'].each do |rubylib|
+  [ 'tire', 'stretcher', 'elastic_searchable', 'elasticsearch', 'flex'].each do |rubylib|
 
     context "installation of library #{rubylib}" do
 
       let(:title) { rubylib }
 
       it { should contain_elasticsearch__ruby(rubylib) }
-      it { should contain_package(rubylib).with(:provider => 'gem') }
+      it { should contain_package("ruby_#{rubylib}").with(:provider => 'gem', :name => rubylib) }
 
     end
 

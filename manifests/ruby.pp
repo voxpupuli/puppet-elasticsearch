@@ -51,7 +51,7 @@ define elasticsearch::ruby (
       $provider = 'gem'
     }
     'flex': {
-      $provider => 'gem'
+      $provider = 'gem'
     }
     default: {
       fail("unknown ruby client package '${name}'")
