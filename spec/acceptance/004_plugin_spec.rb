@@ -46,7 +46,7 @@ describe "elasticsearch plugin define:" do
 
     describe port(9200) do
       it {
-        sleep 10
+        sleep 15
         should be_listening
       }
     end
@@ -56,7 +56,7 @@ describe "elasticsearch plugin define:" do
     end
 
     it 'make sure elasticsearch reports it as existing' do
-      sleep 10
+      sleep 15
       shell("/usr/bin/curl http://localhost:9200/_nodes/?plugin | grep head", {:acceptable_exit_codes => 0})
     end
 
@@ -126,7 +126,7 @@ describe "elasticsearch plugin define:" do
 
     describe port(9200) do
       it {
-        sleep 10
+        sleep 15
         should be_listening
       }
     end
@@ -136,7 +136,7 @@ describe "elasticsearch plugin define:" do
     end
 
     it 'make sure elasticsearch reports it as existing' do
-      sleep 10
+      sleep 15
       shell("/usr/bin/curl http://localhost:9200/_nodes/?plugin | grep kopf", {:acceptable_exit_codes => 0})
     end
 

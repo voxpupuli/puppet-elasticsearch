@@ -48,7 +48,7 @@ describe "Elasticsearch class:" do
 
     describe port(9200) do
       it {
-        sleep 10
+        sleep 15
         should be_listening
       }
     end
@@ -71,7 +71,7 @@ describe "Elasticsearch class:" do
 
     describe port(9200) do
       it {
-        sleep 10
+        sleep 15
         should_not be_listening
       }
     end
@@ -105,7 +105,7 @@ describe "Elasticsearch class:" do
 
     describe port(9200) do
       it {
-        sleep 10
+        sleep 15
         should be_listening
       }
     end
@@ -128,7 +128,7 @@ describe "Elasticsearch class:" do
 
     describe port(9200) do
       it {
-        sleep 10
+        sleep 15
         should_not be_listening
       }
     end
@@ -147,7 +147,6 @@ describe "Elasticsearch class:" do
 
       # Run it twice and test for idempotency
       apply_manifest(pp, :catch_failures => true)
-      sleep 5
       expect(apply_manifest(pp, :catch_failures => true).exit_code).to be_zero
 
     end
@@ -163,7 +162,7 @@ describe "Elasticsearch class:" do
 
     describe port(9200) do
       it {
-        sleep 10
+        sleep 15
         should be_listening
       }
     end
@@ -186,7 +185,7 @@ describe "Elasticsearch class:" do
 
     describe port(9200) do
       it {
-        sleep 5
+        sleep 15
         should_not be_listening
       }
     end

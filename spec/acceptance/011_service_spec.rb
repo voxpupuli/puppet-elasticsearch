@@ -50,7 +50,7 @@ describe "Service tests:" do
 
     describe port(9200) do
       it {
-        sleep 10
+        sleep 15
         should be_listening
       }
     end
