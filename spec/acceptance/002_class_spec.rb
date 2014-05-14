@@ -51,6 +51,10 @@ describe "elasticsearch class:" do
       }
     end
 
+    it 'make sure elasticsearch can serve requests' do
+      curl_with_retries('check ES', default, 'http://localhost:9200/?pretty=true', 0)
+    end
+
     describe file('/etc/elasticsearch/elasticsearch.yml') do
       it { should be_file }
       it { should contain 'name: elasticsearch001' }
