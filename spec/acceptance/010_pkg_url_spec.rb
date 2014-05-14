@@ -53,6 +53,10 @@ describe "Elasticsearch class:" do
       }
     end
 
+    it 'make sure elasticsearch can serve requests' do
+      curl_with_retries('check ES', default, 'http://localhost:9200/?pretty=true', 0)
+    end
+
     describe service(service_name) do
       it { should be_enabled }
       it { should be_running }
@@ -110,6 +114,10 @@ describe "Elasticsearch class:" do
       }
     end
 
+    it 'make sure elasticsearch can serve requests' do
+      curl_with_retries('check ES', default, 'http://localhost:9200/?pretty=true', 0)
+    end
+
     describe service(service_name) do
       it { should be_enabled }
       it { should be_running }
@@ -158,6 +166,10 @@ describe "Elasticsearch class:" do
     describe file(pid_file) do
       it { should be_file }
       its(:content) { should match /[0-9]+/ }
+    end
+
+    it 'make sure elasticsearch can serve requests' do
+      curl_with_retries('check ES', default, 'http://localhost:9200/?pretty=true', 0)
     end
 
     describe port(9200) do

@@ -31,7 +31,7 @@ describe "elasticsearch plugin define:" do
     if fact('osfamily') != 'Suse'
       describe service(service_name) do
         it { should be_enabled }
-        it { should be_running } 
+        it { should be_running }
       end
 
       describe package(package_name) do
@@ -56,8 +56,7 @@ describe "elasticsearch plugin define:" do
     end
 
     it 'make sure elasticsearch reports it as existing' do
-      sleep 15
-      shell("/usr/bin/curl http://localhost:9200/_nodes/?plugin | grep head", {:acceptable_exit_codes => 0})
+      curl_with_retries('validated plugin as installed', default, 'http://localhost:9200/_nodes/?plugin | grep head', 0)
     end
 
   end
@@ -111,7 +110,7 @@ describe "elasticsearch plugin define:" do
     if fact('osfamily') != 'Suse'
       describe service(service_name) do
         it { should be_enabled }
-        it { should be_running } 
+        it { should be_running }
       end
 
       describe package(package_name) do
@@ -136,8 +135,7 @@ describe "elasticsearch plugin define:" do
     end
 
     it 'make sure elasticsearch reports it as existing' do
-      sleep 15
-      shell("/usr/bin/curl http://localhost:9200/_nodes/?plugin | grep kopf", {:acceptable_exit_codes => 0})
+      curl_with_retries('validated plugin as installed', default, 'http://localhost:9200/_nodes/?plugin | grep kopf', 0)
     end
 
   end

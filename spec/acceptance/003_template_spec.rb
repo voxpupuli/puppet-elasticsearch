@@ -110,7 +110,7 @@ describe "elasticsearch template define:" do
     end
 
     it 'should report as existing in Elasticsearch' do
-      shell("/usr/bin/curl http://localhost:9200/_template/foo | grep logstash", {:acceptable_exit_codes => 0})
+      curl_with_retries('validate template as installed', default, 'http://localhost:9200/_template/foo | grep logstash', 0)
     end
   end
 
