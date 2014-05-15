@@ -141,6 +141,9 @@
 #   Default logging level for Elasticsearch.
 #   Defaults to: INFO
 #
+# [*use_stdlib_stages*]
+#   Use stdlib stage setup for managing the repo, instead of anchoring
+#
 # The default values for the parameters are set in elasticsearch::params. Have
 # a look at the corresponding <tt>params.pp</tt> manifest file if you need more
 # technical information about them.
@@ -195,7 +198,8 @@ class elasticsearch(
   $repo_version          = false,
   $logging_file          = undef,
   $logging_config        = undef,
-  $default_logging_level = $elasticsearch::params::default_logging_level
+  $default_logging_level = $elasticsearch::params::default_logging_level,
+  $repo_stage            = false
 ) inherits elasticsearch::params {
 
   anchor {'elasticsearch::begin': }
@@ -278,14 +282,30 @@ class elasticsearch(
   }
 
   if ($manage_repo == true) {
-    # Set up repositories
-    class { 'elasticsearch::repo': }
 
-    # Ensure that we set up the repositories before trying to install
-    # the packages
-    Anchor['elasticsearch::begin']
-    -> Class['elasticsearch::repo']
-    -> Class['elasticsearch::package']
+    if ($repo_stage == false) {
+      # use anchor for ordering
+
+      # Set up repositories
+      class { 'elasticsearch::repo': }
+
+      # Ensure that we set up the repositories before trying to install
+      # the packages
+      Anchor['elasticsearch::begin']
+      -> Class['elasticsearch::repo']
+      -> Class['elasticsearch::package']
+
+    } else {
+      # use staging for ordering
+
+      if !(defined(Stage[$repo_stage])) {
+        stage { $repo_stage:  before => Stage['main'] }
+      }
+
+      class { 'elasticsearch::repo':
+        stage => $repo_stage
+      }
+    }
   }
 
   #### Manage relationships
