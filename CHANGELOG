@@ -1,3 +1,10 @@
+0.3.2 ( May 15, 2014 )
+  Add support for SLC/Scientific Linux CERN ( PR #121 )
+  Add support for custom package names ( PR #122 )
+  Fix python and ruby client defines to avoid name clashes.
+  Add ability to use stage instead of anchor for repo class
+  Minor fixes to system tests
+
 0.3.1 ( April 22, 2014 )
   Ensure we create the plugin directory before installing plugins
   Added Puppet 3.5.x to rspec and system tests
