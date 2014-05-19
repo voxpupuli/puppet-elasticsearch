@@ -141,7 +141,7 @@
 #   Default logging level for Elasticsearch.
 #   Defaults to: INFO
 #
-# [*use_stdlib_stages*]
+# [*repo_stage*]
 #   Use stdlib stage setup for managing the repo, instead of anchoring
 #
 # The default values for the parameters are set in elasticsearch::params. Have
