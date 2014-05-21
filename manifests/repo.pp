@@ -45,7 +45,7 @@ class elasticsearch::repo {
         include_src => false,
       }
     }
-    'RedHat': {
+    'RedHat', 'Linux': {
       yumrepo { 'elasticsearch':
         descr    => 'elasticsearch repo',
         baseurl  => "http://packages.elasticsearch.org/elasticsearch/${elasticsearch::repo_version}/centos",
