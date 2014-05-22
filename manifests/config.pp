@@ -102,6 +102,10 @@ class elasticsearch::config {
         group   => $elasticsearch::elasticsearch_group,
         mode    => '0770',
       }
+    } else {
+      # Due to a 'bug' in Puppetlabs stdlib pre 4.2.0 when trying to merge a non existing variable it fails.
+      # This workaround can be removed when we move to puppetlabs-stdlib 4.2.x
+      $datadir_config = { }
     }
 
     $config = merge($tmp_config, $datadir_config)

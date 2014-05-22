@@ -1,6 +1,8 @@
 fixtures:
   repositories:
-    stdlib: git://github.com/puppetlabs/puppetlabs-stdlib.git
+    stdlib:
+      repo: "git://github.com/puppetlabs/puppetlabs-stdlib"
+      ref: "3.2.0"
     apt: git://github.com/puppetlabs/puppetlabs-apt.git
     zypprepo: https://github.com/deadpoint/puppet-zypprepo.git
   symlinks:
