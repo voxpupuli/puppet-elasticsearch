@@ -114,6 +114,19 @@ describe 'elasticsearch', :type => 'class' do
       } end
 
       it { should contain_file('/foo').with(:ensure => 'directory') }
+      it { should contain_file('/etc/elasticsearch/elasticsearch.yml').with(:content => "### MANAGED BY PUPPET ###\n---\npath: \n  data: /foo\n") }
+    end
+
+    context 'should allow creating multiple datadirs' do
+      let(:params) do {
+        :config  => { },
+        :datadir => ['/foo', '/foo2', '/foo3']
+      } end
+
+      it { should contain_file('/foo').with(:ensure => 'directory') }
+      it { should contain_file('/foo2').with(:ensure => 'directory') }
+      it { should contain_file('/foo3').with(:ensure => 'directory') }
+      it { should contain_file('/etc/elasticsearch/elasticsearch.yml').with(:content => "### MANAGED BY PUPPET ###\n---\npath: \n  data: \n      - /foo\n      - /foo2\n      - /foo3\n") }
     end
 
   end

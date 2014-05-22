@@ -36,7 +36,10 @@ class elasticsearch::config {
     cwd  => '/',
   }
 
+
   if ( $elasticsearch::ensure == 'present' ) {
+
+    $tmp_config = $elasticsearch::config
 
     $notify_service = $elasticsearch::restart_on_change ? {
       true  => Class['elasticsearch::service'],
@@ -48,13 +51,6 @@ class elasticsearch::config {
       mode   => '0644',
       purge  => $elasticsearch::purge_configdir,
       force  => $elasticsearch::purge_configdir
-    }
-
-    file { "${elasticsearch::configdir}/elasticsearch.yml":
-      ensure  => file,
-      content => template("${module_name}/etc/elasticsearch/elasticsearch.yml.erb"),
-      mode    => '0644',
-      notify  => $notify_service
     }
 
     exec { 'mkdir_templates_elasticsearch':
@@ -99,12 +95,21 @@ class elasticsearch::config {
     }
 
     if ( $elasticsearch::datadir != undef ) {
+      $datadir_config = { 'path.data' => $elasticsearch::datadir }
       file { $elasticsearch::datadir:
         ensure  => 'directory',
         owner   => $elasticsearch::elasticsearch_user,
         group   => $elasticsearch::elasticsearch_group,
         mode    => '0770',
       }
+    }
+
+    $config = merge($tmp_config, $datadir_config)
+    file { "${elasticsearch::configdir}/elasticsearch.yml":
+      ensure  => file,
+      content => template("${module_name}/etc/elasticsearch/elasticsearch.yml.erb"),
+      mode    => '0644',
+      notify  => $notify_service
     }
 
   } elsif ( $elasticsearch::ensure == 'absent' ) {
