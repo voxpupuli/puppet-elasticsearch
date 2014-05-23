@@ -53,9 +53,11 @@ define elasticsearch::plugin(
   include elasticsearch
 
   Exec {
-    path => [ '/bin', '/usr/bin', '/usr/local/bin' ],
-    cwd  => '/',
-    user => $elasticsearch::elasticsearch_user,
+    path      => [ '/bin', '/usr/bin', '/usr/local/bin' ],
+    cwd       => '/',
+    user      => $elasticsearch::elasticsearch_user,
+    tries     => 6,
+    try_sleep => 10
   }
 
   $notify_service = $elasticsearch::restart_on_change ? {
