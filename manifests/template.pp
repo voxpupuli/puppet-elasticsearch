@@ -68,50 +68,40 @@ define elasticsearch::template(
   # Build up the url
   $es_url = "http://${host}:${port}/_template/${name}"
 
-  # Can't do a replace and delete at the same time
-
   if ($ensure == 'present') {
 
     # Fail when no file is supplied
     if $file == undef {
       fail('The variable "file" cannot be empty when inserting or updating a template')
 
-    } else { # we are good to go. notify to insert in case we deleted
-      $insert_notify = Exec[ "insert_template_${name}" ]
+    } else { # we are good to go
+
+      # place the template file
+      file { "${elasticsearch::configdir}/templates_import/elasticsearch-template-${name}.json":
+        ensure  => 'present',
+        source  => $file,
+        require => Exec[ 'mkdir_templates_elasticsearch' ],
+        notify  => Exec[ "insert_template_${name}" ],
+      }
+
+      # insert the template into ES
+      exec { "insert_template_${name}":
+        command     => "curl -sL -XPUT ${es_url} -d @${elasticsearch::configdir}/templates_import/elasticsearch-template-${name}.json -o /dev/null -f",
+        unless      => "curl -s ${es_url} -f",
+        refreshonly => true,
+        loglevel    => 'debug'
+      }
     }
 
+  } elsif ($ensure == 'absent') {
+    # Delete the existing template
+    # First check if it exists of course
+    exec { "delete_template_${name}":
+      command     => "curl -s -XDELETE ${es_url} -f",
+      onlyif      => "curl -s -XGET ${es_url} -f",
+    }
   } else {
-
-    $insert_notify = undef
-
-  }
-
-  # Delete the existing template
-  # First check if it exists of course
-  exec { "delete_template_${name}":
-    command     => "curl -s -XDELETE ${es_url}",
-    onlyif      => "test $(curl -s '${es_url}?pretty=true' | wc -l) -gt 1",
-    notify      => $insert_notify,
-    refreshonly => true
-  }
-
-  if ($ensure == 'present') {
-
-    # place the template file
-    file { "${elasticsearch::configdir}/templates_import/elasticsearch-template-${name}.json":
-      ensure  => 'present',
-      source  => $file,
-      notify  => Exec[ "delete_template_${name}" ],
-      require => Exec[ 'mkdir_templates_elasticsearch' ],
-    }
-
-    exec { "insert_template_${name}":
-      command     => "curl -sL -w \"%{http_code}\\n\" -XPUT ${es_url} -d @${elasticsearch::configdir}/templates_import/elasticsearch-template-${name}.json -o /dev/null | egrep \"(200|201)\" > /dev/null",
-      unless      => "test $(curl -s '${es_url}?pretty=true' | wc -l) -gt 1",
-      refreshonly => true,
-      loglevel    => 'debug'
-    }
-
+    fail("\"${ensure}\" is not a valid ensure parameter value")
   }
 
 }
