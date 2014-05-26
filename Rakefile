@@ -17,7 +17,8 @@ begin
   require 'puppet-lint/tasks/puppet-lint'
   require 'puppet-syntax/tasks/puppet-syntax'
 
-	PuppetSyntax.exclude_paths = exclude_paths
+  PuppetSyntax.exclude_paths = exclude_paths
+  PuppetSyntax.future_parser = true if ENV['FUTURE_PARSER'] == 'true'
 
   PuppetLint.configuration.send("disable_80chars")
   PuppetLint.configuration.send("disable_class_inherits_from_params_class")

@@ -15,7 +15,7 @@ describe 'elasticsearch', :type => 'class' do
       let :params do {
 	:config => { },
         :manage_repo => true,
-        :repo_version => 1.3
+        :repo_version => '1.3'
       } end
 
       it { should contain_class('elasticsearch::repo').that_requires('Anchor[elasticsearch::begin]') }
@@ -27,7 +27,7 @@ describe 'elasticsearch', :type => 'class' do
       let :params do {
 	:config => { },
         :manage_repo => true,
-        :repo_version => 1.3,
+        :repo_version => '1.3',
         :repo_stage => 'setup'
       } end
 
