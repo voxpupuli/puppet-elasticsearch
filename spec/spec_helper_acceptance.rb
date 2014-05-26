@@ -26,12 +26,11 @@ hosts.each do |host|
     install_pe
   else
     puppetversion = ENV['VM_PUPPET_VERSION']
-    install_package host, 'rubygems'
     on host, "#{gem_proxy} gem install puppet --no-ri --no-rdoc --version '~> #{puppetversion}'"
     on host, "mkdir -p #{host['distmoduledir']}"
 
     if fact('osfamily') == 'Suse'
-      install_package host, 'ruby-devel augeas-devel libxml2-devel'
+      install_package host, 'rubygems ruby-devel augeas-devel libxml2-devel'
       on host, "#{gem_proxy} gem install ruby-augeas --no-ri --no-rdoc"
     end
 
