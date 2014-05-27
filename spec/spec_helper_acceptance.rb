@@ -45,6 +45,12 @@ hosts.each do |host|
     scp_to(host, "#{files_dir}/elasticsearch-1.1.0.noarch.rpm", '/tmp/elasticsearch-1.1.0.noarch.rpm')
   end
 
+  # on debian/ubuntu nodes ensure we get the latest info
+  # Can happen we have stalled data in the images
+  if fact('osfamily') == 'Debian'
+    on host, "apt-get update"
+  end
+
 end
 
 RSpec.configure do |c|
