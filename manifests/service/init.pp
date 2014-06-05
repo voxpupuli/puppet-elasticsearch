@@ -82,7 +82,7 @@ define elasticsearch::service::init(
 
     # defaults file content. Either from a hash or file
     if ($init_defaults_file != undef) {
-      file { "${elasticsearch::params::defaults_location}/${name}":
+      file { "${elasticsearch::params::defaults_location}/elasticsearch-${name}":
         ensure  => $ensure,
         source  => $init_defaults_file,
         owner   => 'root',
@@ -95,10 +95,10 @@ define elasticsearch::service::init(
     } elsif ($init_defaults != undef and is_hash($init_defaults) ) {
 
       $init_defaults_pre_hash = { 'ES_USER' => $elasticsearch::elasticsearch_user, 'ES_GROUP' => $elasticsearch::elasticsearch_group }
-      $init_defaults = merge($init_defaults_pre_hash, $elasticsearch::init_defaults)
+      $new_init_defaults = merge($init_defaults_pre_hash, $init_defaults)
 
       augeas { "defaults_${name}":
-        incl     => "${elasticsearch::params::defaults_location}/${name}",
+        incl     => "${elasticsearch::params::defaults_location}/elasticsearch-${name}",
         lens     => 'Shellvars.lns',
         changes  => template("${module_name}/etc/sysconfig/defaults.erb"),
         before   => Service[$name],
@@ -110,7 +110,7 @@ define elasticsearch::service::init(
     # init file from template
     if ($init_template != undef) {
 
-      file { "/etc/init.d/${name}":
+      file { "/etc/init.d/elasticsearch-${name}":
         ensure  => $ensure,
         content => template($init_template),
         owner   => 'root',
@@ -128,7 +128,7 @@ define elasticsearch::service::init(
   service { $name:
     ensure     => $service_ensure,
     enable     => $service_enable,
-    name       => $name,
+    name       => "elasticsearch-${name}",
     hasstatus  => $elasticsearch::params::service_hasstatus,
     hasrestart => $elasticsearch::params::service_hasrestart,
     pattern    => $elasticsearch::params::service_pattern,

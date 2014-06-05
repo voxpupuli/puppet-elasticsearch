@@ -38,20 +38,20 @@ define elasticsearch::service(
 
     init: {
       elasticsearch::service::init { $name:
-        ensure             => $elasticsearch::ensure,
-        status             => $elasticsearch::status,
-        init_defaults_file => undef,
-        init_defaults      => undef,
-        init_template      => undef,
+        ensure             => $ensure,
+        status             => $status,
+        init_defaults_file => $init_defaults_file,
+        init_defaults      => $init_defaults,
+        init_template      => $init_template,
       }
     }
     systemd: {
       elasticsearch::service::systemd { $name:
-        ensure             => $elasticsearch::ensure,
-        status             => $elasticsearch::status,
-        init_defaults_file => undef,
-        init_defaults      => undef,
-        init_template      => undef,
+        ensure             => $ensure,
+        status             => $status,
+        init_defaults_file => $init_defaults_file,
+        init_defaults      => $init_defaults,
+        init_template      => $init_template,
       }
     }
     default: {

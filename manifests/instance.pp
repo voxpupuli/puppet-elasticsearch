@@ -30,10 +30,22 @@ define elasticsearch::instance(
   $configdir      = undef,
   $datadir        = undef,
   $logging_file   = undef,
-  $logging_config = undef
+  $logging_config = undef,
+  $init_defaults  = undef
 ) {
 
   require elasticsearch
+  require elasticsearch::params
+
+  File {
+    owner => $elasticsearch::elasticsearch_user,
+    group => $elasticsearch::elasticsearch_group
+  }
+
+  Exec {
+    path => [ '/bin', '/usr/bin', '/usr/local/bin' ],
+    cwd  => '/',
+  }
 
   # ensure
   if ! ($ensure in [ 'present', 'absent' ]) {
@@ -107,11 +119,13 @@ define elasticsearch::instance(
       owner   => $elasticsearch::elasticsearch_user,
       group   => $elasticsearch::elasticsearch_group,
       mode    => '0770',
+      require => Class['elasticsearch::package']
     }
 
     exec { "mkdir_configdir_elasticsearch_${name}":
       command => "mkdir -p ${instance_configdir}",
-      creates => $elasticsearch::configdir
+      creates => $elasticsearch::configdir,
+      require => Class['elasticsearch::package']
     }
 
     file { $instance_configdir:
@@ -119,40 +133,57 @@ define elasticsearch::instance(
       mode    => '0644',
       purge   => $elasticsearch::purge_configdir,
       force   => $elasticsearch::purge_configdir,
-      require => Exec["mkdir_configdir_elasticsearch_${name}"]
+      require => [ Exec["mkdir_configdir_elasticsearch_${name}"], Class['elasticsearch::package'] ]
     }
 
     exec { "mkdir_templates_elasticsearch_${name}":
       command => "mkdir -p ${elasticsearch::configdir}/templates_import",
-      creates => "${elasticsearch::configdir}/templates_import"
+      creates => "${elasticsearch::configdir}/templates_import",
+      require => Class['elasticsearch::package']
     }
 
     file { "${instance_configdir}/templates_import":
       ensure  => 'directory',
       mode    => '0644',
-      require => Exec["mkdir_templates_elasticsearch_${name}"]
+      require => [ Exec["mkdir_templates_elasticsearch_${name}"], Class['elasticsearch::package'] ]
     }
 
-    file { "${elasticsearch::configdir}/logging.yml":
+    file { "${instance_configdir}/logging.yml":
       ensure  => file,
       content => $logging_content,
       source  => $logging_source,
       mode    => '0644',
-      notify  => $notify_service
+      notify  => $notify_service,
+      require => Class['elasticsearch::package']
     }
 
 
     # build up new config
-    $config_new = merge($elasticsearch::config, $instance_node_name, $instance_config, $instance_datadir_config)
+    $instance_conf = merge($elasticsearch::config, $instance_node_name, $instance_config, $instance_datadir_config)
 
     # defaults file content
-    $init_defaults_new = merge($elasticsearch::init_defaults, { 'CONF_DIR' => $instance_configdir, 'CONF_FILE' => "${instance_configdir}/elasticsearch.yml" } )
+
+    if (is_hash($elasticsearch::init_defaults)) {
+      $global_init_defaults = $elasticsearch::init_defaults
+    } else {
+      $global_init_defaults = { }
+    }
+
+    $instance_init_defaults_main = { 'CONF_DIR' => $instance_configdir, 'CONF_FILE' => "${instance_configdir}/elasticsearch.yml", 'LOG_DIR' => "/var/log/elasticsearch/${name}", 'ES_HOME' => '/usr/share/elasticsearch' }
+
+    if (is_hash($init_defaults)) {
+      $instance_init_defaults = $init_defaults
+    } else {
+      $instance_init_defaults = { }
+    }
+    $init_defaults_new = merge($global_init_defaults, $instance_init_defaults_main, $instance_init_defaults )
 
     file { "${instance_configdir}/elasticsearch.yml":
       ensure  => file,
       content => template("${module_name}/etc/elasticsearch/elasticsearch.yml.erb"),
       mode    => '0644',
-      notify  => $notify_service
+      notify  => $notify_service,
+      require => Class['elasticsearch::package']
     }
 
   } else {
@@ -165,9 +196,10 @@ define elasticsearch::instance(
 
   }
 
-  elasticsearch::service { "elasticsearch_${name}":
+  elasticsearch::service { ${name}:
     init_defaults => $init_defaults_new,
-    init_template => $elasticsearch::params::init_template
+    init_template => "${module_name}/etc/init.d/${elasticsearch::params::init_template}",
+    require       => Class['elasticsearch::package']
   }
 
 }

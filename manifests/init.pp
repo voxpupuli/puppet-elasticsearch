@@ -315,6 +315,7 @@ class elasticsearch(
     # we need the software before configuring it
     Anchor['elasticsearch::begin']
     -> Class['elasticsearch::package']
+    -> Class['elasticsearch::config']
 
   } else {
 
