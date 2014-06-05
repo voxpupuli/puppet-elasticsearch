@@ -19,14 +19,20 @@
 #
 # * Richard Pijnenburg <mailto:richard@ispavailability.com>
 #
-define elasticsearch::service::init{
+define elasticsearch::service::init(
+  $ensure             = $elasticsearch::ensure,
+  $status             = $elasticsearch::status,
+  $init_defaults_file = undef,
+  $init_defaults      = undef,
+  $init_template      = undef,
+) {
 
   #### Service management
 
   # set params: in operation
-  if $elasticsearch::ensure == 'present' {
+  if $ensure == 'present' {
 
-    case $elasticsearch::status {
+    case $status {
       # make sure service is currently running, start it on boot
       'enabled': {
         $service_ensure = 'running'
@@ -52,7 +58,7 @@ define elasticsearch::service::init{
       # note: don't forget to update the parameter check in init.pp if you
       #       add a new or change an existing status.
       default: {
-        fail("\"${elasticsearch::status}\" is an unknown service status value")
+        fail("\"${status}\" is an unknown service status value")
       }
     }
 
@@ -72,13 +78,13 @@ define elasticsearch::service::init{
   }
 
 
-  if ( $elasticsearch::status != 'unmanaged' ) {
+  if ( $status != 'unmanaged' ) {
 
     # defaults file content. Either from a hash or file
-    if ($elasticsearch::init_defaults_file != undef) {
+    if ($init_defaults_file != undef) {
       file { "${elasticsearch::params::defaults_location}/${name}":
-        ensure  => $elasticsearch::ensure,
-        source  => $elasticsearch::init_defaults_file,
+        ensure  => $ensure,
+        source  => $init_defaults_file,
         owner   => 'root',
         group   => 'root',
         mode    => '0644',
@@ -86,7 +92,7 @@ define elasticsearch::service::init{
         notify  => $notify_service
       }
 
-    } elsif ($elasticsearch::init_defaults != undef and is_hash($elasticsearch::init_defaults) ) {
+    } elsif ($init_defaults != undef and is_hash($init_defaults) ) {
 
       $init_defaults_pre_hash = { 'ES_USER' => $elasticsearch::elasticsearch_user, 'ES_GROUP' => $elasticsearch::elasticsearch_group }
       $init_defaults = merge($init_defaults_pre_hash, $elasticsearch::init_defaults)
@@ -102,11 +108,11 @@ define elasticsearch::service::init{
     }
 
     # init file from template
-    if ($elasticsearch::init_template != undef) {
+    if ($init_template != undef) {
 
       file { "/etc/init.d/${name}":
-        ensure  => $elasticsearch::ensure,
-        content => template($elasticsearch::init_template),
+        ensure  => $ensure,
+        content => template($init_template),
         owner   => 'root',
         group   => 'root',
         mode    => '0755',
@@ -122,7 +128,7 @@ define elasticsearch::service::init{
   service { $name:
     ensure     => $service_ensure,
     enable     => $service_enable,
-    name       => $elasticsearch::params::service_name,
+    name       => $name,
     hasstatus  => $elasticsearch::params::service_hasstatus,
     hasrestart => $elasticsearch::params::service_hasrestart,
     pattern    => $elasticsearch::params::service_pattern,

@@ -36,10 +36,7 @@ class elasticsearch::config {
     cwd  => '/',
   }
 
-
   if ( $elasticsearch::ensure == 'present' ) {
-
-    $tmp_config = $elasticsearch::config
 
     $notify_service = $elasticsearch::restart_on_change ? {
       true  => Class['elasticsearch::service'],
@@ -48,72 +45,12 @@ class elasticsearch::config {
 
     file { $elasticsearch::configdir:
       ensure => directory,
-      mode   => '0644',
-      purge  => $elasticsearch::purge_configdir,
-      force  => $elasticsearch::purge_configdir
-    }
-
-    exec { 'mkdir_templates_elasticsearch':
-      command => "mkdir -p ${elasticsearch::configdir}/templates_import",
-      creates => "${elasticsearch::configdir}/templates_import"
-    }
-
-    file { "${elasticsearch::configdir}/templates_import":
-      ensure  => 'directory',
-      mode    => '0644',
-      require => Exec['mkdir_templates_elasticsearch']
-    }
-
-    if ( $elasticsearch::logging_file != undef ) {
-      # Use the file provided
-      $logging_source  = $elasticsearch::logging_file
-      $logging_content = undef
-    } else {
-      # use our template, merge the defaults with custom logging
-
-      if(is_hash($elasticsearch::logging_config)) {
-        $logging_hash = merge($elasticsearch::params::logging_defaults, $elasticsearch::logging_config)
-      } else {
-        $logging_hash = $elasticsearch::params::logging_defaults
-      }
-
-      $logging_content = template("${module_name}/etc/elasticsearch/logging.yml.erb")
-      $logging_source  = undef
-    }
-
-    file { "${elasticsearch::configdir}/logging.yml":
-      ensure  => file,
-      content => $logging_content,
-      source  => $logging_source,
-      mode    => '0644',
-      notify  => $notify_service
+      mode   => '0644'
     }
 
     file { $elasticsearch::plugindir:
       ensure => 'directory',
       mode   => '0644'
-    }
-
-    if ( $elasticsearch::datadir != undef ) {
-      $datadir_config = { 'path.data' => $elasticsearch::datadir }
-      file { $elasticsearch::datadir:
-        ensure  => 'directory',
-        owner   => $elasticsearch::elasticsearch_user,
-        group   => $elasticsearch::elasticsearch_group,
-        mode    => '0770',
-      }
-    } else {
-      # Due to a 'bug' in Puppetlabs stdlib pre 4.2.0 when trying to merge a non existing variable it fails.
-      # This workaround can be removed when we move to puppetlabs-stdlib 4.2.x
-      $datadir_config = { }
-    }
-
-    $config = merge($tmp_config, $datadir_config)
-    file { "${elasticsearch::configdir}/elasticsearch.yml":
-      ensure  => file,
-      content => template("${module_name}/etc/elasticsearch/elasticsearch.yml.erb"),
-      mode    => '0644',
-      notify  => $notify_service
     }
 
   } elsif ( $elasticsearch::ensure == 'absent' ) {

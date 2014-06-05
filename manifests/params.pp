@@ -101,6 +101,7 @@ class elasticsearch::params {
       $installpath = '/opt/elasticsearch'
       $plugindir   = '/usr/share/elasticsearch/plugins'
       $plugintool  = '/usr/share/elasticsearch/bin/plugin'
+      $datadir     = '/var/lib/elasticsearch'
     }
     default: {
       fail("\"${module_name}\" provides no config directory default value
@@ -136,6 +137,7 @@ class elasticsearch::params {
       $service_pattern    = $service_name
       $service_providers  = [ 'init' ]
       $defaults_location  = '/etc/sysconfig'
+      $init_template      = 'elasticsearch.RedHat.erb'
     }
     'Debian', 'Ubuntu': {
       $service_name       = 'elasticsearch'
@@ -144,6 +146,7 @@ class elasticsearch::params {
       $service_pattern    = $service_name
       $service_providers  = [ 'init' ]
       $defaults_location  = '/etc/default'
+      $init_template      = 'elasticsearch.Debian.erb'
     }
     'Darwin': {
       $service_name       = 'FIXME/TODO'

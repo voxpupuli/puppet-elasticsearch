@@ -189,7 +189,7 @@ class elasticsearch(
   $init_defaults_file    = undef,
   $init_template         = undef,
   $config                = undef,
-  $datadir               = undef,
+  $datadir               = $elasticsearch::params::datadir,
   $plugindir             = $elasticsearch::params::plugindir,
   $plugintool            = $elasticsearch::params::plugintool,
   $java_install          = false,
@@ -269,7 +269,7 @@ class elasticsearch(
   class { 'elasticsearch::config': }
 
   # service(s)
-  class { 'elasticsearch::service': }
+  #class { 'elasticsearch::service': }
 
   if $java_install == true {
     # Install java
@@ -315,20 +315,11 @@ class elasticsearch(
     # we need the software before configuring it
     Anchor['elasticsearch::begin']
     -> Class['elasticsearch::package']
-    -> Class['elasticsearch::config']
-
-    # we need the software and a working configuration before running a service
-    Class['elasticsearch::package'] -> Class['elasticsearch::service']
-    Class['elasticsearch::config']  -> Class['elasticsearch::service']
-
-    Class['elasticsearch::service'] -> Anchor['elasticsearch::end']
 
   } else {
 
     # make sure all services are getting stopped before software removal
-    Anchor['elasticsearch::begin']
-    -> Class['elasticsearch::service']
-    -> Class['elasticsearch::package']
+    Class['elasticsearch::package']
     -> Anchor['elasticsearch::end']
 
   }

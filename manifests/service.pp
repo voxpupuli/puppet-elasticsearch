@@ -26,18 +26,36 @@
 #
 # * Richard Pijnenburg <mailto:richard@ispavailability.com>
 #
-class elasticsearch::service {
+define elasticsearch::service(
+  $ensure             = $elasticsearch::ensure,
+  $status             = $elasticsearch::status,
+  $init_defaults_file = undef,
+  $init_defaults      = undef,
+  $init_template      = undef,
+) {
 
   case $elasticsearch::real_service_provider {
 
     init: {
-      elasticsearch::service::init { 'elasticsearch': }
+      elasticsearch::service::init { $name:
+        ensure             => $elasticsearch::ensure,
+        status             => $elasticsearch::status,
+        init_defaults_file => undef,
+        init_defaults      => undef,
+        init_template      => undef,
+      }
     }
     systemd: {
-      elasticsearch::service::systemd { 'elasticsearch': }
+      elasticsearch::service::systemd { $name:
+        ensure             => $elasticsearch::ensure,
+        status             => $elasticsearch::status,
+        init_defaults_file => undef,
+        init_defaults      => undef,
+        init_template      => undef,
+      }
     }
     default: {
-      fail("Unknown service provider ${elasticsearch::service_provider}")
+      fail("Unknown service provider ${elasticsearch::real_service_provider}")
     }
 
   }
