@@ -45,7 +45,7 @@ describe "Data dir settings" do
 
     it 'should run successfully' do
       pp = "class { 'elasticsearch': config => { 'cluster.name' => '#{cluster_name}'}, manage_repo => true, repo_version => '1.0', java_install => true }
-            elasticsearch::instance { 'es-01': config => { 'node.name' => 'elasticsearch001', 'http.port' => '#{port_a}', datadir => '/var/lib/elasticsearch-data/0' } }
+            elasticsearch::instance { 'es-01': config => { 'node.name' => 'elasticsearch001', 'http.port' => '#{port_a}'}, datadir => '/var/lib/elasticsearch-data/0' }
            "
 
       # Run it twice and test for idempotency
@@ -92,13 +92,17 @@ describe "Data dir settings" do
       }
     end
 
+    describe('/var/lib/elasticsearch-data/0') do
+      it { should be_directory }
+    end
+
   end
 
   describe "multiple data dir's" do
 
     it 'should run successfully' do
       pp = "class { 'elasticsearch': config => { 'cluster.name' => '#{cluster_name}'}, manage_repo => true, repo_version => '1.0', java_install => true }
-            elasticsearch::instance { 'es-01': config => { 'node.name' => 'elasticsearch001', 'http.port' => '#{port_a}', datadir => [ '/var/lib/elasticsearch-data/0', '/var/lib/elasticsearch-data/1'] } }
+            elasticsearch::instance { 'es-01': config => { 'node.name' => 'elasticsearch001', 'http.port' => '#{port_a}' }, datadir => [ '/var/lib/elasticsearch-data/0', '/var/lib/elasticsearch-data/1'] }
            "
 
       # Run it twice and test for idempotency
@@ -149,6 +153,15 @@ describe "Data dir settings" do
       }
 
     end
+
+    describe('/var/lib/elasticsearch-data/0') do
+      it { should be_directory }
+    end
+
+    describe('/var/lib/elasticsearch-data/1') do
+      it { should be_directory }
+    end
+
 
   end
 
