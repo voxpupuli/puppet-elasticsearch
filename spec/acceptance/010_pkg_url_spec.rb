@@ -1,7 +1,5 @@
 require 'spec_helper_acceptance'
 
-if fact('osfamily') != 'Suse'
-
 describe "Elasticsearch class:" do
 
   cluster_name = SecureRandom.hex(10)
@@ -36,8 +34,20 @@ describe "Elasticsearch class:" do
       local          = '/tmp/elasticsearch-1.1.0.deb'
       puppet         = 'elasticsearch-1.1.0.deb'
     when 'Suse'
-      package_name = 'elasticsearch'
-      service_name = 'elasticsearch'
+      package_name   = 'elasticsearch'
+      service_name_a = 'elasticsearch-es-01'
+      service_name_b = 'elasticsearch-es-02'
+      service_name_c = 'elasticsearch-es-03'
+      pid_file_a     = '/var/run/elasticsearch/elasticsearch-es-01.pid'
+      pid_file_b     = '/var/run/elasticsearch/elasticsearch-es-02.pid'
+      pid_file_c     = '/var/run/elasticsearch/elasticsearch-es-03.pid'
+      port_a         = '9200'
+      port_b         = '9201'
+      port_c         = '9202'
+      url            = 'http://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-1.1.0.noarch.rpm'
+      local          = '/tmp/elasticsearch-1.1.0.noarch.rpm'
+      puppet         = 'elasticsearch-1.1.0.noarch.rpm'
+
   end
 
   shell("mkdir -p #{default['distmoduledir']}/another/files")
@@ -241,8 +251,6 @@ describe "Elasticsearch class:" do
       it { should_not be_enabled }
       it { should_not be_running }
     end
-
-  end
 
   end
 

@@ -24,8 +24,16 @@ require 'spec_helper_acceptance'
       port_b         = '9201'
       port_c         = '9202'
     when 'Suse'
-      package_name = 'elasticsearch'
-      service_name = 'elasticsearch'
+      package_name   = 'elasticsearch'
+      service_name_a = 'elasticsearch-es-01'
+      service_name_b = 'elasticsearch-es-02'
+      service_name_c = 'elasticsearch-es-03'
+      pid_file_a     = '/var/run/elasticsearch/elasticsearch-es-01.pid'
+      pid_file_b     = '/var/run/elasticsearch/elasticsearch-es-02.pid'
+      pid_file_c     = '/var/run/elasticsearch/elasticsearch-es-03.pid'
+      port_a         = '9200'
+      port_b         = '9201'
+      port_c         = '9202'
   end
 
 
