@@ -168,6 +168,9 @@ define elasticsearch::instance(
     }
     $init_defaults_new = merge($global_init_defaults, $instance_init_defaults_main, $instance_init_defaults )
 
+    $user = $elasticsearch::elasticsearch_user
+    $group = $elasticsearch::elasticsearch_group
+
     file { "${instance_configdir}/elasticsearch.yml":
       ensure  => file,
       content => template("${module_name}/etc/elasticsearch/elasticsearch.yml.erb"),

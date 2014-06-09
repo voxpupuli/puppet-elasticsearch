@@ -163,6 +163,7 @@ class elasticsearch::params {
       $service_pattern    = $service_name
       $service_providers  = 'systemd'
       $defaults_location  = '/etc/sysconfig'
+      $init_template      = 'elasticsearch.OpenSuSE.erb'
     }
     default: {
       fail("\"${module_name}\" provides no service parameters

@@ -19,14 +19,20 @@
 #
 # * Richard Pijnenburg <mailto:richard@ispavailability.com>
 #
-define elasticsearch::service::systemd{
+define elasticsearch::service::systemd(
+  $ensure             = $elasticsearch::ensure,
+  $status             = $elasticsearch::status,
+  $init_defaults_file = undef,
+  $init_defaults      = undef,
+  $init_template      = undef,
+) {
 
   #### Service management
 
   # set params: in operation
-  if $elasticsearch::ensure == 'present' {
+  if $ensure == 'present' {
 
-    case $elasticsearch::status {
+    case $status {
       # make sure service is currently running, start it on boot
       'enabled': {
         $service_ensure = 'running'
@@ -52,7 +58,7 @@ define elasticsearch::service::systemd{
       # note: don't forget to update the parameter check in init.pp if you
       #       add a new or change an existing status.
       default: {
-        fail("\"${elasticsearch::status}\" is an unknown service status value")
+        fail("\"${status}\" is an unknown service status value")
       }
     }
   } else {
@@ -63,17 +69,17 @@ define elasticsearch::service::systemd{
   }
 
   $notify_service = $elasticsearch::restart_on_change ? {
-    true  => Service['elasticsearch'],
+    true  => Service[$name],
     false => undef,
   }
 
-  if ( $elasticsearch::status != 'unmanaged' ) {
+  if ( $status != 'unmanaged' and $ensure == 'present' ) {
 
     # defaults file content. Either from a hash or file
-    if ($elasticsearch::init_defaults_file != undef) {
+    if ($init_defaults_file != undef) {
       file { "${elasticsearch::params::defaults_location}/${name}":
-        ensure  => $elasticsearch::ensure,
-        source  => $elasticsearch::init_defaults_file,
+        ensure  => $ensure,
+        source  => $init_defaults_file,
         owner   => 'root',
         group   => 'root',
         mode    => '0644',
@@ -81,10 +87,10 @@ define elasticsearch::service::systemd{
         notify  => $notify_service
       }
 
-    } elsif ($elasticsearch::init_defaults != undef and is_hash($elasticsearch::init_defaults) ) {
+    } elsif ($init_defaults != undef and is_hash($elasticsearch::init_defaults) ) {
 
       $init_defaults_pre_hash = { 'ES_USER' => $elasticsearch::elasticsearch_user, 'ES_GROUP' => $elasticsearch::elasticsearch_group }
-      $init_defaults = merge($init_defaults_pre_hash, $elasticsearch::init_defaults)
+      $init_defaults = merge($init_defaults_pre_hash, $init_defaults)
 
       augeas { "defaults_${name}":
         incl     => "${elasticsearch::params::defaults_location}/${name}",
@@ -96,11 +102,31 @@ define elasticsearch::service::systemd{
 
     }
 
-  }
+    # init file from template
+    if ($init_template != undef) {
 
-  file { '/usr/lib/systemd/system/elasticsearch.service':
-    notify => Exec['systemd_reload'],
-    before => Service[$name]
+      file { "/usr/lib/systemd/system/${name}.service":
+        ensure  => $ensure,
+        content => template($init_template),
+        notify  => Exec['systemd_reload'],
+        before  => Service[$name]
+      }
+
+    }
+
+  } else {
+
+    file { "/usr/lib/systemd/system/${name}.service":
+      ensure    => 'absent',
+      subscribe => Service[$name],
+      notify    => Exec['systemd_reload']
+    }
+
+    file { "${elasticsearch::params::defaults_location}/elasticsearch-${name}":
+      ensure    => 'absent',
+      subscribe => Service[$name]
+    }
+
   }
 
   exec { 'systemd_reload':
@@ -109,10 +135,10 @@ define elasticsearch::service::systemd{
   }
 
   # action
-  service { 'elasticsearch':
+  service { $name:
     ensure     => $service_ensure,
     enable     => $service_enable,
-    name       => "${elasticsearch::params::service_name}.service",
+    name       => "${name}.service",
     hasstatus  => $elasticsearch::params::service_hasstatus,
     hasrestart => $elasticsearch::params::service_hasrestart,
     pattern    => $elasticsearch::params::service_pattern,
