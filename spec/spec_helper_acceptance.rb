@@ -1,6 +1,7 @@
 require 'beaker-rspec'
 require 'pry'
 require 'securerandom'
+require 'rspec/its'
 
 files_dir = ENV['files_dir'] || '/home/jenkins/puppet'
 

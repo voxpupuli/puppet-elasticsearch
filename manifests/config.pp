@@ -53,14 +53,19 @@ class elasticsearch::config {
       mode   => '0644'
     }
 
-  } elsif ( $elasticsearch::ensure == 'absent' ) {
-
-    file { $elasticsearch::configdir:
-      ensure  => 'absent',
-      recurse => true,
-      force   => true
+    exec { "mkdir_templates_elasticsearch":
+      command => "mkdir -p ${elasticsearch::configdir}/templates_import",
+      creates => "${elasticsearch::configdir}/templates_import",
     }
 
+    file { "${elasticsearch::configdir}/templates_import":
+      ensure  => 'directory',
+      mode    => '0644',
+      require => [ Exec["mkdir_templates_elasticsearch"] ]
+    }
+
+  } elsif ( $elasticsearch::ensure == 'absent' ) {
+    # don't remove anything for now
   }
 
 }

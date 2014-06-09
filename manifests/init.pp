@@ -268,9 +268,6 @@ class elasticsearch(
   # configuration
   class { 'elasticsearch::config': }
 
-  # service(s)
-  #class { 'elasticsearch::service': }
-
   if $java_install == true {
     # Install java
     class { 'elasticsearch::java': }
@@ -320,8 +317,8 @@ class elasticsearch(
   } else {
 
     # make sure all services are getting stopped before software removal
-    Class['elasticsearch::package']
-    -> Anchor['elasticsearch::end']
+    Class['elasticsearch::config']
+    -> Class['elasticsearch::package']
 
   }
 

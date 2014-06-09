@@ -1,13 +1,13 @@
 #!/bin/sh
 #
-# elasticsearch <summary>
+# elasticsearch<%= @name %> <summary>
 #
 # chkconfig:   2345 80 20
 # description: Starts and stops a single elasticsearch instance on this system
 #
 
 ### BEGIN INIT INFO
-# Provides: Elasticsearch
+# Provides: Elasticsearch-<%= @name %>
 # Required-Start: $network $named
 # Required-Stop: $network $named
 # Default-Start: 2 3 4 5

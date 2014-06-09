@@ -78,7 +78,7 @@ define elasticsearch::service::init(
   }
 
 
-  if ( $status != 'unmanaged' ) {
+  if ( $status != 'unmanaged' and $ensure == 'present' ) {
 
     # defaults file content. Either from a hash or file
     if ($init_defaults_file != undef) {
@@ -120,6 +120,18 @@ define elasticsearch::service::init(
         notify  => $notify_service
       }
 
+    }
+
+  } else {
+
+    file { "/etc/init.d/elasticsearch-${name}":
+      ensure    => 'absent',
+      subscribe => Service[$name]
+    }
+
+    file { "${elasticsearch::params::defaults_location}/elasticsearch-${name}":
+      ensure    => 'absent',
+      subscribe => Service[$name]
     }
 
   }

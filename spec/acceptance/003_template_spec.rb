@@ -1,6 +1,35 @@
 require 'spec_helper_acceptance'
 
-good_json='{
+  case fact('osfamily')
+    when 'RedHat'
+      package_name = 'elasticsearch'
+      service_name_a = 'elasticsearch-es-01'
+      service_name_b = 'elasticsearch-es-02'
+      service_name_c = 'elasticsearch-es-03'
+      pid_file_a     = '/var/run/elasticsearch/elasticsearch-es-01.pid'
+      pid_file_b     = '/var/run/elasticsearch/elasticsearch-es-02.pid'
+      pid_file_c     = '/var/run/elasticsearch/elasticsearch-es-03.pid'
+      port_a         = '9200'
+      port_b         = '9201'
+      port_c         = '9202'
+    when 'Debian'
+      package_name = 'elasticsearch'
+      service_name_a = 'elasticsearch-es-01'
+      service_name_b = 'elasticsearch-es-02'
+      service_name_c = 'elasticsearch-es-03'
+      pid_file_a     = '/var/run/elasticsearch-es-01.pid'
+      pid_file_b     = '/var/run/elasticsearch-es-02.pid'
+      pid_file_c     = '/var/run/elasticsearch-es-03.pid'
+      port_a         = '9200'
+      port_b         = '9201'
+      port_c         = '9202'
+    when 'Suse'
+      package_name = 'elasticsearch'
+      service_name = 'elasticsearch'
+  end
+
+
+  good_json='{
   "template" : "logstash-*",
   "settings" : {
     "index.refresh_interval" : "5s",
@@ -45,7 +74,7 @@ good_json='{
 }
 '
 
-bad_json='{
+  bad_json='{
   "settings" : {
     "index.refresh_interval" : "5s",
     "analysis" : {
@@ -102,6 +131,7 @@ describe "elasticsearch template define:" do
 
     it 'should run successfully' do
       pp = "class { 'elasticsearch': config => { 'node.name' => 'elasticsearch001', 'cluster.name' => '#{cluster_name}' }, manage_repo => true, repo_version => '1.0', java_install => true }
+          elasticsearch::instance { 'es-01': config => { 'node.name' => 'elasticsearch001', 'http.port' => '#{port_a}' } }
           elasticsearch::template { 'foo': ensure => 'present', file => 'puppet:///modules/another/good.json' }"
 
       # Run it twice and test for idempotency
@@ -119,6 +149,7 @@ describe "elasticsearch template define:" do
 
       it 'run should fail' do
         pp = "class { 'elasticsearch': config => { 'node.name' => 'elasticsearch001', 'cluster.name' => '#{cluster_name}' }, manage_repo => true, repo_version => '1.0', java_install => true }
+             elasticsearch::instance { 'es-01': config => { 'node.name' => 'elasticsearch001', 'http.port' => '#{port_a}' } }
              elasticsearch::template { 'foo': ensure => 'present', file => 'puppet:///modules/another/bad.json' }"
 
         apply_manifest(pp, :expect_failures => true)
@@ -130,5 +161,37 @@ describe "elasticsearch template define:" do
     # The exit codes have changes since Puppet 3.2x
     # Since beaker expectations are based on the most recent puppet code All runs on previous versions fails.
   end
+
+  describe "module removal" do
+
+    it 'should run successfully' do
+      pp = "class { 'elasticsearch': ensure => 'absent' }
+            elasticsearch::instance{ 'es-01': ensure => 'absent' }
+           "
+
+      apply_manifest(pp, :catch_failures => true)
+    end
+
+    describe file('/etc/elasticsearch/es-01') do
+      it { should_not be_directory }
+    end
+
+    describe package(package_name) do
+      it { should_not be_installed }
+    end
+
+    describe port(port_a) do
+      it {
+        should_not be_listening
+      }
+    end
+
+    describe service(service_name_a) do
+      it { should_not be_enabled }
+      it { should_not be_running }
+    end
+
+  end
+
 
 end

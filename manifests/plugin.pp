@@ -46,6 +46,7 @@
 #
 define elasticsearch::plugin(
     $module_dir,
+    $instances,
     $ensure      = 'present',
     $url         = ''
 ) {
@@ -62,7 +63,7 @@ define elasticsearch::plugin(
 
   $notify_service = $elasticsearch::restart_on_change ? {
     false   => undef,
-    default => Service['elasticsearch'],
+    default => Elasticsearch::Service[$instances],
   }
 
   if ($module_dir != '') {

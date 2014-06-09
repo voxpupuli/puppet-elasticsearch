@@ -6,6 +6,7 @@ gem 'pry'
 gem 'docker-api'
 gem 'rubysl-securerandom'
 gem 'rspec_junit_formatter'
+gem 'rspec-its'
 
 case RUBY_VERSION
 when '1.8.7'

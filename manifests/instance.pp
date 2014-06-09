@@ -53,8 +53,15 @@ define elasticsearch::instance(
   }
 
   $notify_service = $elasticsearch::restart_on_change ? {
-    true  => Elasticsearch::Service["elasticsearch_${name}"],
+    true  => Elasticsearch::Service[$name],
     false => undef,
+  }
+
+  # Instance config directory
+  if ($configdir == undef) {
+    $instance_configdir = "${elasticsearch::configdir}/${name}"
+  } else {
+    $instance_configdir = $configdir
   }
 
   if ($ensure == 'present') {
@@ -70,17 +77,10 @@ define elasticsearch::instance(
       $instance_config = $config
     }
 
-    # Instance config directory
-    if ($configdir == undef) {
-      $instance_configdir = "${elasticsearch::configdir}/${name}"
-    } else {
-      $instance_configdir = $configdir
-    }
-
     # String or array for data dir(s)
     if ($datadir == undef) {
       if (is_array($elasticsearch::datadir)) {
-        $instance_datadir = suffix($elasticsearch::datadir, "/${name}")
+        $instance_datadir = array_suffix($elasticsearch::datadir, "/${name}")
       } else {
         $instance_datadir = "${elasticsearch::datadir}/${name}"
       }
@@ -113,7 +113,7 @@ define elasticsearch::instance(
       $logging_source = undef
     }
 
-    $instance_datadir_config = { 'data.path' => $instance_datadir }
+    $instance_datadir_config = { 'path.data' => $instance_datadir }
     file { $instance_datadir:
       ensure  => 'directory',
       owner   => $elasticsearch::elasticsearch_user,
@@ -136,18 +136,6 @@ define elasticsearch::instance(
       require => [ Exec["mkdir_configdir_elasticsearch_${name}"], Class['elasticsearch::package'] ]
     }
 
-    exec { "mkdir_templates_elasticsearch_${name}":
-      command => "mkdir -p ${elasticsearch::configdir}/templates_import",
-      creates => "${elasticsearch::configdir}/templates_import",
-      require => Class['elasticsearch::package']
-    }
-
-    file { "${instance_configdir}/templates_import":
-      ensure  => 'directory',
-      mode    => '0644',
-      require => [ Exec["mkdir_templates_elasticsearch_${name}"], Class['elasticsearch::package'] ]
-    }
-
     file { "${instance_configdir}/logging.yml":
       ensure  => file,
       content => $logging_content,
@@ -157,6 +145,8 @@ define elasticsearch::instance(
       require => Class['elasticsearch::package']
     }
 
+    $require = Class['elasticsearch::package']
+    $before = undef
 
     # build up new config
     $instance_conf = merge($elasticsearch::config, $instance_node_name, $instance_config, $instance_datadir_config)
@@ -191,15 +181,20 @@ define elasticsearch::instance(
     file { $instance_configdir:
       ensure  => 'absent',
       recurse => true,
-      force   => true
+      force   => true,
+      before  => Elasticsearch::Service[$name]
     }
+
+    $require = undef
+    $before = Class['elasticsearch::config']
 
   }
 
-  elasticsearch::service { ${name}:
+  elasticsearch::service { $name:
     init_defaults => $init_defaults_new,
     init_template => "${module_name}/etc/init.d/${elasticsearch::params::init_template}",
-    require       => Class['elasticsearch::package']
+    require       => $require,
+    before        => $before
   }
 
 }
