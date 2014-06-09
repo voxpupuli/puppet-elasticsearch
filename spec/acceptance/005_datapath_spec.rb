@@ -38,14 +38,17 @@ describe "Data dir settings" do
       port_a         = '9200'
       port_b         = '9201'
       port_c         = '9202'
-
   end
+
+  datadir_1 = '/var/lib/elasticsearch-data/1/'
+  datadir_2 = '/var/lib/elasticsearch-data/2/'
+  datadir_3 = '/var/lib/elasticsearch-data/3/'
 
   describe "Single data dir" do
 
     it 'should run successfully' do
       pp = "class { 'elasticsearch': config => { 'cluster.name' => '#{cluster_name}'}, manage_repo => true, repo_version => '1.0', java_install => true }
-            elasticsearch::instance { 'es-01': config => { 'node.name' => 'elasticsearch001', 'http.port' => '#{port_a}'}, datadir => '/var/lib/elasticsearch-data/0' }
+            elasticsearch::instance { 'es-01': config => { 'node.name' => 'elasticsearch001', 'http.port' => '#{port_a}'}, datadir => '#{datadir_1}' }
            "
 
       # Run it twice and test for idempotency
@@ -83,16 +86,16 @@ describe "Data dir settings" do
 
     describe file('/etc/elasticsearch/es-01/elasticsearch.yml') do
       it { should be_file }
-      it { should contain '/var/lib/elasticsearch-data/0' }
+      it { should contain "#{datadir_1}" }
     end
 
      describe "Elasticsearch config has the data path" do
       it {
-        curl_with_retries("check data path on #{port_a}", default, "http://localhost:#{port_a}/_nodes?pretty=true | grep /var/lib/elasticsearch-data/0", 0)
+        curl_with_retries("check data path on #{port_a}", default, "http://localhost:#{port_a}/_nodes?pretty=true | grep #{datadir_1}", 0)
       }
     end
 
-    describe('/var/lib/elasticsearch-data/0') do
+    describe file(datadir_1) do
       it { should be_directory }
     end
 
@@ -102,7 +105,7 @@ describe "Data dir settings" do
 
     it 'should run successfully' do
       pp = "class { 'elasticsearch': config => { 'cluster.name' => '#{cluster_name}'}, manage_repo => true, repo_version => '1.0', java_install => true }
-            elasticsearch::instance { 'es-01': config => { 'node.name' => 'elasticsearch001', 'http.port' => '#{port_a}' }, datadir => [ '/var/lib/elasticsearch-data/0', '/var/lib/elasticsearch-data/1'] }
+            elasticsearch::instance { 'es-01': config => { 'node.name' => 'elasticsearch001', 'http.port' => '#{port_a}' }, datadir => [ '#{datadir_2}', '#{datadir_3}'] }
            "
 
       # Run it twice and test for idempotency
@@ -140,28 +143,27 @@ describe "Data dir settings" do
 
     describe file('/etc/elasticsearch/es-01/elasticsearch.yml') do
       it { should be_file }
-      it { should contain '/var/lib/elasticsearch-data/0' }
-      it { should contain '/var/lib/elasticsearch-data/1' }
+      it { should contain "#{datadir_2}" }
+      it { should contain "#{datadir_3}" }
     end
 
      describe "Elasticsearch config has the data path" do
       it {
-        curl_with_retries("check data path on #{port_a}", default, "http://localhost:#{port_a}/_nodes?pretty=true | grep /var/lib/elasticsearch-data/0", 0)
+        curl_with_retries("check data path on #{port_a}", default, "http://localhost:#{port_a}/_nodes?pretty=true | grep #{datadir_2}", 0)
       }
       it {
-        curl_with_retries("check data path on #{port_a}", default, "http://localhost:#{port_a}/_nodes?pretty=true | grep /var/lib/elasticsearch-data/1", 0)
+        curl_with_retries("check data path on #{port_a}", default, "http://localhost:#{port_a}/_nodes?pretty=true | grep #{datadir_3}", 0)
       }
 
     end
 
-    describe('/var/lib/elasticsearch-data/0') do
+    describe file(datadir_1) do
       it { should be_directory }
     end
 
-    describe('/var/lib/elasticsearch-data/1') do
+    describe file(datadir_2) do
       it { should be_directory }
     end
-
 
   end
 

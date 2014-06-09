@@ -114,12 +114,25 @@ define elasticsearch::instance(
     }
 
     $instance_datadir_config = { 'path.data' => $instance_datadir }
+
+    if(is_array($instance_datadir)) {
+      $dirs = join($instance_datadir, " ")
+    } else {
+      $dirs = $instance_datadir
+    }
+
+    exec { "mkdir_datadir_elasticsearch_${name}":
+      command => "mkdir -p ${dirs}",
+      creates => $instance_datadir,
+      require => Class['elasticsearch::package']
+    }
+
     file { $instance_datadir:
       ensure  => 'directory',
       owner   => $elasticsearch::elasticsearch_user,
       group   => $elasticsearch::elasticsearch_group,
       mode    => '0770',
-      require => Class['elasticsearch::package']
+      require => [ Exec["mkdir_datadir_elasticsearch_${name}"], Class['elasticsearch::package'] ]
     }
 
     exec { "mkdir_configdir_elasticsearch_${name}":
