@@ -53,7 +53,7 @@ class elasticsearch::config {
       mode   => '0644'
     }
 
-    exec { "mkdir_templates_elasticsearch":
+    exec { 'mkdir_templates_elasticsearch':
       command => "mkdir -p ${elasticsearch::configdir}/templates_import",
       creates => "${elasticsearch::configdir}/templates_import",
     }
@@ -61,7 +61,7 @@ class elasticsearch::config {
     file { "${elasticsearch::configdir}/templates_import":
       ensure  => 'directory',
       mode    => '0644',
-      require => [ Exec["mkdir_templates_elasticsearch"] ]
+      require => [ Exec['mkdir_templates_elasticsearch'] ]
     }
 
   } elsif ( $elasticsearch::ensure == 'absent' ) {
