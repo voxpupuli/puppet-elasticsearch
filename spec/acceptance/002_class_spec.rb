@@ -100,7 +100,6 @@ describe "elasticsearch class:" do
       pp = "class { 'elasticsearch': config => { 'cluster.name' => '#{cluster_name}'}, manage_repo => true, repo_version => '1.0', java_install => true }
             elasticsearch::instance { 'es-01': config => { 'node.name' => 'elasticsearch001', 'http.port' => '#{port_a}' } }
             elasticsearch::instance { 'es-02': config => { 'node.name' => 'elasticsearch002', 'http.port' => '#{port_b}' } }
-            elasticsearch::instance { 'es-03': config => { 'node.name' => 'elasticsearch003', 'http.port' => '#{port_c}' } }
            "
 
       # Run it twice and test for idempotency
@@ -119,11 +118,6 @@ describe "elasticsearch class:" do
       it { should be_running }
     end
 
-    describe service(service_name_c) do
-      it { should be_enabled }
-      it { should be_running }
-    end
-
     describe package(package_name) do
       it { should be_installed }
     end
@@ -138,11 +132,6 @@ describe "elasticsearch class:" do
       its(:content) { should match /[0-9]+/ }
     end
 
-    describe file(pid_file_c) do
-      it { should be_file }
-      its(:content) { should match /[0-9]+/ }
-    end
-
     describe port(port_a) do
       it {
         should be_listening
@@ -150,13 +139,6 @@ describe "elasticsearch class:" do
     end
 
     describe port(port_b) do
-      it {
-        sleep 10
-        should be_listening
-      }
-    end
-
-    describe port(port_c) do
       it {
         sleep 10
         should be_listening
@@ -175,12 +157,6 @@ describe "elasticsearch class:" do
       }
     end
 
-    describe "make sure elasticsearch can serve requests #{port_c}" do
-      it {
-        curl_with_retries("check ES on #{port_c}", default, "http://localhost:#{port_c}/?pretty=true", 0)
-      }
-    end
-
     describe file('/etc/elasticsearch/es-01/elasticsearch.yml') do
       it { should be_file }
       it { should contain 'name: elasticsearch001' }
@@ -189,11 +165,6 @@ describe "elasticsearch class:" do
     describe file('/etc/elasticsearch/es-02/elasticsearch.yml') do
       it { should be_file }
       it { should contain 'name: elasticsearch002' }
-    end
-
-    describe file('/etc/elasticsearch/es-03/elasticsearch.yml') do
-      it { should be_file }
-      it { should contain 'name: elasticsearch003' }
     end
 
   end
@@ -205,7 +176,6 @@ describe "elasticsearch class:" do
       pp = "class { 'elasticsearch': ensure => 'absent' }
             elasticsearch::instance{ 'es-01': ensure => 'absent' }
             elasticsearch::instance{ 'es-02': ensure => 'absent' }
-            elasticsearch::instance{ 'es-03': ensure => 'absent' }
            "
 
       apply_manifest(pp, :catch_failures => true)

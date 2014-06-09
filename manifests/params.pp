@@ -101,7 +101,7 @@ class elasticsearch::params {
       $installpath = '/opt/elasticsearch'
       $plugindir   = '/usr/share/elasticsearch/plugins'
       $plugintool  = '/usr/share/elasticsearch/bin/plugin'
-      $datadir     = '/var/lib/elasticsearch'
+      $datadir     = '/usr/share/elasticsearch/data'
     }
     default: {
       fail("\"${module_name}\" provides no config directory default value
