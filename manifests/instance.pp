@@ -124,7 +124,8 @@ define elasticsearch::instance(
     exec { "mkdir_datadir_elasticsearch_${name}":
       command => "mkdir -p ${dirs}",
       creates => $instance_datadir,
-      require => Class['elasticsearch::package']
+      require => Class['elasticsearch::package'],
+      before  => Elasticsearch::Service[$name]
     }
 
     file { $instance_datadir:
@@ -132,13 +133,15 @@ define elasticsearch::instance(
       owner   => $elasticsearch::elasticsearch_user,
       group   => $elasticsearch::elasticsearch_group,
       mode    => '0770',
-      require => [ Exec["mkdir_datadir_elasticsearch_${name}"], Class['elasticsearch::package'] ]
+      require => [ Exec["mkdir_datadir_elasticsearch_${name}"], Class['elasticsearch::package'] ],
+      before  => Elasticsearch::Service[$name]
     }
 
     exec { "mkdir_configdir_elasticsearch_${name}":
       command => "mkdir -p ${instance_configdir}",
       creates => $elasticsearch::configdir,
-      require => Class['elasticsearch::package']
+      require => Class['elasticsearch::package'],
+      before  => Elasticsearch::Service[$name]
     }
 
     file { $instance_configdir:
@@ -146,7 +149,8 @@ define elasticsearch::instance(
       mode    => '0644',
       purge   => $elasticsearch::purge_configdir,
       force   => $elasticsearch::purge_configdir,
-      require => [ Exec["mkdir_configdir_elasticsearch_${name}"], Class['elasticsearch::package'] ]
+      require => [ Exec["mkdir_configdir_elasticsearch_${name}"], Class['elasticsearch::package'] ],
+      before  => Elasticsearch::Service[$name]
     }
 
     file { "${instance_configdir}/logging.yml":
@@ -155,7 +159,8 @@ define elasticsearch::instance(
       source  => $logging_source,
       mode    => '0644',
       notify  => $notify_service,
-      require => Class['elasticsearch::package']
+      require => Class['elasticsearch::package'],
+      before  => Elasticsearch::Service[$name]
     }
 
     $require = Class['elasticsearch::package']
