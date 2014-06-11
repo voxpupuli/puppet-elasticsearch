@@ -26,15 +26,12 @@ describe 'elasticsearch', :type => 'class' do
         it { should compile.with_all_deps }
         # init.pp
         it { should contain_anchor('elasticsearch::begin') }
-        it { should contain_anchor('elasticsearch::end').that_requires('Class[elasticsearch::service]') }
         it { should contain_class('elasticsearch::params') }
         it { should contain_class('elasticsearch::package').that_requires('Anchor[elasticsearch::begin]') }
         it { should contain_class('elasticsearch::config').that_requires('Class[elasticsearch::package]') }
-        it { should contain_class('elasticsearch::service').that_requires('Class[elasticsearch::package]').that_requires('Class[elasticsearch::config]') }
 
         # Base directories
         it { should contain_file('/etc/elasticsearch') }
-        it { should contain_file('/etc/elasticsearch/elasticsearch.yml') }
         it { should contain_exec('mkdir_templates_elasticsearch').with(:command => 'mkdir -p /etc/elasticsearch/templates_import', :creates => '/etc/elasticsearch/templates_import') }
         it { should contain_file('/etc/elasticsearch/templates_import').with(:require => 'Exec[mkdir_templates_elasticsearch]') }
         it { should contain_file('/usr/share/elasticsearch/plugins') }
@@ -174,96 +171,6 @@ describe 'elasticsearch', :type => 'class' do
 
       end # package
 
-      context 'service setup' do
-
-        context 'with provider \'init\'' do
-
-          it { should contain_elasticsearch__service__init('elasticsearch') }
-
-          context 'and default settings' do
-
-            it { should contain_service('elasticsearch').with(:ensure => 'running') }
-
-          end
-
-          context 'and set defaults via hash param' do
-
-            let (:params) {
-              default_params.merge({
-                :init_defaults => { 'ES_USER' => 'root', 'ES_GROUP' => 'root', 'ES_JAVA_OPTS' => '"-server -XX:+UseTLAB -XX:+CMSClassUnloadingEnabled"' }
-              })
-            }
-
-            it { should contain_augeas('defaults_elasticsearch').with(:notify => 'Service[elasticsearch]', :incl => '/etc/default/elasticsearch', :changes => "set ES_GROUP 'root'\nset ES_JAVA_OPTS '\"-server -XX:+UseTLAB -XX:+CMSClassUnloadingEnabled\"'\nset ES_USER 'root'\n") }
-
-          end
-
-          context 'and set defaults via file param' do
-
-            let (:params) {
-              default_params.merge({
-                :init_defaults_file => 'puppet:///path/to/elasticsearch.defaults'
-              })
-            }
-
-            it { should contain_file('/etc/default/elasticsearch').with(:source => 'puppet:///path/to/elasticsearch.defaults', :notify => 'Service[elasticsearch]') }
-
-          end
-
-          context 'no service restart when defaults change' do
-
-            let (:params) {
-              default_params.merge({
-                :init_defaults     => { 'ES_USER' => 'root', 'ES_GROUP' => 'root', 'ES_JAVA_OPTS' => '"-server -XX:+UseTLAB -XX:+CMSClassUnloadingEnabled"' },
-                :restart_on_change => false
-              })
-            }
-
-            it { should contain_augeas('defaults_elasticsearch').with(:incl => '/etc/default/elasticsearch', :changes => "set ES_GROUP 'root'\nset ES_JAVA_OPTS '\"-server -XX:+UseTLAB -XX:+CMSClassUnloadingEnabled\"'\nset ES_USER 'root'\n").without_notify }
-
-          end
-
-          context 'and set init file via template' do
-
-            let (:params) {
-              default_params.merge({
-                :init_template => "elasticsearch/etc/init.d/elasticsearch.Debian.erb"
-              })
-            }
-
-            it { should contain_file('/etc/init.d/elasticsearch').with(:notify => 'Service[elasticsearch]') }
-
-          end
-
-          context 'No service restart when restart_on_change is false' do
-
-            let (:params) {
-              default_params.merge({
-                :init_template     => "elasticsearch/etc/init.d/elasticsearch.Debian.erb",
-                :restart_on_change => false
-              })
-            }
-
-            it { should contain_file('/etc/init.d/elasticsearch').without_notify }
-
-          end
-
-          context 'when its unmanaged do nothing with it' do
-
-            let (:params) {
-              default_params.merge({
-                :status => 'unmanaged'
-              })
-            }
-
-            it { should contain_service('elasticsearch').with(:ensure => nil, :enable => false) }
-
-          end
-
-        end # provider init
-
-      end # Services
-
       context 'when setting the module to absent' do
 
         let (:params) {
@@ -272,9 +179,7 @@ describe 'elasticsearch', :type => 'class' do
           })
         }
 
-        it { should contain_file('/etc/elasticsearch').with(:ensure => 'absent', :force => true, :recurse => true) }
         it { should contain_package('elasticsearch').with(:ensure => 'purged') }
-        it { should contain_service('elasticsearch').with(:ensure => 'stopped', :enable => false) }
 
       end
 

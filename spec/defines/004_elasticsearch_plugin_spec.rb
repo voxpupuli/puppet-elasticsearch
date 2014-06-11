@@ -15,6 +15,7 @@ describe 'elasticsearch::plugin', :type => 'define' do
     let :params do {
       :ensure     => 'present',
       :module_dir => 'head',
+      :instances  => 'es-01'
     } end
 
     it { should contain_elasticsearch__plugin('mobz/elasticsearch-head') }
@@ -25,7 +26,8 @@ describe 'elasticsearch::plugin', :type => 'define' do
 
     let :params do {
       :ensure     => 'absent',
-      :module_dir => 'head'
+      :module_dir => 'head',
+      :instances  => 'es-01'
     } end
 
     it { should contain_elasticsearch__plugin('mobz/elasticsearch-head') }
