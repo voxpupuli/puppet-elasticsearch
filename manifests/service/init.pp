@@ -122,7 +122,7 @@ define elasticsearch::service::init(
 
     }
 
-  } else {
+  } elsif ($status != 'unmanaged') {
 
     file { "/etc/init.d/elasticsearch-${name}":
       ensure    => 'absent',
@@ -136,14 +136,19 @@ define elasticsearch::service::init(
 
   }
 
-  # action
-  service { $name:
-    ensure     => $service_ensure,
-    enable     => $service_enable,
-    name       => "elasticsearch-${name}",
-    hasstatus  => $elasticsearch::params::service_hasstatus,
-    hasrestart => $elasticsearch::params::service_hasrestart,
-    pattern    => $elasticsearch::params::service_pattern,
+
+  if ( $status != 'unmanaged') {
+
+    # action
+    service { $name:
+      ensure     => $service_ensure,
+      enable     => $service_enable,
+      name       => "elasticsearch-${name}",
+      hasstatus  => $elasticsearch::params::service_hasstatus,
+      hasrestart => $elasticsearch::params::service_hasrestart,
+      pattern    => $elasticsearch::params::service_pattern,
+    }
+
   }
 
 }
