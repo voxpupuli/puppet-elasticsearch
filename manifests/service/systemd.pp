@@ -69,15 +69,15 @@ define elasticsearch::service::systemd(
   }
 
   $notify_service = $elasticsearch::restart_on_change ? {
-    true  => Service[$name],
-    false => undef,
+    true  => [ Exec['systemd_reload'], Service[$name] ],
+    false => Exec['systemd_reload'],
   }
 
   if ( $status != 'unmanaged' and $ensure == 'present' ) {
 
     # defaults file content. Either from a hash or file
     if ($init_defaults_file != undef) {
-      file { "${elasticsearch::params::defaults_location}/${name}":
+      file { "${elasticsearch::params::defaults_location}/elasticsearch-${name}":
         ensure  => $ensure,
         source  => $init_defaults_file,
         owner   => 'root',
@@ -87,13 +87,13 @@ define elasticsearch::service::systemd(
         notify  => $notify_service
       }
 
-    } elsif ($init_defaults != undef and is_hash($elasticsearch::init_defaults) ) {
+    } elsif ($init_defaults != undef and is_hash($init_defaults) ) {
 
       $init_defaults_pre_hash = { 'ES_USER' => $elasticsearch::elasticsearch_user, 'ES_GROUP' => $elasticsearch::elasticsearch_group }
-      $init_defaults = merge($init_defaults_pre_hash, $init_defaults)
+      $new_init_defaults = merge($init_defaults_pre_hash, $init_defaults)
 
       augeas { "defaults_${name}":
-        incl     => "${elasticsearch::params::defaults_location}/${name}",
+        incl     => "${elasticsearch::params::defaults_location}/elasticsearch-${name}",
         lens     => 'Shellvars.lns',
         changes  => template("${module_name}/etc/sysconfig/defaults.erb"),
         before   => Service[$name],
@@ -105,18 +105,18 @@ define elasticsearch::service::systemd(
     # init file from template
     if ($init_template != undef) {
 
-      file { "/usr/lib/systemd/system/${name}.service":
+      file { "/usr/lib/systemd/system/elasticsearch-${name}.service":
         ensure  => $ensure,
         content => template($init_template),
-        notify  => Exec['systemd_reload'],
-        before  => Service[$name]
+        before  => Service[$name],
+        notify  => $notify_service
       }
 
     }
 
-  } else {
+  } elsif($status != 'unmanaged') {
 
-    file { "/usr/lib/systemd/system/${name}.service":
+    file { "/usr/lib/systemd/system/elasticsearch-${name}.service":
       ensure    => 'absent',
       subscribe => Service[$name],
       notify    => Exec['systemd_reload']
@@ -134,15 +134,19 @@ define elasticsearch::service::systemd(
     refreshonly => true,
   }
 
-  # action
-  service { $name:
-    ensure     => $service_ensure,
-    enable     => $service_enable,
-    name       => "${name}.service",
-    hasstatus  => $elasticsearch::params::service_hasstatus,
-    hasrestart => $elasticsearch::params::service_hasrestart,
-    pattern    => $elasticsearch::params::service_pattern,
-    provider   => 'systemd'
+  if ($status != 'unmanaged') {
+
+    # action
+    service { $name:
+      ensure     => $service_ensure,
+      enable     => $service_enable,
+      name       => "elasticsearch-${name}.service",
+      hasstatus  => $elasticsearch::params::service_hasstatus,
+      hasrestart => $elasticsearch::params::service_hasrestart,
+      pattern    => $elasticsearch::params::service_pattern,
+      provider   => 'systemd'
+    }
+
   }
 
 }
