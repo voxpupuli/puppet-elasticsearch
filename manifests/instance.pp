@@ -31,6 +31,7 @@ define elasticsearch::instance(
   $datadir        = undef,
   $logging_file   = undef,
   $logging_config = undef,
+  $logging_level  = $elasticsearch::default_logging_level,
   $init_defaults  = undef
 ) {
 
@@ -93,7 +94,7 @@ define elasticsearch::instance(
       $logging_source = $logging_file
       $logging_content = undef
     } elsif ($elasticsearch::logging_file != undef) {
-      $instance_source = $elasticsearch::logging_file
+      $logging_source = $elasticsearch::logging_file
       $logging_content = undef
     } else {
 
@@ -116,7 +117,7 @@ define elasticsearch::instance(
     $instance_datadir_config = { 'path.data' => $instance_datadir }
 
     if(is_array($instance_datadir)) {
-      $dirs = join($instance_datadir, " ")
+      $dirs = join($instance_datadir, ' ')
     } else {
       $dirs = $instance_datadir
     }

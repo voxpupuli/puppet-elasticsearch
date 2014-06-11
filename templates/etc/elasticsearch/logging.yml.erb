@@ -5,8 +5,8 @@
 # https://github.com/elasticsearch/elasticsearch/blob/master/config/logging.yml
 #
 
-es.logger.level: <%= scope.lookupvar('elasticsearch::default_logging_level') %>
-rootLogger: <%= scope.lookupvar('elasticsearch::default_logging_level') %>, console, file
+es.logger.level: <%= @logging_level %>
+rootLogger: <%= @logging_level %>, console, file
 
 # ----- Configuration set by Puppet ---------------------------------------------
 
