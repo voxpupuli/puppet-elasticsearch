@@ -18,6 +18,45 @@
 #   * This is thus destructive and should be used with care.
 #   Defaults to <tt>present</tt>.
 #
+# [*status*]
+#   String to define the status of the service. Possible values:
+#   * <tt>enabled</tt>: Service is running and will be started at boot time.
+#   * <tt>disabled</tt>: Service is stopped and will not be started at boot
+#     time.
+#   * <tt>running</tt>: Service is running but will not be started at boot time.
+#     You can use this to start a service on the first Puppet run instead of
+#     the system startup.
+#   * <tt>unmanaged</tt>: Service will not be started at boot time and Puppet
+#     does not care whether the service is running or not. For example, this may
+#     be useful if a cluster management software is used to decide when to start
+#     the service plus assuring it is running on the desired node.
+#   Defaults to <tt>enabled</tt>. The singular form ("service") is used for the
+#   sake of convenience. Of course, the defined status affects all services if
+#   more than one is managed (see <tt>service.pp</tt> to check if this is the
+#   case).
+#
+# [*config*]
+#   Elasticsearch configuration hash
+#
+# [*configdir*]
+#   Path to directory containing the elasticsearch configuration.
+#   Use this setting if your packages deviate from the norm (/etc/elasticsearch)
+#
+# [*datadir*]
+#   Allows you to set the data directory of Elasticsearch
+#
+# [*logging_file*]
+#   Instead of a hash you can supply a puppet:// file source for the logging.yml file
+#
+# [*logging_cnofig*]
+#   Hash representation of information you want in the logging.yml file
+#
+# [*logging_level*]
+#   Default logging level for Elasticsearch.
+#   Defaults to: INFO
+#
+# [*init_defaults*]
+#   Defaults file content in hash representation
 #
 # === Authors
 #
