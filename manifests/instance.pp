@@ -67,15 +67,24 @@ define elasticsearch::instance(
 
   if ($ensure == 'present') {
 
-    # Default node name to ensure its always set and unique
-    $instance_node_name = { 'node.name' => "${::hostname}-${name}" }
-
     # Configuration hash
     if ($config == undef) {
       $instance_config = {}
     } else {
       validate_hash($config)
       $instance_config = $config
+    }
+
+    if(has_key($instance_config, 'node.name')) {
+      $instance_node_name = {}
+    } elsif(has_key($instance_config,'node')) {
+      if(has_key($instance_config['node'], 'name')) {
+        $instance_node_name = {}
+      } else {
+        $instance_node_name = { 'node.name' => "${::hostname}-${name}" }
+      }
+    } else {
+      $instance_node_name = { 'node.name' => "${::hostname}-${name}" }
     }
 
     # String or array for data dir(s)
@@ -171,7 +180,6 @@ define elasticsearch::instance(
     $instance_conf = merge($elasticsearch::config, $instance_node_name, $instance_config, $instance_datadir_config)
 
     # defaults file content
-
     if (is_hash($elasticsearch::init_defaults)) {
       $global_init_defaults = $elasticsearch::init_defaults
     } else {
