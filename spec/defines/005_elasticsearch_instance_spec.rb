@@ -27,7 +27,7 @@ describe 'elasticsearch::instance', :type => 'define' do
     context "set a value" do
 
       let :params do {
-        :config => { 'node' => { 'name' => 'test' }  }
+        :config => { 'node.name' => 'test'   }
       } end
 
       it { should contain_file('/etc/elasticsearch/es-01/elasticsearch.yml').with(:content => "### MANAGED BY PUPPET ###\n---\nnode: \n  name: test\npath: \n  data: /usr/share/elasticsearch/data/es-01\n") }
@@ -57,7 +57,7 @@ describe 'elasticsearch::instance', :type => 'define' do
     context "deeper hash and multiple keys" do
 
       let :params do {
-        :config => { 'index' => { 'routing' => { 'allocation' => { 'include' => 'tag1', 'exclude' => [ 'tag2', 'tag3' ] } } }, 'node' => { 'name' => 'somename' } }
+        :config => { 'index' => { 'routing' => { 'allocation' => { 'include' => 'tag1', 'exclude' => [ 'tag2', 'tag3' ] } } }, 'node.name' => 'somename'  }
       } end
 
       it { should contain_file('/etc/elasticsearch/es-01/elasticsearch.yml').with(:content => "### MANAGED BY PUPPET ###\n---\nindex: \n  routing: \n    allocation: \n      exclude: \n             - tag2\n             - tag3\n      include: tag1\nnode: \n  name: somename\npath: \n  data: /usr/share/elasticsearch/data/es-01\n") }
@@ -112,15 +112,21 @@ describe 'elasticsearch::instance', :type => 'define' do
 
     context "default" do
       let(:pre_condition) { 'class {"elasticsearch": config => { } }'  }
+      it { should contain_exec('mkdir_configdir_elasticsearch_es-01') }
       it { should contain_file('/etc/elasticsearch/es-01').with(:ensure => 'directory') }
       it { should contain_file('/etc/elasticsearch/es-01/elasticsearch.yml') }
+      it { should contain_file('/etc/elasticsearch/es-01/logging.yml') }
     end
 
     context "Set in main class" do
       let(:pre_condition) { 'class {"elasticsearch": config => { }, configdir => "/etc/elasticsearch-config" }'  }
 
+      it { should contain_exec('mkdir_configdir_elasticsearch_es-01') }
+      it { should contain_file('/etc/elasticsearch-config').with(:ensure => 'directory') }
+      it { should contain_file('/etc/elasticsearch-config/templates_import').with(:ensure => 'directory') }
       it { should contain_file('/etc/elasticsearch-config/es-01').with(:ensure => 'directory') }
       it { should contain_file('/etc/elasticsearch-config/es-01/elasticsearch.yml') }
+      it { should contain_file('/etc/elasticsearch-config/es-01/logging.yml') }
     end
 
     context "set in instance" do
@@ -129,8 +135,11 @@ describe 'elasticsearch::instance', :type => 'define' do
         :configdir => '/etc/elasticsearch-config/es-01'
       } end
 
+      it { should contain_exec('mkdir_configdir_elasticsearch_es-01') }
+      it { should contain_file('/etc/elasticsearch').with(:ensure => 'directory') }
       it { should contain_file('/etc/elasticsearch-config/es-01').with(:ensure => 'directory') }
       it { should contain_file('/etc/elasticsearch-config/es-01/elasticsearch.yml') }
+      it { should contain_file('/etc/elasticsearch-config/es-01/logging.yml') }
     end
 
   end
@@ -147,7 +156,7 @@ describe 'elasticsearch::instance', :type => 'define' do
         :hostname => 'elasticsearch001'
       } end
 
-      it { should contain_elasticsearch__service('es-01').with(:init_template => 'elasticsearch/etc/init.d/elasticsearch.Debian.erb', :init_defaults => '{"CONF_DIR"=>"/etc/elasticsearch/es-01", "CONF_FILE"=>"/etc/elasticsearch/es-01/elasticsearch.yml", "LOG_DIR"=>"/var/log/elasticsearch/es-01", "ES_HOME"=>"/usr/share/elasticsearch"}') }
+      it { should contain_elasticsearch__service('es-01').with(:init_template => 'elasticsearch/etc/init.d/elasticsearch.Debian.erb', :init_defaults => {"CONF_DIR"=>"/etc/elasticsearch/es-01", "CONF_FILE"=>"/etc/elasticsearch/es-01/elasticsearch.yml", "LOG_DIR"=>"/var/log/elasticsearch/es-01", "ES_HOME"=>"/usr/share/elasticsearch"}) }
     end
 
     context "Redhat based" do
@@ -158,7 +167,7 @@ describe 'elasticsearch::instance', :type => 'define' do
         :hostname => 'elasticsearch001'
       } end
 
-      it { should contain_elasticsearch__service('es-01').with(:init_template => 'elasticsearch/etc/init.d/elasticsearch.RedHat.erb', :init_defaults => '{"CONF_DIR"=>"/etc/elasticsearch/es-01", "CONF_FILE"=>"/etc/elasticsearch/es-01/elasticsearch.yml", "LOG_DIR"=>"/var/log/elasticsearch/es-01", "ES_HOME"=>"/usr/share/elasticsearch"}') }
+      it { should contain_elasticsearch__service('es-01').with(:init_template => 'elasticsearch/etc/init.d/elasticsearch.RedHat.erb', :init_defaults => {"CONF_DIR"=>"/etc/elasticsearch/es-01", "CONF_FILE"=>"/etc/elasticsearch/es-01/elasticsearch.yml", "LOG_DIR"=>"/var/log/elasticsearch/es-01", "ES_HOME"=>"/usr/share/elasticsearch"}) }
     end
 
     context "OpenSuse based" do
@@ -169,7 +178,7 @@ describe 'elasticsearch::instance', :type => 'define' do
         :hostname => 'elasticsearch001'
       } end
 
-      it { should contain_elasticsearch__service('es-01').with(:init_template => 'elasticsearch/etc/init.d/elasticsearch.OpenSuSE.erb', :init_defaults => '{"CONF_DIR"=>"/etc/elasticsearch/es-01", "CONF_FILE"=>"/etc/elasticsearch/es-01/elasticsearch.yml", "LOG_DIR"=>"/var/log/elasticsearch/es-01", "ES_HOME"=>"/usr/share/elasticsearch"}') }
+      it { should contain_elasticsearch__service('es-01').with(:init_template => 'elasticsearch/etc/init.d/elasticsearch.OpenSuSE.erb', :init_defaults => {"CONF_DIR"=>"/etc/elasticsearch/es-01", "CONF_FILE"=>"/etc/elasticsearch/es-01/elasticsearch.yml", "LOG_DIR"=>"/var/log/elasticsearch/es-01", "ES_HOME"=>"/usr/share/elasticsearch"}) }
     end
 
   end
@@ -186,12 +195,14 @@ describe 'elasticsearch::instance', :type => 'define' do
     let(:pre_condition) { 'class {"elasticsearch": config => { } }'  }
 
     context "default" do
+      it { should contain_exec('mkdir_datadir_elasticsearch_es-01') }
       it { should contain_file('/etc/elasticsearch/es-01/elasticsearch.yml').with(:content => "### MANAGED BY PUPPET ###\n---\nnode: \n  name: elasticsearch001-es-01\npath: \n  data: /usr/share/elasticsearch/data/es-01\n" ) }
       it { should contain_file('/usr/share/elasticsearch/data/es-01').with( :ensure => 'directory') }
     end
 
     context "single from main config " do
       let(:pre_condition) { 'class {"elasticsearch": config => { }, datadir => "/var/lib/elasticsearch-data" }'  }
+      it { should contain_exec('mkdir_datadir_elasticsearch_es-01') }
       it { should contain_file('/etc/elasticsearch/es-01/elasticsearch.yml').with(:content => "### MANAGED BY PUPPET ###\n---\nnode: \n  name: elasticsearch001-es-01\npath: \n  data: /var/lib/elasticsearch-data/es-01\n" ) }
       it { should contain_file('/var/lib/elasticsearch-data/es-01').with( :ensure => 'directory') }
     end
@@ -202,12 +213,14 @@ describe 'elasticsearch::instance', :type => 'define' do
         :datadir => '/var/lib/elasticsearch/data'
       } end
 
+      it { should contain_exec('mkdir_datadir_elasticsearch_es-01') }
       it { should contain_file('/etc/elasticsearch/es-01/elasticsearch.yml').with(:content => "### MANAGED BY PUPPET ###\n---\nnode: \n  name: elasticsearch001-es-01\npath: \n  data: /var/lib/elasticsearch/data\n" ) }
       it { should contain_file('/var/lib/elasticsearch/data').with( :ensure => 'directory') }
     end
 
     context "multiple from main config" do
       let(:pre_condition) { 'class {"elasticsearch": config => { }, datadir => [ "/var/lib/elasticsearch-data01", "/var/lib/elasticsearch-data02"] }'  }
+      it { should contain_exec('mkdir_datadir_elasticsearch_es-01') }
       it { should contain_file('/etc/elasticsearch/es-01/elasticsearch.yml').with(:content => "### MANAGED BY PUPPET ###\n---\nnode: \n  name: elasticsearch001-es-01\npath: \n  data: \n      - /var/lib/elasticsearch-data01/es-01\n      - /var/lib/elasticsearch-data02/es-01\n" ) }
       it { should contain_file('/var/lib/elasticsearch-data01/es-01').with( :ensure => 'directory') }
       it { should contain_file('/var/lib/elasticsearch-data02/es-01').with( :ensure => 'directory') }
@@ -219,6 +232,7 @@ describe 'elasticsearch::instance', :type => 'define' do
         :datadir => ['/var/lib/elasticsearch-data/01', '/var/lib/elasticsearch-data/02']
       } end
 
+      it { should contain_exec('mkdir_datadir_elasticsearch_es-01') }
       it { should contain_file('/etc/elasticsearch/es-01/elasticsearch.yml').with(:content => "### MANAGED BY PUPPET ###\n---\nnode: \n  name: elasticsearch001-es-01\npath: \n  data: \n      - /var/lib/elasticsearch-data/01\n      - /var/lib/elasticsearch-data/02\n" ) }
       it { should contain_file('/var/lib/elasticsearch-data/01').with( :ensure => 'directory') }
       it { should contain_file('/var/lib/elasticsearch-data/02').with( :ensure => 'directory') }
