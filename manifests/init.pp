@@ -244,9 +244,7 @@ class elasticsearch(
 
   if $ensure == 'present' {
     # validate config hash
-    if ($config == undef) {
-      fail('Missing config hash')
-    } else {
+    if ($config != undef) {
       validate_hash($config)
     }
   }
