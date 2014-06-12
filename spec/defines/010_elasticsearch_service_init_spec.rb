@@ -18,6 +18,7 @@ describe 'elasticsearch::service::init', :type => 'define' do
       :status => 'enabled'
     } end
 
+    it { should contain_elasticsearch__service__init('es-01') }
     it { should contain_service('es-01').with(:ensure => 'running', :enable => true) }
   end
 
@@ -27,6 +28,7 @@ describe 'elasticsearch::service::init', :type => 'define' do
       :ensure => 'absent'
     } end
 
+    it { should contain_elasticsearch__service__init('es-01') }
     it { should contain_service('es-01').with(:ensure => 'stopped', :enable => false) }
   end
 
@@ -36,6 +38,7 @@ describe 'elasticsearch::service::init', :type => 'define' do
 	:status => 'unmanaged'
       } end
 
+    it { should contain_elasticsearch__service__init('es-01') }
       it { should_not contain_service('es-01') }
       it { should_not contain_file('/etc/init.d/elasticsearch-es-01') }
       it { should_not contain_file('/etc/sysconfig/elasticsearch-es-01') }

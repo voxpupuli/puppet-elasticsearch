@@ -18,6 +18,7 @@ describe 'elasticsearch::service::systemd', :type => 'define' do
       :status => 'enabled'
     } end
 
+    it { should contain_elasticsearch__service__systemd('es-01') }
     it { should contain_exec('systemd_reload').with(:command => '/bin/systemctl daemon-reload') }
     it { should contain_service('es-01').with(:ensure => 'running', :enable => true, :provider => 'systemd') }
   end
@@ -28,19 +29,21 @@ describe 'elasticsearch::service::systemd', :type => 'define' do
       :ensure => 'absent'
     } end
 
+    it { should contain_elasticsearch__service__systemd('es-01') }
     it { should contain_exec('systemd_reload').with(:command => '/bin/systemctl daemon-reload') }
     it { should contain_service('es-01').with(:ensure => 'stopped', :enable => false, :provider => 'systemd') }
   end
 
   context "unmanaged" do
-      let :params do {
-        :ensure => 'present',
-	:status => 'unmanaged'
-      } end
+    let :params do {
+      :ensure => 'present',
+      :status => 'unmanaged'
+    } end
 
-      it { should_not contain_service('es-01') }
-      it { should_not contain_file('/usr/lib/systemd/system/elasticsearch-es-01.service') }
-      it { should_not contain_file('/etc/sysconfig/elasticsearch-es-01') }
+    it { should contain_elasticsearch__service__systemd('es-01') }
+    it { should_not contain_service('es-01') }
+    it { should_not contain_file('/usr/lib/systemd/system/elasticsearch-es-01.service') }
+    it { should_not contain_file('/etc/sysconfig/elasticsearch-es-01') }
 
   end
 
