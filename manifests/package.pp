@@ -148,7 +148,11 @@ class elasticsearch::package {
   } else {
 
     $pkg_source = undef
-    $pkg_provider = undef
+    if ($::operatingsystem == 'OpenSuSE') {
+      $pkg_provider = 'rpm'
+    } else {
+      $pkg_provider = undef
+    }
     $package_ensure = 'absent'
 
     $package_dir = $elasticsearch::package_dir
@@ -165,9 +169,9 @@ class elasticsearch::package {
   if ($elasticsearch::package_provider == 'package') {
 
     package { $elasticsearch::package_name:
-      ensure   => $package_ensure,
-      source   => $pkg_source,
-      provider => $pkg_provider
+      ensure            => $package_ensure,
+      source            => $pkg_source,
+      provider          => $pkg_provider,
     }
 
   } else {
