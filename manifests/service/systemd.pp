@@ -164,9 +164,11 @@ define elasticsearch::service::systemd(
 
   }
 
-  exec { 'systemd_reload':
-    command     => '/bin/systemctl daemon-reload',
-    refreshonly => true,
+  if(!defined(Exec['systemd_reload'])) {
+    exec { 'systemd_reload':
+      command     => '/bin/systemctl daemon-reload',
+      refreshonly => true,
+    }
   }
 
   if ($status != 'unmanaged') {
