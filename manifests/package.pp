@@ -149,7 +149,7 @@ class elasticsearch::package {
 
     $pkg_source = undef
     $pkg_provider = undef
-    $package_ensure = 'purged'
+    $package_ensure = 'absent'
 
     $package_dir = $elasticsearch::package_dir
 
