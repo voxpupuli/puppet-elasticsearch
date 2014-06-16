@@ -1,228 +1,428 @@
-# puppet-elasticsearch
-
-A Puppet module for managing [elasticsearch nodes](http://www.elasticsearch.org/).
+#elasticsearch
 
 [![Build Status](https://travis-ci.org/elasticsearch/puppet-elasticsearch.png?branch=master)](https://travis-ci.org/elasticsearch/puppet-elasticsearch)
 
-## Requirements
+####Table of Contents
 
-* Puppet 2.7.x or better.
+1. [Overview](#overview)
+2. [Module description - What the module does and why it is useful](#module-description)
+3. [Setup - The basics of getting started with Elasticsearch](#setup)
+  * [What Elasticsearch affects](#what-elasticsearch-affects)
+  * [Requirements](#requirements)
+4. [Usage - Configuration options and additional functionality](#usage)
+5. [Advanced features - Extra information on advanced usage](#advanced-features)
+6. [Limitations - OS compatibility, etc.](#limitations)
+7. [Development - Guide for contributing to the module](#development)
+8. [Support - When you need help with this module](#support)
+
+
+
+##Overview
+
+This module manages Elasticsearch (http://www.elasticsearch.org/overview/elasticsearch/)
+
+##Module description
+
+The elasticsearch module sets up Elasticsearch instances and can manage plugins and templates.
+
+This module has been tested against ES 1.0 and up.
+
+##Setup
+
+###What elasticsearch affects
+
+* Elasticsearch repository files.
+* Elasticsearch package.
+* Elasticsearch configuration file.
+* Elasticsearch service.
+* Elasticsearch plugins.
+* Elasticsearch templates.
+
+###Requirements
+
 * The [stdlib](https://forge.puppetlabs.com/puppetlabs/stdlib) Puppet library.
 
-Optional:
-* The [apt](http://forge.puppetlabs.com/puppetlabs/apt) Puppet library when using repo management on Debian/Ubuntu.
+#### Repository management
+When using the repository management you will need the following dependency modules:
 
-## Usage examples
+* Debian/Ubuntu: [Puppetlabs/apt](http://forge.puppetlabs.com/puppetlabs/apt)
+* OpenSuSE: [Darin/zypprepo](https://forge.puppetlabs.com/darin/zypprepo)
 
-Installation, make sure service is running and will be started at boot time:
+##Usage
 
-     class { 'elasticsearch': }
+###Main class
 
-Install a certain version:
+####Install a certain version
 
-     class { 'elasticsearch':
-       version => '0.90.3'
-     }
+```puppet
+class { 'elasticsearch':
+  version => '1.2.1'
+}
+```
 
-This assumes an elasticsearch package is already available to your distribution's package manager. To install it in a different way:
+Note: This will only work when using the repository.
 
-To download from http/https/ftp source:
+####Automatic upgrade of the software ( default set to false )
+```
+class { 'elasticsearch':
+  autoupgrade => true
+}
+```
 
-     class { 'elasticsearch':
-       package_url => 'https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-0.90.7.deb'
-     }
+####Removal/decommissioning
+```puppet
+class { 'elasticsearch':
+  ensure => 'absent'
+}
+```
 
-To download from a puppet:// source:
+####Install everything but disable service(s) afterwards
+```puppet
+class { 'elasticsearch':
+  status => 'disabled'
+}
+```
 
-     class { 'elasticsearch':
-       package_url => 'puppet:///path/to/elasticsearch-0.90.7.deb'
-     }
+###Instances
 
-Or use a local file source:
+This module works with the concept of instances. If none are configured it will not start any on its own.
 
-     class { 'elasticsearch':
-       package_url => 'file:/path/to/elasticsearch-0.90.7.deb'
-     }
+####Quick setup
+```puppet
+elasticsearch::instance { 'es-01': }
+```
 
-Automatic upgrade of the software ( default set to false ):
+This will set up its own data directory and set the node name to `$hostname-$instance_name`
 
-     class { 'elasticsearch':
-       autoupgrade => true
-     }
+####Advanced options
 
-Removal/decommissioning:
+Instance specific options can be given:
 
-     class { 'elasticsearch':
-       ensure => 'absent'
-     }
+```puppet
+elasticsearch::instance { 'es-01':
+  config => { }, # Configuration hash
+  init_defaults => { }, # Init defaults hash
+  datadir => [ ], # Data directory
+}
+```
 
-Install everything but disable service(s) afterwards:
+See [Advanced features](#advanced-features) for more information
 
-     class { 'elasticsearch':
-       status => 'disabled'
-     }
-
-Disable automated restart of Elasticsearch on config file change:
-
-     class { 'elasticsearch':
-       restart_on_change => false
-     }
-
-For the config variable a hash needs to be passed:
-
-     class { 'elasticsearch':
-       config                   => {
-         'node'                 => {
-           'name'               => 'elasticsearch001'
-         },
-         'index'                => {
-           'number_of_replicas' => '0',
-           'number_of_shards'   => '5'
-         },
-         'network'              => {
-           'host'               => $::ipaddress
-         }
-       }
-     }
-
-Short write up of the config hash is also possible.
-
-Instead of writing the full hash representation:
-
-     class { 'elasticsearch':
-       config                 => {
-         'cluster'            => {
-           'name'             => 'ClusterName',
-           'routing'          => {
-             'allocation'     => {
-               'awareness'    => {
-                 'attributes' => 'rack'
-               }
-             }
-           }
-         }
-       }
-     }
-
-You can write the dotted key naming:
-
-     class { 'elasticsearch':
-       config => {
-         'cluster' => {
-           'name' => 'ClusterName',
-           'routing.allocation.awareness.attributes' => 'rack'
-         }
-       }
-     }
-
-
-## Manage templates
-
-### Add a new template
-
-This will install and/or replace the template in Elasticsearch
-
-     elasticsearch::template { 'templatename':
-       file => 'puppet:///path/to/template.json'
-     }
-
-### Delete a template
-
-     elasticsearch::template { 'templatename':
-       ensure => 'absent'
-     }
-
-### Host
-
-  Default it uses localhost:9200 as host. you can change this with the 'host' and 'port' variables
-
-     elasticsearch::template { 'templatename':
-       host => $::ipaddress,
-       port => 9200
-     }
-
-## Bindings / clients
-
-Install a variety of [clients/bindings](http://www.elasticsearch.org/guide/clients/):
-
-### Python
-
-     elasticsearch::python { 'rawes': }
-
-### Ruby
-
-     elasticsearch::ruby { 'elasticsearch': }
-
-## Plugins
+###Plug-ins
 
 Install [a variety of plugins](http://www.elasticsearch.org/guide/plugins/):
 
-### From official repository:
+####From official repository
+```puppet
+elasticsearch::plugin{'lmenezes/elasticsearch-kopf':
+  module_dir => 'head'
+}
+```
+####From custom url
+```puppet
+elasticsearch::plugin{ 'elasticsearch-jetty':
+  module_dir => 'jetty',
+  url        => 'https://oss-es-plugins.s3.amazonaws.com/elasticsearch-jetty/elasticsearch-jetty-1.2.1.zip'
+}
+```
+###Templates
 
-     elasticsearch::plugin{'mobz/elasticsearch-head':
-       module_dir => 'head'
-     }
+#### Add a new template
 
-### From custom url:
+This will install and/or replace the template in Elasticsearch:
 
-     elasticsearch::plugin{ 'elasticsearch-jetty':
-       module_dir => 'jetty',
-       url        => 'https://oss-es-plugins.s3.amazonaws.com/elasticsearch-jetty/elasticsearch-jetty-0.90.0.zip'
-     }
+```puppet
+elasticsearch::template { 'templatename':
+  file => 'puppet:///path/to/template.json'
+}
+```
 
-## Java Install
+#### Delete a template
+
+```puppet
+elasticsearch::template { 'templatename':
+  ensure => 'absent'
+}
+```
+
+#### Host
+
+By default it uses localhost:9200 as host. you can change this with the `host` and `port` variables
+
+```puppet
+elasticsearch::template { 'templatename':
+  host => $::ipaddress,
+  port => 9200
+}
+```
+
+###Bindings / Clients
+
+Install a variety of [clients/bindings](http://www.elasticsearch.org/guide/clients/):
+
+####Python
+
+```puppet
+elasticsearch::python { 'rawes': }
+```
+
+####Ruby
+```puppet
+elasticsearch::ruby { 'elasticsearch': }
+```
+
+###Package installation
+
+There are 2 different ways of installing the software
+
+####Repository
+
+This option allows you to use an existing repository for package installation.
+The `repo_version` corresponds with the major version of Elasticsearch.
+
+```puppet
+class { 'elasticsearch':
+  manage_repo  => true,
+  repo_version => '1.2',
+}
+```
+
+####Remote package source
+
+When a repository is not available or preferred you can install the packages from a remote source:
+
+#####http/https/ftp
+```puppet
+class { 'elasticsearch':
+  package_url => 'https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-1.2.1.deb'
+}
+```
+
+#####puppet://
+```puppet
+class { 'elasticsearch':
+  package_url => 'puppet:///path/to/elasticsearch-1.2.1.deb'
+}
+```
+
+#####Local file
+```puppet
+class { 'elasticsearch':
+  package_url => 'file:/path/to/elasticsearch-1.2.1.deb'
+}
+```
+
+###Java installation
 
 Most sites will manage Java separately; however, this module can attempt to install Java as well.
 
-     class { 'elasticsearch':
-       java_install => true
-     }
+```puppet
+class { 'elasticsearch':
+  java_install => true
+}
+```
 
-Specify a particular Java package (version) to be installed:
+Specify a particular Java package/version to be installed:
 
-     class { 'elasticsearch':
-       java_install => true,
-       java_package => 'packagename'
-     }
+```puppet
+class { 'elasticsearch':
+  java_install => true,
+  java_package => 'packagename'
+}
+```
 
-## Repository management
+###Service management
 
-Most sites will manage repositories separately; however, this module can manage the repository for you.
+Currently only the basic SysV-style [init](https://en.wikipedia.org/wiki/Init) and [Systemd](http://en.wikipedia.org/wiki/Systemd) service providers are supported, but other systems could be implemented as necessary (pull requests welcome).
 
-    class { 'elasticsearch':
-      manage_repo  => true,
-      repo_version => '1.0',
-    }
 
-Note: When using this on Debian/Ubuntu, you will need to add the [Puppetlabs/apt](http://forge.puppetlabs.com/puppetlabs/apt) module to your modules.
-
-## Service Management
-
-Currently only the basic SysV-style [init](https://en.wikipedia.org/wiki/Init) service provider is supported, but other systems could be implemented as necessary (pull requests welcome).
-
-### init
-
-#### Defaults File
+####Defaults File
 
 The *defaults* file (`/etc/defaults/elasticsearch` or `/etc/sysconfig/elasticsearch`) for the Elasticsearch service can be populated as necessary. This can either be a static file resource or a simple key value-style  [hash](http://docs.puppetlabs.com/puppet/latest/reference/lang_datatypes.html#hashes) object, the latter being particularly well-suited to pulling out of a data source such as Hiera.
 
-##### file source
+#####file source
+```puppet
+class { 'elasticsearch':
+  init_defaults_file => 'puppet:///path/to/defaults'
+}
+```
+#####hash representation
+```puppet
+$config_hash = {
+  'ES_USER' => 'elasticsearch',
+  'ES_GROUP' => 'elasticsearch',
+}
 
-     class { 'elasticsearch':
-       init_defaults_file => 'puppet:///path/to/defaults'
-     }
+class { 'elasticsearch':
+  init_defaults => $config_hash
+}
+```
 
-##### hash representation
+Note: `init_defaults` hash can be passed to the main class and to the instance.
 
-     $config_hash = {
-       'ES_USER' => 'elasticsearch',
-       'ES_GROUP' => 'elasticsearch',
-     }
+##Advanced features
 
-     class { 'elasticsearch':
-       init_defaults => $config_hash
-     }
 
-## Support
+###Data directories
+
+There are 4 different ways of setting data directories for Elasticsearch.
+In every case the required configuration options are placed in the `elasticsearch.yml` file.
+
+####Default
+By default we use:
+
+`/usr/share/elasticsearch/data/$instance_name`
+
+Which provides a data directory per instance. 
+
+
+####Single global data directory
+
+```puppet
+class { 'elasticsearch':
+  datadir => '/var/lib/elasticsearch-data'
+}
+```
+Creates the following for each instance:
+
+`/var/lib/elasticsearch-data/$instance_name`
+
+####Multiple Global data directories
+
+```puppet
+class { 'elasticsearch:
+  datadir => [ '/var/lib/es-data1', '/var/lib/es-data2']
+}
+```
+Creates the following for each instance:
+`/var/lib/es-data1/$instance_name`
+and
+`/var/lib/es-data2/$instance_name`
+
+
+####Single instance data directory
+
+```puppet
+class { 'elasticsearch': }
+
+elasticsearch::instance { 'es-01':
+  datadir => '/var/lib/es-data-es01'
+}
+```
+Creates the following for this instance:
+`/var/lib/es-data-es01`
+
+####Multiple instance data directories
+
+```puppet
+class { 'elasticsearch': }
+
+elasticsearch::instance { 'es-01':
+  datadir => ['/var/lib/es-data1-es01', '/var/lib/es-data2-es01']
+}
+```
+Creates the following for this instance:
+`/var/lib/es-data1-es01`
+and
+`/var/lib/es-data2-es01`
+
+
+###Main and instance configurations
+
+The `config` option in both the main class and the instances can be configured to work together.
+
+The options in the `instance` config hash will merged with the ones from the main class and override any duplicates.
+
+#### Simple merging
+
+```puppet
+class { 'elasticsearch':
+  config => { 'cluster.name' => 'clustername' }
+}
+
+elasticsearch::instance { 'es-01':
+  config => { 'node.name' => 'nodename' }
+}
+elasticsearch::instance { 'es-02':
+  config => { 'node.name' => 'nodename2' }
+}
+
+```
+
+This example merges the `cluster.name` together with the `node.name` option.
+
+#### Overriding 
+
+When duplicate options are provided, the option in the instance config overrides the ones from the main class.
+
+```puppet
+class { 'elasticsearch':
+  config => { 'cluster.name' => 'clustername' }
+}
+
+elasticsearch::instance { 'es-01':
+  config => { 'node.name' => 'nodename', 'cluster.name' => 'otherclustername' }
+}
+
+elasticsearch::instance { 'es-02':
+  config => { 'node.name' => 'nodename2' }
+}
+```
+
+This will set the cluster name to `otherclustername` for the instance `es-01` but will keep it to `clustername` for instance `es-02`
+
+####Configuration writeup
+
+The `config` hash can be written in 2 different ways:
+
+##### Full hash writeup
+
+Instead of writing the full hash representation:
+```puppet
+class { 'elasticsearch':
+  config                 => {
+   'cluster'             => {
+     'name'              => 'ClusterName',
+     'routing'           => {
+        'allocation'     => {
+          'awareness'    => {
+            'attributes' => 'rack'
+          }
+        }
+      }
+    }
+  }
+}
+```
+##### Short hash writeu
+```puppet
+class { 'elasticsearch':
+  config => {
+    'cluster' => {
+      'name' => 'ClusterName',
+      'routing.allocation.awareness.attributes' => 'rack'
+    }
+  }
+}
+```
+
+
+##Limitations
+
+This module has been built on and tested against Puppet 2.7 and higher.
+
+The module has been tested on:
+
+* Debian 6/7
+* CentOS 6
+* Ubuntu 12.04, 13.x, 14.x
+* OpenSuSE 12.x
+
+Testing on other platforms has been light and cannot be guaranteed.
+
+##Development
+
+
+##Support
 
 Need help? Join us in [#elasticsearch](https://webchat.freenode.net?channels=%23elasticsearch) on Freenode IRC or subscribe to the [elasticsearch@googlegroups.com](https://groups.google.com/forum/#!forum/elasticsearch) mailing list.
