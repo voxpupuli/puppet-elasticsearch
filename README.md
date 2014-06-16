@@ -1,4 +1,4 @@
-#elasticsearch
+#Elasticsearch Puppet module
 
 [![Build Status](https://travis-ci.org/elasticsearch/puppet-elasticsearch.png?branch=master)](https://travis-ci.org/elasticsearch/puppet-elasticsearch)
 
@@ -7,7 +7,7 @@
 1. [Overview](#overview)
 2. [Module description - What the module does and why it is useful](#module-description)
 3. [Setup - The basics of getting started with Elasticsearch](#setup)
-  * [What Elasticsearch affects](#what-elasticsearch-affects)
+  * [The module manages the following](#the-module-manages-the-following)
   * [Requirements](#requirements)
 4. [Usage - Configuration options and additional functionality](#usage)
 5. [Advanced features - Extra information on advanced usage](#advanced-features)
@@ -29,7 +29,7 @@ This module has been tested against ES 1.0 and up.
 
 ##Setup
 
-###What elasticsearch affects
+###The module manages the following
 
 * Elasticsearch repository files.
 * Elasticsearch package.
@@ -52,7 +52,7 @@ When using the repository management you will need the following dependency modu
 
 ###Main class
 
-####Install a certain version
+####Install a specific version
 
 ```puppet
 class { 'elasticsearch':
@@ -85,7 +85,7 @@ class { 'elasticsearch':
 
 ###Instances
 
-This module works with the concept of instances. If none are configured it will not start any on its own.
+This module works with the concept of instances.
 
 ####Quick setup
 ```puppet
@@ -100,9 +100,9 @@ Instance specific options can be given:
 
 ```puppet
 elasticsearch::instance { 'es-01':
-  config => { }, # Configuration hash
+  config => { },        # Configuration hash
   init_defaults => { }, # Init defaults hash
-  datadir => [ ], # Data directory
+  datadir => [ ],       # Data directory
 }
 ```
 
@@ -115,7 +115,7 @@ Install [a variety of plugins](http://www.elasticsearch.org/guide/plugins/):
 ####From official repository
 ```puppet
 elasticsearch::plugin{'lmenezes/elasticsearch-kopf':
-  module_dir => 'head'
+  module_dir => 'kopf'
 }
 ```
 ####From custom url
