@@ -166,7 +166,7 @@
 #
 # === Authors
 #
-# * Richard Pijnenburg <mailto:richard@ispavailability.com>
+# * Richard Pijnenburg <mailto:richard.pijnenburg@elasticsearch.com>
 #
 class elasticsearch(
   $ensure                = $elasticsearch::params::ensure,
@@ -189,7 +189,7 @@ class elasticsearch(
   $init_defaults_file    = undef,
   $init_template         = undef,
   $config                = undef,
-  $datadir               = undef,
+  $datadir               = $elasticsearch::params::datadir,
   $plugindir             = $elasticsearch::params::plugindir,
   $plugintool            = $elasticsearch::params::plugintool,
   $java_install          = false,
@@ -244,9 +244,7 @@ class elasticsearch(
 
   if $ensure == 'present' {
     # validate config hash
-    if ($config == undef) {
-      fail('Missing config hash')
-    } else {
+    if ($config != undef) {
       validate_hash($config)
     }
   }
@@ -267,9 +265,6 @@ class elasticsearch(
 
   # configuration
   class { 'elasticsearch::config': }
-
-  # service(s)
-  class { 'elasticsearch::service': }
 
   if $java_install == true {
     # Install java
@@ -317,19 +312,11 @@ class elasticsearch(
     -> Class['elasticsearch::package']
     -> Class['elasticsearch::config']
 
-    # we need the software and a working configuration before running a service
-    Class['elasticsearch::package'] -> Class['elasticsearch::service']
-    Class['elasticsearch::config']  -> Class['elasticsearch::service']
-
-    Class['elasticsearch::service'] -> Anchor['elasticsearch::end']
-
   } else {
 
     # make sure all services are getting stopped before software removal
-    Anchor['elasticsearch::begin']
-    -> Class['elasticsearch::service']
+    Class['elasticsearch::config']
     -> Class['elasticsearch::package']
-    -> Anchor['elasticsearch::end']
 
   }
 

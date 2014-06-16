@@ -27,6 +27,9 @@
 #   Default value: None
 #   This variable is optional
 #
+# [*instances*]
+#   Specify all the instances related
+#   value type is string or array
 #
 # === Examples
 #
@@ -43,9 +46,11 @@
 #
 # * Matteo Sessa <mailto:matteo.sessa@catchoftheday.com.au>
 # * Dennis Konert <mailto:dkonert@gmail.com>
+# * Richard Pijnenburg <mailto:richard.pijnenburg@elasticsearch.com>
 #
 define elasticsearch::plugin(
     $module_dir,
+    $instances,
     $ensure      = 'present',
     $url         = ''
 ) {
@@ -62,7 +67,7 @@ define elasticsearch::plugin(
 
   $notify_service = $elasticsearch::restart_on_change ? {
     false   => undef,
-    default => Service['elasticsearch'],
+    default => Elasticsearch::Service[$instances],
   }
 
   if ($module_dir != '') {

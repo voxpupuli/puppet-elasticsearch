@@ -71,12 +71,12 @@
   # initial string
   @yml_string = "### MANAGED BY PUPPET ###\n"
 
-  if !scope.lookupvar('elasticsearch::config::config').empty?
+  if !@instance_conf.empty?
 
     @yml_string += "---\n"
 
     ## Transform shorted keys into full write up
-    transformed_config = transform(scope.lookupvar('elasticsearch::config::config'))
+    transformed_config = transform(@instance_conf)
 
     # Merge it back into a hash
     tmphash = { }
