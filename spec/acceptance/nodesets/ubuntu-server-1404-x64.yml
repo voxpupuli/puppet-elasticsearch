@@ -4,7 +4,7 @@ HOSTS:
       - master
       - database
       - dashboard
-    platform: ubuntu-13.04-amd64
+    platform: ubuntu-14.04-amd64
     image: electrical/ubuntu:14.04
     hypervisor: docker
     docker_cmd: '["/sbin/init"]'
