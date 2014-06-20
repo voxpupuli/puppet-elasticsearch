@@ -4,7 +4,7 @@ We enjoy working with contributors to get their code accepted. There are many ap
 
 The process for contributing to any of the Elasticsearch repositories is similar.
 
-1. Sign the contributor license agreement  
+1. Sign the contributor license agreement
 Please make sure you have signed the [Contributor License Agreement](http://www.elasticsearch.org/contributor-agreement/). We are not asking you to assign copyright to us, but to give us the right to distribute your code without restriction. We ask this of all contributors in order to assure our users of the origin and continuing existence of the code. You only need to sign the CLA once.
 
 2. Run the rspec tests and ensure it completes without errors with your changes.
@@ -28,7 +28,7 @@ These instructions are for Ubuntu 14.04
 * bundle install
 * bundle exec rspec --format RspecJunitFormatter --out rspec.xml spec/acceptance/*_spec.rb
 
-
+```
     Hypervisor for ubuntu-14-04 is docker
     Beaker::Hypervisor, found some docker boxes to create
     Provisioning docker
@@ -36,6 +36,7 @@ These instructions are for Ubuntu 14.04
     ...
     Finished in 18 minutes 6 seconds
     224 examples, 0 failures, 3 pending
+```
 
 4. Rebase your changes
 Update your local repository with the most recent code from the main this puppet module repository, and rebase your branch on top of the latest master branch. We prefer your changes to be squashed into a single commit.
