@@ -115,14 +115,16 @@ Install [a variety of plugins](http://www.elasticsearch.org/guide/plugins/):
 ####From official repository
 ```puppet
 elasticsearch::plugin{'lmenezes/elasticsearch-kopf':
-  module_dir => 'kopf'
+  module_dir => 'kopf',
+  instances  => 'instance_name'
 }
 ```
 ####From custom url
 ```puppet
 elasticsearch::plugin{ 'elasticsearch-jetty':
   module_dir => 'jetty',
-  url        => 'https://oss-es-plugins.s3.amazonaws.com/elasticsearch-jetty/elasticsearch-jetty-1.2.1.zip'
+  url        => 'https://oss-es-plugins.s3.amazonaws.com/elasticsearch-jetty/elasticsearch-jetty-1.2.1.zip',
+  instances  => 'instance_name'
 }
 ```
 ###Templates
