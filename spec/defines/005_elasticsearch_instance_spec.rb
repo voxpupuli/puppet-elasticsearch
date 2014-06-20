@@ -10,7 +10,7 @@ describe 'elasticsearch::instance', :type => 'define' do
   } end
 
   let(:title) { 'es-01' }
-  let(:pre_condition) { 'class {"elasticsearch": config => { } }'  }
+  let(:pre_condition) { 'class {"elasticsearch": }'  }
 
   context "Config file" do
 
@@ -72,7 +72,26 @@ describe 'elasticsearch::instance', :type => 'define' do
 
       it { should contain_file('/etc/elasticsearch/es-01/elasticsearch.yml').with(:content => "### MANAGED BY PUPPET ###\n---\nboostrap: \n  mlockall: true\ncluster: \n  name: ClusterName\n  routing: \n    allocation: \n      awareness: \n        attributes: rack\ndiscovery: \n  zen: \n    minimum_master_nodes: 3\n    ping: \n      multicast: \n        enabled: false\n      unicast: \n        hosts: \n             - host1\n             - host2\ngateway: \n  expected_nodes: 4\n  recover_after_nodes: 3\nnetwork: \n  host: 123.123.123.123\nnode: \n  name: NodeName\n  rack: 46\npath: \n  data: /usr/share/elasticsearch/data/es-01\n") }
 
-     end
+    end
+
+    context "merge Main class and instance configs together" do
+      let(:pre_condition) { 'class {"elasticsearch": config => { "cluster.name" => "somename"} }' }
+      let :params do {
+        :config => { 'node.name' => 'NodeName' }
+      } end
+
+      it { should contain_file('/etc/elasticsearch/es-01/elasticsearch.yml').with(:content => "### MANAGED BY PUPPET ###\n---\ncluster: \n  name: somename\nnode: \n  name: NodeName\npath: \n  data: /usr/share/elasticsearch/data/es-01\n") }
+
+    end
+
+    context "override main class confgi with instance config" do
+      let(:pre_condition) { 'class {"elasticsearch": config => { "cluster.name" => "somename" } }'  }
+      let :params do {
+        :config => { 'node.name' => 'NodeName', 'cluster.name' => 'ClusterName' }
+      } end
+
+      it { should contain_file('/etc/elasticsearch/es-01/elasticsearch.yml').with(:content => "### MANAGED BY PUPPET ###\n---\ncluster: \n  name: ClusterName\nnode: \n  name: NodeName\npath: \n  data: /usr/share/elasticsearch/data/es-01\n") }
+    end
 
     context "service restarts" do
 
@@ -111,7 +130,7 @@ describe 'elasticsearch::instance', :type => 'define' do
     let(:title) { 'es-01' }
 
     context "default" do
-      let(:pre_condition) { 'class {"elasticsearch": config => { } }'  }
+      let(:pre_condition) { 'class {"elasticsearch": }'  }
       it { should contain_exec('mkdir_configdir_elasticsearch_es-01') }
       it { should contain_file('/etc/elasticsearch/es-01').with(:ensure => 'directory') }
       it { should contain_file('/etc/elasticsearch/es-01/elasticsearch.yml') }
@@ -119,7 +138,7 @@ describe 'elasticsearch::instance', :type => 'define' do
     end
 
     context "Set in main class" do
-      let(:pre_condition) { 'class {"elasticsearch": config => { }, configdir => "/etc/elasticsearch-config" }'  }
+      let(:pre_condition) { 'class {"elasticsearch": configdir => "/etc/elasticsearch-config" }'  }
 
       it { should contain_exec('mkdir_configdir_elasticsearch_es-01') }
       it { should contain_file('/etc/elasticsearch-config').with(:ensure => 'directory') }
@@ -130,7 +149,7 @@ describe 'elasticsearch::instance', :type => 'define' do
     end
 
     context "set in instance" do
-      let(:pre_condition) { 'class {"elasticsearch": config => { } }'  }
+      let(:pre_condition) { 'class {"elasticsearch": }'  }
       let :params do {
         :configdir => '/etc/elasticsearch-config/es-01'
       } end
@@ -146,7 +165,7 @@ describe 'elasticsearch::instance', :type => 'define' do
 
   context "Service" do
     let(:title) { 'es-01' }
-    let(:pre_condition) { 'class {"elasticsearch": config => { } }'  }
+    let(:pre_condition) { 'class {"elasticsearch": }'  }
 
     context "Debian based" do
       let :facts do {
@@ -192,7 +211,7 @@ describe 'elasticsearch::instance', :type => 'define' do
     } end
 
     let(:title) { 'es-01' }
-    let(:pre_condition) { 'class {"elasticsearch": config => { } }'  }
+    let(:pre_condition) { 'class {"elasticsearch": }'  }
 
     context "default" do
       it { should contain_exec('mkdir_datadir_elasticsearch_es-01') }
@@ -201,14 +220,14 @@ describe 'elasticsearch::instance', :type => 'define' do
     end
 
     context "single from main config " do
-      let(:pre_condition) { 'class {"elasticsearch": config => { }, datadir => "/var/lib/elasticsearch-data" }'  }
+      let(:pre_condition) { 'class {"elasticsearch": datadir => "/var/lib/elasticsearch-data" }'  }
       it { should contain_exec('mkdir_datadir_elasticsearch_es-01') }
       it { should contain_file('/etc/elasticsearch/es-01/elasticsearch.yml').with(:content => "### MANAGED BY PUPPET ###\n---\nnode: \n  name: elasticsearch001-es-01\npath: \n  data: /var/lib/elasticsearch-data/es-01\n" ) }
       it { should contain_file('/var/lib/elasticsearch-data/es-01').with( :ensure => 'directory') }
     end
 
     context "single from instance config" do
-      let(:pre_condition) { 'class {"elasticsearch": config => { } }'  }
+      let(:pre_condition) { 'class {"elasticsearch": }'  }
       let :params do {
         :datadir => '/var/lib/elasticsearch/data'
       } end
@@ -219,7 +238,7 @@ describe 'elasticsearch::instance', :type => 'define' do
     end
 
     context "multiple from main config" do
-      let(:pre_condition) { 'class {"elasticsearch": config => { }, datadir => [ "/var/lib/elasticsearch-data01", "/var/lib/elasticsearch-data02"] }'  }
+      let(:pre_condition) { 'class {"elasticsearch": datadir => [ "/var/lib/elasticsearch-data01", "/var/lib/elasticsearch-data02"] }'  }
       it { should contain_exec('mkdir_datadir_elasticsearch_es-01') }
       it { should contain_file('/etc/elasticsearch/es-01/elasticsearch.yml').with(:content => "### MANAGED BY PUPPET ###\n---\nnode: \n  name: elasticsearch001-es-01\npath: \n  data: \n      - /var/lib/elasticsearch-data01/es-01\n      - /var/lib/elasticsearch-data02/es-01\n" ) }
       it { should contain_file('/var/lib/elasticsearch-data01/es-01').with( :ensure => 'directory') }
@@ -227,7 +246,7 @@ describe 'elasticsearch::instance', :type => 'define' do
     end
 
     context "multiple from instance config" do
-      let(:pre_condition) { 'class {"elasticsearch": config => { } }'  }
+      let(:pre_condition) { 'class {"elasticsearch": }'  }
       let :params do {
         :datadir => ['/var/lib/elasticsearch-data/01', '/var/lib/elasticsearch-data/02']
       } end
@@ -249,7 +268,7 @@ describe 'elasticsearch::instance', :type => 'define' do
       :hostname => 'elasticsearch001'
     } end
 
-    let(:pre_condition) { 'class {"elasticsearch": config => { } }'  }
+    let(:pre_condition) { 'class {"elasticsearch": }'  }
 
     context "default" do
       it { should contain_file('/etc/elasticsearch/es-01/logging.yml').with_content(/^logger.index.search.slowlog: TRACE, index_search_slow_log_file$/).with(:source => nil) }
@@ -258,13 +277,13 @@ describe 'elasticsearch::instance', :type => 'define' do
     context "from main class" do
 
       context "config" do
-        let(:pre_condition) { 'class {"elasticsearch": config => { }, logging_config => { "index.search.slowlog" => "DEBUG, index_search_slow_log_file" } }'  }
+        let(:pre_condition) { 'class {"elasticsearch": logging_config => { "index.search.slowlog" => "DEBUG, index_search_slow_log_file" } }'  }
 
         it { should contain_file('/etc/elasticsearch/es-01/logging.yml').with_content(/^logger.index.search.slowlog: DEBUG, index_search_slow_log_file$/).with(:source => nil) }
       end
 
       context "logging file " do
-        let(:pre_condition) { 'class {"elasticsearch": config => { }, logging_file => "puppet:///path/to/logging.yml" }'  }
+        let(:pre_condition) { 'class {"elasticsearch": logging_file => "puppet:///path/to/logging.yml" }'  }
 
         it { should contain_file('/etc/elasticsearch/es-01/logging.yml').with(:source => 'puppet:///path/to/logging.yml', :content => nil) }
       end
@@ -273,7 +292,7 @@ describe 'elasticsearch::instance', :type => 'define' do
 
     context "from instance" do
 
-      let(:pre_condition) { 'class {"elasticsearch": config => { } }'  }
+      let(:pre_condition) { 'class {"elasticsearch": }'  }
 
       context "config" do
         let :params do {

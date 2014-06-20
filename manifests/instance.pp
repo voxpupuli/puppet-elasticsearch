@@ -162,6 +162,12 @@ define elasticsearch::instance(
       $logging_source = undef
     }
 
+    if ($elasticsearch::config != undef) {
+      $main_config = $elasticsearch::config
+    } else {
+      $main_config = { }
+    }
+
     $instance_datadir_config = { 'path.data' => $instance_datadir }
 
     if(is_array($instance_datadir)) {
@@ -216,7 +222,7 @@ define elasticsearch::instance(
     $before = undef
 
     # build up new config
-    $instance_conf = merge($elasticsearch::config, $instance_node_name, $instance_config, $instance_datadir_config)
+    $instance_conf = merge($main_config, $instance_node_name, $instance_config, $instance_datadir_config)
 
     # defaults file content
     if (is_hash($elasticsearch::init_defaults)) {
