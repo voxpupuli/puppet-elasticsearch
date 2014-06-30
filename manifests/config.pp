@@ -64,6 +64,34 @@ class elasticsearch::config {
       require => [ Exec['mkdir_templates_elasticsearch'] ]
     }
 
+    # Removal of files that are provided with the package which we don't use
+    case $elasticsearch::real_service_provider {
+      init: {
+        file { '/etc/init.d/elasticsearch':
+          ensure => 'absent'
+        }
+      }
+      systemd: {
+        file { '/usr/lib/systemd/system/elasticsearch.service':
+          ensure => 'absent'
+        }
+      }
+      default: {
+        fail("Unknown service provider ${elasticsearch::real_service_provider}")
+      }
+
+    }
+    file { "${elasticsearch::params::defaults_location}/elasticsearch":
+      ensure => 'absent'
+    }
+
+    file { '/etc/elasticsearch/elasticsearch.yml':
+      ensure => 'absent'
+    }
+    file { '/etc/elasticsearch/logging.yml':
+      ensure => 'absent'
+    }
+
   } elsif ( $elasticsearch::ensure == 'absent' ) {
     # don't remove anything for now
   }
