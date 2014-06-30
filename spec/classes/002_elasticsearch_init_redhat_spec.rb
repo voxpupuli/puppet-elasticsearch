@@ -35,6 +35,12 @@ describe 'elasticsearch', :type => 'class' do
         it { should contain_file('/etc/elasticsearch/templates_import').with(:require => 'Exec[mkdir_templates_elasticsearch]') }
 	it { should contain_file('/usr/share/elasticsearch/plugins') }
 
+	# file removal from package
+	it { should contain_file('/etc/init.d/elasticsearch').with(:ensure => 'absent') }
+	it { should contain_file('/etc/sysconfig/elasticsearch').with(:ensure => 'absent') }
+	it { should contain_file('/etc/elasticsearch/elasticsearch.yml').with(:ensure => 'absent') }
+	it { should contain_file('/etc/elasticsearch/logging.yml').with(:ensure => 'absent') }
+
       end
 
       context 'package installation' do
