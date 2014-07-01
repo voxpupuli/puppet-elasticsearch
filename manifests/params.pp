@@ -82,10 +82,10 @@ class elasticsearch::params {
 
   case $::kernel {
     'Linux': {
-      $download_tool = 'wget -O'
+      $download_tool = 'wget --no-check-certificate -O'
     }
     'Darwin': {
-      $download_tool = 'curl -o'
+      $download_tool = 'curl --insecure -o'
     }
     default: {
       fail("\"${module_name}\" provides no download tool default value
