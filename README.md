@@ -127,6 +127,12 @@ elasticsearch::plugin{ 'elasticsearch-jetty':
   instances  => 'instance_name'
 }
 ```
+
+#####Plugin name could be:
+* `elasticsearch/plugin/version` for official elasticsearch plugins (download from download.elasticsearch.org)
+* `groupId/artifactId/version`   for community plugins (download from maven central or oss sonatype)
+* `username/repository`          for site plugins (download from github master)
+
 ###Templates
 
 #### Add a new template
