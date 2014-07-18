@@ -56,7 +56,7 @@ class elasticsearch::package {
 
       case $elasticsearch::package_provider {
         'package': { $before = Package[$elasticsearch::package_name]  }
-        default:   { fail("software provider \"${elasticsearch::software_provider}\".") }
+        default:   { fail("software provider \"${elasticsearch::package_provider}\".") }
       }
 
       $package_dir = $elasticsearch::package_dir
