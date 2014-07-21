@@ -206,6 +206,7 @@ class elasticsearch(
   anchor {'elasticsearch::end': }
 
 
+  Elasticsearch::Instance <| |> -> Elasticsearch::Template <| |>
   #### Validate parameters
 
   # ensure
