@@ -48,7 +48,7 @@
 # [*logging_file*]
 #   Instead of a hash you can supply a puppet:// file source for the logging.yml file
 #
-# [*logging_cnofig*]
+# [*logging_config*]
 #   Hash representation of information you want in the logging.yml file
 #
 # [*logging_level*]
