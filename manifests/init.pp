@@ -185,7 +185,7 @@ class elasticsearch(
   $configdir             = $elasticsearch::params::configdir,
   $purge_configdir       = $elasticsearch::params::purge_configdir,
   $service_provider      = 'init',
-  $init_defaults         = undef,
+  $init_defaults         = $elasticsearch::params::init_defaults,
   $init_defaults_file    = undef,
   $init_template         = undef,
   $config                = undef,

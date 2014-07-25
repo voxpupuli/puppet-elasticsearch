@@ -139,7 +139,7 @@ class elasticsearch::params {
       $defaults_location  = '/etc/sysconfig'
       $init_template      = 'elasticsearch.RedHat.erb'
     }
-    'Debian', 'Ubuntu': {
+    'Debian': {
       $service_name       = 'elasticsearch'
       $service_hasrestart = true
       $service_hasstatus  = true
@@ -147,6 +147,14 @@ class elasticsearch::params {
       $service_providers  = [ 'init' ]
       $defaults_location  = '/etc/default'
       $init_template      = 'elasticsearch.Debian.erb'
+    }
+    'Ubuntu': {
+      $service_name       = 'elasticsearch'
+      $service_hasrestart = true
+      $service_hasstatus  = true
+      $service_pattern    = $service_name
+      $service_providers  = [ 'upstart', 'init' ]
+      $defaults_location  = '/etc/default'
     }
     'Darwin': {
       $service_name       = 'FIXME/TODO'
