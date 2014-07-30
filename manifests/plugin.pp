@@ -52,7 +52,9 @@ define elasticsearch::plugin(
     $module_dir,
     $instances,
     $ensure      = 'present',
-    $url         = ''
+    $url         = '',
+    $proxy_host  = undef,
+    $proxy_port  = undef,
 ) {
 
   include elasticsearch
@@ -76,12 +78,18 @@ define elasticsearch::plugin(
       fail("module_dir undefined for plugin ${name}")
   }
 
+  if ($proxy_host != undef and $proxy_port != undef) {
+    $proxy = " -DproxyPort=${proxy_port} -DproxyHost=${proxy_host}"
+  } else {
+    $proxy = ''
+  }
+
   if ($url != '') {
     validate_string($url)
-    $install_cmd = "${elasticsearch::plugintool} -install ${name} -url ${url}"
+    $install_cmd = "${elasticsearch::plugintool}${proxy} -install ${name} -url ${url}"
     $exec_rets = [0,1]
   } else {
-    $install_cmd = "${elasticsearch::plugintool} -install ${name}"
+    $install_cmd = "${elasticsearch::plugintool}${proxy} -install ${name}"
     $exec_rets = [0,]
   }
 
