@@ -4,20 +4,18 @@ require 'securerandom'
 
 files_dir = ENV['files_dir'] || '/home/jenkins/puppet'
 
-proxy_host = ENV['proxy_host'] || ''
-
-gem_proxy = ''
-gem_proxy = "http_proxy=http://#{proxy_host}" unless proxy_host.empty?
+proxy_host = ENV['BEAKER_PACKAGE_PROXY'] || ''
 
 if !proxy_host.empty?
+  gem_proxy = "http_proxy=#{proxy_host}" unless proxy_host.empty?
+
   hosts.each do |host|
-    case host['platform']
-    when /ubuntu/, /debian/
-      on host, "echo 'Acquire::http::Proxy \"http://#{proxy_host}/\";' >> /etc/apt/apt.conf.d/10proxy"
-    when /^el-/, /centos/, /fedora/, /redhat/
-      on host, "echo 'proxy=http://#{proxy_host}/' >> /etc/yum.conf"
-    end
+    on host, "echo 'export http_proxy='#{proxy_host}'' >> /root/.bashrc"
+    on host, "echo 'export https_proxy='#{proxy_host}'' >> /root/.bashrc"
+    on host, "echo 'export no_proxy=\"localhost,127.0.0.1,localaddress,.localdomain.com,#{host.name}\"' >> /root/.bashrc"
   end
+else
+  gem_proxy = ''
 end
 
 hosts.each do |host|
@@ -38,15 +36,15 @@ hosts.each do |host|
 
   # Copy over some files
   if fact('osfamily') == 'Debian'
-    scp_to(host, "#{files_dir}/elasticsearch-1.1.0.deb", '/tmp/elasticsearch-1.1.0.deb')
+    scp_to(host, "#{files_dir}/elasticsearch-1.3.1.deb", '/tmp/elasticsearch-1.3.1.deb')
   end
 
   if fact('osfamily') == 'RedHat'
-    scp_to(host, "#{files_dir}/elasticsearch-1.1.0.noarch.rpm", '/tmp/elasticsearch-1.1.0.noarch.rpm')
+    scp_to(host, "#{files_dir}/elasticsearch-1.3.1.noarch.rpm", '/tmp/elasticsearch-1.3.1.noarch.rpm')
   end
 
   if fact('osfamily') == 'Suse'
-    scp_to(host, "#{files_dir}/elasticsearch-1.1.0.noarch.rpm", '/tmp/elasticsearch-1.1.0.noarch.rpm')
+    scp_to(host, "#{files_dir}/elasticsearch-1.3.1.noarch.rpm", '/tmp/elasticsearch-1.3.1.noarch.rpm')
   end
 
   # on debian/ubuntu nodes ensure we get the latest info
