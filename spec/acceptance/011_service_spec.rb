@@ -53,7 +53,7 @@ describe "Service tests:" do
 
     context "Change the defaults file" do
       it 'should run successfully' do
-        pp = "class { 'elasticsearch': manage_repo => true, repo_version => '1.0', java_install => true, config => { 'cluster.name' => '#{cluster_name}' }, init_defaults => { 'ES_USER' => 'root', 'ES_JAVA_OPTS' => '\"-server -XX:+UseTLAB -XX:+CMSClassUnloadingEnabled\"' } }
+        pp = "class { 'elasticsearch': manage_repo => true, repo_version => '1.3', java_install => true, config => { 'cluster.name' => '#{cluster_name}' }, init_defaults => { 'ES_USER' => 'root', 'ES_JAVA_OPTS' => '\"-server -XX:+UseTLAB -XX:+CMSClassUnloadingEnabled\"' } }
               elasticsearch::instance { 'es-01': config => { 'node.name' => 'elasticsearch001' } }
              "
 

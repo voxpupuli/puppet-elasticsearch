@@ -48,7 +48,7 @@ describe "Data dir settings" do
   describe "Default data dir" do
 
     it 'should run successfully' do
-      pp = "class { 'elasticsearch': config => { 'cluster.name' => '#{cluster_name}'}, manage_repo => true, repo_version => '1.0', java_install => true }
+      pp = "class { 'elasticsearch': config => { 'cluster.name' => '#{cluster_name}'}, manage_repo => true, repo_version => '1.3', java_install => true }
             elasticsearch::instance { 'es-01': config => { 'node.name' => 'elasticsearch001', 'http.port' => '#{port_a}' } }
            "
 
@@ -107,7 +107,7 @@ describe "Data dir settings" do
   describe "Single data dir from main class" do
 
     it 'should run successfully' do
-      pp = "class { 'elasticsearch': config => { 'cluster.name' => '#{cluster_name}'}, manage_repo => true, repo_version => '1.0', java_install => true, datadir => '/var/lib/elasticsearch-data' }
+      pp = "class { 'elasticsearch': config => { 'cluster.name' => '#{cluster_name}'}, manage_repo => true, repo_version => '1.3', java_install => true, datadir => '/var/lib/elasticsearch-data' }
             elasticsearch::instance { 'es-01': config => { 'node.name' => 'elasticsearch001', 'http.port' => '#{port_a}' } }
            "
 
@@ -192,7 +192,7 @@ describe "Data dir settings" do
   describe "Single data dir from instance config" do
 
     it 'should run successfully' do
-      pp = "class { 'elasticsearch': config => { 'cluster.name' => '#{cluster_name}'}, manage_repo => true, repo_version => '1.0', java_install => true }
+      pp = "class { 'elasticsearch': config => { 'cluster.name' => '#{cluster_name}'}, manage_repo => true, repo_version => '1.3', java_install => true }
             elasticsearch::instance { 'es-01': config => { 'node.name' => 'elasticsearch001', 'http.port' => '#{port_a}'}, datadir => '#{datadir_1}' }
            "
 
@@ -276,7 +276,7 @@ describe "Data dir settings" do
   describe "multiple data dir's from main class" do
 
     it 'should run successfully' do
-      pp = "class { 'elasticsearch': config => { 'cluster.name' => '#{cluster_name}'}, manage_repo => true, repo_version => '1.0', java_install => true, datadir => [ '/var/lib/elasticsearch/01', '/var/lib/elasticsearch/02'] }
+      pp = "class { 'elasticsearch': config => { 'cluster.name' => '#{cluster_name}'}, manage_repo => true, repo_version => '1.3', java_install => true, datadir => [ '/var/lib/elasticsearch/01', '/var/lib/elasticsearch/02'] }
             elasticsearch::instance { 'es-01': config => { 'node.name' => 'elasticsearch001', 'http.port' => '#{port_a}' } }
            "
 
@@ -370,7 +370,7 @@ describe "Data dir settings" do
   describe "multiple data dir's from instance config" do
 
     it 'should run successfully' do
-      pp = "class { 'elasticsearch': config => { 'cluster.name' => '#{cluster_name}'}, manage_repo => true, repo_version => '1.0', java_install => true }
+      pp = "class { 'elasticsearch': config => { 'cluster.name' => '#{cluster_name}'}, manage_repo => true, repo_version => '1.3', java_install => true }
             elasticsearch::instance { 'es-01': config => { 'node.name' => 'elasticsearch001', 'http.port' => '#{port_a}' }, datadir => [ '#{datadir_2}', '#{datadir_3}'] }
            "
 
