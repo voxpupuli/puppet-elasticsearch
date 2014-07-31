@@ -85,7 +85,7 @@ class { 'elasticsearch':
 
 ###Instances
 
-This module works with the concept of instances.
+This module works with the concept of instances. For service to start you need to specify at least one instance.
 
 ####Quick setup
 ```puppet
