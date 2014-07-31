@@ -2,61 +2,13 @@ require 'spec_helper_acceptance'
 
 describe "Elasticsearch class:" do
 
-  cluster_name = SecureRandom.hex(10)
-
-  case fact('osfamily')
-    when 'RedHat'
-      package_name   = 'elasticsearch'
-      service_name_a = 'elasticsearch-es-01'
-      service_name_b = 'elasticsearch-es-02'
-      service_name_c = 'elasticsearch-es-03'
-      pid_file_a     = '/var/run/elasticsearch/elasticsearch-es-01.pid'
-      pid_file_b     = '/var/run/elasticsearch/elasticsearch-es-02.pid'
-      pid_file_c     = '/var/run/elasticsearch/elasticsearch-es-03.pid'
-      port_a         = '9200'
-      port_b         = '9201'
-      port_c         = '9202'
-      url            = 'http://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-1.3.1.noarch.rpm'
-      local          = '/tmp/elasticsearch-1.3.1.noarch.rpm'
-      puppet         = 'elasticsearch-1.3.1.noarch.rpm'
-    when 'Debian'
-      package_name   = 'elasticsearch'
-      service_name_a = 'elasticsearch-es-01'
-      service_name_b = 'elasticsearch-es-02'
-      service_name_c = 'elasticsearch-es-03'
-      pid_file_a     = '/var/run/elasticsearch-es-01.pid'
-      pid_file_b     = '/var/run/elasticsearch-es-02.pid'
-      pid_file_c     = '/var/run/elasticsearch-es-03.pid'
-      port_a         = '9200'
-      port_b         = '9201'
-      port_c         = '9202'
-      url            = 'http://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-1.3.1.deb'
-      local          = '/tmp/elasticsearch-1.3.1.deb'
-      puppet         = 'elasticsearch-1.3.1.deb'
-    when 'Suse'
-      package_name   = 'elasticsearch'
-      service_name_a = 'elasticsearch-es-01'
-      service_name_b = 'elasticsearch-es-02'
-      service_name_c = 'elasticsearch-es-03'
-      pid_file_a     = '/var/run/elasticsearch/elasticsearch-es-01.pid'
-      pid_file_b     = '/var/run/elasticsearch/elasticsearch-es-02.pid'
-      pid_file_c     = '/var/run/elasticsearch/elasticsearch-es-03.pid'
-      port_a         = '9200'
-      port_b         = '9201'
-      port_c         = '9202'
-      url            = 'http://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-1.3.1.noarch.rpm'
-      local          = '/tmp/elasticsearch-1.3.1.noarch.rpm'
-      puppet         = 'elasticsearch-1.3.1.noarch.rpm'
-
-  end
-
   shell("mkdir -p #{default['distmoduledir']}/another/files")
-  shell("cp #{local} #{default['distmoduledir']}/another/files/#{puppet}")
+  shell("cp #{test_settings['local']} #{default['distmoduledir']}/another/files/#{test_settings['puppet']}")
 
   context "install via http resource" do
 
     it 'should run successfully' do
-      pp = "class { 'elasticsearch': package_url => '#{url}', java_install => true, config => { 'node.name' => 'elasticsearch001', 'cluster.name' => '#{cluster_name}' } }
+      pp = "class { 'elasticsearch': package_url => '#{test_settings['url']}', java_install => true, config => { 'node.name' => 'elasticsearch001', 'cluster.name' => '#{test_settings['cluster_name']}' } }
             elasticsearch::instance{ 'es-01': }
            "
 
@@ -66,16 +18,16 @@ describe "Elasticsearch class:" do
 
     end
 
-    describe package(package_name) do
+    describe package(test_settings['package_name']) do
       it { should be_installed }
     end
 
-    describe file(pid_file_a) do
+    describe file(test_settings['pid_file_a']) do
       it { should be_file }
       its(:content) { should match /[0-9]+/ }
     end
 
-    describe port(9200) do
+    describe port(test_settings['port_a']) do
       it {
         sleep 15
         should be_listening
@@ -83,10 +35,10 @@ describe "Elasticsearch class:" do
     end
 
     it 'make sure elasticsearch can serve requests' do
-      curl_with_retries('check ES', default, 'http://localhost:9200/?pretty=true', 0)
+      curl_with_retries('check ES', default, "http://localhost:#{test_settings['port_a']}/?pretty=true", 0)
     end
 
-    describe service(service_name_a) do
+    describe service(test_settings['service_name_a']) do
       it { should be_enabled }
       it { should be_running }
     end
@@ -102,18 +54,18 @@ describe "Elasticsearch class:" do
       apply_manifest(pp, :catch_failures => true)
     end
 
-    describe package(package_name) do
+    describe package(test_settings['package_name']) do
       it { should_not be_installed }
     end
 
-    describe port(9200) do
+    describe port(test_settings['port_a']) do
       it {
         sleep 15
         should_not be_listening
       }
     end
 
-    describe service(service_name_a) do
+    describe service(test_settings['service_name_a']) do
       it { should_not be_enabled }
       it { should_not be_running }
     end
@@ -123,7 +75,7 @@ describe "Elasticsearch class:" do
   context "Install via local file resource" do
 
     it 'should run successfully' do
-      pp = "class { 'elasticsearch': package_url => 'file:#{local}', java_install => true, config => { 'node.name' => 'elasticsearch001', 'cluster.name' => '#{cluster_name}' } }
+      pp = "class { 'elasticsearch': package_url => 'file:#{test_settings['local']}', java_install => true, config => { 'node.name' => 'elasticsearch001', 'cluster.name' => '#{test_settings['cluster_name']}' } }
             elasticsearch::instance{ 'es-01': }
            "
 
@@ -133,16 +85,16 @@ describe "Elasticsearch class:" do
 
     end
 
-    describe package(package_name) do
+    describe package(test_settings['package_name']) do
       it { should be_installed }
     end
 
-    describe file(pid_file_a) do
+    describe file(test_settings['pid_file_a']) do
       it { should be_file }
       its(:content) { should match /[0-9]+/ }
     end
 
-    describe port(9200) do
+    describe port(test_settings['port_a']) do
       it {
         sleep 15
         should be_listening
@@ -150,10 +102,10 @@ describe "Elasticsearch class:" do
     end
 
     it 'make sure elasticsearch can serve requests' do
-      curl_with_retries('check ES', default, 'http://localhost:9200/?pretty=true', 0)
+      curl_with_retries('check ES', default, "http://localhost:#{test_settings['port_a']}/?pretty=true", 0)
     end
 
-    describe service(service_name_a) do
+    describe service(test_settings['service_name_a']) do
       it { should be_enabled }
       it { should be_running }
     end
@@ -169,18 +121,18 @@ describe "Elasticsearch class:" do
       apply_manifest(pp, :catch_failures => true)
     end
 
-    describe package(package_name) do
+    describe package(test_settings['package_name']) do
       it { should_not be_installed }
     end
 
-    describe port(9200) do
+    describe port(test_settings['port_a']) do
       it {
         sleep 15
         should_not be_listening
       }
     end
 
-    describe service(service_name_a) do
+    describe service(test_settings['service_name_a']) do
       it { should_not be_enabled }
       it { should_not be_running }
     end
@@ -190,7 +142,7 @@ describe "Elasticsearch class:" do
   context "Install via Puppet resource" do
 
     it 'should run successfully' do
-      pp = "class { 'elasticsearch': package_url => 'puppet:///modules/another/#{puppet}', java_install => true, config => { 'node.name' => 'elasticsearch001', 'cluster.name' => '#{cluster_name}' } }
+      pp = "class { 'elasticsearch': package_url => 'puppet:///modules/another/#{test_settings['puppet']}', java_install => true, config => { 'node.name' => 'elasticsearch001', 'cluster.name' => '#{test_settings['cluster_name']}' } }
             elasticsearch::instance { 'es-01': }
            "
 
@@ -200,27 +152,27 @@ describe "Elasticsearch class:" do
 
     end
 
-    describe package(package_name) do
+    describe package(test_settings['package_name']) do
       it { should be_installed }
     end
 
-    describe file(pid_file_a) do
+    describe file(test_settings['pid_file_a']) do
       it { should be_file }
       its(:content) { should match /[0-9]+/ }
     end
 
     it 'make sure elasticsearch can serve requests' do
-      curl_with_retries('check ES', default, 'http://localhost:9200/?pretty=true', 0)
+      curl_with_retries('check ES', default, "http://localhost:#{test_settings['port_a']}/?pretty=true", 0)
     end
 
-    describe port(9200) do
+    describe port(test_settings['port_a']) do
       it {
         sleep 15
         should be_listening
       }
     end
 
-    describe service(service_name_a) do
+    describe service(test_settings['service_name_a']) do
       it { should be_enabled }
       it { should be_running }
     end
@@ -236,18 +188,18 @@ describe "Elasticsearch class:" do
       apply_manifest(pp, :catch_failures => true)
     end
 
-    describe package(package_name) do
+    describe package(test_settings['package_name']) do
       it { should_not be_installed }
     end
 
-    describe port(9200) do
+    describe port(test_settings['port_a']) do
       it {
         sleep 15
         should_not be_listening
       }
     end
 
-    describe service(service_name_a) do
+    describe service(test_settings['service_name_a']) do
       it { should_not be_enabled }
       it { should_not be_running }
     end

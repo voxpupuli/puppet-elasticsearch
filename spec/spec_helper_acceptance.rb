@@ -2,6 +2,14 @@ require 'beaker-rspec'
 require 'pry'
 require 'securerandom'
 
+def test_settings
+  RSpec.configuration.test_settings
+end
+
+RSpec.configure do |c|
+  c.add_setting :test_settings, :default => {}
+end
+
 files_dir = ENV['files_dir'] || '/home/jenkins/puppet'
 
 proxy_host = ENV['BEAKER_PACKAGE_PROXY'] || ''
@@ -34,17 +42,23 @@ hosts.each do |host|
 
   end
 
-  # Copy over some files
-  if fact('osfamily') == 'Debian'
-    scp_to(host, "#{files_dir}/elasticsearch-1.3.1.deb", '/tmp/elasticsearch-1.3.1.deb')
-  end
-
-  if fact('osfamily') == 'RedHat'
-    scp_to(host, "#{files_dir}/elasticsearch-1.3.1.noarch.rpm", '/tmp/elasticsearch-1.3.1.noarch.rpm')
-  end
-
-  if fact('osfamily') == 'Suse'
-    scp_to(host, "#{files_dir}/elasticsearch-1.3.1.noarch.rpm", '/tmp/elasticsearch-1.3.1.noarch.rpm')
+  case fact('osfamily')
+    when 'RedHat'
+      scp_to(host, "#{files_dir}/elasticsearch-1.3.1.noarch.rpm", '/tmp/elasticsearch-1.3.1.noarch.rpm')
+    when 'Debian'
+      case fact('lsbmajdistrelease')
+        when '6'
+          scp_to(host, "#{files_dir}/elasticsearch-1.0.1.deb", '/tmp/elasticsearch-1.0.1.deb')
+        else
+          scp_to(host, "#{files_dir}/elasticsearch-1.3.1.deb", '/tmp/elasticsearch-1.3.1.deb')
+      end
+    when 'Suse'
+      case fact('operatingsystem')
+        when 'OpenSuSE'
+          scp_to(host, "#{files_dir}/elasticsearch-1.0.1.noarch.rpm", '/tmp/elasticsearch-1.0.1.noarch.rpm')
+        else
+          scp_to(host, "#{files_dir}/elasticsearch-1.3.1.noarch.rpm", '/tmp/elasticsearch-1.3.1.noarch.rpm')
+      end
   end
 
   # on debian/ubuntu nodes ensure we get the latest info
@@ -83,3 +97,5 @@ RSpec.configure do |c|
     end
   end
 end
+
+require_relative 'spec_acceptance_common'
