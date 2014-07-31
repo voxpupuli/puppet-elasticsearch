@@ -128,6 +128,18 @@ elasticsearch::plugin{ 'elasticsearch-jetty':
 }
 ```
 
+
+####Using a proxy
+You can also use a proxy if required by setting the `proxy_host` and `proxy_port` options:
+```puppet
+elasticsearch::plugin { 'lmenezes/elasticsearch-kopf',
+  module_dir => 'kopf',
+  instances  => 'instance_name',
+  proxy_host => 'proxy.host.com',
+  proxy_port => 3128
+}
+```
+ 
 #####Plugin name could be:
 * `elasticsearch/plugin/version` for official elasticsearch plugins (download from download.elasticsearch.org)
 * `groupId/artifactId/version`   for community plugins (download from maven central or oss sonatype)
