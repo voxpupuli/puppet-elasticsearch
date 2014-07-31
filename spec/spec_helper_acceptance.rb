@@ -48,14 +48,14 @@ hosts.each do |host|
     when 'Debian'
       case fact('lsbmajdistrelease')
         when '6'
-          scp_to(host, "#{files_dir}/elasticsearch-1.0.1.deb", '/tmp/elasticsearch-1.0.1.deb')
+          scp_to(host, "#{files_dir}/elasticsearch-1.1.0.deb", '/tmp/elasticsearch-1.1.0.deb')
         else
           scp_to(host, "#{files_dir}/elasticsearch-1.3.1.deb", '/tmp/elasticsearch-1.3.1.deb')
       end
     when 'Suse'
       case fact('operatingsystem')
         when 'OpenSuSE'
-          scp_to(host, "#{files_dir}/elasticsearch-1.0.1.noarch.rpm", '/tmp/elasticsearch-1.0.1.noarch.rpm')
+          scp_to(host, "#{files_dir}/elasticsearch-1.1.0.noarch.rpm", '/tmp/elasticsearch-1.1.0.noarch.rpm')
         else
           scp_to(host, "#{files_dir}/elasticsearch-1.3.1.noarch.rpm", '/tmp/elasticsearch-1.3.1.noarch.rpm')
       end
