@@ -41,8 +41,8 @@
       case fact('operatingsystem')
         when 'OpenSuSE'
 	  test_settings['repo_version']    = '1.1'
-	  test_settings['url']             = 'http://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-1.1.3.noarch.rpm'
-	  test_settings['local']           = '/tmp/elasticsearch-1.1.3.noarch.rpm'
+	  test_settings['url']             = 'http://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-1.1.0.noarch.rpm'
+	  test_settings['local']           = '/tmp/elasticsearch-1.1.0.noarch.rpm'
 	  test_settings['puppet']          = 'elasticsearch-1.1.0.noarch.rpm'
         else
 	  test_settings['repo_version']    = '1.3'
