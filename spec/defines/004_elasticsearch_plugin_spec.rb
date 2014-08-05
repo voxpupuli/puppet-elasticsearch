@@ -34,4 +34,18 @@ describe 'elasticsearch::plugin', :type => 'define' do
     it { should contain_exec('remove_plugin_mobz/elasticsearch-head').with(:command => '/usr/share/elasticsearch/bin/plugin --remove head', :onlyif => 'test -d /usr/share/elasticsearch/plugins/head') }
   end
 
+  context "Use a proxy" do
+
+    let :params do {
+      :ensure     => 'present',
+      :module_dir => 'head',
+      :instances  => 'es-01',
+      :proxy_host => 'my.proxy.com',
+      :proxy_port => 3128
+    } end
+
+    it { should contain_elasticsearch__plugin('mobz/elasticsearch-head') }
+    it { should contain_exec('install_plugin_mobz/elasticsearch-head').with(:command => '/usr/share/elasticsearch/bin/plugin -DproxyPort=3128 -DproxyHost=my.proxy.com -install mobz/elasticsearch-head', :creates => '/usr/share/elasticsearch/plugins/head') }
+  end
+
 end
