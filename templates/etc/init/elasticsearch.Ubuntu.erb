@@ -1,0 +1,35 @@
+# elasticsearch - ElasticSearch Server
+#
+# ElasticSearch: OpenSource distributed realtime search & analysis
+
+description "ElasticSearch: OpenSource distributed realtime search & analysis"
+
+# Run ElasticSearch as this user ID and group ID
+setuid <%= @elasticsearch_user  %>
+setgid <%= @elasticsearch_group %>
+
+<% if @init_defaults['MAX_OPEN_FILES'] %>
+limit nofile <%= (@init_defaults['MAX_OPEN_FILES'].to_s + ' ') * 2)
+<% end -%>
+<% if @init_defaults['MAX_LOCKED_MEMORY'] %>
+limit memlock <%= (@init_defaults['MAX_LOCKED_MEMORY'].to_s + ' ') * 2)
+<% end -%>
+
+pre-start script
+	# Prepare environment
+	mkdir -p "<%= @init_defaults['LOG_DIR'] %>" "<%= @init_defaults['DATA_DIR'] %>" "<%= @init_defaults['WORK_DIR'] %>"
+	chown <%= @elasticsearch_user %>:<%= @elasticsearch_group %> "<%= @init_defaults['LOG_DIR'] %>" "<%= init_defaults['DATA_DIR'] %>" "<%= @init_defaults['WORK_DIR] %>"
+end
+
+
+start script
+	# overwrite settings from default file
+	if [ -f "<%= @defaults_location -%>/<%= @name -%>" ]; then
+		. "<%= @defaults_location -%>/<%= @name -%>"
+	fi
+	DAEMON=<%= @init_defaults['DAEMON'] %>
+	DAEMON_OPTS="-Des.default.config=<%= @init_defaults['CONF_FILE'] %> -Des.default.path.home=<%= @init_defaults['ES_HOME'] %> -Des.default.path.logs=<%= @init_defaults['LOG_DIR'] %> -Des.default.path.data=<%= @init_defaults['DATA_DIR'] %> -Des.default.path.work=<%= @init_defaults['WORK_DIR'] %> -Des.default.path.conf=<%= @init_defaults['CONF_DIR'] %>"
+
+	exec $DAEMON -f $DAEMON_OPTS
+end
+
