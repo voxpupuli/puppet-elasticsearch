@@ -219,7 +219,7 @@ define elasticsearch::instance(
     }
 
     $require = Class['elasticsearch::package']
-    $before = undef
+    $before  = undef
 
     # build up new config
     $instance_conf = merge($main_config, $instance_node_name, $instance_config, $instance_datadir_config)
@@ -257,15 +257,16 @@ define elasticsearch::instance(
       ensure  => 'absent',
       recurse => true,
       force   => true,
-      before  => Elasticsearch::Service[$name]
     }
 
     $require = undef
-    $before = Class['elasticsearch::config']
+    $before  = [ File[$instance_configdir], Class['elasticsearch::package'] ]
 
   }
 
   elasticsearch::service { $name:
+    ensure        => $ensure,
+    status        => $status,
     init_defaults => $init_defaults_new,
     init_template => "${module_name}/etc/init.d/${elasticsearch::params::init_template}",
     require       => $require,
