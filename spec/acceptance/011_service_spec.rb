@@ -61,4 +61,32 @@ describe "Service tests:" do
 
   end
 
+  describe "module removal" do
+
+    it 'should run successfully' do
+      pp = "class { 'elasticsearch': ensure => 'absent' }
+            elasticsearch::instance{ 'es-01': ensure => 'absent' }
+           "
+
+      apply_manifest(pp, :catch_failures => true)
+    end
+
+    describe file('/etc/elasticsearch/es-01') do
+      it { should_not be_directory }
+    end
+
+    describe port(test_settings['port_a']) do
+      it {
+        should_not be_listening
+      }
+    end
+
+    describe service(test_settings['service_name_a']) do
+      it { should_not be_enabled }
+      it { should_not be_running }
+    end
+
+  end
+
+
 end
