@@ -218,9 +218,6 @@ define elasticsearch::instance(
       before  => Elasticsearch::Service[$name]
     }
 
-    $require = Class['elasticsearch::package']
-    $before  = undef
-
     # build up new config
     $instance_conf = merge($main_config, $instance_node_name, $instance_config, $instance_datadir_config)
 
@@ -251,6 +248,9 @@ define elasticsearch::instance(
       require => Class['elasticsearch::package']
     }
 
+    $require = Class['elasticsearch::package']
+    $before  = undef
+
   } else {
 
     file { $instance_configdir:
@@ -260,8 +260,7 @@ define elasticsearch::instance(
     }
 
     $require = undef
-    $before  = [ File[$instance_configdir], Class['elasticsearch::package'] ]
-
+    $before  = File[$instance_configdir]
   }
 
   elasticsearch::service { $name:

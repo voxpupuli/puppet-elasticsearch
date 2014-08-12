@@ -104,8 +104,8 @@ define elasticsearch::service::systemd(
   }
 
   $notify_service = $elasticsearch::restart_on_change ? {
-    true  => [ Exec['systemd_reload'], Service[$name] ],
-    false => Exec['systemd_reload'],
+    true  => [ Exec["systemd_reload_${name}"], Service[$name] ],
+    false => Exec["systemd_reload_${name}"]
   }
 
   if ( $status != 'unmanaged' and $ensure == 'present' ) {
@@ -149,26 +149,29 @@ define elasticsearch::service::systemd(
 
     }
 
+  $service_require = Exec["systemd_reload_${name}"]
+
   } elsif($status != 'unmanaged') {
 
     file { "/usr/lib/systemd/system/elasticsearch-${name}.service":
       ensure    => 'absent',
       subscribe => Service[$name],
-      notify    => Exec['systemd_reload']
+      notify    => Exec["systemd_reload_${name}"]
     }
 
     file { "${elasticsearch::params::defaults_location}/elasticsearch-${name}":
       ensure    => 'absent',
-      subscribe => Service[$name]
+      subscribe => Service[$name],
+      notify    => Exec["systemd_reload_${name}"]
     }
+
+    $service_require = undef
 
   }
 
-  if(!defined(Exec['systemd_reload'])) {
-    exec { 'systemd_reload':
-      command     => '/bin/systemctl daemon-reload',
-      refreshonly => true,
-    }
+  exec { "systemd_reload_${name}":
+    command     => '/bin/systemctl daemon-reload',
+    refreshonly => true,
   }
 
   if ($status != 'unmanaged') {
@@ -181,7 +184,8 @@ define elasticsearch::service::systemd(
       hasstatus  => $elasticsearch::params::service_hasstatus,
       hasrestart => $elasticsearch::params::service_hasrestart,
       pattern    => $elasticsearch::params::service_pattern,
-      provider   => 'systemd'
+      provider   => 'systemd',
+      require    => $service_require,
     }
 
   }

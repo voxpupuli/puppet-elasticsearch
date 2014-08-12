@@ -206,7 +206,6 @@ class elasticsearch(
   anchor {'elasticsearch::end': }
 
 
-  Elasticsearch::Instance <| |> -> Elasticsearch::Template <| |>
   #### Validate parameters
 
   # ensure
@@ -312,11 +311,13 @@ class elasticsearch(
     Anchor['elasticsearch::begin']
     -> Class['elasticsearch::package']
     -> Class['elasticsearch::config']
-
+    -> Elasticsearch::Instance <| |>
+    -> Elasticsearch::Template <| |>
   } else {
 
     # make sure all services are getting stopped before software removal
-    Class['elasticsearch::config']
+    Elasticsearch::Instance <| |>
+    -> Class['elasticsearch::config']
     -> Class['elasticsearch::package']
 
   }
