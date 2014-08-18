@@ -205,7 +205,9 @@ class elasticsearch(
   $default_logging_level = $elasticsearch::params::default_logging_level,
   $repo_stage            = false,
   $instances             = undef,
-  $instances_hiera_merge = false
+  $instances_hiera_merge = false,
+  $plugins               = undef,
+  $plugins_hiera_merge   = false
 ) inherits elasticsearch::params {
 
   anchor {'elasticsearch::begin': }
