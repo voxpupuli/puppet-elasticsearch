@@ -2,12 +2,12 @@ source 'https://rubygems.org'
 
 puppetversion = ENV['PUPPET_VERSION']
 gem 'puppet', puppetversion, :require => false
-gem 'puppet-lint'
+gem 'puppet-lint', '~> 0.3.2'
 gem 'rspec-puppet', :git => 'https://github.com/electrical/rspec-puppet.git', :branch => 'future_parser_fix'
 gem 'puppetlabs_spec_helper', '>= 0.1.0'
 gem 'rspec_junit_formatter'
-gem 'puppet-syntax'
 gem 'rspec', '~> 2.14.0'
+gem 'puppet-syntax'
 
 case RUBY_VERSION
 when '1.8.7'
