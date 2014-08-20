@@ -1,4 +1,4 @@
-*.swp
+.swp
 spec/fixtures
 .bundle
 .vendor
