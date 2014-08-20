@@ -289,9 +289,9 @@ class elasticsearch(
   }
 
   # Hiera support for plugins
-  validate_bool($pluginss_hiera_merge)
+  validate_bool($plugins_hiera_merge)
 
-  if $pluginss_hiera_merge == true
+  if $plugins_hiera_merge == true
     $x_plugins = hiera_hash('elasticsearch::plugins', $::elasticsearch::plugins)
   } else {
     $x_plugins = $plugins
