@@ -1,0 +1,12 @@
+HOSTS:
+  opensuse-131-x64:
+    roles:
+      - master
+      - database
+      - dashboard
+    platform: sles-13-x64
+    box: opensuse-131-x64
+    box_url: http://share.cabtec.net/packer/opensuse-13.1-x86_64-0.3.0-virtualbox.box
+    hypervisor: vagrant
+CONFIG:
+  type: foss
