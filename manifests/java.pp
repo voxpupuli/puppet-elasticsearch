@@ -29,7 +29,7 @@ class elasticsearch::java {
       'CentOS', 'Fedora', 'Scientific', 'RedHat', 'Amazon', 'OracleLinux': {
         $package = 'java-1.7.0-openjdk'
       }
-      'Debian', 'Ubuntu': {
+      'Debian', 'Ubuntu', 'LinuxMint': {
         case $::lsbdistcodename {
           'squeeze': {
             $package = 'openjdk-6-jre-headless'
