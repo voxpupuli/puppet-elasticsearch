@@ -110,7 +110,7 @@ See [Advanced features](#advanced-features) for more information
 
 ###Plug-ins
 
-Install [a variety of plugins](http://www.elasticsearch.org/guide/plugins/):
+Install [a variety of plugins](http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/modules-plugins.html#known-plugins):
 
 ####From official repository
 ```puppet
