@@ -414,7 +414,7 @@ class { 'elasticsearch':
   }
 }
 ```
-##### Short hash writeu
+##### Short hash writeup
 ```puppet
 class { 'elasticsearch':
   config => {
