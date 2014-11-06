@@ -139,7 +139,7 @@ elasticsearch::plugin { 'lmenezes/elasticsearch-kopf',
   proxy_port => 3128
 }
 ```
- 
+
 #####Plugin name could be:
 * `elasticsearch/plugin/version` for official elasticsearch plugins (download from download.elasticsearch.org)
 * `groupId/artifactId/version`   for community plugins (download from maven central or oss sonatype)
@@ -147,13 +147,23 @@ elasticsearch::plugin { 'lmenezes/elasticsearch-kopf',
 
 ###Templates
 
-#### Add a new template
+#### Add a new template using a file
 
 This will install and/or replace the template in Elasticsearch:
 
 ```puppet
 elasticsearch::template { 'templatename':
   file => 'puppet:///path/to/template.json'
+}
+```
+
+#### Add a new template using content
+
+This will install and/or replace the template in Elasticsearch:
+
+```puppet
+elasticsearch::template { 'templatename':
+  content => '{"template":"*","settings":{"number_of_replicas":0}}'
 }
 ```
 
@@ -293,7 +303,7 @@ By default we use:
 
 `/usr/share/elasticsearch/data/$instance_name`
 
-Which provides a data directory per instance. 
+Which provides a data directory per instance.
 
 
 ####Single global data directory
@@ -371,7 +381,7 @@ elasticsearch::instance { 'es-02':
 
 This example merges the `cluster.name` together with the `node.name` option.
 
-#### Overriding 
+#### Overriding
 
 When duplicate options are provided, the option in the instance config overrides the ones from the main class.
 
