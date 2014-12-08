@@ -310,7 +310,7 @@ Creates the following for each instance:
 ####Multiple Global data directories
 
 ```puppet
-class { 'elasticsearch:
+class { 'elasticsearch':
   datadir => [ '/var/lib/es-data1', '/var/lib/es-data2']
 }
 ```
