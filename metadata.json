@@ -3,10 +3,11 @@
   "version": "0.4.0",
   "source": "https://github.com/elasticsearch/puppet-elasticsearch",
   "author": "elasticsearch",
-  "license": "Apache License, Version 2.0",
+  "license": "Apache-2.0",
   "summary": "Module for managing and configuring Elasticsearch nodes",
   "description": "Module for managing and configuring Elasticsearch nodes",
   "project_page": "https://github.com/elasticsearch/puppet-elasticsearch",
+  "issues_url": "https://github.com/elasticsearch/puppet-elasticsearch/issues",
   "dependencies": [
     {
       "name": "puppetlabs/stdlib",
@@ -76,7 +77,7 @@
     },
     {
       "name": "puppet",
-      "version_requirement": ">=2.7.20 <4.0.0"
+      "version_requirement": ">=3.0 <4.0.0"
     }
   ]
 }

@@ -118,13 +118,13 @@ define elasticsearch::service::init(
     # defaults file content. Either from a hash or file
     if ($init_defaults_file != undef) {
       file { "${elasticsearch::params::defaults_location}/elasticsearch-${name}":
-        ensure  => $ensure,
-        source  => $init_defaults_file,
-        owner   => 'root',
-        group   => 'root',
-        mode    => '0644',
-        before  => Service[$name],
-        notify  => $notify_service
+        ensure => $ensure,
+        source => $init_defaults_file,
+        owner  => 'root',
+        group  => 'root',
+        mode   => '0644',
+        before => Service[$name],
+        notify => $notify_service
       }
 
     } elsif ($init_defaults != undef and is_hash($init_defaults) ) {
@@ -133,11 +133,11 @@ define elasticsearch::service::init(
       $new_init_defaults = merge($init_defaults_pre_hash, $init_defaults)
 
       augeas { "defaults_${name}":
-        incl     => "${elasticsearch::params::defaults_location}/elasticsearch-${name}",
-        lens     => 'Shellvars.lns',
-        changes  => template("${module_name}/etc/sysconfig/defaults.erb"),
-        before   => Service[$name],
-        notify   => $notify_service
+        incl    => "${elasticsearch::params::defaults_location}/elasticsearch-${name}",
+        lens    => 'Shellvars.lns',
+        changes => template("${module_name}/etc/sysconfig/defaults.erb"),
+        before  => Service[$name],
+        notify  => $notify_service
       }
 
     }
