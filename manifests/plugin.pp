@@ -96,11 +96,11 @@ define elasticsearch::plugin(
   case $ensure {
     'installed', 'present': {
       exec {"install_plugin_${name}":
-        command  => $install_cmd,
-        creates  => "${elasticsearch::plugindir}/${module_dir}",
-        returns  => $exec_rets,
-        notify   => $notify_service,
-        require  => File[$elasticsearch::plugindir]
+        command => $install_cmd,
+        creates => "${elasticsearch::plugindir}/${module_dir}",
+        returns => $exec_rets,
+        notify  => $notify_service,
+        require => File[$elasticsearch::plugindir]
       }
     }
     default: {

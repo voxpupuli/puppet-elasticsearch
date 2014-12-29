@@ -169,9 +169,9 @@ class elasticsearch::package {
   if ($elasticsearch::package_provider == 'package') {
 
     package { $elasticsearch::package_name:
-      ensure            => $package_ensure,
-      source            => $pkg_source,
-      provider          => $pkg_provider,
+      ensure   => $package_ensure,
+      source   => $pkg_source,
+      provider => $pkg_provider,
     }
 
   } else {
