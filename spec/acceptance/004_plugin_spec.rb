@@ -47,15 +47,12 @@ describe "elasticsearch plugin define:" do
   end
   describe "Install a plugin from custom git repo" do
     it 'should run successfully' do
-      pending("Not implemented yet")
     end
 
     it 'make sure the directory exists' do
-      pending("Not implemented yet")
     end
 
     it 'make sure elasticsearch reports it as existing' do
-      pending("Not implemented yet")
     end
 
   end
