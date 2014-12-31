@@ -95,12 +95,23 @@ define elasticsearch::plugin(
 
   case $ensure {
     'installed', 'present': {
+      $name_file_path = "${elasticsearch::plugindir}/${module_dir}/.name"
+      exec {"purge_plugin_${module_dir}_old":
+        command => "${elasticsearch::plugintool} --remove ${module_dir}",
+        onlyif  => "test -e ${elasticsearch::plugindir}/${module_dir} && test \"$(cat $name_file_path)\" != '${name}'",
+        before  => Exec["install_plugin_${name}"],
+      }
       exec {"install_plugin_${name}":
         command => $install_cmd,
         creates => "${elasticsearch::plugindir}/${module_dir}",
         returns => $exec_rets,
         notify  => $notify_service,
         require => File[$elasticsearch::plugindir]
+      }
+      file {$name_file_path:
+        ensure  => file,
+        content => $name,
+        require => Exec["install_plugin_${name}"],
       }
     }
     default: {
