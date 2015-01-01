@@ -6,7 +6,7 @@ describe 'elasticsearch', :type => 'class' do
     :config  => { 'node.name' => 'foo' }
   }
 
-  [ 'Debian', 'Ubuntu'].each do |distro|
+  [ 'Debian', 'Ubuntu', 'LinuxMint'].each do |distro|
 
     context "on #{distro} OS" do
 

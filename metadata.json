@@ -63,6 +63,14 @@
       ]
     },
     {
+      "operatingsystem": "LinuxMint",
+      "operatingsystemrelease": [
+        "15",
+        "16",
+        "17"
+      ]
+    },
+    {
       "operatingsystem": "OpenSuSE",
       "operatingsystemrelease": [
         "12.x",

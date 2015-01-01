@@ -115,7 +115,7 @@ class elasticsearch::params {
       # main application
       $package = [ 'elasticsearch' ]
     }
-    'Debian', 'Ubuntu': {
+    'Debian', 'Ubuntu', 'LinuxMint': {
       # main application
       $package = [ 'elasticsearch' ]
     }
@@ -139,7 +139,7 @@ class elasticsearch::params {
       $defaults_location  = '/etc/sysconfig'
       $init_template      = 'elasticsearch.RedHat.erb'
     }
-    'Debian', 'Ubuntu': {
+    'Debian', 'Ubuntu', 'LinuxMint': {
       $service_name       = 'elasticsearch'
       $service_hasrestart = true
       $service_hasstatus  = true

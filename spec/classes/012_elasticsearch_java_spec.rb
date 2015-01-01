@@ -54,6 +54,21 @@ describe 'elasticsearch', :type => 'class' do
 
     end
 
+    context "On LinuxMint OS" do
+
+      let :facts do {
+        :operatingsystem => 'LinuxMint',
+        :kernel => 'Linux',
+        :osfamily => 'Debian'
+
+      } end
+
+      it { should contain_class('elasticsearch::java') }
+      it { should contain_class('elasticsearch::package').that_requires('Class[elasticsearch::java]') }
+      it { should contain_package('openjdk-7-jre-headless') }
+
+    end
+
     context "On CentOS OS " do
 
       let :facts do {
