@@ -16,6 +16,7 @@ end
 begin
   require 'puppet-lint/tasks/puppet-lint'
   require 'puppet-syntax/tasks/puppet-syntax'
+  require 'metadata-json-lint/rake_task'
 
   PuppetSyntax.exclude_paths = exclude_paths
   PuppetSyntax.future_parser = true if ENV['FUTURE_PARSER'] == 'true'
