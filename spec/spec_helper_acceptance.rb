@@ -82,7 +82,7 @@ RSpec.configure do |c|
     puppet_module_install(:source => proj_root, :module_name => 'elasticsearch')
     hosts.each do |host|
 
-      if !host.is_pe?
+      if ( host.is_pe? && host['pe_ver'] >= '3.7.0' ) || ! host.is_pe?
         scp_to(host, "#{files_dir}/puppetlabs-stdlib-3.2.0.tar.gz", '/tmp/puppetlabs-stdlib-3.2.0.tar.gz')
         on host, puppet('module','install','/tmp/puppetlabs-stdlib-3.2.0.tar.gz'), { :acceptable_exit_codes => [0,1] }
       end
