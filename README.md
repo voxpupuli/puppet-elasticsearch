@@ -235,6 +235,7 @@ class { 'elasticsearch':
 ###Java installation
 
 Most sites will manage Java separately; however, this module can attempt to install Java as well.
+Its done by using the [puppetlabs-java](https://forge.puppetlabs.com/puppetlabs/java) module.
 
 ```puppet
 class { 'elasticsearch':
