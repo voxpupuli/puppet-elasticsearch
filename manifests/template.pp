@@ -24,6 +24,12 @@
 #   Default value: undef
 #   This variable is optional
 #
+# [*content*]
+#   Contents of the template ( json )
+#   Value type is string
+#   Default value: undef
+#   This variable is optional
+#
 # [*host*]
 #   Host name or IP address of the ES instance to connect to
 #   Value type is string
@@ -43,6 +49,7 @@
 define elasticsearch::template(
   $ensure  = 'present',
   $file    = undef,
+  $content = undef,
   $host    = 'localhost',
   $port    = 9200
 ) {
@@ -72,10 +79,11 @@ define elasticsearch::template(
 
   if ($ensure == 'present') {
 
-    # Fail when no file is supplied
-    if $file == undef {
-      fail('The variable "file" cannot be empty when inserting or updating a template')
-
+    # Fail when no file or content is supplied
+    if $file == undef and $content == undef {
+      fail('The variables "file" and "content" cannot be empty when inserting or updating a template.')
+    } elsif $file != undef and $content != undef {
+      fail('The variables "file" and "content" cannot be used together when inserting or updating a template.')
     } else { # we are good to go. notify to insert in case we deleted
       $insert_notify = Exec[ "insert_template_${name}" ]
     }
@@ -95,14 +103,34 @@ define elasticsearch::template(
     refreshonly => true
   }
 
-  if ($ensure == 'present') {
+  if ($ensure == 'absent') {
 
-    # place the template file
+    # delete the template file on disk and then on the server
     file { "${elasticsearch::configdir}/templates_import/elasticsearch-template-${name}.json":
-      ensure  => 'present',
-      source  => $file,
+      ensure  => 'absent',
       notify  => Exec[ "delete_template_${name}" ],
       require => Exec[ 'mkdir_templates_elasticsearch' ],
+    }
+  }
+
+  if ($ensure == 'present') {
+
+    if $content == undef {
+      # place the template file using the file source
+      file { "${elasticsearch::configdir}/templates_import/elasticsearch-template-${name}.json":
+        ensure  => 'present',
+        source  => $file,
+        notify  => Exec[ "delete_template_${name}" ],
+        require => Exec[ 'mkdir_templates_elasticsearch' ],
+      }
+    } else {
+      # place the template file using content
+      file { "${elasticsearch::configdir}/templates_import/elasticsearch-template-${name}.json":
+        ensure  => 'present',
+        content => $content,
+        notify  => Exec[ "delete_template_${name}" ],
+        require => Exec[ 'mkdir_templates_elasticsearch' ],
+      }
     }
 
     exec { "insert_template_${name}":
