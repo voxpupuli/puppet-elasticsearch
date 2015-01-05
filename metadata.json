@@ -54,19 +54,15 @@
       "operatingsystem": "Ubuntu",
       "operatingsystemrelease": [
         "10.04",
-        "10.10",
         "12.04",
-        "12.10",
-        "13.04",
-        "13.10",
         "14.04"
       ]
     },
     {
       "operatingsystem": "OpenSuSE",
       "operatingsystemrelease": [
-        "12.x",
-        "13.x"
+        "12",
+        "13"
       ]
     }
   ],
