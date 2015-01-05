@@ -19,13 +19,12 @@ if File.directory?(dir_prefix)
     next if dir == '.'
     if File.exists?("#{dir_prefix}/#{dir}/elasticsearch.yml")
       config_data = YAML.load_file("#{dir_prefix}/#{dir}/elasticsearch.yml")
-      if !config_data['http'].nil?
-	if config['http']['enabled'] == 'false'
-	end
-	if !config_data['http']['port'].nil?
+      unless config_data['http'].nil?
+        next if config_data['http']['enabled'] == 'false'
+	if config_data['http']['port'].nil?
+          port = "9200"
+        else
 	  port = config_data['http']['port']
-	else
-	  port = "9200"
 	end
       else
 	port = "9200"
