@@ -166,6 +166,7 @@
 #
 # === Authors
 #
+# * Andrew Langhorn <mailto:andrew@ajlanghorn.com>
 # * Richard Pijnenburg <mailto:richard.pijnenburg@elasticsearch.com>
 #
 class elasticsearch(
@@ -188,7 +189,7 @@ class elasticsearch(
   $init_defaults         = undef,
   $init_defaults_file    = undef,
   $init_template         = undef,
-  $config                = undef,
+  $config                = {},
   $datadir               = $elasticsearch::params::datadir,
   $plugindir             = $elasticsearch::params::plugindir,
   $plugintool            = $elasticsearch::params::plugintool,
