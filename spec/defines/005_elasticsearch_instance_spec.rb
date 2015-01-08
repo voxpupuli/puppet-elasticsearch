@@ -257,6 +257,32 @@ describe 'elasticsearch::instance', :type => 'define' do
       it { should contain_file('/var/lib/elasticsearch-data/02').with( :ensure => 'directory') }
     end
 
+   context "Conflicting setting path.data" do
+     let(:pre_condition) { 'class {"elasticsearch": }'  }
+     let :params do {
+       :datadir => '/var/lib/elasticsearch/data',
+       :config  => { 'path.data' => '/var/lib/elasticsearch/otherdata' }
+     } end
+
+      it { should contain_exec('mkdir_datadir_elasticsearch_es-01') }
+      it { should contain_file('/etc/elasticsearch/es-01/elasticsearch.yml').with(:content => "### MANAGED BY PUPPET ###\n---\nnode: \n  name: elasticsearch001-es-01\npath: \n  data: /var/lib/elasticsearch/data\n" ) }
+      it { should contain_file('/var/lib/elasticsearch/data').with( :ensure => 'directory') }
+      it { should_not contain_file('/var/lib/elasticsearch/otherdata').with( :ensure => 'directory') }
+   end
+
+   context "Conflicting setting path => data" do
+     let(:pre_condition) { 'class {"elasticsearch": }'  }
+     let :params do {
+       :datadir => '/var/lib/elasticsearch/data',
+       :config  => { 'path' => { 'data' => '/var/lib/elasticsearch/otherdata' } }
+     } end
+
+      it { should contain_exec('mkdir_datadir_elasticsearch_es-01') }
+      it { should contain_file('/etc/elasticsearch/es-01/elasticsearch.yml').with(:content => "### MANAGED BY PUPPET ###\n---\nnode: \n  name: elasticsearch001-es-01\npath: \n  data: /var/lib/elasticsearch/data\n" ) }
+      it { should contain_file('/var/lib/elasticsearch/data').with( :ensure => 'directory') }
+      it { should_not contain_file('/var/lib/elasticsearch/otherdata').with( :ensure => 'directory') }
+   end
+
   end
 
   context "Logging" do
