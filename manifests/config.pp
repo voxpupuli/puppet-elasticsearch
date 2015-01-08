@@ -64,9 +64,16 @@ class elasticsearch::config {
       recurse => true
     }
 
+    file { $elasticsearch::datadir:
+      ensure  => 'directory',
+      recurse => true
+    }
+
+
     if $elasticsearch::params::pid_dir {
       file { $elasticsearch::params::pid_dir:
         ensure  => 'directory',
+        group   => $elasticsearch::elasticsearch_user,
         recurse => true
       }
     }
