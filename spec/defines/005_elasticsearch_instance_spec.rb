@@ -314,4 +314,21 @@ describe 'elasticsearch::instance', :type => 'define' do
 
   end
 
+  context "running as an other user" do
+
+    let :facts do {
+      :operatingsystem => 'CentOS',
+      :kernel => 'Linux',
+      :osfamily => 'RedHat',
+      :hostname => 'elasticsearch001'
+    } end
+
+    let(:pre_condition) { 'class {"elasticsearch": elasticsearch_user => "myesuser", elasticsearch_group => "myesgroup" }'  }
+
+    it { should contain_file('/usr/share/elasticsearch/data/es-01').with(:owner => 'myesuser', :group => 'myesgroup') }
+    it { should contain_file('/etc/elasticsearch/es-01').with(:owner => 'myesuser', :group => 'myesgroup') }
+    it { should contain_file('/etc/elasticsearch/es-01/elasticsearch.yml').with(:owner => 'myesuser', :group => 'myesgroup') }
+    it { should contain_file('/etc/elasticsearch/es-01/logging.yml').with(:owner => 'myesuser', :group => 'myesgroup') }
+  end
+
 end

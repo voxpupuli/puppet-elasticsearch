@@ -227,6 +227,22 @@ describe 'elasticsearch', :type => 'class' do
           it { should contain_zypprepo('elasticsearch').with(:baseurl => 'http://packages.elasticsearch.org/elasticsearch/1.0/centos') }
         end
 
+      end
+
+      context "Running a a different user" do
+
+        let (:params) {
+          default_params.merge({
+            :elasticsearch_user => 'myesuser',
+            :elasticsearch_group => 'myesgroup'
+          })
+        }
+
+        it { should contain_file('/etc/elasticsearch').with(:owner => 'myesuser', :group => 'myesgroup') }
+        it { should contain_file('/var/log/elasticsearch').with(:owner => 'myesuser', :group => 'myesgroup') }
+        it { should contain_file('/usr/share/elasticsearch').with(:owner => 'myesuser', :group => 'myesgroup') }
+        it { should contain_file('/usr/share/elasticsearch/plugins').with(:owner => 'myesuser', :group => 'myesgroup') }
+        it { should contain_file('/var/run/elasticsearch').with(:owner => 'myesuser', :group => 'myesgroup') } if facts[:osfamily] == 'RedHat'
 
       end
 
