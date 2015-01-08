@@ -56,20 +56,17 @@ class elasticsearch::config {
 
     file { $elasticsearch::params::homedir:
       ensure  => 'directory',
-      mode    => '0644',
       recurse => true
     }
 
     file { $elasticsearch::plugindir:
       ensure  => 'directory',
-      mode    => '0644',
       recurse => true
     }
 
     if $elasticsearch::params::pid_dir {
       file { $elasticsearch::params::pid_dir:
         ensure  => 'directory',
-        mode    => '0644',
         recurse => true
       }
     }
