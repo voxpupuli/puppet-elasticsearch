@@ -168,7 +168,15 @@ define elasticsearch::instance(
       $main_config = { }
     }
 
-    $instance_datadir_config = { 'path.data' => $instance_datadir }
+    if(has_key($instance_config, 'path.data')) {
+      $instance_datadir_config = { 'path.data' => $instance_datadir }
+    } elsif(has_key($instance_config, 'path')) {
+      if(has_key($instance_config['path'], 'data')) {
+        $instance_datadir_config = { 'path' => { 'data' => $instance_datadir } }
+      }
+    } else {
+      $instance_datadir_config = { 'path.data' => $instance_datadir }
+    }
 
     if(is_array($instance_datadir)) {
       $dirs = join($instance_datadir, ' ')
