@@ -48,9 +48,34 @@ class elasticsearch::config {
       mode   => '0644'
     }
 
+    file { $elasticsearch::params::logdir:
+      ensure  => 'directory',
+      mode    => '0644',
+      recurse => true
+    }
+
+    file { $elasticsearch::params::homedir:
+      ensure  => 'directory',
+      recurse => true
+    }
+
     file { $elasticsearch::plugindir:
-      ensure => 'directory',
-      mode   => '0644'
+      ensure  => 'directory',
+      recurse => true
+    }
+
+    file { $elasticsearch::datadir:
+      ensure  => 'directory',
+      recurse => true
+    }
+
+
+    if $elasticsearch::params::pid_dir {
+      file { $elasticsearch::params::pid_dir:
+        ensure  => 'directory',
+        group   => $elasticsearch::elasticsearch_user,
+        recurse => true
+      }
     }
 
     exec { 'mkdir_templates_elasticsearch':

@@ -269,7 +269,7 @@ class elasticsearch(
   if $java_install == true {
     # Install java
     class { '::java':
-      package => $java_package,
+      package      => $java_package,
       distribution => 'jre'
     }
 

@@ -194,8 +194,9 @@ define elasticsearch::instance(
     file { $instance_datadir:
       ensure  => 'directory',
       owner   => $elasticsearch::elasticsearch_user,
-      group   => $elasticsearch::elasticsearch_group,
-      mode    => '0770',
+      group   => $elasticsearch::elasticsearch_user,
+      mode    => '0644',
+      recurse => true,
       require => [ Exec["mkdir_datadir_elasticsearch_${name}"], Class['elasticsearch::package'] ],
       before  => Elasticsearch::Service[$name]
     }
