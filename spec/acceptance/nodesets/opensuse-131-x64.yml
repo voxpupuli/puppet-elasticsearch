@@ -5,8 +5,8 @@ HOSTS:
       - database
       - dashboard
     platform: sles-13-x64
-    box: opensuse-131-x64
-    box_url: http://share.cabtec.net/packer/opensuse-13.1-x86_64-0.3.0-virtualbox.box
+    box: opensuse-13.1-test
+    box_url: https://s3-eu-west-1.amazonaws.com/users.eu.elasticsearch.org/electrical/opensuse-131.box
     hypervisor: vagrant
 CONFIG:
   type: foss
