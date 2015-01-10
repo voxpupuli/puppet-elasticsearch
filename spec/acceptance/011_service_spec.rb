@@ -6,7 +6,7 @@ describe "Service tests:" do
 
     context "Change the defaults file" do
       it 'should run successfully' do
-        pp = "class { 'elasticsearch': manage_repo => true, repo_version => '#{test_settings['repo_version']}', java_install => true, config => { 'cluster.name' => '#{test_settings['cluster_name']}' }, init_defaults => { 'ES_USER' => 'root', 'ES_JAVA_OPTS' => '\"-server -XX:+UseTLAB -XX:+CMSClassUnloadingEnabled\"' } }
+        pp = "class { 'elasticsearch': manage_repo => true, repo_version => '#{test_settings['repo_version']}', java_install => true, config => { 'cluster.name' => '#{test_settings['cluster_name']}' }, init_defaults => { 'ES_JAVA_OPTS' => '\"-server -XX:+UseTLAB -XX:+CMSClassUnloadingEnabled\"' } }
               elasticsearch::instance { 'es-01': config => { 'node.name' => 'elasticsearch001' } }
              "
 
@@ -50,9 +50,7 @@ describe "Service tests:" do
       context "Make sure we have ES_USER=root" do
 
         describe file(test_settings['defaults_file_a']) do
-          its(:content) { should match /^ES_USER=root/ }
           its(:content) { should match /^ES_JAVA_OPTS="-server -XX:\+UseTLAB -XX:\+CMSClassUnloadingEnabled"/ }
-          its(:content) { should_not match /^ES_USER=elasticsearch/ }
         end
 
       end

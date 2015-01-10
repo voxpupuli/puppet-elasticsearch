@@ -124,6 +124,12 @@ define elasticsearch::service::systemd(
 
     } elsif ($init_defaults != undef and is_hash($init_defaults) ) {
 
+      if(has_key($init_defaults, 'ES_USER')) {
+        if($init_defaults['ES_USER'] != $elasticsearch::elasticsearch_user) {
+          fail("Found ES_USER setting for init_defaults but is not same as elasticsearch_user setting. Please use elasticsearch_user setting.")
+        }
+      }
+
       $init_defaults_pre_hash = { 'ES_USER' => $elasticsearch::elasticsearch_user, 'ES_GROUP' => $elasticsearch::elasticsearch_group }
       $new_init_defaults = merge($init_defaults_pre_hash, $init_defaults)
 
