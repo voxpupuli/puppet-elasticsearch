@@ -130,7 +130,7 @@ describe "elasticsearch class:" do
   describe "Cleanup" do
 
     it 'should run successfully' do
-      pp = "class { 'elasticsearch': config => { 'cluster.name' => '#{test_settings['cluster_name']}'}, manage_repo => true, repo_version => '#{test_settings['repo_version']}', java_install => true, ensure => 'absent' }
+      pp = "class { 'elasticsearch': ensure => 'absent' }
             elasticsearch::instance{ 'es-01': ensure => 'absent' }
            "
 
