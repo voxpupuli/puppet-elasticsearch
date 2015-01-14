@@ -51,6 +51,9 @@
 # [*logging_config*]
 #   Hash representation of information you want in the logging.yml file
 #
+# [*logging_template*]
+#  Use a custom logging template - just supply the reative path ie ${module}/elasticsearch/logging.yml.erb
+#
 # [*logging_level*]
 #   Default logging level for Elasticsearch.
 #   Defaults to: INFO
@@ -63,15 +66,16 @@
 # * Richard Pijnenburg <mailto:richard.pijnenburg@elasticsearch.com>
 #
 define elasticsearch::instance(
-  $ensure         = $elasticsearch::ensure,
-  $status         = $elasticsearch::status,
-  $config         = undef,
-  $configdir      = undef,
-  $datadir        = undef,
-  $logging_file   = undef,
-  $logging_config = undef,
-  $logging_level  = $elasticsearch::default_logging_level,
-  $init_defaults  = undef
+  $ensure           = $elasticsearch::ensure,
+  $status           = $elasticsearch::status,
+  $config           = undef,
+  $configdir        = undef,
+  $datadir          = undef,
+  $logging_file     = undef,
+  $logging_config   = undef,
+  $logging_template = undef,
+  $logging_level    = $elasticsearch::default_logging_level,
+  $init_defaults    = undef
 ) {
 
   require elasticsearch
@@ -158,7 +162,13 @@ define elasticsearch::instance(
         $instance_logging_config = { }
       }
       $logging_hash = merge($elasticsearch::params::logging_defaults, $main_logging_config, $instance_logging_config)
-      $logging_content = template("${module_name}/etc/elasticsearch/logging.yml.erb")
+      if ($logging_template != undef ) {
+        $logging_content = template("$logging_template")
+      } elsif ($elasticsearch::logging_template != undef) {
+        $logging_content = template("$elasticsearch::logging_template")
+      } else {
+        $logging_content = template("${module_name}/etc/elasticsearch/logging.yml.erb")
+      }
       $logging_source = undef
     }
 
