@@ -137,6 +137,9 @@
 # [*logging_file*]
 #   Instead of a hash you can supply a puppet:// file source for the logging.yml file
 #
+# [*logging_template*]
+#  Use a custom logging template - just supply the reative path ie ${module}/elasticsearch/logging.yml.erb
+#
 # [*default_logging_level*]
 #   Default logging level for Elasticsearch.
 #   Defaults to: INFO
@@ -198,6 +201,7 @@ class elasticsearch(
   $repo_version          = false,
   $logging_file          = undef,
   $logging_config        = undef,
+  $logging_template      = undef,
   $default_logging_level = $elasticsearch::params::default_logging_level,
   $repo_stage            = false
 ) inherits elasticsearch::params {
