@@ -50,6 +50,7 @@ class elasticsearch::config {
 
     file { $elasticsearch::params::logdir:
       ensure  => 'directory',
+      group   => $elasticsearch::params::logdir_group,
       mode    => '0644',
       recurse => true
     }
