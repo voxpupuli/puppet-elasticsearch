@@ -239,7 +239,7 @@ describe 'elasticsearch', :type => 'class' do
         }
 
         it { should contain_file('/etc/elasticsearch').with(:owner => 'myesuser', :group => 'myesgroup') }
-        it { should contain_file('/var/log/elasticsearch').with(:owner => 'myesuser', :group => 'myesgroup') }
+        it { should contain_file('/var/log/elasticsearch').with(:owner => 'myesuser') }
         it { should contain_file('/usr/share/elasticsearch').with(:owner => 'myesuser', :group => 'myesgroup') }
         it { should contain_file('/usr/share/elasticsearch/plugins').with(:owner => 'myesuser', :group => 'myesgroup') }
         it { should contain_file('/usr/share/elasticsearch/data').with(:owner => 'myesuser', :group => 'myesgroup') }
