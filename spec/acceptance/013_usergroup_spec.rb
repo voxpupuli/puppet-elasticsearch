@@ -54,6 +54,33 @@ describe "elasticsearch class:" do
 
   end
 
+  describe "Cleanup" do
+
+    it 'should run successfully' do
+      pp = "class { 'elasticsearch': ensure => 'absent' }
+            elasticsearch::instance{ 'es-01': ensure => 'absent' }
+           "
+
+      apply_manifest(pp, :catch_failures => true)
+    end
+
+    describe file('/etc/elasticsearch/es-01') do
+      it { should_not be_directory }
+    end
+
+    describe port(test_settings['port_a']) do
+      it {
+        should_not be_listening
+      }
+    end
+
+    describe service(test_settings['service_name_a']) do
+      it { should_not be_enabled }
+      it { should_not be_running }
+    end
+
+  end
+
 
   describe "Run as a different user now" do
 
@@ -82,12 +109,12 @@ describe "elasticsearch class:" do
     describe file(test_settings['pid_file_a']) do
       it { should be_file }
       it { should be_owned_by 'esuser' }
-      it { should be_grouped_into 'esuser' }
       its(:content) { should match /[0-9]+/ }
     end
 
     describe port(test_settings['port_a']) do
       it {
+        sleep 15
         should be_listening
       }
     end
@@ -101,26 +128,22 @@ describe "elasticsearch class:" do
     describe file('/etc/elasticsearch/es-01/elasticsearch.yml') do
       it { should be_file }
       it { should be_owned_by 'esuser' }
-      it { should be_grouped_into 'esgroup' }
       it { should contain 'name: elasticsearch001' }
     end
 
     describe file('/usr/share/elasticsearch') do
       it { should be_directory }
       it { should be_owned_by 'esuser' }
-      it { should be_grouped_into 'esgroup' }
     end
 
     describe file('/var/log/elasticsearch') do
       it { should be_directory }
       it { should be_owned_by 'esuser' }
-      it { should be_grouped_into 'esgroup' }
     end
 
     describe file('/etc/elasticsearch') do
       it { should be_directory }
       it { should be_owned_by 'esuser' }
-      it { should be_grouped_into 'esgroup' }
     end
 
 
