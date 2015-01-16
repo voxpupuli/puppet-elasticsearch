@@ -141,6 +141,7 @@ class elasticsearch::params {
       $defaults_location  = '/etc/sysconfig'
       $init_template      = 'elasticsearch.RedHat.erb'
       $pid_dir            = '/var/run/elasticsearch'
+      $logdir_group       = $elasticsearch::elasticsearch_group
     }
     'Debian', 'Ubuntu': {
       $service_name       = 'elasticsearch'
@@ -151,6 +152,7 @@ class elasticsearch::params {
       $defaults_location  = '/etc/default'
       $init_template      = 'elasticsearch.Debian.erb'
       $pid_dir            = false
+      $logdir_group       = $elasticsearch::elasticsearch_user
     }
     'Darwin': {
       $service_name       = 'FIXME/TODO'
@@ -160,6 +162,7 @@ class elasticsearch::params {
       $service_providers  = [ 'launchd' ]
       $defaults_location  = false
       $pid_dir            = false
+      $logdir_group       = $elasticsearch::elasticsearch_group
     }
     'OpenSuSE': {
       $service_name       = 'elasticsearch'
@@ -170,6 +173,7 @@ class elasticsearch::params {
       $defaults_location  = '/etc/sysconfig'
       $init_template      = 'elasticsearch.OpenSuSE.erb'
       $pid_dir            = false
+      $logdir_group       = $elasticsearch::elasticsearch_group
     }
     default: {
       fail("\"${module_name}\" provides no service parameters
