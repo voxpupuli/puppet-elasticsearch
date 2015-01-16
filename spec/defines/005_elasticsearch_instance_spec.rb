@@ -217,12 +217,14 @@ describe 'elasticsearch::instance', :type => 'define' do
       it { should contain_exec('mkdir_datadir_elasticsearch_es-01') }
       it { should contain_file('/etc/elasticsearch/es-01/elasticsearch.yml').with(:content => "### MANAGED BY PUPPET ###\n---\nnode: \n  name: elasticsearch001-es-01\npath: \n  data: /usr/share/elasticsearch/data/es-01\n" ) }
       it { should contain_file('/usr/share/elasticsearch/data/es-01').with( :ensure => 'directory') }
+      it { should contain_file('/usr/share/elasticsearch/data').with( :ensure => 'directory') }
     end
 
     context "single from main config " do
       let(:pre_condition) { 'class {"elasticsearch": datadir => "/var/lib/elasticsearch-data" }'  }
       it { should contain_exec('mkdir_datadir_elasticsearch_es-01') }
       it { should contain_file('/etc/elasticsearch/es-01/elasticsearch.yml').with(:content => "### MANAGED BY PUPPET ###\n---\nnode: \n  name: elasticsearch001-es-01\npath: \n  data: /var/lib/elasticsearch-data/es-01\n" ) }
+      it { should contain_file('/var/lib/elasticsearch-data').with( :ensure => 'directory') }
       it { should contain_file('/var/lib/elasticsearch-data/es-01').with( :ensure => 'directory') }
     end
 
@@ -241,7 +243,9 @@ describe 'elasticsearch::instance', :type => 'define' do
       let(:pre_condition) { 'class {"elasticsearch": datadir => [ "/var/lib/elasticsearch-data01", "/var/lib/elasticsearch-data02"] }'  }
       it { should contain_exec('mkdir_datadir_elasticsearch_es-01') }
       it { should contain_file('/etc/elasticsearch/es-01/elasticsearch.yml').with(:content => "### MANAGED BY PUPPET ###\n---\nnode: \n  name: elasticsearch001-es-01\npath: \n  data: \n      - /var/lib/elasticsearch-data01/es-01\n      - /var/lib/elasticsearch-data02/es-01\n" ) }
+      it { should contain_file('/var/lib/elasticsearch-data01').with( :ensure => 'directory') }
       it { should contain_file('/var/lib/elasticsearch-data01/es-01').with( :ensure => 'directory') }
+      it { should contain_file('/var/lib/elasticsearch-data02').with( :ensure => 'directory') }
       it { should contain_file('/var/lib/elasticsearch-data02/es-01').with( :ensure => 'directory') }
     end
 
@@ -338,6 +342,23 @@ describe 'elasticsearch::instance', :type => 'define' do
 
     end
 
+  end
+
+  context "running as an other user" do
+
+    let :facts do {
+      :operatingsystem => 'CentOS',
+      :kernel => 'Linux',
+      :osfamily => 'RedHat',
+      :hostname => 'elasticsearch001'
+    } end
+
+    let(:pre_condition) { 'class {"elasticsearch": elasticsearch_user => "myesuser", elasticsearch_group => "myesgroup" }'  }
+
+    it { should contain_file('/usr/share/elasticsearch/data/es-01').with(:owner => 'myesuser', :group => 'myesuser') }
+    it { should contain_file('/etc/elasticsearch/es-01').with(:owner => 'myesuser', :group => 'myesgroup') }
+    it { should contain_file('/etc/elasticsearch/es-01/elasticsearch.yml').with(:owner => 'myesuser', :group => 'myesgroup') }
+    it { should contain_file('/etc/elasticsearch/es-01/logging.yml').with(:owner => 'myesuser', :group => 'myesgroup') }
   end
 
 end
