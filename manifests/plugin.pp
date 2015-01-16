@@ -27,6 +27,18 @@
 #   Default value: None
 #   This variable is optional
 #
+# [*proxy_host*]
+#   Proxy host to use when installing the plugin
+#   Value type is string
+#   Default value: None
+#   This variable is optional
+#
+# [*proxy_port*]
+#   Proxy port to use when installing the plugin
+#   Value type is number
+#   Default value: None
+#   This variable is optional
+#
 # [*instances*]
 #   Specify all the instances related
 #   value type is string or array
