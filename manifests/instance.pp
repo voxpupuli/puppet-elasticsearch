@@ -163,7 +163,7 @@ define elasticsearch::instance(
       }
       $logging_hash = merge($elasticsearch::params::logging_defaults, $main_logging_config, $instance_logging_config)
       if ($logging_template != undef ) {
-        $logging_content = template("${logging_template}")
+        $logging_content = template($logging_template)
       } elsif ($elasticsearch::logging_template != undef) {
         $logging_content = template($elasticsearch::logging_template)
       } else {
