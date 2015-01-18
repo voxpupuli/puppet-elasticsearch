@@ -108,7 +108,7 @@ define elasticsearch::service::init(
   }
 
   $notify_service = $elasticsearch::restart_on_change ? {
-    true  => Service[$name],
+    true  => Service["elasticsearch-instance-${name}"],
     false => undef,
   }
 
@@ -123,7 +123,7 @@ define elasticsearch::service::init(
         owner  => 'root',
         group  => 'root',
         mode   => '0644',
-        before => Service[$name],
+        before => Service["elasticsearch-instance-${name}"],
         notify => $notify_service
       }
 
@@ -142,7 +142,7 @@ define elasticsearch::service::init(
         incl    => "${elasticsearch::params::defaults_location}/elasticsearch-${name}",
         lens    => 'Shellvars.lns',
         changes => template("${module_name}/etc/sysconfig/defaults.erb"),
-        before  => Service[$name],
+        before  => Service["elasticsearch-instance-${name}"],
         notify  => $notify_service
       }
 
@@ -157,7 +157,7 @@ define elasticsearch::service::init(
         owner   => 'root',
         group   => 'root',
         mode    => '0755',
-        before  => Service[$name],
+        before  => Service["elasticsearch-instance-${name}"],
         notify  => $notify_service
       }
 
@@ -167,12 +167,12 @@ define elasticsearch::service::init(
 
     file { "/etc/init.d/elasticsearch-${name}":
       ensure    => 'absent',
-      subscribe => Service[$name]
+      subscribe => Service["elasticsearch-instance-${name}"]
     }
 
     file { "${elasticsearch::params::defaults_location}/elasticsearch-${name}":
       ensure    => 'absent',
-      subscribe => Service[$name]
+      subscribe => Service["elasticsearch-${$name}"]
     }
 
   }
@@ -181,7 +181,7 @@ define elasticsearch::service::init(
   if ( $status != 'unmanaged') {
 
     # action
-    service { $name:
+    service { "elasticsearch-instance-${name}":
       ensure     => $service_ensure,
       enable     => $service_enable,
       name       => "elasticsearch-${name}",

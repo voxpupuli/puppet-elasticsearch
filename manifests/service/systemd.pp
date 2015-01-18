@@ -104,7 +104,7 @@ define elasticsearch::service::systemd(
   }
 
   $notify_service = $elasticsearch::restart_on_change ? {
-    true  => [ Exec["systemd_reload_${name}"], Service[$name] ],
+    true  => [ Exec["systemd_reload_${name}"], Service["elasticsearch-instance-${name}"] ],
     false => Exec["systemd_reload_${name}"]
   }
 
@@ -118,7 +118,7 @@ define elasticsearch::service::systemd(
         owner  => 'root',
         group  => 'root',
         mode   => '0644',
-        before => Service[$name],
+        before => Service["elasticsearch-instance-${name}"],
         notify => $notify_service
       }
 
@@ -137,7 +137,7 @@ define elasticsearch::service::systemd(
         incl    => "${elasticsearch::params::defaults_location}/elasticsearch-${name}",
         lens    => 'Shellvars.lns',
         changes => template("${module_name}/etc/sysconfig/defaults.erb"),
-        before  => Service[$name],
+        before  => Service["elasticsearch-instance-${name}"],
         notify  => $notify_service
       }
 
@@ -149,7 +149,7 @@ define elasticsearch::service::systemd(
       file { "/usr/lib/systemd/system/elasticsearch-${name}.service":
         ensure  => $ensure,
         content => template($init_template),
-        before  => Service[$name],
+        before  => Service["elasticsearch-instance-${name}"],
         notify  => $notify_service
       }
 
@@ -161,13 +161,13 @@ define elasticsearch::service::systemd(
 
     file { "/usr/lib/systemd/system/elasticsearch-${name}.service":
       ensure    => 'absent',
-      subscribe => Service[$name],
+      subscribe => Service["elasticsearch-instance-${name}"],
       notify    => Exec["systemd_reload_${name}"]
     }
 
     file { "${elasticsearch::params::defaults_location}/elasticsearch-${name}":
       ensure    => 'absent',
-      subscribe => Service[$name],
+      subscribe => Service["elasticsearch-instance-${name}"],
       notify    => Exec["systemd_reload_${name}"]
     }
 
@@ -183,7 +183,7 @@ define elasticsearch::service::systemd(
   if ($status != 'unmanaged') {
 
     # action
-    service { $name:
+    service { "elasticsearch-instance-${name}":
       ensure     => $service_ensure,
       enable     => $service_enable,
       name       => "elasticsearch-${name}.service",
