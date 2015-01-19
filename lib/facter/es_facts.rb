@@ -33,45 +33,53 @@ if File.directory?(dir_prefix)
     end
   }
 
-  add_fact('elasticsearch', 'ports', ports.join(",") )
-  ports.each do |port|
+  begin
+    if ports.count > 0
 
-    key_prefix = "elasticsearch_#{port}"
+      add_fact('elasticsearch', 'ports', ports.join(",") )
+      ports.each do |port|
 
-    uri = URI("http://localhost:#{port}")
-    json_data = JSON.parse(Net::HTTP.get(uri))
+        key_prefix = "elasticsearch_#{port}"
 
-    add_fact(key_prefix, 'name', json_data['name'])
-    add_fact(key_prefix, 'version', json_data['version']['number'])
+        uri = URI("http://localhost:#{port}")
+        json_data = JSON.parse(Net::HTTP.get(uri))
+        next if json_data['status'] != '200'
 
-    uri2 = URI("http://localhost:#{port}/_nodes/#{json_data['name']}")
-    json_data_node = JSON.parse(Net::HTTP.get(uri2))
+        add_fact(key_prefix, 'name', json_data['name'])
+        add_fact(key_prefix, 'version', json_data['version']['number'])
 
-    add_fact(key_prefix, 'cluster_name', json_data_node['cluster_name'])
-    node_data = json_data_node['nodes'].first
+        uri2 = URI("http://localhost:#{port}/_nodes/#{json_data['name']}")
+        json_data_node = JSON.parse(Net::HTTP.get(uri2))
 
-    add_fact(key_prefix, 'node_id', node_data[0])
+        add_fact(key_prefix, 'cluster_name', json_data_node['cluster_name'])
+        node_data = json_data_node['nodes'].first
 
-    nodes_data = json_data_node['nodes'][node_data[0]]
+        add_fact(key_prefix, 'node_id', node_data[0])
 
-    process = nodes_data['process']
-    add_fact(key_prefix, 'mlockall', process['mlockall'])
+        nodes_data = json_data_node['nodes'][node_data[0]]
 
-    plugins = nodes_data['plugins']
+        process = nodes_data['process']
+        add_fact(key_prefix, 'mlockall', process['mlockall'])
 
-    plugins_fact = []
-    plugins.each do |plugin|
+        plugins = nodes_data['plugins']
 
-      plugin_name = plugin['name'] 
-      plugins_fact << plugin_name
+        plugins_fact = []
+        plugins.each do |plugin|
 
-      plugin.each do |key, value|
-	prefix = "#{key_prefix}_plugin_#{plugin_name}"
-	add_fact(prefix, key, value) unless key == 'name'
+          plugin_name = plugin['name']
+          plugins_fact << plugin_name
+
+          plugin.each do |key, value|
+            prefix = "#{key_prefix}_plugin_#{plugin_name}"
+            add_fact(prefix, key, value) unless key == 'name'
+          end
+        end
+        add_fact(key_prefix, 'plugins', plugins_fact.join(","))
+
       end
-    end
-    add_fact(key_prefix, 'plugins', plugins_fact.join(","))
 
+    end
+  rescue
   end
 
 end
