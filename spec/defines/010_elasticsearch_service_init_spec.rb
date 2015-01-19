@@ -19,7 +19,7 @@ describe 'elasticsearch::service::init', :type => 'define' do
     } end
 
     it { should contain_elasticsearch__service__init('es-01') }
-    it { should contain_service('es-01').with(:ensure => 'running', :enable => true) }
+    it { should contain_service('elasticsearch-instance-es-01').with(:ensure => 'running', :enable => true) }
   end
 
   context "Remove service" do
@@ -29,7 +29,7 @@ describe 'elasticsearch::service::init', :type => 'define' do
     } end
 
     it { should contain_elasticsearch__service__init('es-01') }
-    it { should contain_service('es-01').with(:ensure => 'stopped', :enable => false) }
+    it { should contain_service('elasticsearch-instance-es-01').with(:ensure => 'stopped', :enable => false) }
   end
 
   context "unmanaged" do
@@ -39,7 +39,7 @@ describe 'elasticsearch::service::init', :type => 'define' do
       } end
 
     it { should contain_elasticsearch__service__init('es-01') }
-      it { should_not contain_service('es-01') }
+      it { should_not contain_service('elasticsearch-instance-es-01') }
       it { should_not contain_file('/etc/init.d/elasticsearch-es-01') }
       it { should_not contain_file('/etc/sysconfig/elasticsearch-es-01') }
 
@@ -54,7 +54,7 @@ describe 'elasticsearch::service::init', :type => 'define' do
 	:init_defaults_file => 'puppet:///path/to/initdefaultsfile'
       } end
 
-      it { should contain_file('/etc/sysconfig/elasticsearch-es-01').with(:source => 'puppet:///path/to/initdefaultsfile', :notify => 'Service[es-01]', :before => 'Service[es-01]') }
+      it { should contain_file('/etc/sysconfig/elasticsearch-es-01').with(:source => 'puppet:///path/to/initdefaultsfile', :notify => 'Service[elasticsearch-instance-es-01]', :before => 'Service[elasticsearch-instance-es-01]') }
     end
 
     context "Set via hash" do
@@ -64,7 +64,7 @@ describe 'elasticsearch::service::init', :type => 'define' do
 	:init_defaults => {'ES_HOME' => '/usr/share/elasticsearch' }
       } end
 
-      it { should contain_augeas('defaults_es-01').with(:incl => '/etc/sysconfig/elasticsearch-es-01', :changes => "set ES_GROUP 'elasticsearch'\nset ES_HOME '/usr/share/elasticsearch'\nset ES_USER 'elasticsearch'\n", :notify => 'Service[es-01]', :before => 'Service[es-01]') }
+      it { should contain_augeas('defaults_es-01').with(:incl => '/etc/sysconfig/elasticsearch-es-01', :changes => "set ES_GROUP 'elasticsearch'\nset ES_HOME '/usr/share/elasticsearch'\nset ES_USER 'elasticsearch'\n", :notify => 'Service[elasticsearch-instance-es-01]', :before => 'Service[elasticsearch-instance-es-01]') }
     end
 
     context "No restart when 'restart_on_change' is false" do
@@ -77,7 +77,7 @@ describe 'elasticsearch::service::init', :type => 'define' do
 	  :init_defaults_file => 'puppet:///path/to/initdefaultsfile'
         } end
 
-        it { should contain_file('/etc/sysconfig/elasticsearch-es-01').with(:source => 'puppet:///path/to/initdefaultsfile', :notify => nil, :before => 'Service[es-01]') }
+        it { should contain_file('/etc/sysconfig/elasticsearch-es-01').with(:source => 'puppet:///path/to/initdefaultsfile', :notify => nil, :before => 'Service[elasticsearch-instance-es-01]') }
       end
 
       context "Set via hash" do
@@ -87,7 +87,7 @@ describe 'elasticsearch::service::init', :type => 'define' do
   	  :init_defaults => {'ES_HOME' => '/usr/share/elasticsearch' }
         } end
 
-        it { should contain_augeas('defaults_es-01').with(:incl => '/etc/sysconfig/elasticsearch-es-01', :changes => "set ES_GROUP 'elasticsearch'\nset ES_HOME '/usr/share/elasticsearch'\nset ES_USER 'elasticsearch'\n", :notify => nil, :before => 'Service[es-01]') }
+        it { should contain_augeas('defaults_es-01').with(:incl => '/etc/sysconfig/elasticsearch-es-01', :changes => "set ES_GROUP 'elasticsearch'\nset ES_HOME '/usr/share/elasticsearch'\nset ES_USER 'elasticsearch'\n", :notify => nil, :before => 'Service[elasticsearch-instance-es-01]') }
       end
 
     end
@@ -104,7 +104,7 @@ describe 'elasticsearch::service::init', :type => 'define' do
 	:init_template => 'elasticsearch/etc/init.d/elasticsearch.RedHat.erb'
       } end
 
-      it { should contain_file('/etc/init.d/elasticsearch-es-01').with(:notify => 'Service[es-01]', :before => 'Service[es-01]') }
+      it { should contain_file('/etc/init.d/elasticsearch-es-01').with(:notify => 'Service[elasticsearch-instance-es-01]', :before => 'Service[elasticsearch-instance-es-01]') }
     end
 
     context "No restart when 'restart_on_change' is false" do
@@ -116,7 +116,7 @@ describe 'elasticsearch::service::init', :type => 'define' do
 	:init_template => 'elasticsearch/etc/init.d/elasticsearch.RedHat.erb'
       } end
 
-      it { should contain_file('/etc/init.d/elasticsearch-es-01').with(:notify => nil, :before => 'Service[es-01]') }
+      it { should contain_file('/etc/init.d/elasticsearch-es-01').with(:notify => nil, :before => 'Service[elasticsearch-instance-es-01]') }
 
     end
 
