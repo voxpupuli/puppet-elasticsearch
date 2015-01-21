@@ -14,4 +14,5 @@ RSpec.configure do |c|
   c.parser = 'future' if ENV['FUTURE_PARSER'] == 'true'
   c.add_setting :fixture_path, :default => fixture_path
   c.mock_with(:rspec)
+
 end

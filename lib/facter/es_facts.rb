@@ -76,7 +76,6 @@ module EsFacts
                 add_fact(prefix, key, value) unless key == 'name'
               end
             end
-            puts plugin_names.join(",")
             add_fact(key_prefix, 'plugins', plugin_names.join(","))
 
           end
