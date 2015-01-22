@@ -1,5 +1,6 @@
 .swp
-spec/fixtures
+spec/fixtures/manifests
+spec/fixtures/modules
 .bundle
 .vendor
 .gemfiles/Gemfile.*.lock
