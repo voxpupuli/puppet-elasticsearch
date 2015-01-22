@@ -38,8 +38,6 @@ describe 'elasticsearch', :type => 'class' do
 
       context 'main class tests' do
 
-
-        it { should compile.with_all_deps }
         # init.pp
         it { should contain_anchor('elasticsearch::begin') }
         it { should contain_class('elasticsearch::params') }
@@ -199,18 +197,13 @@ describe 'elasticsearch', :type => 'class' do
 
       context 'when specifying instances to create' do
 
-        let(:params) {
-          { :instances => { 'es-01' => { 'config' => { 'node.name' => 'es-01' }}} }
-        }
-
-        it { should compile.with_all_deps }
         it { should contain_elasticsearch__instance('es-01').with(:config => { 'node.name' => 'es-01' }) }
 
       end
 
       context 'when we haven\'t specfied any instances to create' do
 
-        it { should compile.with_all_deps }
+        let (:params) { default_params }
         it { should_not contain_elasticsearch__instance }
 
       end
@@ -219,19 +212,13 @@ describe 'elasticsearch', :type => 'class' do
 
       context 'when specifying plugins to create' do
 
-        let(:params) {
-          {
-            :plugins => { 'mobz/elasticsearch-head' => { 'ensure' => 'present', 'module_dir' => 'head', 'instances' => 'es-01' }},
-            :elasticsearch_user => 'elasticsearch'
-          }
-        }
-
         it { should contain_elasticsearch__plugin('mobz/elasticsearch-head').with(:ensure => 'present', :module_dir => 'head', :instances => 'es-01') }
 
       end
 
       context 'when we haven\'t specified any plugins to create' do
 
+        let (:params) { default_params }
         it { should_not contain_elasticsearch__plugin }
 
       end
