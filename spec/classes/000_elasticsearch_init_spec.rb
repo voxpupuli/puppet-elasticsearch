@@ -193,36 +193,6 @@ describe 'elasticsearch', :type => 'class' do
 
       end # package
 
-      # Hiera instance creation.
-
-      context 'when specifying instances to create' do
-
-        it { should contain_elasticsearch__instance('es-01').with(:config => { 'node.name' => 'es-01' }) }
-
-      end
-
-      context 'when we haven\'t specfied any instances to create' do
-
-        let (:params) { default_params }
-        it { should_not contain_elasticsearch__instance }
-
-      end
-
-      # Hiera Plugin creation.
-
-      context 'when specifying plugins to create' do
-
-        it { should contain_elasticsearch__plugin('mobz/elasticsearch-head').with(:ensure => 'present', :module_dir => 'head', :instances => 'es-01') }
-
-      end
-
-      context 'when we haven\'t specified any plugins to create' do
-
-        let (:params) { default_params }
-        it { should_not contain_elasticsearch__plugin }
-
-      end
-
       context 'when setting the module to absent' do
 
         let (:params) {

@@ -2,5 +2,7 @@
 :backends: yaml
 :yaml:
   :datadir: spec/fixtures/hiera/hieradata
-  :hierarchy: common
-  :logger: console
+:hierarchy: 
+  - "%{scenario}"
+  - "envs/%{common}"
+:logger: console
