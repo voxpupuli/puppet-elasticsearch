@@ -130,7 +130,7 @@ define elasticsearch::service::systemd(
         }
       }
 
-      $init_defaults_pre_hash = { 'ES_USER' => $elasticsearch::elasticsearch_user, 'ES_GROUP' => $elasticsearch::elasticsearch_group }
+      $init_defaults_pre_hash = { 'ES_USER' => $elasticsearch::elasticsearch_user, 'ES_GROUP' => $elasticsearch::elasticsearch_group, 'MAX_OPEN_FILES' => '65535' }
       $new_init_defaults = merge($init_defaults_pre_hash, $init_defaults)
 
       augeas { "defaults_${name}":
