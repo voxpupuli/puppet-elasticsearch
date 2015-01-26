@@ -64,7 +64,7 @@ describe 'elasticsearch::service::init', :type => 'define' do
 	:init_defaults => {'ES_HOME' => '/usr/share/elasticsearch' }
       } end
 
-      it { should contain_augeas('defaults_es-01').with(:incl => '/etc/sysconfig/elasticsearch-es-01', :changes => "set ES_GROUP 'elasticsearch'\nset ES_HOME '/usr/share/elasticsearch'\nset ES_USER 'elasticsearch'\n", :notify => 'Service[elasticsearch-instance-es-01]', :before => 'Service[elasticsearch-instance-es-01]') }
+      it { should contain_augeas('defaults_es-01').with(:incl => '/etc/sysconfig/elasticsearch-es-01', :changes => "set ES_GROUP 'elasticsearch'\nset ES_HOME '/usr/share/elasticsearch'\nset ES_USER 'elasticsearch'\nset MAX_OPEN_FILES '65535'\n", :notify => 'Service[elasticsearch-instance-es-01]', :before => 'Service[elasticsearch-instance-es-01]') }
     end
 
     context "No restart when 'restart_on_change' is false" do
@@ -87,7 +87,7 @@ describe 'elasticsearch::service::init', :type => 'define' do
   	  :init_defaults => {'ES_HOME' => '/usr/share/elasticsearch' }
         } end
 
-        it { should contain_augeas('defaults_es-01').with(:incl => '/etc/sysconfig/elasticsearch-es-01', :changes => "set ES_GROUP 'elasticsearch'\nset ES_HOME '/usr/share/elasticsearch'\nset ES_USER 'elasticsearch'\n", :notify => nil, :before => 'Service[elasticsearch-instance-es-01]') }
+        it { should contain_augeas('defaults_es-01').with(:incl => '/etc/sysconfig/elasticsearch-es-01', :changes => "set ES_GROUP 'elasticsearch'\nset ES_HOME '/usr/share/elasticsearch'\nset ES_USER 'elasticsearch'\nset MAX_OPEN_FILES '65535'\n", :notify => nil, :before => 'Service[elasticsearch-instance-es-01]') }
       end
 
     end
