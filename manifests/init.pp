@@ -284,7 +284,7 @@ class elasticsearch(
   }
 
   if $x_instances {
-    validate_hash($instances)
+    validate_hash($x_instances)
     create_resources('elasticsearch::instance', $x_instances)
   }
 
@@ -298,7 +298,7 @@ class elasticsearch(
   }
 
   if $x_plugins {
-    validate_hash($plugins)
+    validate_hash($x_plugins)
     create_resources('elasticsearch::plugin', $x_plugins)
   }
 
