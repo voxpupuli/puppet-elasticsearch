@@ -259,7 +259,11 @@ class elasticsearch(
   validate_bool($manage_repo)
 
   if ($manage_repo == true) {
-    validate_string($repo_version)
+    if $repo_version == undef {
+      fail('Please fill in a repository version at $repo_version')
+    } else {
+      validate_string($repo_version)
+    }
   }
 
   #### Manage actions

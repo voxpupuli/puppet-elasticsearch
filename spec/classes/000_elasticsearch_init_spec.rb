@@ -231,6 +231,15 @@ describe 'elasticsearch', :type => 'class' do
 
       end
 
+      context 'when not supplying a repo_version' do
+        let (:params) {
+          default_params.merge({
+            :manage_repo => true,
+          })
+        }
+        it { expect { should raise_error(Puppet::Error, 'Please fill in a repository version at $repo_version') } }
+      end
+
       context "Running a a different user" do
 
         let (:params) {
