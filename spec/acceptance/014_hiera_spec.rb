@@ -92,13 +92,14 @@ describe "Hiera tests" do
 
     describe port(test_settings['port_a']) do
       it {
+        sleep 15
         should be_listening
       }
     end
 
     describe port(test_settings['port_b']) do
       it {
-        sleep 10
+        sleep 15
         should be_listening
       }
     end
