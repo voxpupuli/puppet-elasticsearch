@@ -267,8 +267,8 @@ define elasticsearch::instance(
       require => Class['elasticsearch::package']
     }
 
-    $require = Class['elasticsearch::package']
-    $before  = undef
+    $require_service = Class['elasticsearch::package']
+    $before_service  = undef
 
   } else {
 
@@ -278,8 +278,8 @@ define elasticsearch::instance(
       force   => true,
     }
 
-    $require = undef
-    $before  = File[$instance_configdir]
+    $require_service = undef
+    $before_service  = File[$instance_configdir]
   }
 
   elasticsearch::service { $name:
@@ -287,8 +287,8 @@ define elasticsearch::instance(
     status        => $status,
     init_defaults => $init_defaults_new,
     init_template => "${module_name}/etc/init.d/${elasticsearch::params::init_template}",
-    require       => $require,
-    before        => $before
+    require       => $require_service,
+    before        => $before_service
   }
 
 }
