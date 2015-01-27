@@ -73,7 +73,7 @@ class elasticsearch::config {
 
     file { $elasticsearch::datadir:
       ensure  => 'directory',
-      recurse => true
+      recurse => false
     }
 
 

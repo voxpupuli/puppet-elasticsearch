@@ -187,4 +187,31 @@ describe "elasticsearch class:" do
 
   end
 
+  describe "Cleanup" do
+
+    it 'should run successfully' do
+      pp = "class { 'elasticsearch': ensure => 'absent' }
+            elasticsearch::instance{ 'es-02': ensure => 'absent' }
+           "
+
+      apply_manifest(pp, :catch_failures => true)
+    end
+
+    describe file('/etc/elasticsearch/es-02') do
+      it { should_not be_directory }
+    end
+
+    describe port(test_settings['port_b']) do
+      it {
+        should_not be_listening
+      }
+    end
+
+    describe service(test_settings['service_name_b']) do
+      it { should_not be_enabled }
+      it { should_not be_running }
+    end
+
+  end
+
 end
