@@ -5,6 +5,7 @@ describe "elasticsearch class:" do
   describe "Setup single instance" do
 
     it 'should run successfully' do
+      shell("rm -rf /usr/share/elasticsearch")
       pp = "class { 'elasticsearch': config => { 'cluster.name' => '#{test_settings['cluster_name']}'}, manage_repo => true, repo_version => '#{test_settings['repo_version']}', java_install => true }
             elasticsearch::instance { 'es-01': config => { 'node.name' => 'elasticsearch001', 'http.port' => '#{test_settings['port_a']}' } }
            "
