@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-gem 'beaker', :git => 'git@github.com:puppetlabs/beaker.git', :branch => 'master'
+gem 'beaker', :git => 'git@github.com:electrical/beaker.git', :branch => 'hiera_config'
 gem 'beaker-rspec', :git => 'git@github.com:puppetlabs/beaker-rspec.git', :branch => 'master'
 gem 'pry'
 gem 'docker-api', '~> 1.0'

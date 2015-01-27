@@ -78,7 +78,6 @@ define elasticsearch::instance(
   $init_defaults    = undef
 ) {
 
-  require elasticsearch
   require elasticsearch::params
 
   File {

@@ -38,8 +38,6 @@ describe 'elasticsearch', :type => 'class' do
 
       context 'main class tests' do
 
-
-        it { should compile.with_all_deps }
         # init.pp
         it { should contain_anchor('elasticsearch::begin') }
         it { should contain_class('elasticsearch::params') }

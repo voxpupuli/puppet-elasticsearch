@@ -203,7 +203,11 @@ class elasticsearch(
   $logging_config        = undef,
   $logging_template      = undef,
   $default_logging_level = $elasticsearch::params::default_logging_level,
-  $repo_stage            = false
+  $repo_stage            = false,
+  $instances             = undef,
+  $instances_hiera_merge = false,
+  $plugins               = undef,
+  $plugins_hiera_merge   = false
 ) inherits elasticsearch::params {
 
   anchor {'elasticsearch::begin': }
@@ -273,6 +277,35 @@ class elasticsearch(
 
   # configuration
   class { 'elasticsearch::config': }
+
+  # Hiera support for instances
+  validate_bool($instances_hiera_merge)
+
+  if $instances_hiera_merge == true {
+    $x_instances = hiera_hash('elasticsearch::instances', $::elasticsearch::instances)
+  } else {
+    $x_instances = $instances
+  }
+
+  if $x_instances {
+    validate_hash($x_instances)
+    create_resources('elasticsearch::instance', $x_instances)
+  }
+
+  # Hiera support for plugins
+  validate_bool($plugins_hiera_merge)
+
+  if $plugins_hiera_merge == true {
+    $x_plugins = hiera_hash('elasticsearch::plugins', $::elasticsearch::plugins)
+  } else {
+    $x_plugins = $plugins
+  }
+
+  if $x_plugins {
+    validate_hash($x_plugins)
+    create_resources('elasticsearch::plugin', $x_plugins)
+  }
+
 
   if $java_install == true {
     # Install java
