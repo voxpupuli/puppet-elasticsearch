@@ -355,7 +355,7 @@ describe 'elasticsearch::instance', :type => 'define' do
 
     let(:pre_condition) { 'class {"elasticsearch": elasticsearch_user => "myesuser", elasticsearch_group => "myesgroup" }'  }
 
-    it { should contain_file('/usr/share/elasticsearch/data/es-01').with(:owner => 'myesuser', :group => 'myesuser') }
+    it { should contain_file('/usr/share/elasticsearch/data/es-01').with(:owner => 'myesuser') }
     it { should contain_file('/etc/elasticsearch/es-01').with(:owner => 'myesuser', :group => 'myesgroup') }
     it { should contain_file('/etc/elasticsearch/es-01/elasticsearch.yml').with(:owner => 'myesuser', :group => 'myesgroup') }
     it { should contain_file('/etc/elasticsearch/es-01/logging.yml').with(:owner => 'myesuser', :group => 'myesgroup') }
