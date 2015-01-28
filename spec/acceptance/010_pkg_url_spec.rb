@@ -27,13 +27,6 @@ describe "Elasticsearch class:" do
       its(:content) { should match /[0-9]+/ }
     end
 
-    describe port(test_settings['port_a']) do
-      it {
-        sleep 15
-        should be_listening
-      }
-    end
-
     it 'make sure elasticsearch can serve requests' do
       curl_with_retries('check ES', default, "http://localhost:#{test_settings['port_a']}/?pretty=true", 0)
     end
@@ -56,13 +49,6 @@ describe "Elasticsearch class:" do
 
     describe package(test_settings['package_name']) do
       it { should_not be_installed }
-    end
-
-    describe port(test_settings['port_a']) do
-      it {
-        sleep 15
-        should_not be_listening
-      }
     end
 
     describe service(test_settings['service_name_a']) do
@@ -94,13 +80,6 @@ describe "Elasticsearch class:" do
       its(:content) { should match /[0-9]+/ }
     end
 
-    describe port(test_settings['port_a']) do
-      it {
-        sleep 15
-        should be_listening
-      }
-    end
-
     it 'make sure elasticsearch can serve requests' do
       curl_with_retries('check ES', default, "http://localhost:#{test_settings['port_a']}/?pretty=true", 0)
     end
@@ -123,13 +102,6 @@ describe "Elasticsearch class:" do
 
     describe package(test_settings['package_name']) do
       it { should_not be_installed }
-    end
-
-    describe port(test_settings['port_a']) do
-      it {
-        sleep 15
-        should_not be_listening
-      }
     end
 
     describe service(test_settings['service_name_a']) do
@@ -165,13 +137,6 @@ describe "Elasticsearch class:" do
       curl_with_retries('check ES', default, "http://localhost:#{test_settings['port_a']}/?pretty=true", 0)
     end
 
-    describe port(test_settings['port_a']) do
-      it {
-        sleep 15
-        should be_listening
-      }
-    end
-
     describe service(test_settings['service_name_a']) do
       it { should be_enabled }
       it { should be_running }
@@ -190,13 +155,6 @@ describe "Elasticsearch class:" do
 
     describe package(test_settings['package_name']) do
       it { should_not be_installed }
-    end
-
-    describe port(test_settings['port_a']) do
-      it {
-        sleep 15
-        should_not be_listening
-      }
     end
 
     describe service(test_settings['service_name_a']) do

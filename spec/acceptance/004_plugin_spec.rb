@@ -29,13 +29,6 @@ describe "elasticsearch plugin define:" do
       its(:content) { should match /[0-9]+/ }
     end
 
-    describe port(test_settings['port_a']) do
-      it {
-        sleep 15
-        should be_listening
-      }
-    end
-
     it 'make sure the directory exists' do
       shell('ls /usr/share/elasticsearch/plugins/head/', {:acceptable_exit_codes => 0})
     end
@@ -95,12 +88,6 @@ describe "elasticsearch plugin define:" do
       it { should_not be_installed }
     end
 
-    describe port(test_settings['port_a']) do
-      it {
-        should_not be_listening
-      }
-    end
-
     describe service(test_settings['service_name_a']) do
       it { should_not be_enabled }
       it { should_not be_running }
@@ -136,13 +123,6 @@ describe "elasticsearch plugin define:" do
       its(:content) { should match /[0-9]+/ }
     end
 
-    describe port(test_settings['port_a']) do
-      it {
-        sleep 15
-        should be_listening
-      }
-    end
-
     it 'make sure the directory exists' do
       shell('ls /usr/share/elasticsearch/plugins/kopf/', {:acceptable_exit_codes => 0})
     end
@@ -170,12 +150,6 @@ describe "elasticsearch plugin define:" do
 
     describe package(test_settings['package_name']) do
       it { should_not be_installed }
-    end
-
-    describe port(test_settings['port_a']) do
-      it {
-        should_not be_listening
-      }
     end
 
     describe service(test_settings['service_name_a']) do
