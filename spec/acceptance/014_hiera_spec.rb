@@ -30,13 +30,6 @@ describe "Hiera tests" do
       its(:content) { should match /[0-9]+/ }
     end
 
-    describe port(test_settings['port_a']) do
-      it {
-        sleep 15
-        should be_listening
-      }
-    end
-
     describe "Elasticsearch serves requests on" do
       it {
         curl_with_retries("check ES on #{test_settings['port_a']}", default, "http://localhost:#{test_settings['port_a']}/?pretty=true", 0)
@@ -88,20 +81,6 @@ describe "Hiera tests" do
     describe file(test_settings['pid_file_b']) do
       it { should be_file }
       its(:content) { should match /[0-9]+/ }
-    end
-
-    describe port(test_settings['port_a']) do
-      it {
-        sleep 15
-        should be_listening
-      }
-    end
-
-    describe port(test_settings['port_b']) do
-      it {
-        sleep 15
-        should be_listening
-      }
     end
 
     describe "make sure elasticsearch can serve requests #{test_settings['port_a']}" do

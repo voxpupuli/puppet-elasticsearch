@@ -29,13 +29,6 @@ describe "Service tests:" do
         its(:content) { should match /[0-9]+/ }
       end
 
-      describe port(test_settings['port_a']) do
-        it {
-          sleep 15
-          should be_listening
-        }
-      end
-
       describe file('/etc/elasticsearch/es-01/elasticsearch.yml') do
         it { should be_file }
         it { should contain 'name: elasticsearch001' }
@@ -71,12 +64,6 @@ describe "Service tests:" do
 
     describe file('/etc/elasticsearch/es-01') do
       it { should_not be_directory }
-    end
-
-    describe port(test_settings['port_a']) do
-      it {
-        should_not be_listening
-      }
     end
 
     describe service(test_settings['service_name_a']) do

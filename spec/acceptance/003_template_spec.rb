@@ -59,12 +59,6 @@ describe "elasticsearch template define:" do
       it { should_not be_installed }
     end
 
-    describe port(test_settings['port_a']) do
-      it {
-        should_not be_listening
-      }
-    end
-
     describe service(test_settings['service_name_a']) do
       it { should_not be_enabled }
       it { should_not be_running }
