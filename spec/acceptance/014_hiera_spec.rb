@@ -7,7 +7,7 @@ describe "Hiera tests" do
   describe "single instance" do
 
     it 'should run successfully' do
-      write_hiera_config(default, ['singleinstance'])
+      write_hiera_config(['singleinstance'])
       pp = "class { 'elasticsearch': manage_repo => true, repo_version => '#{test_settings['repo_version']}', java_install => true }"
 
       # Run it twice and test for idempotency
@@ -50,7 +50,7 @@ describe "Hiera tests" do
 
 
     it 'should run successfully' do
-      write_hiera_config(default, ['multipleinstances'])
+      write_hiera_config(['multipleinstances'])
       pp = "class { 'elasticsearch': manage_repo => true, repo_version => '#{test_settings['repo_version']}', java_install => true }"
 
       # Run it twice and test for idempotency
