@@ -80,7 +80,7 @@ class elasticsearch::config {
     if $elasticsearch::params::pid_dir {
       file { $elasticsearch::params::pid_dir:
         ensure  => 'directory',
-        group   => $elasticsearch::elasticsearch_user,
+        group   => undef,
         recurse => true
       }
     }

@@ -6,7 +6,8 @@ describe "elasticsearch class:" do
 
     it 'should run successfully' do
       shell("rm -rf /usr/share/elasticsearch")
-      pp = "user { 'esuser': ensure => 'present', groups => 'esgroup' }
+      pp = "user { 'esuser': ensure => 'present', groups => ['esgroup', 'esuser'] }
+            group { 'esuser': ensure => 'present' }
             group { 'esgroup': ensure => 'present' }
             class { 'elasticsearch': config => { 'cluster.name' => '#{test_settings['cluster_name']}'}, manage_repo => true, repo_version => '#{test_settings['repo_version']}', java_install => true, elasticsearch_user => 'esuser', elasticsearch_group => 'esgroup' }
             elasticsearch::instance { 'es-01': config => { 'node.name' => 'elasticsearch001', 'http.port' => '#{test_settings['port_a']}' } }
