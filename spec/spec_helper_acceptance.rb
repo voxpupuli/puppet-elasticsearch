@@ -82,7 +82,7 @@ RSpec.configure do |c|
     puppet_module_install(:source => proj_root, :module_name => 'elasticsearch')
     hosts.each do |host|
 
-      copy_hiera_data(host, 'spec/fixtures/hiera/hieradata/')
+      copy_hiera_data_to(host, 'spec/fixtures/hiera/hieradata/')
       on host, puppet('module','install','puppetlabs-java'), { :acceptable_exit_codes => [0,1] }
 
       if ( host.is_pe? && host['pe_ver'] >= '3.7.0' ) || ! host.is_pe?
