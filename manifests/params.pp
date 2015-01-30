@@ -137,7 +137,7 @@ class elasticsearch::params {
       $service_hasrestart = true
       $service_hasstatus  = true
       $service_pattern    = $service_name
-      $service_providers  = [ 'init' ]
+      $service_providers  = [ 'init','systemd'  ]
       $defaults_location  = '/etc/sysconfig'
       $init_template      = 'elasticsearch.RedHat.erb'
       $pid_dir            = '/var/run/elasticsearch'
