@@ -361,4 +361,19 @@ describe 'elasticsearch::instance', :type => 'define' do
     it { should contain_file('/etc/elasticsearch/es-01/logging.yml').with(:owner => 'myesuser', :group => 'myesgroup') }
   end
 
+    context "setting different service status then main class" do
+
+    let(:pre_condition) { 'class {"elasticsearch": status => "enabled" }'  }
+
+    context "staus option" do
+
+      let :params do {
+        :status => 'running'
+      } end
+
+      it { should contain_service('elasticsearch-instance-es-01').with(:ensure => 'running', :enable => false) }
+
+    end
+
+  end
 end
