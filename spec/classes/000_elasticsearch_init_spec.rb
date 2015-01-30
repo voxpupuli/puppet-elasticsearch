@@ -15,17 +15,14 @@ describe 'elasticsearch', :type => 'class' do
         let(:defaults_path) { '/etc/default' }
         let(:pkg_ext) { 'deb' }
         let(:pkg_prov) { 'dpkg' }
-        let(:initscript) { '/etc/init.d/elasticsearch' }
       when 'RedHat'
         let(:defaults_path) { '/etc/sysconfig' }
         let(:pkg_ext) { 'rpm' }
         let(:pkg_prov) { 'rpm' }
-        let(:initscript) { '/etc/init.d/elasticsearch' }
       when 'Suse'
         let(:defaults_path) { '/etc/sysconfig' }
         let(:pkg_ext) { 'rpm' }
         let(:pkg_prov) { 'rpm' }
-        let(:initscript) { '/usr/lib/systemd/system/elasticsearch.service' }
       end
 
       let(:facts) do
@@ -53,7 +50,8 @@ describe 'elasticsearch', :type => 'class' do
         it { should contain_file('/usr/share/elasticsearch/bin').with(:mode => '0755') }
 
 	# file removal from package
-	it { should contain_file(initscript).with(:ensure => 'absent') }
+	it { should contain_file('/etc/init.d/elasticsearch').with(:ensure => 'absent') }
+	it { should contain_file('/usr/lib/systemd/system/elasticsearch.service').with(:ensure => 'absent') }
 	it { should contain_file("#{defaults_path}/elasticsearch").with(:ensure => 'absent') }
 	it { should contain_file('/etc/elasticsearch/elasticsearch.yml').with(:ensure => 'absent') }
 	it { should contain_file('/etc/elasticsearch/logging.yml').with(:ensure => 'absent') }

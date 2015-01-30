@@ -97,22 +97,13 @@ class elasticsearch::config {
     }
 
     # Removal of files that are provided with the package which we don't use
-    case $elasticsearch::real_service_provider {
-      init: {
-        file { '/etc/init.d/elasticsearch':
-          ensure => 'absent'
-        }
-      }
-      systemd: {
-        file { '/usr/lib/systemd/system/elasticsearch.service':
-          ensure => 'absent'
-        }
-      }
-      default: {
-        fail("Unknown service provider ${elasticsearch::real_service_provider}")
-      }
-
+    file { '/etc/init.d/elasticsearch':
+      ensure => 'absent'
     }
+    file { '/usr/lib/systemd/system/elasticsearch.service':
+      ensure => 'absent'
+    }
+
     file { "${elasticsearch::params::defaults_location}/elasticsearch":
       ensure => 'absent'
     }
