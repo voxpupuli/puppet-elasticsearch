@@ -1,6 +1,6 @@
 {
   "name": "elasticsearch-elasticsearch",
-  "version": "0.4.0",
+  "version": "0.9.0",
   "source": "https://github.com/elasticsearch/puppet-elasticsearch",
   "author": "elasticsearch",
   "license": "Apache-2.0",
@@ -11,7 +11,7 @@
   "dependencies": [
     {
       "name": "puppetlabs/stdlib",
-      "version_requirement": ">= 3.2.0"
+      "version_requirement": ">= 3.2.0 < 5.0.0"
     }
   ],
   "operatingsystem_support": [

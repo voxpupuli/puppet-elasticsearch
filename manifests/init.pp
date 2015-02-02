@@ -147,6 +147,22 @@
 # [*repo_stage*]
 #   Use stdlib stage setup for managing the repo, instead of anchoring
 #
+# [*instances*]
+#   Define instances via a hash. This is mainly used with Hiera's auto binding
+#   Defaults to: undef
+#
+# [*instances_hiera_merge*]
+#   Enable Hiera's merging function for the instances
+#   Defaults to: false
+#
+# [*plugins*]
+#   Define plugins via a hash. This is mainly used with Hiera's auto binding
+#   Defaults to: undef
+#
+# [*plugins_hiera_merge*]
+#   Enable Hiera's merging function for the plugins
+#   Defaults to: false
+#
 # The default values for the parameters are set in elasticsearch::params. Have
 # a look at the corresponding <tt>params.pp</tt> manifest file if you need more
 # technical information about them.

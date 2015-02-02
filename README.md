@@ -41,6 +41,7 @@ This module has been tested against ES 1.0 and up.
 ###Requirements
 
 * The [stdlib](https://forge.puppetlabs.com/puppetlabs/stdlib) Puppet library.
+* Augeas
 
 #### Repository management
 When using the repository management you will need the following dependency modules:
@@ -56,7 +57,7 @@ When using the repository management you will need the following dependency modu
 
 ```puppet
 class { 'elasticsearch':
-  version => '1.2.1'
+  version => '1.4.2'
 }
 ```
 
@@ -188,7 +189,7 @@ elasticsearch::template { 'templatename':
 
 ###Bindings / Clients
 
-Install a variety of [clients/bindings](http://www.elasticsearch.org/guide/clients/):
+Install a variety of [clients/bindings](http://www.elasticsearch.org/guide/en/elasticsearch/client/community/current/clients.html):
 
 ####Python
 
@@ -213,7 +214,7 @@ The `repo_version` corresponds with the major version of Elasticsearch.
 ```puppet
 class { 'elasticsearch':
   manage_repo  => true,
-  repo_version => '1.2',
+  repo_version => '1.4',
 }
 ```
 
@@ -224,28 +225,28 @@ When a repository is not available or preferred you can install the packages fro
 #####http/https/ftp
 ```puppet
 class { 'elasticsearch':
-  package_url => 'https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-1.2.1.deb'
+  package_url => 'https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-1.4.2.deb'
 }
 ```
 
 #####puppet://
 ```puppet
 class { 'elasticsearch':
-  package_url => 'puppet:///path/to/elasticsearch-1.2.1.deb'
+  package_url => 'puppet:///path/to/elasticsearch-1.4.2.deb'
 }
 ```
 
 #####Local file
 ```puppet
 class { 'elasticsearch':
-  package_url => 'file:/path/to/elasticsearch-1.2.1.deb'
+  package_url => 'file:/path/to/elasticsearch-1.4.2.deb'
 }
 ```
 
 ###Java installation
 
 Most sites will manage Java separately; however, this module can attempt to install Java as well.
-Its done by using the [puppetlabs-java](https://forge.puppetlabs.com/puppetlabs/java) module.
+This is done by using the [puppetlabs-java](https://forge.puppetlabs.com/puppetlabs/java) module.
 
 ```puppet
 class { 'elasticsearch':
@@ -440,14 +441,20 @@ class { 'elasticsearch':
 
 ##Limitations
 
-This module has been built on and tested against Puppet 2.7 and higher.
+This module has been built on and tested against Puppet 3.2 and higher.
 
 The module has been tested on:
 
 * Debian 6/7
 * CentOS 6
-* Ubuntu 12.04, 13.x, 14.x
-* OpenSuSE 12.x
+* Ubuntu 12.04, 14.04
+* OpenSuSE 13.x
+
+Other distro's that have been reported to work:
+
+* RHEL 6
+* OracleLinux 6
+* Scientific 6
 
 Testing on other platforms has been light and cannot be guaranteed.
 
