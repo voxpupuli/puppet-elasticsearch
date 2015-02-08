@@ -12,6 +12,18 @@
     {
       "name": "puppetlabs/stdlib",
       "version_requirement": ">= 3.2.0 < 5.0.0"
+    },
+    {
+      "name": "puppetlabs/apt",
+      "version_requirement": "1.x"
+    },
+    {
+      "name": "puppetlabs/java",
+      "version_requirement": "1.x"
+    },
+    {
+      "name": "darin/zypprepo",
+      "version_requirement": "1.x"
     }
   ],
   "operatingsystem_support": [
