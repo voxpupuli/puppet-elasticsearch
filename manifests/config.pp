@@ -56,8 +56,7 @@ class elasticsearch::config {
     }
 
     file { $elasticsearch::params::homedir:
-      ensure  => 'directory',
-      recurse => true
+      ensure  => 'directory'
     }
 
     file { "${elasticsearch::params::homedir}/bin":
@@ -72,10 +71,13 @@ class elasticsearch::config {
     }
 
     file { $elasticsearch::datadir:
-      ensure  => 'directory',
-      recurse => false
+      ensure  => 'directory'
     }
 
+    file { "${elasticsearch::homedir}/lib":
+      ensure  => 'directory',
+      recurse => true
+    }
 
     if $elasticsearch::params::pid_dir {
       file { $elasticsearch::params::pid_dir:

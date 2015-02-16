@@ -205,7 +205,6 @@ define elasticsearch::instance(
       owner   => $elasticsearch::elasticsearch_user,
       group   => undef,
       mode    => '0644',
-      recurse => false,
       require => [ Exec["mkdir_datadir_elasticsearch_${name}"], Class['elasticsearch::package'] ],
       before  => Elasticsearch::Service[$name]
     }
