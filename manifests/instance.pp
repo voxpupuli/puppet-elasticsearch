@@ -278,6 +278,8 @@ define elasticsearch::instance(
 
     $require_service = undef
     $before_service  = File[$instance_configdir]
+
+    $init_defaults_new = {}
   }
 
   elasticsearch::service { $name:

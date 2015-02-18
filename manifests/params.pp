@@ -147,6 +147,7 @@ class elasticsearch::params {
 
       $service_name       = 'elasticsearch'
       $service_hasrestart = true
+      $service_hasstatus  = false
       $service_pattern    = $service_name
       $defaults_location  = '/etc/sysconfig'
       $pid_dir            = '/var/run/elasticsearch'
