@@ -179,7 +179,7 @@ class elasticsearch::params {
       $service_providers  = 'systemd'
       $defaults_location  = '/etc/sysconfig'
       $init_template      = 'elasticsearch.systemd.erb'
-      $pid_dir            = '/var/run/elasticsearch/'
+      $pid_dir            = '/var/run/elasticsearch'
     }
     default: {
       fail("\"${module_name}\" provides no service parameters

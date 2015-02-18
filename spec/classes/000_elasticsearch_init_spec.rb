@@ -46,6 +46,7 @@ describe 'elasticsearch', :type => 'class' do
         it { should contain_exec('mkdir_templates_elasticsearch').with(:command => 'mkdir -p /etc/elasticsearch/templates_import', :creates => '/etc/elasticsearch/templates_import') }
         it { should contain_file('/etc/elasticsearch/templates_import').with(:require => 'Exec[mkdir_templates_elasticsearch]') }
         it { should contain_file('/usr/share/elasticsearch') }
+        it { should contain_file('/usr/share/elasticsearch/lib') }
         it { should contain_file('/usr/share/elasticsearch/plugins') }
         it { should contain_file('/usr/share/elasticsearch/bin').with(:mode => '0755') }
 
@@ -251,8 +252,6 @@ describe 'elasticsearch', :type => 'class' do
         it { should contain_file('/usr/share/elasticsearch/plugins').with(:owner => 'myesuser', :group => 'myesgroup') }
         it { should contain_file('/usr/share/elasticsearch/data').with(:owner => 'myesuser', :group => 'myesgroup') }
         it { should contain_file('/var/run/elasticsearch').with(:owner => 'myesuser') } if facts[:osfamily] == 'RedHat'
-        it { should contain_file('/var/run/elasticsearch').with(:owner => 'myesuser') } if facts[:osfamily] == 'RedHat'
-
       end
 
     end
