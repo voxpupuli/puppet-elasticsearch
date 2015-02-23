@@ -1,3 +1,25 @@
+##0.9.1 ( Feb 23, 2015 )
+
+###Summary
+This is the first bug fix release for 0.9 version.
+A bug was reported with the recursive file management.
+
+####Features
+None
+
+####Bugfixes
+* Fix recursive file management
+* Set undefined variables to work with strict_variables
+
+####Changes
+None
+
+####Testing changes
+None
+
+####Known bugs
+* Possible package conflicts when using ruby/python defines with main package name
+
 ##0.9.0 ( Feb 02, 2015 )
 
 ###Summary
