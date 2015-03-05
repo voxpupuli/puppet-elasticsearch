@@ -202,6 +202,25 @@ elasticsearch::python { 'rawes': }
 elasticsearch::ruby { 'elasticsearch': }
 ```
 
+###Connection Validator
+
+This module offers a way to make sure an instance has been started and is up and running before
+doing a next action. This is done via the use of the `es_instance_conn_validator` resource.
+```puppet
+es_instance_conn_validator { 'myinstance' :
+  server => 'es.example.com',
+  port   => '9200',
+}
+```
+
+A common use would be for example :
+
+```puppet
+class { 'kibana4' :
+  require => Es_Instance_Conn_Validator['myinstance'],
+}
+```
+
 ###Package installation
 
 There are 2 different ways of installing the software
