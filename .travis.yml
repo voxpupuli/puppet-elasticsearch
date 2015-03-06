@@ -6,9 +6,10 @@ rvm:
 before_install: rm .gemfiles/Gemfile.rspec.lock || true
 gemfile: .gemfiles/Gemfile.rspec
 script:
- - "bundle exec rake lint"
- - "bundle exec rake syntax"
- - "bundle exec rake spec SPEC_OPTS='--format documentation --order random'"
+  - "bundle --without system_tests"
+  - "bundle exec rake lint"
+  - "bundle exec rake syntax"
+  - "bundle exec rake spec SPEC_OPTS='--format documentation --order random'"
 env:
   - PUPPET_VERSION="~> 3.2.0"
   - PUPPET_VERSION="~> 3.3.0"
