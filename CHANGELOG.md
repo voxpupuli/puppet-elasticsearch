@@ -1,3 +1,23 @@
+##0.9.2( Mar 06, 2015 )
+
+###Summary
+Bugfix release 0.9.2
+
+####Features
+* Introducing es_instance_conn_validator resource to verify instance availability
+
+####Bugfixes
+* Fix missing data path when using the path config setting but not setting the data path
+
+####Changes
+None
+
+####Testing changes
+None
+
+####Known bugs
+* Possible package conflicts when using ruby/python defines with main package name
+
 ##0.9.1 ( Feb 23, 2015 )
 
 ###Summary
