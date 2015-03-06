@@ -182,6 +182,8 @@ define elasticsearch::instance(
     } elsif(has_key($instance_config, 'path')) {
       if(has_key($instance_config['path'], 'data')) {
         $instance_datadir_config = { 'path' => { 'data' => $instance_datadir } }
+      } else {
+        $instance_datadir_config = { 'path.data' => $instance_datadir }
       }
     } else {
       $instance_datadir_config = { 'path.data' => $instance_datadir }

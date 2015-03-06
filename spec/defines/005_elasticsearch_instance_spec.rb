@@ -287,6 +287,19 @@ describe 'elasticsearch::instance', :type => 'define' do
       it { should_not contain_file('/var/lib/elasticsearch/otherdata').with( :ensure => 'directory') }
    end
 
+   context "With other path options defined" do
+     let(:pre_condition) { 'class {"elasticsearch": }'  }
+     let :params do {
+       :datadir => '/var/lib/elasticsearch/data',
+       :config  => { 'path' => { 'home' => '/var/lib/elasticsearch' } }
+     } end
+
+      it { should contain_exec('mkdir_datadir_elasticsearch_es-01') }
+      it { should contain_file('/etc/elasticsearch/es-01/elasticsearch.yml').with(:content => "### MANAGED BY PUPPET ###\n---\nnode: \n  name: elasticsearch001-es-01\npath: \n  data: /var/lib/elasticsearch/data\n  home: /var/lib/elasticsearch\n" ) }
+      it { should contain_file('/var/lib/elasticsearch/data').with( :ensure => 'directory') }
+   end
+
+
   end
 
   context "Logging" do
