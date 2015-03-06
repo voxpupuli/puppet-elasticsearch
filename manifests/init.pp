@@ -209,7 +209,7 @@ class elasticsearch(
   $init_template         = undef,
   $config                = undef,
   $datadir               = $elasticsearch::params::datadir,
-  $logdir		 = $elasticsearch::params::logdir,
+  $logdir                = $elasticsearch::params::logdir,
   $plugindir             = $elasticsearch::params::plugindir,
   $plugintool            = $elasticsearch::params::plugintool,
   $java_install          = false,
