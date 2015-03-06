@@ -8,3 +8,4 @@ spec/fixtures/modules
 .ruby-version
 pkg/
 spec/reports/
+Gemfile.lock
