@@ -6,7 +6,10 @@ describe 'elasticsearch::instance', :type => 'define' do
     :operatingsystem => 'CentOS',
     :kernel => 'Linux',
     :osfamily => 'RedHat',
-    :hostname => 'elasticsearch001'
+    :hostname => 'elasticsearch001',
+    :operatingsystemmajrelease => 6,
+    :scenario => '',
+    :common => ''
   } end
 
   let(:title) { 'es-01' }
@@ -99,7 +102,10 @@ describe 'elasticsearch::instance', :type => 'define' do
         :operatingsystem => 'CentOS',
         :kernel => 'Linux',
         :osfamily => 'RedHat',
-        :hostname => 'elasticsearch001'
+        :hostname => 'elasticsearch001',
+        :operatingsystemmajrelease => 6,
+        :scenario => '',
+        :common => ''
       } end
 
       let(:title) { 'es-01' }
@@ -172,7 +178,10 @@ describe 'elasticsearch::instance', :type => 'define' do
         :operatingsystem => 'Debian',
         :kernel => 'Linux',
         :osfamily => 'Debian',
-        :hostname => 'elasticsearch001'
+        :hostname => 'elasticsearch001',
+        :operatingsystemmajrelease => 7,
+        :scenario => '',
+        :common => ''
       } end
 
       it { should contain_elasticsearch__service('es-01').with(:init_template => 'elasticsearch/etc/init.d/elasticsearch.Debian.erb', :init_defaults => {"CONF_DIR"=>"/etc/elasticsearch/es-01", "CONF_FILE"=>"/etc/elasticsearch/es-01/elasticsearch.yml", "LOG_DIR"=>"/var/log/elasticsearch/es-01", "ES_HOME"=>"/usr/share/elasticsearch"}) }
@@ -183,7 +192,10 @@ describe 'elasticsearch::instance', :type => 'define' do
         :operatingsystem => 'CentOS',
         :kernel => 'Linux',
         :osfamily => 'RedHat',
-        :hostname => 'elasticsearch001'
+        :hostname => 'elasticsearch001',
+        :operatingsystemmajrelease => 6,
+        :scenario => '',
+        :common => ''
       } end
 
       it { should contain_elasticsearch__service('es-01').with(:init_template => 'elasticsearch/etc/init.d/elasticsearch.RedHat.erb', :init_defaults => {"CONF_DIR"=>"/etc/elasticsearch/es-01", "CONF_FILE"=>"/etc/elasticsearch/es-01/elasticsearch.yml", "LOG_DIR"=>"/var/log/elasticsearch/es-01", "ES_HOME"=>"/usr/share/elasticsearch"}) }
@@ -194,7 +206,10 @@ describe 'elasticsearch::instance', :type => 'define' do
         :operatingsystem => 'OpenSuSE',
         :kernel => 'Linux',
         :osfamily => 'Suse',
-        :hostname => 'elasticsearch001'
+        :hostname => 'elasticsearch001',
+        :operatingsystemmajrelease => 11,
+        :scenario => '',
+        :common => ''
       } end
 
       it { should contain_elasticsearch__service('es-01').with(:init_template => 'elasticsearch/etc/init.d/elasticsearch.systemd.erb', :init_defaults => {"CONF_DIR"=>"/etc/elasticsearch/es-01", "CONF_FILE"=>"/etc/elasticsearch/es-01/elasticsearch.yml", "LOG_DIR"=>"/var/log/elasticsearch/es-01", "ES_HOME"=>"/usr/share/elasticsearch"}) }
@@ -207,7 +222,10 @@ describe 'elasticsearch::instance', :type => 'define' do
       :operatingsystem => 'CentOS',
       :kernel => 'Linux',
       :osfamily => 'RedHat',
-      :hostname => 'elasticsearch001'
+      :hostname => 'elasticsearch001',
+      :operatingsystemmajrelease => 6,
+      :scenario => '',
+      :common => ''
     } end
 
     let(:title) { 'es-01' }
@@ -308,7 +326,10 @@ describe 'elasticsearch::instance', :type => 'define' do
       :operatingsystem => 'CentOS',
       :kernel => 'Linux',
       :osfamily => 'RedHat',
-      :hostname => 'elasticsearch001'
+      :hostname => 'elasticsearch001',
+      :operatingsystemmajrelease => 6,
+      :scenario => '',
+      :common => ''
     } end
 
     let(:pre_condition) { 'class {"elasticsearch": }'  }
@@ -363,7 +384,10 @@ describe 'elasticsearch::instance', :type => 'define' do
       :operatingsystem => 'CentOS',
       :kernel => 'Linux',
       :osfamily => 'RedHat',
-      :hostname => 'elasticsearch001'
+      :hostname => 'elasticsearch001',
+      :operatingsystemmajrelease => 6,
+      :scenario => '',
+      :common => ''
     } end
 
     let(:pre_condition) { 'class {"elasticsearch": elasticsearch_user => "myesuser", elasticsearch_group => "myesgroup" }'  }

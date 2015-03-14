@@ -6,7 +6,10 @@ describe 'elasticsearch::plugin', :type => 'define' do
   let :facts do {
     :operatingsystem => 'CentOS',
     :kernel => 'Linux',
-    :osfamily => 'RedHat'
+    :osfamily => 'RedHat',
+    :operatingsystemmajrelease => 6,
+    :scenario => '',
+    :common => ''
   } end
   let(:pre_condition) { 'class {"elasticsearch": config => { "node" => {"name" => "test" }}}'}
 

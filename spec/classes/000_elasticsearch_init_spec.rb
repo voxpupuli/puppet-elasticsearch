@@ -26,7 +26,7 @@ describe 'elasticsearch', :type => 'class' do
       end
 
       let(:facts) do
-        facts
+        facts.merge({ 'scenario' => '', 'common' => '' })
       end
 
       let (:params) do

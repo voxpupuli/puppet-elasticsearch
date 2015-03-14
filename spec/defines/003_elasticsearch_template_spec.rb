@@ -5,7 +5,10 @@ describe 'elasticsearch::template', :type => 'define' do
   let :facts do {
     :operatingsystem => 'CentOS',
     :kernel => 'Linux',
-    :osfamily => 'RedHat'
+    :osfamily => 'RedHat',
+    :operatingsystemmajrelease => 6,
+    :scenario => '',
+    :common => ''
   } end
 
   let(:title) { 'foo' }
@@ -40,7 +43,7 @@ describe 'elasticsearch::template', :type => 'define' do
     let :params do {
       :file => 'puppet:///path/to/foo.json',
       :host => 'otherhost',
-      :port => '9201'
+      :port => 9201
     } end
 
     it { should contain_elasticsearch__template('foo') }
