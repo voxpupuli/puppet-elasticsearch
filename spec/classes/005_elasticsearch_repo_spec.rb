@@ -7,7 +7,10 @@ describe 'elasticsearch', :type => 'class' do
     let :facts do {
       :operatingsystem => 'CentOS',
       :kernel => 'Linux',
-      :osfamily => 'RedHat'
+      :osfamily => 'RedHat',
+      :operatingsystemmajrelease => 6,
+      :common => '',
+      :scenario => ''
     } end
 
     context "Use anchor type for ordering" do

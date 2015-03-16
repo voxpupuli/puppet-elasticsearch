@@ -5,7 +5,10 @@ describe 'elasticsearch::service::systemd', :type => 'define' do
   let :facts do {
     :operatingsystem => 'OpenSuSE',
     :kernel => 'Linux',
-    :osfamily => 'Suse'
+    :osfamily => 'Suse',
+    :operatingsystemmajrelease => 11,
+    :scenario => '',
+    :common => ''
   } end
 
   let(:title) { 'es-01' }

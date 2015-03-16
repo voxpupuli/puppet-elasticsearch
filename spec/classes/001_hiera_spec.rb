@@ -9,7 +9,8 @@ describe 'elasticsearch', :type => 'class' do
   facts = {
     :operatingsystem => 'CentOS',
     :kernel => 'Linux',
-    :osfamily => 'RedHat'
+    :osfamily => 'RedHat',
+    :operatingsystemmajrelease => 6
   }
 
   let (:params) do
@@ -24,7 +25,8 @@ describe 'elasticsearch', :type => 'class' do
 
         let (:facts) {
           facts.merge({
-            :scenario => 'singleinstance'
+            :scenario => 'singleinstance',
+            :common => ''
           })
         }
 
@@ -46,7 +48,8 @@ describe 'elasticsearch', :type => 'class' do
 
         let (:facts) {
           facts.merge({
-            :scenario => 'multipleinstances'
+            :scenario => 'multipleinstances',
+            :common => ''
           })
         }
 
@@ -83,7 +86,10 @@ describe 'elasticsearch', :type => 'class' do
     context 'when we haven\'t specfied any instances to create' do
 
       let (:facts) {
-        facts
+        facts.merge({
+          :scenario => '',
+          :common => ''
+        })
       }
 
       it { should_not contain_elasticsearch__instance }
@@ -96,7 +102,8 @@ describe 'elasticsearch', :type => 'class' do
 
       let (:facts) {
         facts.merge({
-          :scenario => 'singleplugin'
+          :scenario => 'singleplugin',
+          :common => ''
         })
       }
 
@@ -107,7 +114,10 @@ describe 'elasticsearch', :type => 'class' do
     context 'when we haven\'t specified any plugins to create' do
 
       let (:facts) {
-        facts
+        facts.merge({
+          :scenario => '',
+          :common => ''
+        })
       }
 
       it { should_not contain_elasticsearch__plugin }
