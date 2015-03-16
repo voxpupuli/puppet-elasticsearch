@@ -18,15 +18,14 @@ These instructions are for Ubuntu 14.04
  * wget https://get.docker.io/ubuntu/pool/main/l/lxc-docker-0.11.1/lxc-docker-0.11.1_0.11.1_amd64.deb
  * sudo dpkg -i lxc-docker_0.11.1_amd64.deb lxc-docker-0.11.1_0.11.1_amd64.deb
  * sudo usermod -a -G docker $USER
-* export BUNDLE_GEMFILE=.gemfiles/Gemfile.beaker
 * export RS_SET='ubuntu-server-1404-x64' # see spec/acceptance/nodesets for more
-* export VM_PUPPET_VERSION='3.6.0'  
+* export VM_PUPPET_VERSION='3.7.0'
 * wget https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-1.1.0.deb
 * wget https://forgeapi.puppetlabs.com/v3/files/puppetlabs-stdlib-3.2.0.tar.gz
 * wget https://forgeapi.puppetlabs.com/v3/files/puppetlabs-apt-1.4.2.tar.gz
 * export files_dir=$(pwd)
 * bundle install
-* bundle exec rspec --format RspecJunitFormatter --out rspec.xml spec/acceptance/*_spec.rb
+* bundle exec rspec --require ci/reporter/rspec --format CI::Reporter::RSpecFormatter spec/acceptance/*_spec.rb
 
 ```
     Hypervisor for ubuntu-14-04 is docker
