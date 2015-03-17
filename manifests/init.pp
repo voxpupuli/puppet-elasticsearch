@@ -214,7 +214,7 @@ class elasticsearch(
   $java_install          = false,
   $java_package          = undef,
   $manage_repo           = false,
-  $repo_version          = false,
+  $repo_version          = undef,
   $logging_file          = undef,
   $logging_config        = undef,
   $logging_template      = undef,
