@@ -6,8 +6,8 @@
   "license": "Apache-2.0",
   "summary": "Module for managing and configuring Elasticsearch nodes",
   "description": "Module for managing and configuring Elasticsearch nodes",
-  "project_page": "https://github.com/elasticsearch/puppet-elasticsearch",
-  "issues_url": "https://github.com/elasticsearch/puppet-elasticsearch/issues",
+  "project_page": "https://github.com/elastic/puppet-elasticsearch",
+  "issues_url": "https://github.com/elastic/puppet-elasticsearch/issues",
   "dependencies": [
     {
       "name": "puppetlabs/stdlib",
