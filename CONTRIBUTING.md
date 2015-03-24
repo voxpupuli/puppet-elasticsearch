@@ -2,10 +2,10 @@ If you have a bugfix or new feature that you would like to contribute to this pu
 
 We enjoy working with contributors to get their code accepted. There are many approaches to fixing a problem and it is important to find the best approach before writing too much code.
 
-The process for contributing to any of the Elasticsearch repositories is similar.
+The process for contributing to any of the Elastic repositories is similar.
 
 1. Sign the contributor license agreement
-Please make sure you have signed the [Contributor License Agreement](http://www.elasticsearch.org/contributor-agreement/). We are not asking you to assign copyright to us, but to give us the right to distribute your code without restriction. We ask this of all contributors in order to assure our users of the origin and continuing existence of the code. You only need to sign the CLA once.
+Please make sure you have signed the [Contributor License Agreement](http://www.elastic.co/contributor-agreement/). We are not asking you to assign copyright to us, but to give us the right to distribute your code without restriction. We ask this of all contributors in order to assure our users of the origin and continuing existence of the code. You only need to sign the CLA once.
 
 2. Run the rspec tests and ensure it completes without errors with your changes.
 
@@ -20,7 +20,7 @@ These instructions are for Ubuntu 14.04
  * sudo usermod -a -G docker $USER
 * export RS_SET='ubuntu-server-1404-x64' # see spec/acceptance/nodesets for more
 * export VM_PUPPET_VERSION='3.7.0'
-* wget https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-1.1.0.deb
+* wget https://download.elastic.co/elasticsearch/elasticsearch/elasticsearch-1.1.0.deb
 * wget https://forgeapi.puppetlabs.com/v3/files/puppetlabs-stdlib-3.2.0.tar.gz
 * wget https://forgeapi.puppetlabs.com/v3/files/puppetlabs-apt-1.4.2.tar.gz
 * export files_dir=$(pwd)
