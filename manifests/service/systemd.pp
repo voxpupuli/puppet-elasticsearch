@@ -146,6 +146,9 @@ define elasticsearch::service::systemd(
     # init file from template
     if ($init_template != undef) {
 
+      $user  = $elasticsearch::elasticsearch_user
+      $group = $elasticsearch::elasticsearch_group
+
       file { "/usr/lib/systemd/system/elasticsearch-${name}.service":
         ensure  => $ensure,
         content => template($init_template),
