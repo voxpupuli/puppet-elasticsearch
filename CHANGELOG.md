@@ -1,3 +1,23 @@
+##0.9.3( Mar 24, 2015 )
+
+###Summary
+Bugfix release 0.9.3
+
+####Features
+
+####Bugfixes
+* Not setting repo_version did not give the correct error
+* Systemd file did not contain User/Group values
+
+####Changes
+* Brand rename from Elasticsearch to Elastic
+
+####Testing changes
+* Moved from multiple Gemfiles to single Gemfile
+
+####Known bugs
+* Possible package conflicts when using ruby/python defines with main package name
+
 ##0.9.2( Mar 06, 2015 )
 
 ###Summary
