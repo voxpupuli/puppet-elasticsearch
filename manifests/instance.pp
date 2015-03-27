@@ -61,21 +61,25 @@
 # [*init_defaults*]
 #   Defaults file content in hash representation
 #
+# [*init_defaults_file*]
+#   Defaults file as puppet resource
+#
 # === Authors
 #
 # * Richard Pijnenburg <mailto:richard.pijnenburg@elasticsearch.com>
 #
 define elasticsearch::instance(
-  $ensure           = $elasticsearch::ensure,
-  $status           = $elasticsearch::status,
-  $config           = undef,
-  $configdir        = undef,
-  $datadir          = undef,
-  $logging_file     = undef,
-  $logging_config   = undef,
-  $logging_template = undef,
-  $logging_level    = $elasticsearch::default_logging_level,
-  $init_defaults    = undef
+  $ensure             = $elasticsearch::ensure,
+  $status             = $elasticsearch::status,
+  $config             = undef,
+  $configdir          = undef,
+  $datadir            = undef,
+  $logging_file       = undef,
+  $logging_config     = undef,
+  $logging_template   = undef,
+  $logging_level      = $elasticsearch::default_logging_level,
+  $init_defaults      = undef,
+  $init_defaults_file = undef
 ) {
 
   require elasticsearch::params
@@ -241,6 +245,11 @@ define elasticsearch::instance(
     $instance_conf = merge($main_config, $instance_node_name, $instance_config, $instance_datadir_config)
 
     # defaults file content
+    # ensure user did not provide both init_defaults and init_defaults_file
+    if (($init_defaults != undef) and ($init_defaults_file != undef)) {
+      fail ('Only one of $init_defaults and $init_defaults_file should be defined')
+    }
+
     if (is_hash($elasticsearch::init_defaults)) {
       $global_init_defaults = $elasticsearch::init_defaults
     } else {
@@ -285,12 +294,13 @@ define elasticsearch::instance(
   }
 
   elasticsearch::service { $name:
-    ensure        => $ensure,
-    status        => $status,
-    init_defaults => $init_defaults_new,
-    init_template => "${module_name}/etc/init.d/${elasticsearch::params::init_template}",
-    require       => $require_service,
-    before        => $before_service
+    ensure             => $ensure,
+    status             => $status,
+    init_defaults      => $init_defaults_new,
+    init_defaults_file => $init_defaults_file,
+    init_template      => "${module_name}/etc/init.d/${elasticsearch::params::init_template}",
+    require            => $require_service,
+    before             => $before_service
   }
 
 }
