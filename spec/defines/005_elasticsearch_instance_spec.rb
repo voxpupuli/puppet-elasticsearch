@@ -141,6 +141,8 @@ describe 'elasticsearch::instance', :type => 'define' do
       it { should contain_file('/etc/elasticsearch/es-01').with(:ensure => 'directory') }
       it { should contain_file('/etc/elasticsearch/es-01/elasticsearch.yml') }
       it { should contain_file('/etc/elasticsearch/es-01/logging.yml') }
+      it { should contain_file('/etc/elasticsearch/scripts') }
+      it { should contain_file('/etc/elasticsearch/es-01/scripts').with(:target => '/etc/elasticsearch/scripts') }
     end
 
     context "Set in main class" do
@@ -152,6 +154,8 @@ describe 'elasticsearch::instance', :type => 'define' do
       it { should contain_file('/etc/elasticsearch-config/es-01').with(:ensure => 'directory') }
       it { should contain_file('/etc/elasticsearch-config/es-01/elasticsearch.yml') }
       it { should contain_file('/etc/elasticsearch-config/es-01/logging.yml') }
+      it { should contain_file('/etc/elasticsearch-config/scripts') }
+      it { should contain_file('/etc/elasticsearch-config/es-01/scripts').with(:target => '/etc/elasticsearch-config/scripts') }
     end
 
     context "set in instance" do
@@ -165,6 +169,8 @@ describe 'elasticsearch::instance', :type => 'define' do
       it { should contain_file('/etc/elasticsearch-config/es-01').with(:ensure => 'directory') }
       it { should contain_file('/etc/elasticsearch-config/es-01/elasticsearch.yml') }
       it { should contain_file('/etc/elasticsearch-config/es-01/logging.yml') }
+      it { should contain_file('/etc/elasticsearch/scripts') }
+      it { should contain_file('/etc/elasticsearch-config/es-01/scripts').with(:target => '/etc/elasticsearch/scripts') }
     end
 
   end

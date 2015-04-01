@@ -98,6 +98,11 @@ class elasticsearch::config {
       require => [ Exec['mkdir_templates_elasticsearch'] ]
     }
 
+    file { "${elasticsearch::configdir}/scripts":
+      ensure  => 'directory',
+      mode    => '0644',
+    }
+
     # Removal of files that are provided with the package which we don't use
     file { '/etc/init.d/elasticsearch':
       ensure => 'absent'

@@ -41,6 +41,7 @@ describe 'elasticsearch', :type => 'class' do
         it { should contain_exec('mkdir_datadir_elasticsearch_es-01').with(:command => 'mkdir -p /usr/share/elasticsearch/data/es-01') }
         it { should contain_file('/usr/share/elasticsearch/data/es-01') }
         it { should contain_file('/etc/init.d/elasticsearch-es-01') }
+        it { should contain_file('/etc/elasticsearch/es-01/scripts').with(:target => '/etc/elasticsearch/scripts') }
 
       end
 
@@ -65,6 +66,7 @@ describe 'elasticsearch', :type => 'class' do
         it { should contain_exec('mkdir_datadir_elasticsearch_es-01') }
         it { should contain_file('/usr/share/elasticsearch/data/es-01') }
         it { should contain_file('/etc/init.d/elasticsearch-es-01') }
+        it { should contain_file('/etc/elasticsearch/es-01/scripts').with(:target => '/etc/elasticsearch/scripts') }
 
         it { should contain_elasticsearch__instance('es-02').with(:config => { 'node.name' => 'es-02' }) }
         it { should contain_elasticsearch__service('es-02') }
@@ -78,6 +80,7 @@ describe 'elasticsearch', :type => 'class' do
         it { should contain_exec('mkdir_datadir_elasticsearch_es-02') }
         it { should contain_file('/usr/share/elasticsearch/data/es-02') }
         it { should contain_file('/etc/init.d/elasticsearch-es-02') }
+        it { should contain_file('/etc/elasticsearch/es-02/scripts').with(:target => '/etc/elasticsearch/scripts') }
 
       end
 
@@ -151,6 +154,7 @@ describe 'elasticsearch', :type => 'class' do
       it { should contain_exec('mkdir_datadir_elasticsearch_default') }
       it { should contain_file('/usr/share/elasticsearch/data/default') }
       it { should contain_file('/etc/init.d/elasticsearch-default') }
+      it { should contain_file('/etc/elasticsearch/default/scripts').with(:target => '/etc/elasticsearch/scripts') }
 
       it { should contain_elasticsearch__instance('es-01').with(:config => { 'node.name' => 'es-01' }) }
       it { should contain_elasticsearch__service('es-01') }
@@ -164,6 +168,7 @@ describe 'elasticsearch', :type => 'class' do
       it { should contain_exec('mkdir_datadir_elasticsearch_es-01').with(:command => 'mkdir -p /usr/share/elasticsearch/data/es-01') }
       it { should contain_file('/usr/share/elasticsearch/data/es-01') }
       it { should contain_file('/etc/init.d/elasticsearch-es-01') }
+      it { should contain_file('/etc/elasticsearch/es-01/scripts').with(:target => '/etc/elasticsearch/scripts') }
 
     end
 
