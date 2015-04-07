@@ -241,6 +241,11 @@ define elasticsearch::instance(
       before  => Elasticsearch::Service[$name]
     }
 
+    file { "${instance_configdir}/scripts":
+      ensure => 'link',
+      target => "${elasticsearch::configdir}/scripts",
+    }
+
     # build up new config
     $instance_conf = merge($main_config, $instance_node_name, $instance_config, $instance_datadir_config)
 
