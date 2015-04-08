@@ -64,7 +64,7 @@ define elasticsearch::service(
 
   case $elasticsearch::real_service_provider {
 
-    init: {
+    'init': {
       elasticsearch::service::init { $name:
         ensure             => $ensure,
         status             => $status,
@@ -73,7 +73,7 @@ define elasticsearch::service(
         init_template      => $init_template,
       }
     }
-    systemd: {
+    'systemd': {
       elasticsearch::service::systemd { $name:
         ensure             => $ensure,
         status             => $status,

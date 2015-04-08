@@ -57,7 +57,7 @@ class elasticsearch::params {
     'action'                 => 'DEBUG',
     'com.amazonaws'          => 'WARN',
     'index.search.slowlog'   => 'TRACE, index_search_slow_log_file',
-    'index.indexing.slowlog' => 'TRACE, index_indexing_slow_log_file'
+    'index.indexing.slowlog' => 'TRACE, index_indexing_slow_log_file',
   }
 
   #### Internal module values

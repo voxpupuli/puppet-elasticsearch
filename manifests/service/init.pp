@@ -124,7 +124,7 @@ define elasticsearch::service::init(
         group  => 'root',
         mode   => '0644',
         before => Service["elasticsearch-instance-${name}"],
-        notify => $notify_service
+        notify => $notify_service,
       }
 
     } elsif ($init_defaults != undef and is_hash($init_defaults) ) {
@@ -143,7 +143,7 @@ define elasticsearch::service::init(
         lens    => 'Shellvars.lns',
         changes => template("${module_name}/etc/sysconfig/defaults.erb"),
         before  => Service["elasticsearch-instance-${name}"],
-        notify  => $notify_service
+        notify  => $notify_service,
       }
 
     }
@@ -158,7 +158,7 @@ define elasticsearch::service::init(
         group   => 'root',
         mode    => '0755',
         before  => Service["elasticsearch-instance-${name}"],
-        notify  => $notify_service
+        notify  => $notify_service,
       }
 
     }
@@ -167,12 +167,12 @@ define elasticsearch::service::init(
 
     file { "/etc/init.d/elasticsearch-${name}":
       ensure    => 'absent',
-      subscribe => Service["elasticsearch-instance-${name}"]
+      subscribe => Service["elasticsearch-instance-${name}"],
     }
 
     file { "${elasticsearch::params::defaults_location}/elasticsearch-${name}":
       ensure    => 'absent',
-      subscribe => Service["elasticsearch-${$name}"]
+      subscribe => Service["elasticsearch-${$name}"],
     }
 
   }

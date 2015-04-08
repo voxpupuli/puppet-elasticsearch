@@ -327,7 +327,7 @@ class elasticsearch(
     # Install java
     class { '::java':
       package      => $java_package,
-      distribution => 'jre'
+      distribution => 'jre',
     }
 
     # ensure we first java java and then manage the service
@@ -358,7 +358,7 @@ class elasticsearch(
       }
 
       class { 'elasticsearch::repo':
-        stage => $repo_stage
+        stage => $repo_stage,
       }
     }
   }

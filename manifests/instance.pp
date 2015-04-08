@@ -86,7 +86,7 @@ define elasticsearch::instance(
 
   File {
     owner => $elasticsearch::elasticsearch_user,
-    group => $elasticsearch::elasticsearch_group
+    group => $elasticsearch::elasticsearch_group,
   }
 
   Exec {
@@ -203,7 +203,7 @@ define elasticsearch::instance(
       command => "mkdir -p ${dirs}",
       creates => $instance_datadir,
       require => Class['elasticsearch::package'],
-      before  => Elasticsearch::Service[$name]
+      before  => Elasticsearch::Service[$name],
     }
 
     file { $instance_datadir:
@@ -212,14 +212,14 @@ define elasticsearch::instance(
       group   => undef,
       mode    => '0644',
       require => [ Exec["mkdir_datadir_elasticsearch_${name}"], Class['elasticsearch::package'] ],
-      before  => Elasticsearch::Service[$name]
+      before  => Elasticsearch::Service[$name],
     }
 
     exec { "mkdir_configdir_elasticsearch_${name}":
       command => "mkdir -p ${instance_configdir}",
       creates => $elasticsearch::configdir,
       require => Class['elasticsearch::package'],
-      before  => Elasticsearch::Service[$name]
+      before  => Elasticsearch::Service[$name],
     }
 
     file { $instance_configdir:
@@ -228,7 +228,7 @@ define elasticsearch::instance(
       purge   => $elasticsearch::purge_configdir,
       force   => $elasticsearch::purge_configdir,
       require => [ Exec["mkdir_configdir_elasticsearch_${name}"], Class['elasticsearch::package'] ],
-      before  => Elasticsearch::Service[$name]
+      before  => Elasticsearch::Service[$name],
     }
 
     file { "${instance_configdir}/logging.yml":
@@ -238,7 +238,7 @@ define elasticsearch::instance(
       mode    => '0644',
       notify  => $notify_service,
       require => Class['elasticsearch::package'],
-      before  => Elasticsearch::Service[$name]
+      before  => Elasticsearch::Service[$name],
     }
 
     file { "${instance_configdir}/scripts":
@@ -278,7 +278,7 @@ define elasticsearch::instance(
       content => template("${module_name}/etc/elasticsearch/elasticsearch.yml.erb"),
       mode    => '0644',
       notify  => $notify_service,
-      require => Class['elasticsearch::package']
+      require => Class['elasticsearch::package'],
     }
 
     $require_service = Class['elasticsearch::package']
@@ -305,7 +305,7 @@ define elasticsearch::instance(
     init_defaults_file => $init_defaults_file,
     init_template      => "${module_name}/etc/init.d/${elasticsearch::params::init_template}",
     require            => $require_service,
-    before             => $before_service
+    before             => $before_service,
   }
 
 }
