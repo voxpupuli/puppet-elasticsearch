@@ -159,6 +159,9 @@
 #   Define plugins via a hash. This is mainly used with Hiera's auto binding
 #   Defaults to: undef
 #
+# [*apt_key*]
+#   Override GPG key for Apt, provided by this module.
+#
 # [*plugins_hiera_merge*]
 #   Enable Hiera's merging function for the plugins
 #   Defaults to: false
@@ -223,7 +226,8 @@ class elasticsearch(
   $instances             = undef,
   $instances_hiera_merge = false,
   $plugins               = undef,
-  $plugins_hiera_merge   = false
+  $plugins_hiera_merge   = false,
+  $apt_key               = $elasticsearch::params::apt_key
 ) inherits elasticsearch::params {
 
   anchor {'elasticsearch::begin': }
