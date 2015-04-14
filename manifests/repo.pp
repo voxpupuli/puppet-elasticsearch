@@ -40,7 +40,7 @@ class elasticsearch::repo {
         location    => "http://packages.elasticsearch.org/elasticsearch/${elasticsearch::repo_version}/debian",
         release     => 'stable',
         repos       => 'main',
-        key         => 'D88E42B4',
+        key         => $elasticsearch::apt_key,
         key_source  => 'http://packages.elasticsearch.org/GPG-KEY-elasticsearch',
         include_src => false,
       }

@@ -120,6 +120,7 @@ class elasticsearch::params {
     'Debian', 'Ubuntu': {
       # main application
       $package = [ 'elasticsearch' ]
+      $apt_key = 'D88E42B4'
     }
     'OpenSuSE': {
       $package = [ 'elasticsearch' ]
