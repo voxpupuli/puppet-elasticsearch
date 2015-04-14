@@ -1,3 +1,27 @@
+##0.9.4( Apr 14, 2015 )
+
+###Summary
+Bugfix release 0.9.4
+
+####Features
+* Add the ability to create and populate scripts
+
+####Bugfixes
+* add support for init_defaults_file to elasticsearch::instance
+* Update apt key to full 40characters
+
+####Changes
+* Fix readme regarding module_dir with plugins
+
+####Testing changes
+* Adding staged removal test
+* Convert git urls to https
+* Add centos7 node config
+
+####Known bugs
+* Possible package conflicts when using ruby/python defines with main package name
+
+
 ##0.9.3( Mar 24, 2015 )
 
 ###Summary

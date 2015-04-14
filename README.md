@@ -146,6 +146,19 @@ elasticsearch::plugin { 'lmenezes/elasticsearch-kopf',
 * `groupId/artifactId/version`   for community plugins (download from maven central or oss sonatype)
 * `username/repository`          for site plugins (download from github master)
 
+
+###Scripts
+
+Install [scripts](http://www.elastic.co/guide/en/elasticsearch/reference/1.x/modules-scripting.html) to be used by Elasticsearch.
+These scripts are shared accross all defined instances on the same host.
+
+```puppet
+elasticsearch::script { 'myscript':
+  ensure => 'present',
+  source => 'puppet:///path/to/my/script.groovy'
+}
+```
+
 ###Templates
 
 #### Add a new template using a file
