@@ -99,8 +99,8 @@ class elasticsearch::config {
     }
 
     file { "${elasticsearch::configdir}/scripts":
-      ensure  => 'directory',
-      mode    => '0644',
+      ensure => 'directory',
+      mode   => '0644',
     }
 
     # Removal of files that are provided with the package which we don't use
