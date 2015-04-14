@@ -119,7 +119,7 @@ define elasticsearch::service::systemd(
         group  => 'root',
         mode   => '0644',
         before => Service["elasticsearch-instance-${name}"],
-        notify => $notify_service
+        notify => $notify_service,
       }
 
     } elsif ($init_defaults != undef and is_hash($init_defaults) ) {
@@ -138,7 +138,7 @@ define elasticsearch::service::systemd(
         lens    => 'Shellvars.lns',
         changes => template("${module_name}/etc/sysconfig/defaults.erb"),
         before  => Service["elasticsearch-instance-${name}"],
-        notify  => $notify_service
+        notify  => $notify_service,
       }
 
     }
@@ -153,7 +153,7 @@ define elasticsearch::service::systemd(
         ensure  => $ensure,
         content => template($init_template),
         before  => Service["elasticsearch-instance-${name}"],
-        notify  => $notify_service
+        notify  => $notify_service,
       }
 
     }
@@ -165,13 +165,13 @@ define elasticsearch::service::systemd(
     file { "/usr/lib/systemd/system/elasticsearch-${name}.service":
       ensure    => 'absent',
       subscribe => Service["elasticsearch-instance-${name}"],
-      notify    => Exec["systemd_reload_${name}"]
+      notify    => Exec["systemd_reload_${name}"],
     }
 
     file { "${elasticsearch::params::defaults_location}/elasticsearch-${name}":
       ensure    => 'absent',
       subscribe => Service["elasticsearch-instance-${name}"],
-      notify    => Exec["systemd_reload_${name}"]
+      notify    => Exec["systemd_reload_${name}"],
     }
 
     $service_require = undef

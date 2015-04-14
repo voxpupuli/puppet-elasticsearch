@@ -64,7 +64,7 @@ define elasticsearch::plugin(
     $module_dir,
     $instances,
     $ensure      = 'present',
-    $url         = '',
+    $url         = undef,
     $proxy_host  = undef,
     $proxy_port  = undef,
 ) {
@@ -76,7 +76,7 @@ define elasticsearch::plugin(
     cwd       => '/',
     user      => $elasticsearch::elasticsearch_user,
     tries     => 6,
-    try_sleep => 10
+    try_sleep => 10,
   }
 
   $notify_service = $elasticsearch::restart_on_change ? {
@@ -93,7 +93,7 @@ define elasticsearch::plugin(
   if ($proxy_host != undef and $proxy_port != undef) {
     $proxy = " -DproxyPort=${proxy_port} -DproxyHost=${proxy_host}"
   } else {
-    $proxy = ''
+    $proxy = '' # lint:ignore:empty_string_assignment
   }
 
   if ($url != '') {
@@ -112,7 +112,7 @@ define elasticsearch::plugin(
         creates => "${elasticsearch::plugindir}/${module_dir}",
         returns => $exec_rets,
         notify  => $notify_service,
-        require => File[$elasticsearch::plugindir]
+        require => File[$elasticsearch::plugindir],
       }
     }
     default: {
