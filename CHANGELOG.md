@@ -1,3 +1,24 @@
+##0.9.5( Apr 16, 2015 )
+
+###Summary
+Bugfix release 0.9.5
+
+We reverted the change that implemented the full 40 character for the apt repo key.
+This caused issues with some older versions of the puppetlabs-apt module
+
+####Features
+
+####Bugfixes
+* Revert using the full 40 character for the apt repo key.
+
+####Changes
+
+####Testing changes
+
+####Known bugs
+* Possible package conflicts when using ruby/python defines with main package name
+
+
 ##0.9.4( Apr 14, 2015 )
 
 ###Summary
