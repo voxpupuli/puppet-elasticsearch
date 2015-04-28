@@ -146,10 +146,12 @@ define elasticsearch::service::systemd(
     # init file from template
     if ($init_template != undef) {
 
-      $user  = $elasticsearch::elasticsearch_user
-      $group = $elasticsearch::elasticsearch_group
+      $user              = $elasticsearch::elasticsearch_user
+      $group             = $elasticsearch::elasticsearch_group
+      $pid_dir           = $elasticsearch::pid_dir
+      $defaults_location = $elasticsearch::defaults_location
 
-      file { "/usr/lib/systemd/system/elasticsearch-${name}.service":
+      file { "/lib/systemd/system/elasticsearch-${name}.service":
         ensure  => $ensure,
         content => template($init_template),
         before  => Service["elasticsearch-instance-${name}"],
@@ -162,7 +164,7 @@ define elasticsearch::service::systemd(
 
   } elsif($status != 'unmanaged') {
 
-    file { "/usr/lib/systemd/system/elasticsearch-${name}.service":
+    file { "/lib/systemd/system/elasticsearch-${name}.service":
       ensure    => 'absent',
       subscribe => Service["elasticsearch-instance-${name}"],
       notify    => Exec["systemd_reload_${name}"],
