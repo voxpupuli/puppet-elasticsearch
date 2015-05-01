@@ -42,11 +42,10 @@ class elasticsearch::repo {
         repos    => 'main',
         key      => {
           'id'     => 'D88E42B4',
-          'server' => 'http://packages.elasticsearch.org/',
+          'source' => 'http://packages.elasticsearch.org/GPG-KEY-elasticsearch',
           },
         include  => {
           'src' => false,
-          'deb' => true,
         }
       }
     }
