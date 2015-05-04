@@ -1,7 +1,9 @@
 fixtures:
   repositories:
     stdlib: https://github.com/puppetlabs/puppetlabs-stdlib.git
-    apt: https://github.com/puppetlabs/puppetlabs-apt.git
+    apt:
+      repo: 'https://github.com/puppetlabs/puppetlabs-apt.git'
+      branch: '1.8.x'
     zypprepo: https://github.com/deadpoint/puppet-zypprepo.git
   symlinks:
     elasticsearch: "#{source_dir}"
