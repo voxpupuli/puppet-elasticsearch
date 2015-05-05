@@ -17,6 +17,7 @@
 # [*ensure*]
 #   Whether the plugin will be installed or removed.
 #   Set to 'absent' to ensure a plugin is not installed
+#   Set to 'reinstalled' to ensure a plugin is reinstalled (use when upgrading plugin)
 #   Value type is string
 #   Default value: present
 #   This variable is optional
@@ -113,6 +114,13 @@ define elasticsearch::plugin(
         returns => $exec_rets,
         notify  => $notify_service,
         require => File[$elasticsearch::plugindir],
+      }
+    }
+    'reinstalled': {
+      exec {"reinstall_plugin_${name}":
+        command => "${elasticsearch::plugintool} --remove ${module_dir} ; ${install_cmd}",
+        notify  => $notify_service,
+        require  => Class['elasticsearch::package'],
       }
     }
     default: {
