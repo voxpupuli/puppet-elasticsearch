@@ -152,7 +152,7 @@ class elasticsearch::params {
       $defaults_location  = '/etc/sysconfig'
       $pid_dir            = '/var/run/elasticsearch'
     }
-    'Debian', 'Ubuntu': {
+    'Debian': {
       $service_name       = 'elasticsearch'
       $service_hasrestart = true
       $service_hasstatus  = true
@@ -161,6 +161,14 @@ class elasticsearch::params {
       $defaults_location  = '/etc/default'
       $init_template      = 'elasticsearch.Debian.erb'
       $pid_dir            = false
+    }
+    'Ubuntu': {
+      $service_name       = 'elasticsearch'
+      $service_hasrestart = true
+      $service_hasstatus  = true
+      $service_pattern    = $service_name
+      $service_providers  = [ 'upstart', 'init' ]
+      $defaults_location  = '/etc/default'
     }
     'Darwin': {
       $service_name       = 'FIXME/TODO'
