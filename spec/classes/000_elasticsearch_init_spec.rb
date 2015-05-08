@@ -53,7 +53,7 @@ describe 'elasticsearch', :type => 'class' do
 
 	# file removal from package
 	it { should contain_file('/etc/init.d/elasticsearch').with(:ensure => 'absent') }
-	it { should contain_file('/usr/lib/systemd/system/elasticsearch.service').with(:ensure => 'absent') }
+	it { should contain_file('/lib/systemd/system/elasticsearch.service').with(:ensure => 'absent') }
 	it { should contain_file("#{defaults_path}/elasticsearch").with(:ensure => 'absent') }
 	it { should contain_file('/etc/elasticsearch/elasticsearch.yml').with(:ensure => 'absent') }
 	it { should contain_file('/etc/elasticsearch/logging.yml').with(:ensure => 'absent') }
