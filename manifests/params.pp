@@ -152,15 +152,31 @@ class elasticsearch::params {
       }
 
     }
-    'Debian', 'Ubuntu': {
+    'Debian': {
       $service_name       = 'elasticsearch'
       $service_hasrestart = true
       $service_hasstatus  = true
       $service_pattern    = $service_name
       $defaults_location  = '/etc/default'
 
-      if (($::operatingsystem == 'Debian' and $::operatingsystemmajrelease >= 8) or
-          ($::operatingsystem == 'Ubuntu' and $::operatingsystemmajrelease >= 15)) {
+      if ($::operatingsystemmajrelease >= 8) {
+        $init_template     = 'elasticsearch.systemd.erb'
+        $service_providers = 'systemd'
+        $pid_dir           = '/var/run/elasticsearch'
+      } else {
+        $init_template     = 'elasticsearch.Debian.erb'
+        $service_providers = [ 'init' ]
+        $pid_dir           = false
+      }
+    }
+    'Ubuntu': {
+      $service_name       = 'elasticsearch'
+      $service_hasrestart = true
+      $service_hasstatus  = true
+      $service_pattern    = $service_name
+      $defaults_location  = '/etc/default'
+
+      if ($::operatingsystemmajrelease >= 15) {
         $init_template     = 'elasticsearch.systemd.erb'
         $service_providers = 'systemd'
         $pid_dir           = '/var/run/elasticsearch'
