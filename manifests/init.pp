@@ -197,6 +197,7 @@ class elasticsearch(
   $package_url           = undef,
   $package_dir           = $elasticsearch::params::package_dir,
   $package_name          = $elasticsearch::params::package,
+  $package_pin           = true,
   $purge_package_dir     = $elasticsearch::params::purge_package_dir,
   $package_dl_timeout    = $elasticsearch::params::package_dl_timeout,
   $elasticsearch_user    = $elasticsearch::params::elasticsearch_user,
