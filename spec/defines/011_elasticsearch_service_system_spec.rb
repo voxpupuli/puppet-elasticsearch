@@ -45,7 +45,7 @@ describe 'elasticsearch::service::systemd', :type => 'define' do
 
     it { should contain_elasticsearch__service__systemd('es-01') }
     it { should_not contain_service('elasticsearch-instance-es-01') }
-    it { should_not contain_file('/usr/lib/systemd/system/elasticsearch-es-01.service') }
+    it { should_not contain_file('/lib/systemd/system/elasticsearch-es-01.service') }
     it { should_not contain_file('/etc/sysconfig/elasticsearch-es-01') }
 
   end
@@ -109,7 +109,7 @@ describe 'elasticsearch::service::systemd', :type => 'define' do
 	:init_template => 'elasticsearch/etc/init.d/elasticsearch.systemd.erb'
       } end
 
-      it { should contain_file('/usr/lib/systemd/system/elasticsearch-es-01.service').with(:before => 'Service[elasticsearch-instance-es-01]') }
+      it { should contain_file('/lib/systemd/system/elasticsearch-es-01.service').with(:before => 'Service[elasticsearch-instance-es-01]') }
     end
 
     context "No restart when 'restart_on_change' is false" do
@@ -121,7 +121,7 @@ describe 'elasticsearch::service::systemd', :type => 'define' do
 	:init_template => 'elasticsearch/etc/init.d/elasticsearch.systemd.erb'
       } end
 
-      it { should contain_file('/usr/lib/systemd/system/elasticsearch-es-01.service').with(:notify => 'Exec[systemd_reload_es-01]', :before => 'Service[elasticsearch-instance-es-01]') }
+      it { should contain_file('/lib/systemd/system/elasticsearch-es-01.service').with(:notify => 'Exec[systemd_reload_es-01]', :before => 'Service[elasticsearch-instance-es-01]') }
 
     end
 
