@@ -6,7 +6,7 @@ describe 'elasticsearch::service::init', :type => 'define' do
     :operatingsystem => 'CentOS',
     :kernel => 'Linux',
     :osfamily => 'RedHat',
-    :operatingsystemmajrelease => 6,
+    :operatingsystemmajrelease => '6',
     :scenario => '',
     :common => ''
   } end

@@ -6,7 +6,7 @@ describe 'elasticsearch::service::systemd', :type => 'define' do
     :operatingsystem => 'OpenSuSE',
     :kernel => 'Linux',
     :osfamily => 'Suse',
-    :operatingsystemmajrelease => 11,
+    :operatingsystemmajrelease => '11',
     :scenario => '',
     :common => ''
   } end

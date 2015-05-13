@@ -140,15 +140,12 @@ class elasticsearch::params {
       $defaults_location  = '/etc/sysconfig'
       $pid_dir            = '/var/run/elasticsearch'
 
-      case $::operatingsystemmajrelease {
-        '7': {
-          $init_template     = 'elasticsearch.systemd.erb'
-          $service_providers = 'systemd'
-        }
-        default: {
-          $init_template     = 'elasticsearch.RedHat.erb'
-          $service_providers = [ 'init' ]
-        }
+      if versioncmp($::operatingsystemmajrelease, '7') >= 0 {
+        $init_template     = 'elasticsearch.systemd.erb'
+        $service_providers = 'systemd'
+      } else {
+        $init_template     = 'elasticsearch.RedHat.erb'
+        $service_providers = 'init'
       }
 
     }
@@ -158,8 +155,7 @@ class elasticsearch::params {
       $service_hasstatus  = true
       $service_pattern    = $service_name
       $defaults_location  = '/etc/default'
-
-      if ($::operatingsystemmajrelease >= 8) {
+      if versioncmp($::operatingsystemmajrelease, '8') >= 0 {
         $init_template     = 'elasticsearch.systemd.erb'
         $service_providers = 'systemd'
         $pid_dir           = '/var/run/elasticsearch'
@@ -176,7 +172,7 @@ class elasticsearch::params {
       $service_pattern    = $service_name
       $defaults_location  = '/etc/default'
 
-      if ($::operatingsystemmajrelease >= 15) {
+      if versioncmp($::operatingsystemmajrelease, '15') >= 0 {
         $init_template     = 'elasticsearch.systemd.erb'
         $service_providers = 'systemd'
         $pid_dir           = '/var/run/elasticsearch'
