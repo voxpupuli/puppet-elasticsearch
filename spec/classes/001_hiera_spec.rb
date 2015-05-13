@@ -10,7 +10,7 @@ describe 'elasticsearch', :type => 'class' do
     :operatingsystem => 'CentOS',
     :kernel => 'Linux',
     :osfamily => 'RedHat',
-    :operatingsystemmajrelease => 6
+    :operatingsystemmajrelease => '6'
   }
 
   let (:params) do
