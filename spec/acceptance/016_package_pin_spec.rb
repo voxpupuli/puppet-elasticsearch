@@ -2,12 +2,12 @@ require 'spec_helper_acceptance'
 
 describe "Package pinning:" do
 
-  write_hiera_config('')
   describe "Pinning enabled" do
 
     describe "Setup" do
 
       it 'should run successful' do
+        write_hiera_config('')
         pp = "class { 'elasticsearch': config => { 'cluster.name' => '#{test_settings['cluster_name']}'}, manage_repo => true, repo_version => '#{test_settings['repo_version']}', version => '#{test_settings['install_package_version']}', java_install => true }
               elasticsearch::instance { 'es-01': config => { 'node.name' => 'elasticsearch001', 'http.port' => '#{test_settings['port_a']}' } }
              "
@@ -27,6 +27,8 @@ describe "Package pinning:" do
         case fact('osfamily')
         when 'Debian'
           shell('apt-get update && apt-get -y install elasticsearch')
+        when 'RedHat'
+          shell('yum -y update elasticsearch')
         end
       end
     end
@@ -61,6 +63,8 @@ describe "Package pinning:" do
         case fact('osfamily')
         when 'Debian'
           shell('apt-get update && apt-get -y install elasticsearch')
+        when 'RedHat'
+          shell('yum -y update elasticsearch')
         end
       end
     end
@@ -74,5 +78,27 @@ describe "Package pinning:" do
     end
 
   end
+
+  describe "Cleanup" do
+
+    it 'should run successfully' do
+      pp = "class { 'elasticsearch': ensure => 'absent' }
+            elasticsearch::instance{ 'es-01': ensure => 'absent' }
+           "
+
+      apply_manifest(pp, :catch_failures => true)
+    end
+
+    describe file('/etc/elasticsearch/es-01') do
+      it { should_not be_directory }
+    end
+
+    describe service(test_settings['service_name_a']) do
+      it { should_not be_enabled }
+      it { should_not be_running }
+    end
+
+  end
+
 
 end
