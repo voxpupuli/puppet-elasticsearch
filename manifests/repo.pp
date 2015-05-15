@@ -92,9 +92,6 @@ class elasticsearch::repo {
         }
       }
       'RedHat', 'Linux': {
-        if !defined(Class['yum']) {
-          class { 'yum': }
-        }
 
         yum::versionlock { "0:elasticsearch-${elasticsearch::version}.noarch":
           ensure => 'present',
