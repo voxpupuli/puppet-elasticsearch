@@ -77,6 +77,7 @@ define elasticsearch::plugin(
     user      => $elasticsearch::elasticsearch_user,
     tries     => 6,
     try_sleep => 10,
+    timeout   => 600,
   }
 
   $notify_service = $elasticsearch::restart_on_change ? {
@@ -110,7 +111,7 @@ define elasticsearch::plugin(
       $name_file_path = "${elasticsearch::plugindir}/${module_dir}/.name"
       exec {"purge_plugin_${module_dir}_old":
         command => "${elasticsearch::plugintool} --remove ${module_dir}",
-        onlyif  => "test -e ${elasticsearch::plugindir}/${module_dir} && test \"$(cat $name_file_path)\" != '${name}'",
+        onlyif  => "test -e ${elasticsearch::plugindir}/${module_dir} && test \"$(cat ${name_file_path})\" != '${name}'",
         before  => Exec["install_plugin_${name}"],
       }
       exec {"install_plugin_${name}":

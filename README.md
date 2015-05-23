@@ -146,6 +146,24 @@ elasticsearch::plugin { 'lmenezes/elasticsearch-kopf',
 * `groupId/artifactId/version`   for community plugins (download from maven central or oss sonatype)
 * `username/repository`          for site plugins (download from github master)
 
+####Upgrading plugins
+When you specify a certain plugin version, you can upgrade that plugin by specifying the new version.
+
+```puppet
+elasticsearch::plugin { 'elasticsearch/elasticsearch-cloud-aws/2.1.1':
+  module_dir => 'cloud-aws',
+}
+```
+
+And to upgrade, you would simply change it to
+
+```puppet
+elasticsearch::plugin { 'elasticsearch/elasticsearch-cloud-aws/2.4.1':
+  module_dir => 'cloud-aws',
+}
+```
+
+Please note that this does not work when you specify 'latest' as a version number.
 
 ###Scripts
 

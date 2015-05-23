@@ -8,8 +8,6 @@ gem 'beaker-rspec', :git => 'https://github.com/puppetlabs/beaker-rspec.git', :b
 gem 'metadata-json-lint', :git => 'https://github.com/nibalizer/metadata-json-lint.git', :branch => 'master'
 gem 'rspec-puppet', :git => 'https://github.com/rodjek/rspec-puppet.git', :branch => 'master'
 
-
-gem 'specinfra', :git => 'https://github.com/electrical/specinfra.git', :branch => 'debian8'
 gem 'pry'
 gem 'docker-api', '~> 1.0'
 gem 'rubysl-securerandom'
