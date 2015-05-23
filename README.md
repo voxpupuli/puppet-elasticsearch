@@ -495,8 +495,8 @@ This module has been built on and tested against Puppet 3.2 and higher.
 
 The module has been tested on:
 
-* Debian 6/7
-* CentOS 6
+* Debian 6/7/8
+* CentOS 6/7
 * Ubuntu 12.04, 14.04
 * OpenSuSE 13.x
 
