@@ -12,6 +12,10 @@
     {
       "name": "puppetlabs/stdlib",
       "version_requirement": ">= 3.2.0 < 5.0.0"
+    },
+    {
+      "name": "puppetlabs/apt", 
+      "version_requirement": ">= 2.0.0 <3.0.0"
     }
   ],
   "operatingsystem_support": [
