@@ -163,6 +163,12 @@
 #   Enable Hiera's merging function for the plugins
 #   Defaults to: false
 #
+# [*package_pin*]
+#   Enables package version pinning.
+#   This pins the package version to the set version number and avoids
+#   package upgrades.
+#   Defaults to: true
+#
 # The default values for the parameters are set in elasticsearch::params. Have
 # a look at the corresponding <tt>params.pp</tt> manifest file if you need more
 # technical information about them.
