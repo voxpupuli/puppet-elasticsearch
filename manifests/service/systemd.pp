@@ -151,6 +151,18 @@ define elasticsearch::service::systemd(
       $pid_dir           = $elasticsearch::pid_dir
       $defaults_location = $elasticsearch::defaults_location
 
+      if ($new_init_defaults != undef and is_hash($new_init_defaults) and has_key($new_init_defaults, 'MAX_OPEN_FILES')) {
+        $nofile = $new_init_defaults['MAX_OPEN_FILES']
+      }else{
+        $nofile = '65535'
+      }
+
+      if ($new_init_defaults != undef and is_hash($new_init_defaults) and has_key($new_init_defaults, 'MAX_LOCKED_MEMORY')) {
+        $memlock = $new_init_defaults['MAX_LOCKED_MEMORY']
+      }else{
+        $memlock = undef
+      }
+
       file { "/lib/systemd/system/elasticsearch-${name}.service":
         ensure  => $ensure,
         content => template($init_template),
