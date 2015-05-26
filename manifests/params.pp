@@ -41,7 +41,7 @@ class elasticsearch::params {
   $status = 'enabled'
 
   # restart on configuration change?
-  $restart_on_change = true
+  $restart_on_change = false
 
   # Purge configuration directory
   $purge_configdir = false
