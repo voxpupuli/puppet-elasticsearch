@@ -234,7 +234,6 @@ class elasticsearch(
 ) inherits elasticsearch::params {
 
   anchor {'elasticsearch::begin': }
-  anchor {'elasticsearch::end': }
 
 
   #### Validate parameters
@@ -337,7 +336,7 @@ class elasticsearch(
       distribution => 'jre',
     }
 
-    # ensure we first java java and then manage the service
+    # ensure we first install java, the package and then the rest
     Anchor['elasticsearch::begin']
     -> Class['::java']
     -> Class['elasticsearch::package']
@@ -380,10 +379,12 @@ class elasticsearch(
     -> Class['elasticsearch::config']
     -> Elasticsearch::Instance <| |>
     -> Elasticsearch::Template <| |>
+
   } else {
 
     # make sure all services are getting stopped before software removal
-    Elasticsearch::Instance <| |>
+    Anchor['elasticsearch::begin']
+    -> Elasticsearch::Instance <| |>
     -> Class['elasticsearch::config']
     -> Class['elasticsearch::package']
 

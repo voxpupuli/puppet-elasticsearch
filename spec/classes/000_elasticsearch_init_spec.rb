@@ -36,6 +36,8 @@ describe 'elasticsearch', :type => 'class' do
       context 'main class tests' do
 
         # init.pp
+        it { should compile.with_all_deps }
+        it { should contain_class('elasticsearch') }
         it { should contain_anchor('elasticsearch::begin') }
         it { should contain_class('elasticsearch::params') }
         it { should contain_class('elasticsearch::package').that_requires('Anchor[elasticsearch::begin]') }
