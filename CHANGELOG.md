@@ -1,3 +1,26 @@
+##0.9.6 ( May 28, 2015 )
+
+###Summary
+Bugfix release 0.9.6
+
+####Features
+* Implemented package version pinning to avoid accidental upgrading
+* Added support for Debian 8
+* Added support for upgrading plugins
+* Managing LimitNOFILE and LimitMEMLOCK settings in systemd
+
+####Bugfixes
+
+####Changes
+* Dropped official support for PE 3.1.x and 3.2.x
+
+####Testing changes
+* Several testing changes implemented to increase coverage
+
+####Known bugs
+* Possible package conflicts when using ruby/python defines with main package name
+
+
 ##0.9.5( Apr 16, 2015 )
 
 ###Summary
