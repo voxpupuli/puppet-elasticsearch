@@ -344,6 +344,20 @@ Note: `init_defaults` hash can be passed to the main class and to the instance.
 
 ##Advanced features
 
+###Package version pinning
+
+The module supports pinning the package version to avoid accidental upgrades that are not done by Puppet.
+To enable this feature:
+
+```puppet
+class { 'elasticsearch':
+  package_pin => true,
+  version     => '1.5.2',
+}
+```
+
+In this example we pin the package version to 1.5.2.
+
 
 ###Data directories
 
