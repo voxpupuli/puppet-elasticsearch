@@ -131,12 +131,15 @@ define elasticsearch::plugin(
         require => Exec["install_plugin_${name}"],
       }
     }
-    default: {
+    'absent': {
       exec {"remove_plugin_${name}":
         command => "${elasticsearch::plugintool} --remove ${plugin_dir}",
         onlyif  => "test -d ${elasticsearch::plugindir}/${plugin_dir}",
         notify  => $notify_service,
       }
+    }
+    default: {
+      fail("${ensure} is not a valid ensure command.")
     }
   }
 }
