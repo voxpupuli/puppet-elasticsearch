@@ -36,13 +36,27 @@ class elasticsearch::repo {
         class { 'apt': }
       }
 
-      apt::source { 'elasticsearch':
-        location    => "http://packages.elasticsearch.org/elasticsearch/${elasticsearch::repo_version}/debian",
-        release     => 'stable',
-        repos       => 'main',
-        key         => 'D88E42B4',
-        key_source  => 'http://packages.elasticsearch.org/GPG-KEY-elasticsearch',
-        include_src => false,
+      if defined('apt::setting') {
+        # apt >= 2.0
+        apt::source { 'elasticsearch':
+          location => "http://packages.elasticsearch.org/elasticsearch/${elasticsearch::repo_version}/debian",
+          release  => 'stable',
+          repos    => 'main',
+          key      => {
+            id     => '46095ACC8548582C1A2699A9D27D666CD88E42B4',
+            source => 'http://packages.elasticsearch.org/GPG-KEY-elasticsearch',
+          },
+        }
+      } else {
+        # apt < 2
+        apt::source { 'elasticsearch':
+          location    => "http://packages.elasticsearch.org/elasticsearch/${elasticsearch::repo_version}/debian",
+          release     => 'stable',
+          repos       => 'main',
+          key         => 'D88E42B4',
+          key_source  => 'http://packages.elasticsearch.org/GPG-KEY-elasticsearch',
+          include_src => false,
+        }
       }
     }
     'RedHat', 'Linux': {
