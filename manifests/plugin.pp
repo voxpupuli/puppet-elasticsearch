@@ -12,7 +12,7 @@
 #   Directory name where the module will be installed
 #   Value type is string
 #   Default value: None
-#   This variable is required
+#   This variable is deprecated
 #
 # [*ensure*]
 #   Whether the plugin will be installed or removed.
@@ -61,8 +61,8 @@
 # * Richard Pijnenburg <mailto:richard.pijnenburg@elasticsearch.com>
 #
 define elasticsearch::plugin(
-    $module_dir,
     $instances,
+    $module_dir  = undef,
     $ensure      = 'present',
     $url         = undef,
     $proxy_host  = undef,
@@ -85,10 +85,14 @@ define elasticsearch::plugin(
     default => Elasticsearch::Service[$instances],
   }
 
-  if ($module_dir != '') {
-      validate_string($module_dir)
+  if ($module_dir != undef) {
+      warning("module_dir settings is deprecated for plugin ${name}. The directory is now auto detected.")
+  }
+
+  if ($url == undef) {
+    $plugin_dir = plugin_dir($name)
   } else {
-      fail("module_dir undefined for plugin ${name}")
+    $plugin_dir = $name
   }
 
   if ($proxy_host != undef and $proxy_port != undef) {
@@ -108,15 +112,15 @@ define elasticsearch::plugin(
 
   case $ensure {
     'installed', 'present': {
-      $name_file_path = "${elasticsearch::plugindir}/${module_dir}/.name"
-      exec {"purge_plugin_${module_dir}_old":
-        command => "${elasticsearch::plugintool} --remove ${module_dir}",
-        onlyif  => "test -e ${elasticsearch::plugindir}/${module_dir} && test \"$(cat ${name_file_path})\" != '${name}'",
+      $name_file_path = "${elasticsearch::plugindir}/${plugin_dir}/.name"
+      exec {"purge_plugin_${plugin_dir}_old":
+        command => "${elasticsearch::plugintool} --remove ${plugin_dir}",
+        onlyif  => "test -e ${elasticsearch::plugindir}/${plugin_dir} && test \"$(cat ${name_file_path})\" != '${name}'",
         before  => Exec["install_plugin_${name}"],
       }
       exec {"install_plugin_${name}":
         command => $install_cmd,
-        creates => "${elasticsearch::plugindir}/${module_dir}",
+        creates => "${elasticsearch::plugindir}/${plugin_dir}",
         returns => $exec_rets,
         notify  => $notify_service,
         require => File[$elasticsearch::plugindir],
@@ -129,8 +133,8 @@ define elasticsearch::plugin(
     }
     default: {
       exec {"remove_plugin_${name}":
-        command => "${elasticsearch::plugintool} --remove ${module_dir}",
-        onlyif  => "test -d ${elasticsearch::plugindir}/${module_dir}",
+        command => "${elasticsearch::plugintool} --remove ${plugin_dir}",
+        onlyif  => "test -d ${elasticsearch::plugindir}/${plugin_dir}",
         notify  => $notify_service,
       }
     }
