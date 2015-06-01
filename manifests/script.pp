@@ -22,15 +22,15 @@
 #   Puppet source of the script
 #   Value type is string
 #   Default value: undef
-#   This variable is optional
+#   This variable is mandatory
 #
 # === Authors
 #
 # * Richard Pijnenburg <mailto:richard.pijnenburg@elasticsearch.com>
 #
 define elasticsearch::script(
+  $source,
   $ensure  = 'present',
-  $source  = undef,
 ) {
 
   require elasticsearch
