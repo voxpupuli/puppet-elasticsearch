@@ -101,13 +101,13 @@ define elasticsearch::plugin(
     $proxy = '' # lint:ignore:empty_string_assignment
   }
 
-  if ($url != '') {
+  if ($url == undef) {
+    $install_cmd = "${elasticsearch::plugintool}${proxy} -install ${name}"
+    $exec_rets = [0,]
+  } else {
     validate_string($url)
     $install_cmd = "${elasticsearch::plugintool}${proxy} -install ${name} -url ${url}"
     $exec_rets = [0,1]
-  } else {
-    $install_cmd = "${elasticsearch::plugintool}${proxy} -install ${name}"
-    $exec_rets = [0,]
   }
 
   case $ensure {
