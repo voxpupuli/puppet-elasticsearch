@@ -132,7 +132,7 @@ class elasticsearch::params {
 
   # service parameters
   case $::operatingsystem {
-    'RedHat', 'CentOS', 'Fedora', 'Scientific', 'Amazon', 'OracleLinux', 'SLC': {
+    'RedHat', 'CentOS', 'Fedora', 'Scientific', 'OracleLinux', 'SLC': {
       $service_name       = 'elasticsearch'
       $service_hasrestart = true
       $service_hasstatus  = true
@@ -148,6 +148,16 @@ class elasticsearch::params {
         $service_providers = 'init'
       }
 
+    }
+    'Amazon': {
+      $service_name       = 'elasticsearch'
+      $service_hasrestart = true
+      $service_hasstatus  = true
+      $service_pattern    = $service_name
+      $defaults_location  = '/etc/sysconfig'
+      $pid_dir            = '/var/run/elasticsearch'
+      $init_template      = 'elasticsearch.RedHat.erb'
+      $service_providers  = 'init'
     }
     'Debian': {
       $service_name       = 'elasticsearch'
