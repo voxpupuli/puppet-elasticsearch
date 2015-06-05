@@ -12,6 +12,14 @@
     {
       "name": "puppetlabs/stdlib",
       "version_requirement": ">= 3.2.0 < 5.0.0"
+    },
+    {
+      "name": "puppetlabs/apt",
+      "version_requirement": ">= 1.4.0 < 2.0.0"
+    },
+    {
+      "name": "ceritsc/yum",
+      "version_requirement": ">= 0.9.6 < 1.0.0"
     }
   ],
   "operatingsystem_support": [
