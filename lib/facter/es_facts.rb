@@ -46,14 +46,20 @@ module EsFacts
             key_prefix = "elasticsearch_#{port}"
 
             uri = URI("http://localhost:#{port}")
-            json_data = JSON.parse(Net::HTTP.get(uri))
+            http = Net::HTTP.new(uri.host, uri.port)
+            http.read_timeout = 10
+            response = http.get("/")
+            json_data = JSON.parse(response.body)
             next if json_data['status'] && json_data['status'] != 200
 
             add_fact(key_prefix, 'name', json_data['name'])
             add_fact(key_prefix, 'version', json_data['version']['number'])
 
             uri2 = URI("http://localhost:#{port}/_nodes/#{json_data['name']}")
-            json_data_node = JSON.parse(Net::HTTP.get(uri2))
+            http2 = Net::HTTP.new(uri2.host, uri2.port)
+            http2.read_timeout = 10
+            response2 = http2.get(uri2.path)
+            json_data_node = JSON.parse(response2.body)
 
             add_fact(key_prefix, 'cluster_name', json_data_node['cluster_name'])
             node_data = json_data_node['nodes'].first
