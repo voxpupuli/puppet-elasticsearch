@@ -14,7 +14,7 @@ LimitNOFILE=<%= @nofile %>
 # See MAX_LOCKED_MEMORY in sysconfig, use "infinity" when MAX_LOCKED_MEMORY=unlimited and using bootstrap.mlockall: true
 <% if @memlock == 'unlimited' %>
 LimitMEMLOCK=infinity
-<% else %>
+<% elsif @memlock %>
 LimitMEMLOCK=<%= @memlock %>
 <% end %>
 # Shutdown delay in seconds, before process is tried to be killed with KILL (if configured)
