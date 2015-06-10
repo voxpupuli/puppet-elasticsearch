@@ -15,14 +15,17 @@ describe 'elasticsearch', :type => 'class' do
         let(:defaults_path) { '/etc/default' }
         let(:pkg_ext) { 'deb' }
         let(:pkg_prov) { 'dpkg' }
+        let(:version_add) { '' }
       when 'RedHat'
         let(:defaults_path) { '/etc/sysconfig' }
         let(:pkg_ext) { 'rpm' }
         let(:pkg_prov) { 'rpm' }
+        let(:version_add) { '-1' }
       when 'Suse'
         let(:defaults_path) { '/etc/sysconfig' }
         let(:pkg_ext) { 'rpm' }
         let(:pkg_prov) { 'rpm' }
+        let(:version_add) { '-1' }
       end
 
       let(:facts) do
@@ -80,7 +83,20 @@ describe 'elasticsearch', :type => 'class' do
               })
             }
 
-            it { should contain_package('elasticsearch').with(:ensure => '1.0') }
+            it { should contain_package('elasticsearch').with(:ensure => "1.0#{version_add}") }
+          end
+
+          if facts[:osfamily] == 'RedHat'
+            context 'Handle special CentOS/RHEL package versioning' do
+
+              let (:params) {
+                default_params.merge({
+                  :version => '1.1-2'
+                })
+              }
+
+              it { should contain_package('elasticsearch').with(:ensure => "1.1-2") }
+            end
           end
 
           context 'with specified package name' do
