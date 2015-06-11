@@ -225,9 +225,11 @@ When a repository is not available or preferred you can install the packages fro
 #####http/https/ftp
 ```puppet
 class { 'elasticsearch':
-  package_url => 'https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-1.4.2.deb'
+  package_url       => 'https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-1.4.2.deb',
+  package_dl_proxy  => 'http://proxy.example.com:8080/',
 }
 ```
+package_dl_proxy defaults to '' (proxy disabled)
 
 #####puppet://
 ```puppet

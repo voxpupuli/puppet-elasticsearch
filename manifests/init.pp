@@ -91,6 +91,11 @@
 #   For http,https and ftp downloads you can set howlong the exec resource may take.
 #   Defaults to: 600 seconds
 #
+# [*package_dl_proxy*]
+#   For http and https downloads you can set a proxy server to use
+#   Format: proto://[user:pass@]server[:port]/ 
+#   Defaults to: '' (proxy disabled)
+#
 # [*elasticsearch_user*]
 #   The user Elasticsearch should run as. This also sets the file rights.
 #
