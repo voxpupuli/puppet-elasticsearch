@@ -46,7 +46,7 @@ This module has been tested against ES 1.0 and up.
 #### Repository management
 When using the repository management you will need the following dependency modules:
 
-* Debian/Ubuntu: [Puppetlabs/apt](http://forge.puppetlabs.com/puppetlabs/apt) Version 1.8.x or lower.
+* Debian/Ubuntu: [Puppetlabs/apt](http://forge.puppetlabs.com/puppetlabs/apt)
 * OpenSuSE: [Darin/zypprepo](https://forge.puppetlabs.com/darin/zypprepo)
 
 ##Usage
