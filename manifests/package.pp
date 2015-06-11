@@ -38,21 +38,21 @@ class elasticsearch::package {
   if $elasticsearch::ensure == 'present' {
 
     # Create directory to place the package file
+    $package_dir = $elasticsearch::package_dir
     exec { 'create_package_dir_elasticsearch':
       cwd     => '/',
       path    => ['/usr/bin', '/bin'],
-      command => "mkdir -p ${elasticsearch::package_dir}",
-      creates => $elasticsearch::package_dir,
+      command => "mkdir -p ${package_dir}",
+      creates => $package_dir,
     }
 
-    file { $elasticsearch::package_dir:
+    file { $package_dir:
       ensure  => 'directory',
       purge   => $elasticsearch::purge_package_dir,
       force   => $elasticsearch::purge_package_dir,
       backup  => false,
       require => Exec['create_package_dir_elasticsearch'],
     }
-
 
     # Check if we want to install a specific version or not
     if $elasticsearch::version == false {
@@ -77,7 +77,6 @@ class elasticsearch::package {
         default:   { fail("software provider \"${elasticsearch::package_provider}\".") }
       }
 
-      $package_dir = $elasticsearch::package_dir
 
       $filenameArray = split($elasticsearch::package_url, '/')
       $basefilename = $filenameArray[-1]

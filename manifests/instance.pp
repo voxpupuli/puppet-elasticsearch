@@ -64,6 +64,9 @@
 # [*init_defaults_file*]
 #   Defaults file as puppet resource
 #
+# [*service_flags*]
+#   Service flags used for the OpenBSD service configuration, defaults to undef.
+#
 # === Authors
 #
 # * Richard Pijnenburg <mailto:richard.pijnenburg@elasticsearch.com>
@@ -78,6 +81,7 @@ define elasticsearch::instance(
   $logging_config     = undef,
   $logging_template   = undef,
   $logging_level      = $elasticsearch::default_logging_level,
+  $service_flags      = undef,
   $init_defaults      = undef,
   $init_defaults_file = undef,
   $init_template      = $elasticsearch::init_template
@@ -307,6 +311,7 @@ define elasticsearch::instance(
   elasticsearch::service { $name:
     ensure             => $ensure,
     status             => $status,
+    service_flags      => $service_flags,
     init_defaults      => $init_defaults_new,
     init_defaults_file => $init_defaults_file,
     init_template      => $init_template,
