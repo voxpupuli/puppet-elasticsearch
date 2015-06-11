@@ -47,16 +47,16 @@ describe 'elasticsearch', :type => 'class' do
       case facts[:osfamily]
       when 'Debian'
         context 'has apt repo parts' do
-          it { should contain_apt__source('elasticsearch').with(:location => 'http://packages.elasticsearch.org/elasticsearch/1.3/debian') }
+          it { should contain_apt__source('elasticsearch').with(:location => 'http://packages.elastic.co/elasticsearch/1.3/debian') }
         end
       when 'RedHat'
         context 'has yum repo parts' do
-          it { should contain_yumrepo('elasticsearch').with(:baseurl => 'http://packages.elasticsearch.org/elasticsearch/1.3/centos') }
+          it { should contain_yumrepo('elasticsearch').with(:baseurl => 'http://packages.elastic.co/elasticsearch/1.3/centos') }
         end
       when 'Suse'
         context 'has zypper repo parts' do
-          it { should contain_exec('elasticsearch_suse_import_gpg').with(:command => 'rpmkeys --import http://packages.elasticsearch.org/GPG-KEY-elasticsearch') }
-          it { should contain_zypprepo('elasticsearch').with(:baseurl => 'http://packages.elasticsearch.org/elasticsearch/1.3/centos') }
+          it { should contain_exec('elasticsearch_suse_import_gpg').with(:command => 'rpmkeys --import http://packages.elastic.co/GPG-KEY-elasticsearch') }
+          it { should contain_zypprepo('elasticsearch').with(:baseurl => 'http://packages.elastic.co/elasticsearch/1.3/centos') }
         end
       end
 
