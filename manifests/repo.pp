@@ -37,37 +37,37 @@ class elasticsearch::repo {
       }
 
       apt::source { 'elasticsearch':
-        location    => "http://packages.elasticsearch.org/elasticsearch/${elasticsearch::repo_version}/debian",
+        location    => "http://packages.elastic.co/elasticsearch/${elasticsearch::repo_version}/debian",
         release     => 'stable',
         repos       => 'main',
         key         => 'D88E42B4',
-        key_source  => 'http://packages.elasticsearch.org/GPG-KEY-elasticsearch',
+        key_source  => 'http://packages.elastic.co/GPG-KEY-elasticsearch',
         include_src => false,
       }
     }
     'RedHat', 'Linux': {
       yumrepo { 'elasticsearch':
         descr    => 'elasticsearch repo',
-        baseurl  => "http://packages.elasticsearch.org/elasticsearch/${elasticsearch::repo_version}/centos",
+        baseurl  => "http://packages.elastic.co/elasticsearch/${elasticsearch::repo_version}/centos",
         gpgcheck => 1,
-        gpgkey   => 'http://packages.elasticsearch.org/GPG-KEY-elasticsearch',
+        gpgkey   => 'http://packages.elastic.co/GPG-KEY-elasticsearch',
         enabled  => 1,
       }
     }
     'Suse': {
       exec { 'elasticsearch_suse_import_gpg':
-        command => 'rpmkeys --import http://packages.elasticsearch.org/GPG-KEY-elasticsearch',
+        command => 'rpmkeys --import http://packages.elastic.co/GPG-KEY-elasticsearch',
         unless  => 'test $(rpm -qa gpg-pubkey | grep -i "D88E42B4" | wc -l) -eq 1 ',
         notify  => [ Zypprepo['elasticsearch'] ],
       }
 
       zypprepo { 'elasticsearch':
-        baseurl     => "http://packages.elasticsearch.org/elasticsearch/${elasticsearch::repo_version}/centos",
+        baseurl     => "http://packages.elastic.co/elasticsearch/${elasticsearch::repo_version}/centos",
         enabled     => 1,
         autorefresh => 1,
         name        => 'elasticsearch',
         gpgcheck    => 1,
-        gpgkey      => 'http://packages.elasticsearch.org/GPG-KEY-elasticsearch',
+        gpgkey      => 'http://packages.elastic.co/GPG-KEY-elasticsearch',
         type        => 'yum',
       }
     }
