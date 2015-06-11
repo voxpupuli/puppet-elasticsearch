@@ -54,21 +54,6 @@ class elasticsearch::package {
     # action
     if ($elasticsearch::package_url != undef) {
 
-      # choose download tool
-    
-      case $::kernel {
-        'Linux': {
-          $download_tool = "wget --no-check-certificate -O"
-        }
-        'Darwin': {
-          $download_tool = 'curl --insecure -o'
-        }
-        default: {
-          fail("\"${module_name}\" provides no download tool default value
-               for \"${::kernel}\"")
-        }
-      }
-
       case $elasticsearch::package_provider {
         'package': { $before = Package[$elasticsearch::package_name]  }
         default:   { fail("software provider \"${elasticsearch::package_provider}\".") }
@@ -119,7 +104,7 @@ class elasticsearch::package {
         ftp, https, http: {
 
           exec { 'download_package_elasticsearch':
-            command => "${download_tool} ${pkg_source} ${elasticsearch::package_url} 2> /dev/null",
+            command => "${elasticsearch::params::download_tool} ${pkg_source} ${elasticsearch::package_url} 2> /dev/null",
             creates => $pkg_source,
             timeout => $elasticsearch::package_dl_timeout,
             require => File[$package_dir],

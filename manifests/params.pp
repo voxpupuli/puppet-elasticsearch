@@ -78,6 +78,21 @@ class elasticsearch::params {
     }
   }
 
+  # Download tool
+
+  case $::kernel {
+    'Linux': {
+      $download_tool = 'wget --no-check-certificate -O'
+    }
+    'Darwin': {
+      $download_tool = 'curl --insecure -o'
+    }
+    default: {
+      fail("\"${module_name}\" provides no download tool default value
+           for \"${::kernel}\"")
+    }
+  }
+
   # Different path definitions
   case $::kernel {
     'Linux': {
