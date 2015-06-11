@@ -199,6 +199,7 @@ class elasticsearch(
   $package_name          = $elasticsearch::params::package,
   $purge_package_dir     = $elasticsearch::params::purge_package_dir,
   $package_dl_timeout    = $elasticsearch::params::package_dl_timeout,
+  $package_dl_proxy      = $elasticsearch::params::package_dl_proxy,
   $elasticsearch_user    = $elasticsearch::params::elasticsearch_user,
   $elasticsearch_group   = $elasticsearch::params::elasticsearch_group,
   $configdir             = $elasticsearch::params::configdir,
