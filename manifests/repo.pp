@@ -98,7 +98,7 @@ class elasticsearch::repo {
         }
       }
       default: {
-        fail("Unable to pin package for OSfamily \"${::osfamily}\"")
+        warning("Unable to pin package for OSfamily \"${::osfamily}\".")
       }
     }
   }
