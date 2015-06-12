@@ -52,7 +52,7 @@ class elasticsearch::params {
   $package_dl_timeout = 600 # 300 seconds is default of puppet
 
   # download proxy
-  $package_dl_proxy = ''
+  $proxy_url = ''
 
   $default_logging_level = 'INFO'
 

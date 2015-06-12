@@ -91,7 +91,7 @@
 #   For http,https and ftp downloads you can set howlong the exec resource may take.
 #   Defaults to: 600 seconds
 #
-# [*package_dl_proxy*]
+# [*proxy_url*]
 #   For http and https downloads you can set a proxy server to use
 #   Format: proto://[user:pass@]server[:port]/ 
 #   Defaults to: '' (proxy disabled)
@@ -204,7 +204,7 @@ class elasticsearch(
   $package_name          = $elasticsearch::params::package,
   $purge_package_dir     = $elasticsearch::params::purge_package_dir,
   $package_dl_timeout    = $elasticsearch::params::package_dl_timeout,
-  $package_dl_proxy      = $elasticsearch::params::package_dl_proxy,
+  $proxy_url             = $elasticsearch::params::proxy_url,
   $elasticsearch_user    = $elasticsearch::params::elasticsearch_user,
   $elasticsearch_group   = $elasticsearch::params::elasticsearch_group,
   $configdir             = $elasticsearch::params::configdir,

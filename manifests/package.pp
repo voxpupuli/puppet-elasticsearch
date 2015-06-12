@@ -103,11 +103,11 @@ class elasticsearch::package {
         }
         ftp, https, http: {
 
-          if $elasticsearch::package_dl_proxy != '' {
+          if $elasticsearch::proxy_url != '' {
             $exec_environment = [
               "use_proxy=yes",
-              "http_proxy=$elasticsearch::package_dl_proxy",
-              "https_proxy=$elasticsearch::package_dl_proxy",
+              "http_proxy=$elasticsearch::proxy_url",
+              "https_proxy=$elasticsearch::proxy_url",
             ]
           } 
 
