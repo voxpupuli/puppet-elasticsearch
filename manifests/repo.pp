@@ -87,13 +87,13 @@ class elasticsearch::repo {
         apt::pin { $elasticsearch::package_name:
           ensure   => 'present',
           packages => $elasticsearch::package_name,
-          version  => $elasticsearch::version,
+          version  => $elasticsearch::real_version,
           priority => 1000,
         }
       }
       'RedHat', 'Linux': {
 
-        yum::versionlock { "0:elasticsearch-${elasticsearch::version}.noarch":
+        yum::versionlock { "0:elasticsearch-${elasticsearch::real_version}.noarch":
           ensure => 'present',
         }
       }

@@ -15,9 +15,9 @@
       test_settings['defaults_file_b'] = '/etc/sysconfig/elasticsearch-es-02'
       test_settings['port_a']          = '9200'
       test_settings['port_b']          = '9201'
-      test_settings['install_package_version'] = '1.3.5-1'
+      test_settings['install_package_version'] = '1.3.5'
       test_settings['install_version'] = '1.3.5'
-      test_settings['upgrade_package_version'] = '1.3.6-1'
+      test_settings['upgrade_package_version'] = '1.3.6'
       test_settings['upgrade_version'] = '1.3.6'
     when 'Debian'
       case fact('operatingsystem')

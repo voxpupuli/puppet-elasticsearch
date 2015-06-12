@@ -292,6 +292,21 @@ class elasticsearch(
     }
   }
 
+  if ($version != false) {
+    case $::osfamily {
+      'RedHat', 'Linux', 'Suse': {
+        if ($version =~ /.+-\d/) {
+          $real_version = $version
+        } else {
+          $real_version = "${version}-1"
+        }
+      }
+      default: {
+        $real_version = $version
+      }
+    }
+  }
+
   #### Manage actions
 
   # package(s)
