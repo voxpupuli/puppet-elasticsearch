@@ -16,11 +16,21 @@ describe 'elasticsearch', :type => 'class' do
         let(:pkg_ext) { 'deb' }
         let(:pkg_prov) { 'dpkg' }
         let(:version_add) { '' }
+        if facts[:lsbmajdistrelease] >= '8'
+          test_pid = true
+        else
+          test_pid = false
+        end
       when 'RedHat'
         let(:defaults_path) { '/etc/sysconfig' }
         let(:pkg_ext) { 'rpm' }
         let(:pkg_prov) { 'rpm' }
         let(:version_add) { '-1' }
+        if facts[:operatingsystemmajrelease] >= '7'
+          test_pid = true
+        else
+          test_pid = false
+        end
       when 'Suse'
         let(:defaults_path) { '/etc/sysconfig' }
         let(:pkg_ext) { 'rpm' }
@@ -55,6 +65,11 @@ describe 'elasticsearch', :type => 'class' do
         it { should contain_file('/usr/share/elasticsearch/lib') }
         it { should contain_file('/usr/share/elasticsearch/plugins') }
         it { should contain_file('/usr/share/elasticsearch/bin').with(:mode => '0755') }
+
+        # Base files
+        if test_pid == true
+          it { should contain_file('/usr/lib/tmpfiles.d/elasticsearch.conf') }
+        end
 
 	# file removal from package
 	it { should contain_file('/etc/init.d/elasticsearch').with(:ensure => 'absent') }
