@@ -5,7 +5,8 @@ describe 'elasticsearch', :type => 'class' do
   default_params = {
     :config => {},
     :manage_repo => true,
-    :repo_version => '1.3'
+    :repo_version => '1.3',
+    :version => '1.6.0'
   }
 
   on_supported_os.each do |os, facts|
@@ -60,6 +61,30 @@ describe 'elasticsearch', :type => 'class' do
         end
       end
 
+      context "Package pinning" do
+
+        let :params do
+          default_params.merge({
+            :package_pin => true
+          })
+        end
+
+        case facts[:osfamily]
+        when 'Debian'
+          context 'is supported' do
+            it { should contain_apt__pin('elasticsearch').with(:packages => 'elasticsearch', :version => '1.6.0') }
+          end
+        when 'RedHat'
+          context 'is supported' do
+            it { should contain_yum__versionlock('0:elasticsearch-1.6.0-1.noarch') }
+          end
+        else
+          context 'is not supported' do
+            pending("unable to test for warnings yet. https://github.com/rodjek/rspec-puppet/issues/108")
+          end
+        end
+
+      end
     
     end
   end
