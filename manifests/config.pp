@@ -85,6 +85,19 @@ class elasticsearch::config {
         group   => undef,
         recurse => true,
       }
+
+      if ($elasticsearch::service_providers == 'systemd') {
+        $user = $elasticsearch::elasticsearch_user
+        $group = $elasticsearch::elasticsearch_group
+        $pid_dir = $elasticsearch::params::pid_dir
+
+        file { '/usr/lib/tmpfiles.d/elasticsearch.conf':
+          ensure  => 'file',
+          content => template("${module_name}/usr/lib/tmpfiles.d/elasticsearch.conf.erb"),
+          owner   => 'root',
+          group   => 'root',
+        }
+      }
     }
 
     exec { 'mkdir_templates_elasticsearch':
