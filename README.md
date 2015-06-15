@@ -226,10 +226,12 @@ When a repository is not available or preferred you can install the packages fro
 ```puppet
 class { 'elasticsearch':
   package_url       => 'https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-1.4.2.deb',
-  package_dl_proxy  => 'http://proxy.example.com:8080/',
+  proxy_url         => 'http://proxy.example.com:8080/',
 }
 ```
-package_dl_proxy defaults to '' (proxy disabled)
+Setting proxy_url to a location will enable download using the provided proxy
+server. This parameter is also used by elasticsearch::plugin. Setting the port
+in the proxy_url is mandatory. proxy_url defaults to '' (proxy disabled). 
 
 #####puppet://
 ```puppet
