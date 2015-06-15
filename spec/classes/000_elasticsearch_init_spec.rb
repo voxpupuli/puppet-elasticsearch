@@ -144,6 +144,17 @@ describe 'elasticsearch', :type => 'class' do
             it { should contain_exec('download_package_elasticsearch').with(:command => "wget --no-check-certificate -O /opt/elasticsearch/swdl/package.#{pkg_ext} http://www.domain.com/path/to/package.#{pkg_ext} 2> /dev/null", :require => 'File[/opt/elasticsearch/swdl]') }
             it { should contain_package('elasticsearch').with(:ensure => 'present', :source => "/opt/elasticsearch/swdl/package.#{pkg_ext}", :provider => "#{pkg_prov}") }
           end
+          
+          context 'using http:// schema with proxy_url' do
+
+            let (:params) {
+              default_params.merge({
+                :package_url  => "http://www.domain.com/path/to/package.#{pkg_ext}",
+                :proxy_url    => "http://proxy.example.com:12345/",
+              })
+            }
+            it { should contain_exec('download_package_elasticsearch').with(:environment => ["use_proxy=yes","http_proxy=http://proxy.example.com:12345/","https_proxy=http://proxy.example.com:12345/",]) }
+          end
 
           context 'using https:// schema' do
 
