@@ -66,8 +66,8 @@ describe 'elasticsearch::plugin', :type => 'define' do
       :instances  => 'es-01',
     } end
     
-    it { should contain_elasticsearch__plugin('mobz/elasticsearch-head') }
-    it { should contain_exec('install_plugin_mobz/elasticsearch-head').with(:command => '/usr/share/elasticsearch/bin/plugin -DproxyPort=8080 -DproxyHost=localhost -install mobz/elasticsearch-head', :creates => '/usr/share/elasticsearch/plugins/head', :notify => 'Elasticsearch::Service[es-01]') }
+    it { should contain_elasticsearch__plugin('mobz/elasticsearch-head/1.0.0') }
+    it { should contain_exec('install_plugin_mobz/elasticsearch-head/1.0.0').with(:command => '/usr/share/elasticsearch/bin/plugin -DproxyPort=8080 -DproxyHost=localhost -install mobz/elasticsearch-head/1.0.0', :creates => '/usr/share/elasticsearch/plugins/head', :notify => 'Elasticsearch::Service[es-01]') }
     
   end
   
