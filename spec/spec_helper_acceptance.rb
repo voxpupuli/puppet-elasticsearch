@@ -1,6 +1,7 @@
 require 'beaker-rspec'
 require 'pry'
 require 'securerandom'
+require_relative 'spec_acceptance_integration'
 
 def test_settings
   RSpec.configuration.test_settings
@@ -42,23 +43,41 @@ hosts.each do |host|
 
   end
 
-  case fact('osfamily')
-    when 'RedHat'
-      scp_to(host, "#{files_dir}/elasticsearch-1.3.1.noarch.rpm", '/tmp/elasticsearch-1.3.1.noarch.rpm')
-    when 'Debian'
-      case fact('lsbmajdistrelease')
-        when '6'
-          scp_to(host, "#{files_dir}/elasticsearch-1.1.0.deb", '/tmp/elasticsearch-1.1.0.deb')
-        else
-          scp_to(host, "#{files_dir}/elasticsearch-1.3.1.deb", '/tmp/elasticsearch-1.3.1.deb')
-      end
-    when 'Suse'
-      case fact('operatingsystem')
-        when 'OpenSuSE'
-          scp_to(host, "#{files_dir}/elasticsearch-1.1.0.noarch.rpm", '/tmp/elasticsearch-1.1.0.noarch.rpm')
-        else
-          scp_to(host, "#{files_dir}/elasticsearch-1.3.1.noarch.rpm", '/tmp/elasticsearch-1.3.1.noarch.rpm')
-      end
+  if ENV['ES_VERSION']
+
+    case fact('osfamily')
+      when 'RedHat'
+        ext='noarch.rpm'
+      when 'Debian'
+        ext='deb'
+      when  'Suse'
+        ext='noarch.rpm'
+    end
+
+    url = get_url
+    RSpec.configuration.test_settings['snapshot_package'] = url.gsub('$EXT$', ext)
+
+  else
+
+    case fact('osfamily')
+      when 'RedHat'
+        scp_to(host, "#{files_dir}/elasticsearch-1.3.1.noarch.rpm", '/tmp/elasticsearch-1.3.1.noarch.rpm')
+      when 'Debian'
+        case fact('lsbmajdistrelease')
+          when '6'
+            scp_to(host, "#{files_dir}/elasticsearch-1.1.0.deb", '/tmp/elasticsearch-1.1.0.deb')
+          else
+            scp_to(host, "#{files_dir}/elasticsearch-1.3.1.deb", '/tmp/elasticsearch-1.3.1.deb')
+        end
+      when 'Suse'
+        case fact('operatingsystem')
+          when 'OpenSuSE'
+            scp_to(host, "#{files_dir}/elasticsearch-1.1.0.noarch.rpm", '/tmp/elasticsearch-1.1.0.noarch.rpm')
+          else
+            scp_to(host, "#{files_dir}/elasticsearch-1.3.1.noarch.rpm", '/tmp/elasticsearch-1.3.1.noarch.rpm')
+        end
+    end
+
   end
 
   # on debian/ubuntu nodes ensure we get the latest info
