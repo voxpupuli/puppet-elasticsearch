@@ -1,9 +1,10 @@
 fixtures:
   repositories:
-    stdlib:
-      repo: "git://github.com/puppetlabs/puppetlabs-stdlib"
-      ref: "3.2.0"
-    apt: git://github.com/puppetlabs/puppetlabs-apt.git
+    stdlib: https://github.com/puppetlabs/puppetlabs-stdlib.git
+    apt:
+      repo: 'https://github.com/puppetlabs/puppetlabs-apt.git'
+      branch: '1.8.x'
     zypprepo: https://github.com/deadpoint/puppet-zypprepo.git
+    yum: https://github.com/CERIT-SC/puppet-yum.git
   symlinks:
     elasticsearch: "#{source_dir}"

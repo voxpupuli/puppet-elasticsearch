@@ -85,16 +85,15 @@ RSpec.configure do |c|
       copy_hiera_data_to(host, 'spec/fixtures/hiera/hieradata/')
       on host, puppet('module','install','puppetlabs-java'), { :acceptable_exit_codes => [0,1] }
 
-      if ( host.is_pe? && host['pe_ver'] >= '3.7.0' ) || ! host.is_pe?
-        scp_to(host, "#{files_dir}/puppetlabs-stdlib-3.2.0.tar.gz", '/tmp/puppetlabs-stdlib-3.2.0.tar.gz')
-        on host, puppet('module','install','/tmp/puppetlabs-stdlib-3.2.0.tar.gz'), { :acceptable_exit_codes => [0,1] }
-      end
       if fact('osfamily') == 'Debian'
-        scp_to(host, "#{files_dir}/puppetlabs-apt-1.4.2.tar.gz", '/tmp/puppetlabs-apt-1.4.2.tar.gz')
-        on host, puppet('module','install','/tmp/puppetlabs-apt-1.4.2.tar.gz'), { :acceptable_exit_codes => [0,1] }
+        on host, puppet('module','install','puppetlabs-apt', '--version=1.8.0'), { :acceptable_exit_codes => [0,1] }
       end
       if fact('osfamily') == 'Suse'
         on host, puppet('module','install','darin-zypprepo'), { :acceptable_exit_codes => [0,1] }
+      end
+      if fact('osfamily') == 'RedHat'
+        on host, puppet('module', 'upgrade', 'puppetlabs-stdlib'), {  :acceptable_exit_codes => [0,1] }
+        on host, puppet('module', 'install', 'ceritsc-yum'), { :acceptable_exit_codes => [0,1] }
       end
 
     end

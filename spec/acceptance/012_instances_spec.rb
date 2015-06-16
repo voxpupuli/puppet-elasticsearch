@@ -44,6 +44,13 @@ describe "elasticsearch class:" do
       it { should be_directory }
     end
 
+    describe file('/etc/elasticsearch/scripts') do
+      it { should be_directory }
+    end
+
+    describe file('/etc/elasticsearch/es-01/scripts') do
+      it { should be_symlink }
+    end
 
   end
 
@@ -106,6 +113,18 @@ describe "elasticsearch class:" do
     describe file('/etc/elasticsearch/es-02/elasticsearch.yml') do
       it { should be_file }
       it { should contain 'name: elasticsearch002' }
+    end
+
+    describe file('/etc/elasticsearch/scripts') do
+      it { should be_directory }
+    end
+
+    describe file('/etc/elasticsearch/es-01/scripts') do
+      it { should be_symlink }
+    end
+
+    describe file('/etc/elasticsearch/es-02/scripts') do
+      it { should be_symlink }
     end
 
   end

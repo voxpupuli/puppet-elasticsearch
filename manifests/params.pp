@@ -60,7 +60,7 @@ class elasticsearch::params {
     'action'                 => 'DEBUG',
     'com.amazonaws'          => 'WARN',
     'index.search.slowlog'   => 'TRACE, index_search_slow_log_file',
-    'index.indexing.slowlog' => 'TRACE, index_indexing_slow_log_file'
+    'index.indexing.slowlog' => 'TRACE, index_indexing_slow_log_file',
   }
 
   #### Internal module values
@@ -135,34 +135,65 @@ class elasticsearch::params {
 
   # service parameters
   case $::operatingsystem {
-    'RedHat', 'CentOS', 'Fedora', 'Scientific', 'Amazon', 'OracleLinux', 'SLC': {
-
-      case $::operatingsystemmajrelease {
-        '7': {
-          $init_template     = 'elasticsearch.systemd.erb'
-          $service_providers = 'systemd'
-        }
-        default: {
-          $init_template     = 'elasticsearch.RedHat.erb'
-          $service_providers = [ 'init' ]
-        }
-      }
-
-      $service_name       = 'elasticsearch'
-      $service_hasrestart = true
-      $service_pattern    = $service_name
-      $defaults_location  = '/etc/sysconfig'
-      $pid_dir            = '/var/run/elasticsearch'
-    }
-    'Debian', 'Ubuntu': {
+    'RedHat', 'CentOS', 'Fedora', 'Scientific', 'OracleLinux', 'SLC': {
       $service_name       = 'elasticsearch'
       $service_hasrestart = true
       $service_hasstatus  = true
       $service_pattern    = $service_name
+      $defaults_location  = '/etc/sysconfig'
+      $pid_dir            = '/var/run/elasticsearch'
+
+      if versioncmp($::operatingsystemmajrelease, '7') >= 0 {
+        $init_template     = 'elasticsearch.systemd.erb'
+        $service_providers = 'systemd'
+      } else {
+        $init_template     = 'elasticsearch.RedHat.erb'
+        $service_providers = 'init'
+      }
+
+    }
+    'Amazon': {
+      $service_name       = 'elasticsearch'
+      $service_hasrestart = true
+      $service_hasstatus  = true
+      $service_pattern    = $service_name
+      $defaults_location  = '/etc/sysconfig'
+      $pid_dir            = '/var/run/elasticsearch'
+      $init_template      = 'elasticsearch.RedHat.erb'
       $service_providers  = 'init'
+    }
+    'Debian': {
+      $service_name       = 'elasticsearch'
+      $service_hasrestart = true
+      $service_hasstatus  = true
+      $service_pattern    = $service_name
       $defaults_location  = '/etc/default'
-      $init_template      = 'elasticsearch.Debian.erb'
-      $pid_dir            = false
+      if versioncmp($::operatingsystemmajrelease, '8') >= 0 {
+        $init_template     = 'elasticsearch.systemd.erb'
+        $service_providers = 'systemd'
+        $pid_dir           = '/var/run/elasticsearch'
+      } else {
+        $init_template     = 'elasticsearch.Debian.erb'
+        $service_providers = [ 'init' ]
+        $pid_dir           = false
+      }
+    }
+    'Ubuntu': {
+      $service_name       = 'elasticsearch'
+      $service_hasrestart = true
+      $service_hasstatus  = true
+      $service_pattern    = $service_name
+      $defaults_location  = '/etc/default'
+
+      if versioncmp($::operatingsystemmajrelease, '15') >= 0 {
+        $init_template     = 'elasticsearch.systemd.erb'
+        $service_providers = 'systemd'
+        $pid_dir           = '/var/run/elasticsearch'
+      } else {
+        $init_template     = 'elasticsearch.Debian.erb'
+        $service_providers = [ 'init' ]
+        $pid_dir           = false
+      }
     }
     'Darwin': {
       $service_name       = 'FIXME/TODO'
@@ -181,7 +212,7 @@ class elasticsearch::params {
       $service_providers  = 'systemd'
       $defaults_location  = '/etc/sysconfig'
       $init_template      = 'elasticsearch.systemd.erb'
-      $pid_dir            = '/var/run/elasticsearch/'
+      $pid_dir            = '/var/run/elasticsearch'
     }
     default: {
       fail("\"${module_name}\" provides no service parameters

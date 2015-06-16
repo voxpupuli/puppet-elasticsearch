@@ -1,6 +1,6 @@
 #Elasticsearch Puppet module
 
-[![Build Status](https://travis-ci.org/elasticsearch/puppet-elasticsearch.png?branch=master)](https://travis-ci.org/elasticsearch/puppet-elasticsearch)
+[![Build Status](https://travis-ci.org/elastic/puppet-elasticsearch.png?branch=master)](https://travis-ci.org/elastic/puppet-elasticsearch)
 
 ####Table of Contents
 
@@ -46,7 +46,7 @@ This module has been tested against ES 1.0 and up.
 #### Repository management
 When using the repository management you will need the following dependency modules:
 
-* Debian/Ubuntu: [Puppetlabs/apt](http://forge.puppetlabs.com/puppetlabs/apt)
+* Debian/Ubuntu: [Puppetlabs/apt](http://forge.puppetlabs.com/puppetlabs/apt) Version 1.8.x or lower.
 * OpenSuSE: [Darin/zypprepo](https://forge.puppetlabs.com/darin/zypprepo)
 
 ##Usage
@@ -111,7 +111,7 @@ See [Advanced features](#advanced-features) for more information
 
 ###Plug-ins
 
-Install [a variety of plugins](http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/modules-plugins.html#known-plugins):
+Install [a variety of plugins](http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/modules-plugins.html#known-plugins). Note that `module_dir` is where the plugin will install itself to and must match that published by the plugin author; it is not where you would like to install it yourself.
 
 ####From official repository
 ```puppet
@@ -145,6 +145,37 @@ elasticsearch::plugin { 'lmenezes/elasticsearch-kopf',
 * `elasticsearch/plugin/version` for official elasticsearch plugins (download from download.elasticsearch.org)
 * `groupId/artifactId/version`   for community plugins (download from maven central or oss sonatype)
 * `username/repository`          for site plugins (download from github master)
+
+####Upgrading plugins
+When you specify a certain plugin version, you can upgrade that plugin by specifying the new version.
+
+```puppet
+elasticsearch::plugin { 'elasticsearch/elasticsearch-cloud-aws/2.1.1':
+  module_dir => 'cloud-aws',
+}
+```
+
+And to upgrade, you would simply change it to
+
+```puppet
+elasticsearch::plugin { 'elasticsearch/elasticsearch-cloud-aws/2.4.1':
+  module_dir => 'cloud-aws',
+}
+```
+
+Please note that this does not work when you specify 'latest' as a version number.
+
+###Scripts
+
+Install [scripts](http://www.elastic.co/guide/en/elasticsearch/reference/1.x/modules-scripting.html) to be used by Elasticsearch.
+These scripts are shared accross all defined instances on the same host.
+
+```puppet
+elasticsearch::script { 'myscript':
+  ensure => 'present',
+  source => 'puppet:///path/to/my/script.groovy'
+}
+```
 
 ###Templates
 
@@ -200,6 +231,25 @@ elasticsearch::python { 'rawes': }
 ####Ruby
 ```puppet
 elasticsearch::ruby { 'elasticsearch': }
+```
+
+###Connection Validator
+
+This module offers a way to make sure an instance has been started and is up and running before
+doing a next action. This is done via the use of the `es_instance_conn_validator` resource.
+```puppet
+es_instance_conn_validator { 'myinstance' :
+  server => 'es.example.com',
+  port   => '9200',
+}
+```
+
+A common use would be for example :
+
+```puppet
+class { 'kibana4' :
+  require => Es_Instance_Conn_Validator['myinstance'],
+}
 ```
 
 ###Package installation
@@ -297,6 +347,20 @@ class { 'elasticsearch':
 Note: `init_defaults` hash can be passed to the main class and to the instance.
 
 ##Advanced features
+
+###Package version pinning
+
+The module supports pinning the package version to avoid accidental upgrades that are not done by Puppet.
+To enable this feature:
+
+```puppet
+class { 'elasticsearch':
+  package_pin => true,
+  version     => '1.5.2',
+}
+```
+
+In this example we pin the package version to 1.5.2.
 
 
 ###Data directories
@@ -449,8 +513,8 @@ This module has been built on and tested against Puppet 3.2 and higher.
 
 The module has been tested on:
 
-* Debian 6/7
-* CentOS 6
+* Debian 6/7/8
+* CentOS 6/7
 * Ubuntu 12.04, 14.04
 * OpenSuSE 13.x
 

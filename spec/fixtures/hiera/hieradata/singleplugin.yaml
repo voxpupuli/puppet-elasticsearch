@@ -4,7 +4,7 @@ elasticsearch::instances:
     config:
       node.name: 'es-01'
 elasticsearch::plugins:
-  'mobz/elasticsearch-head':
+  'mobz/elasticsearch-head/1.0.0':
     ensure: 'present'
     module_dir: 'head'
     instances:

@@ -1,3 +1,133 @@
+##0.9.6 ( May 28, 2015 )
+
+###Summary
+Bugfix release 0.9.6
+
+####Features
+* Implemented package version pinning to avoid accidental upgrading
+* Added support for Debian 8
+* Added support for upgrading plugins
+* Managing LimitNOFILE and LimitMEMLOCK settings in systemd
+
+####Bugfixes
+
+####Changes
+* Dropped official support for PE 3.1.x and 3.2.x
+
+####Testing changes
+* Several testing changes implemented to increase coverage
+
+####Known bugs
+* Possible package conflicts when using ruby/python defines with main package name
+
+
+##0.9.5( Apr 16, 2015 )
+
+###Summary
+Bugfix release 0.9.5
+
+We reverted the change that implemented the full 40 character for the apt repo key.
+This caused issues with some older versions of the puppetlabs-apt module
+
+####Features
+
+####Bugfixes
+* Revert using the full 40 character for the apt repo key.
+
+####Changes
+
+####Testing changes
+
+####Known bugs
+* Possible package conflicts when using ruby/python defines with main package name
+
+
+##0.9.4( Apr 14, 2015 )
+
+###Summary
+Bugfix release 0.9.4
+
+####Features
+* Add the ability to create and populate scripts
+
+####Bugfixes
+* add support for init_defaults_file to elasticsearch::instance
+* Update apt key to full 40characters
+
+####Changes
+* Fix readme regarding module_dir with plugins
+
+####Testing changes
+* Adding staged removal test
+* Convert git urls to https
+* Add centos7 node config
+
+####Known bugs
+* Possible package conflicts when using ruby/python defines with main package name
+
+
+##0.9.3( Mar 24, 2015 )
+
+###Summary
+Bugfix release 0.9.3
+
+####Features
+
+####Bugfixes
+* Not setting repo_version did not give the correct error
+* Systemd file did not contain User/Group values
+
+####Changes
+* Brand rename from Elasticsearch to Elastic
+
+####Testing changes
+* Moved from multiple Gemfiles to single Gemfile
+
+####Known bugs
+* Possible package conflicts when using ruby/python defines with main package name
+
+##0.9.2( Mar 06, 2015 )
+
+###Summary
+Bugfix release 0.9.2
+
+####Features
+* Introducing es_instance_conn_validator resource to verify instance availability
+
+####Bugfixes
+* Fix missing data path when using the path config setting but not setting the data path
+
+####Changes
+None
+
+####Testing changes
+None
+
+####Known bugs
+* Possible package conflicts when using ruby/python defines with main package name
+
+##0.9.1 ( Feb 23, 2015 )
+
+###Summary
+This is the first bug fix release for 0.9 version.
+A bug was reported with the recursive file management.
+
+####Features
+None
+
+####Bugfixes
+* Fix recursive file management
+* Set undefined variables to work with strict_variables
+
+####Changes
+None
+
+####Testing changes
+None
+
+####Known bugs
+* Possible package conflicts when using ruby/python defines with main package name
+
 ##0.9.0 ( Feb 02, 2015 )
 
 ###Summary

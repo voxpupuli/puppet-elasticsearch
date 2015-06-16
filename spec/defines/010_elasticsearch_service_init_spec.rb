@@ -5,7 +5,10 @@ describe 'elasticsearch::service::init', :type => 'define' do
   let :facts do {
     :operatingsystem => 'CentOS',
     :kernel => 'Linux',
-    :osfamily => 'RedHat'
+    :osfamily => 'RedHat',
+    :operatingsystemmajrelease => '6',
+    :scenario => '',
+    :common => ''
   } end
 
   let(:title) { 'es-01' }

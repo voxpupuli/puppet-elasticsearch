@@ -28,7 +28,7 @@ class elasticsearch::config {
 
   File {
     owner => $elasticsearch::elasticsearch_user,
-    group => $elasticsearch::elasticsearch_group
+    group => $elasticsearch::elasticsearch_group,
   }
 
   Exec {
@@ -45,43 +45,58 @@ class elasticsearch::config {
 
     file { $elasticsearch::configdir:
       ensure => directory,
-      mode   => '0644'
+      mode   => '0644',
     }
 
     file { $elasticsearch::params::logdir:
       ensure  => 'directory',
       group   => undef,
       mode    => '0644',
-      recurse => true
+      recurse => true,
     }
 
     file { $elasticsearch::params::homedir:
       ensure  => 'directory',
-      recurse => true
     }
 
     file { "${elasticsearch::params::homedir}/bin":
       ensure  => 'directory',
       recurse => true,
-      mode    => '0755'
+      mode    => '0755',
     }
 
     file { $elasticsearch::plugindir:
       ensure  => 'directory',
-      recurse => true
+      recurse => true,
     }
 
     file { $elasticsearch::datadir:
       ensure  => 'directory',
-      recurse => false
     }
 
+    file { "${elasticsearch::homedir}/lib":
+      ensure  => 'directory',
+      recurse => true,
+    }
 
     if $elasticsearch::params::pid_dir {
       file { $elasticsearch::params::pid_dir:
         ensure  => 'directory',
         group   => undef,
-        recurse => true
+        recurse => true,
+      }
+
+      if ($elasticsearch::service_providers == 'systemd') {
+        $user = $elasticsearch::elasticsearch_user
+        $group = $elasticsearch::elasticsearch_group
+        $pid_dir = $elasticsearch::params::pid_dir
+
+        file { '/usr/lib/tmpfiles.d/elasticsearch.conf':
+          ensure  => 'file',
+          content => template("${module_name}/usr/lib/tmpfiles.d/elasticsearch.conf.erb"),
+          owner   => 'root',
+          group   => 'root',
+        }
       }
     }
 
@@ -93,26 +108,31 @@ class elasticsearch::config {
     file { "${elasticsearch::configdir}/templates_import":
       ensure  => 'directory',
       mode    => '0644',
-      require => [ Exec['mkdir_templates_elasticsearch'] ]
+      require => [ Exec['mkdir_templates_elasticsearch'] ],
+    }
+
+    file { "${elasticsearch::configdir}/scripts":
+      ensure => 'directory',
+      mode   => '0644',
     }
 
     # Removal of files that are provided with the package which we don't use
     file { '/etc/init.d/elasticsearch':
-      ensure => 'absent'
+      ensure => 'absent',
     }
-    file { '/usr/lib/systemd/system/elasticsearch.service':
-      ensure => 'absent'
+    file { '/lib/systemd/system/elasticsearch.service':
+      ensure => 'absent',
     }
 
     file { "${elasticsearch::params::defaults_location}/elasticsearch":
-      ensure => 'absent'
+      ensure => 'absent',
     }
 
     file { '/etc/elasticsearch/elasticsearch.yml':
-      ensure => 'absent'
+      ensure => 'absent',
     }
     file { '/etc/elasticsearch/logging.yml':
-      ensure => 'absent'
+      ensure => 'absent',
     }
 
   } elsif ( $elasticsearch::ensure == 'absent' ) {
