@@ -94,7 +94,7 @@
 # [*proxy_url*]
 #   For http and https downloads you can set a proxy server to use
 #   Format: proto://[user:pass@]server[:port]/ 
-#   Defaults to: '' (proxy disabled)
+#   Defaults to: undef (proxy disabled)
 #
 # [*elasticsearch_user*]
 #   The user Elasticsearch should run as. This also sets the file rights.
@@ -211,7 +211,7 @@ class elasticsearch(
   $package_pin           = true,
   $purge_package_dir     = $elasticsearch::params::purge_package_dir,
   $package_dl_timeout    = $elasticsearch::params::package_dl_timeout,
-  $proxy_url             = $elasticsearch::params::proxy_url,
+  $proxy_url             = undef,
   $elasticsearch_user    = $elasticsearch::params::elasticsearch_user,
   $elasticsearch_group   = $elasticsearch::params::elasticsearch_group,
   $configdir             = $elasticsearch::params::configdir,

@@ -103,13 +103,13 @@ class elasticsearch::package {
         }
         'ftp', 'https', 'http': {
 
-          if $elasticsearch::proxy_url != '' {
+          if $elasticsearch::proxy_url != undef {
             $exec_environment = [
-              "use_proxy=yes",
-              "http_proxy=$elasticsearch::proxy_url",
-              "https_proxy=$elasticsearch::proxy_url",
+              'use_proxy=yes',
+              "http_proxy=${elasticsearch::proxy_url}",
+              "https_proxy=${elasticsearch::proxy_url}",
             ]
-          } 
+          }
 
           exec { 'download_package_elasticsearch':
             command     => "${elasticsearch::params::download_tool} ${pkg_source} ${elasticsearch::package_url} 2> /dev/null",

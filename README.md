@@ -281,7 +281,7 @@ class { 'elasticsearch':
 ```
 Setting proxy_url to a location will enable download using the provided proxy
 server. This parameter is also used by elasticsearch::plugin. Setting the port
-in the proxy_url is mandatory. proxy_url defaults to '' (proxy disabled). 
+in the proxy_url is mandatory. proxy_url defaults to undef (proxy disabled). 
 
 #####puppet://
 ```puppet

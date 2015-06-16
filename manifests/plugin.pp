@@ -101,7 +101,7 @@ define elasticsearch::plugin(
   if ($proxy_host != undef and $proxy_port != undef) {
     $proxy = " -DproxyPort=${proxy_port} -DproxyHost=${proxy_host}"
   }
-  elsif ($elasticsearch::proxy_url != '') {    
+  elsif ($elasticsearch::proxy_url != undef) {
     $proxy_host_from_url = regsubst($elasticsearch::proxy_url, '(http|https)://([^:]+)(|:\d+).+', '\2')
     $proxy_port_from_url = regsubst($elasticsearch::proxy_url, '(http|https)://([^:]+)?(:(\d+)).+', '\4')
     
