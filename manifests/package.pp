@@ -103,12 +103,21 @@ class elasticsearch::package {
         }
         'ftp', 'https', 'http': {
 
+          if $elasticsearch::proxy_url != undef {
+            $exec_environment = [
+              'use_proxy=yes',
+              "http_proxy=${elasticsearch::proxy_url}",
+              "https_proxy=${elasticsearch::proxy_url}",
+            ]
+          }
+
           exec { 'download_package_elasticsearch':
-            command => "${elasticsearch::params::download_tool} ${pkg_source} ${elasticsearch::package_url} 2> /dev/null",
-            creates => $pkg_source,
-            timeout => $elasticsearch::package_dl_timeout,
-            require => File[$package_dir],
-            before  => $before,
+            command     => "${elasticsearch::params::download_tool} ${pkg_source} ${elasticsearch::package_url} 2> /dev/null",
+            creates     => $pkg_source,
+            environment => $exec_environment,
+            timeout     => $elasticsearch::package_dl_timeout,
+            require     => File[$package_dir],
+            before      => $before,
           }
 
         }

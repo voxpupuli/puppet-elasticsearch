@@ -55,5 +55,20 @@ describe 'elasticsearch::plugin', :type => 'define' do
     it { should contain_exec('purge_plugin_head_old').with(:onlyif => "test -e /usr/share/elasticsearch/plugins/head && test \"$(cat /usr/share/elasticsearch/plugins/head/.name)\" != 'mobz/elasticsearch-head/1.0.0'", :command => '/usr/share/elasticsearch/bin/plugin --remove head', :before => 'Exec[install_plugin_mobz/elasticsearch-head/1.0.0]') }
 
   end
-
+  
+  context "Use a proxy from elasticsearch::proxy_url" do
+    
+    let(:pre_condition) { 'class {"elasticsearch": config => { "node" => {"name" => "test" }}, proxy_url => "http://localhost:8080/"}'}
+    
+    let :params do {
+      :ensure     => 'present',
+      :module_dir => 'head',
+      :instances  => 'es-01',
+    } end
+    
+    it { should contain_elasticsearch__plugin('mobz/elasticsearch-head/1.0.0') }
+    it { should contain_exec('install_plugin_mobz/elasticsearch-head/1.0.0').with(:command => '/usr/share/elasticsearch/bin/plugin -DproxyPort=8080 -DproxyHost=localhost -install mobz/elasticsearch-head/1.0.0', :creates => '/usr/share/elasticsearch/plugins/head', :notify => 'Elasticsearch::Service[es-01]') }
+    
+  end
+  
 end
