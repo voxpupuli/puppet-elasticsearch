@@ -65,6 +65,7 @@ describe 'elasticsearch', :type => 'class' do
         it { should contain_file('/usr/share/elasticsearch/lib') }
         it { should contain_file('/usr/share/elasticsearch/plugins') }
         it { should contain_file('/usr/share/elasticsearch/bin').with(:mode => '0755') }
+	it { should contain_augeas("#{defaults_path}/elasticsearch") }
 
         # Base files
         if test_pid == true
@@ -74,7 +75,6 @@ describe 'elasticsearch', :type => 'class' do
 	# file removal from package
 	it { should contain_file('/etc/init.d/elasticsearch').with(:ensure => 'absent') }
 	it { should contain_file('/lib/systemd/system/elasticsearch.service').with(:ensure => 'absent') }
-	it { should contain_file("#{defaults_path}/elasticsearch").with(:ensure => 'absent') }
 	it { should contain_file('/etc/elasticsearch/elasticsearch.yml').with(:ensure => 'absent') }
 	it { should contain_file('/etc/elasticsearch/logging.yml').with(:ensure => 'absent') }
       end
