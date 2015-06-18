@@ -117,6 +117,18 @@ RSpec.configure do |c|
 
     end
   end
+
+  c.after :suite do
+    if ENV['ES_VERSION']
+      hosts.each do |host|
+        timestamp = Time.now
+        log_dir = File.join('./spec/logs', timestamp.strftime("%F_%H_%M_%S"))
+        FileUtils.mkdir_p(log_dir) unless File.directory?(log_dir)
+        scp_from(host, '/var/log/elasticsearch', log_dir)
+      end
+    end
+  end
+
 end
 
 require_relative 'spec_acceptance_common'

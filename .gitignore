@@ -7,5 +7,6 @@ spec/fixtures/modules
 .ruby-version
 pkg/
 spec/reports/
+spec/logs
 log
 *.lock
