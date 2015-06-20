@@ -146,7 +146,7 @@ define elasticsearch::plugin(
       exec {"install_plugin_${name}":
         command => $install_cmd,
         creates => "${elasticsearch::plugindir}/${plugin_dir}",
-        onlyif  => "curl -s -XGET 'http://${::ipaddress}:${es_port}/_cluster/health?pretty=true' | awk -F: '/status/{gsub(\"\\\"\",\"\");gsub(\",\",\"\");gsub(\" \",\"\");print \$2}' | grep -q -w green",
+        onlyif  => "curl -s -XGET 'http://${es_interface}:${es_port}/_cluster/health?pretty=true' | awk -F: '/status/{gsub(\"\\\"\",\"\");gsub(\",\",\"\");gsub(\" \",\"\");print \$2}' | grep -q -w green",
         returns => $exec_rets,
         notify  => $notify_service,
         require => File[$elasticsearch::plugindir],
