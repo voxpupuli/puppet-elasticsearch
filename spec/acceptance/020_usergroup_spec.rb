@@ -5,6 +5,8 @@ describe "elasticsearch class:" do
   describe "Run as a different user" do
 
     it 'should run successfully' do
+
+      write_hiera_config('')
       shell("rm -rf /usr/share/elasticsearch")
       pp = "user { 'esuser': ensure => 'present', groups => ['esgroup', 'esuser'] }
             group { 'esuser': ensure => 'present' }
