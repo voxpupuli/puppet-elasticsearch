@@ -31,11 +31,10 @@ module Puppet::Parser::Functions
           endname = plugin
         end
       else
-        raise(Puppet::ParseError, "Unable to parse plugin name: #{plugin_name}")
+        endname = plugin_name
       end
 
-      return endname
-
+      endname
     end
   end
 end
