@@ -29,6 +29,7 @@ describe "the plugin_dir function" do
     { 'name' => 'elasticsearch/elasticsearch-lang-groovy/2.0.0', 'dir' => 'lang-groovy' },
     { 'name' => 'royrusso/elasticsearch-HQ', 'dir' => 'HQ' },
     { 'name' => 'polyfractal/elasticsearch-inquisitor', 'dir' => 'inquisitor' },
+    { 'name' => 'mycustomplugin', 'dir' => 'mycustomplugin' },
   ]
 
   describe "passing plugin name" do
