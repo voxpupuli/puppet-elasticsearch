@@ -1,3 +1,33 @@
+##0.9.7 ( Jun 24, 2015 )
+
+###Summary
+This releases adds several important features and fixes an important plugin installation issue with ES 1.6 and higher.
+
+####Features
+* Automate plugin dir extraction
+* use init service provider for Amazon Linux
+* Add Puppetlabs/apt and ceritsc/yum as required modules
+* Added Timeout to fetching facts in case ES does not respond
+* Add proxy settings for package download
+
+####Bugfixes
+* Fixed systemd template to fix issue with LimitMEMLOCK setting
+* Improve package version handling when specifying a version
+* Add tmpfiles.d file to manage sub dir in /var/run path
+* Fix plugin installations for ES 1.6 and higher
+
+####Changes
+* Removed Modulefile, only maintaining metadata.json file
+
+####Testing changes
+* Added unit testing for package pinning feature
+* Added integration testing with Elasticsearch to find issues earlier
+* Fix OpenSuse 13 testing
+
+####Known bugs
+* Possible package conflicts when using ruby/python defines with main package name
+
+
 ##0.9.6 ( May 28, 2015 )
 
 ###Summary
