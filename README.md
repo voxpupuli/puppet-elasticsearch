@@ -116,14 +116,12 @@ Install [a variety of plugins](http://www.elasticsearch.org/guide/en/elasticsear
 ####From official repository
 ```puppet
 elasticsearch::plugin{'lmenezes/elasticsearch-kopf':
-  module_dir => 'kopf',
   instances  => 'instance_name'
 }
 ```
 ####From custom url
 ```puppet
-elasticsearch::plugin{ 'elasticsearch-jetty':
-  module_dir => 'jetty',
+elasticsearch::plugin{ 'jetty':
   url        => 'https://oss-es-plugins.s3.amazonaws.com/elasticsearch-jetty/elasticsearch-jetty-1.2.1.zip',
   instances  => 'instance_name'
 }
@@ -134,7 +132,6 @@ elasticsearch::plugin{ 'elasticsearch-jetty':
 You can also use a proxy if required by setting the `proxy_host` and `proxy_port` options:
 ```puppet
 elasticsearch::plugin { 'lmenezes/elasticsearch-kopf',
-  module_dir => 'kopf',
   instances  => 'instance_name',
   proxy_host => 'proxy.host.com',
   proxy_port => 3128
@@ -151,7 +148,6 @@ When you specify a certain plugin version, you can upgrade that plugin by specif
 
 ```puppet
 elasticsearch::plugin { 'elasticsearch/elasticsearch-cloud-aws/2.1.1':
-  module_dir => 'cloud-aws',
 }
 ```
 
@@ -159,7 +155,6 @@ And to upgrade, you would simply change it to
 
 ```puppet
 elasticsearch::plugin { 'elasticsearch/elasticsearch-cloud-aws/2.4.1':
-  module_dir => 'cloud-aws',
 }
 ```
 
@@ -531,4 +526,4 @@ Testing on other platforms has been light and cannot be guaranteed.
 
 ##Support
 
-Need help? Join us in [#elasticsearch](https://webchat.freenode.net?channels=%23elasticsearch) on Freenode IRC or subscribe to the [elasticsearch@googlegroups.com](https://groups.google.com/forum/#!forum/elasticsearch) mailing list.
+Need help? Join us in [#elasticsearch](https://webchat.freenode.net?channels=%23elasticsearch) on Freenode IRC or on the [discussion forum](https://discuss.elastic.co/).
