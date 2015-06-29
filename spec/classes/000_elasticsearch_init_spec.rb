@@ -59,7 +59,7 @@ describe 'elasticsearch', :type => 'class' do
         # Base directories
         it { should contain_file('/etc/elasticsearch') }
         it { should contain_exec('mkdir_templates_elasticsearch').with(:command => 'mkdir -p /etc/elasticsearch/templates_import', :creates => '/etc/elasticsearch/templates_import') }
-        it { should contain_file('/etc/elasticsearch/templates_import').with(:require => 'Exec[mkdir_templates_elasticsearch]') }
+        it { should contain_file('/etc/elasticsearch/templates_import').that_requires('Exec[mkdir_templates_elasticsearch]') }
         it { should contain_file('/etc/elasticsearch/scripts') }
         it { should contain_file('/usr/share/elasticsearch') }
         it { should contain_file('/usr/share/elasticsearch/lib') }

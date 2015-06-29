@@ -72,7 +72,7 @@ describe 'elasticsearch', :type => 'class' do
         case facts[:osfamily]
         when 'Debian'
           context 'is supported' do
-            it { should contain_apt__pin('elasticsearch').with(:packages => 'elasticsearch', :version => '1.6.0') }
+            it { should contain_apt__pin('elasticsearch').with(:packages => ['elasticsearch'], :version => '1.6.0') }
           end
         when 'RedHat'
           context 'is supported' do
