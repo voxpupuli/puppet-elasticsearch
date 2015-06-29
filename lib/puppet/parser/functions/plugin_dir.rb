@@ -17,7 +17,9 @@ module Puppet::Parser::Functions
       plugin_name = arguments[0]
       items = plugin_name.split("/")
 
-      if items.count > 1
+      if items.count == 1
+        endname = items[0]
+      elsif items.count > 1
         plugin = items[1]
         if plugin.include?('-') # example elasticsearch-head
           if plugin.start_with?('elasticsearch-')

@@ -87,12 +87,9 @@ define elasticsearch::plugin(
 
   if ($module_dir != undef) {
       warning("module_dir settings is deprecated for plugin ${name}. The directory is now auto detected.")
-  }
-
-  if ($url == undef) {
-    $plugin_dir = plugin_dir($name)
+      $plugin_dir = $module_dir
   } else {
-    $plugin_dir = $name
+    $plugin_dir = plugin_dir($name)
   }
 
   # set proxy by override or parse and use proxy_url from
