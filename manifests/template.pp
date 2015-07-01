@@ -109,7 +109,7 @@ define elasticsearch::template(
     file { "${elasticsearch::configdir}/templates_import/elasticsearch-template-${name}.json":
       ensure  => 'absent',
       notify  => Exec[ "delete_template_${name}" ],
-      require => Exec[ 'mkdir_templates_elasticsearch' ],
+      require => File[ "${elasticsearch::params::homedir}/templates_import" ],
     }
   }
 
@@ -117,24 +117,24 @@ define elasticsearch::template(
 
     if $content == undef {
       # place the template file using the file source
-      file { "${elasticsearch::configdir}/templates_import/elasticsearch-template-${name}.json":
+      file { "${elasticsearch::params::homedir}/templates_import/elasticsearch-template-${name}.json":
         ensure  => file,
         source  => $file,
         notify  => Exec[ "delete_template_${name}" ],
-        require => Exec[ 'mkdir_templates_elasticsearch' ],
+        require => File[ "${elasticsearch::params::homedir}/templates_import" ],
       }
     } else {
       # place the template file using content
-      file { "${elasticsearch::configdir}/templates_import/elasticsearch-template-${name}.json":
+      file { "${elasticsearch::params::homedir}/templates_import/elasticsearch-template-${name}.json":
         ensure  => file,
         content => $content,
         notify  => Exec[ "delete_template_${name}" ],
-        require => Exec[ 'mkdir_templates_elasticsearch' ],
+        require => File[ "${elasticsearch::params::homedir}/templates_import" ],
       }
     }
 
     exec { "insert_template_${name}":
-      command     => "curl -sL -w \"%{http_code}\\n\" -XPUT ${es_url} -d @${elasticsearch::configdir}/templates_import/elasticsearch-template-${name}.json -o /dev/null | egrep \"(200|201)\" > /dev/null",
+      command     => "curl -sL -w \"%{http_code}\\n\" -XPUT ${es_url} -d @${elasticsearch::params::homedir}/templates_import/elasticsearch-template-${name}.json -o /dev/null | egrep \"(200|201)\" > /dev/null",
       unless      => "test $(curl -s '${es_url}?pretty=true' | wc -l) -gt 1",
       refreshonly => true,
       loglevel    => 'debug',

@@ -22,7 +22,7 @@ describe 'elasticsearch::script', :type => 'define' do
     } end
 
     it { should contain_elasticsearch__script('foo') }
-    it { should contain_file('/etc/elasticsearch/scripts/foo.groovy').with(:source => 'puppet:///path/to/foo.groovy', :ensure => 'present') }
+    it { should contain_file('/usr/share/elasticsearch/scripts/foo.groovy').with(:source => 'puppet:///path/to/foo.groovy', :ensure => 'present') }
   end
 
   context "Delete a script" do
@@ -33,7 +33,7 @@ describe 'elasticsearch::script', :type => 'define' do
     } end
 
     it { should contain_elasticsearch__script('foo') }
-    it { should contain_file('/etc/elasticsearch/scripts/foo.groovy').with(:source => 'puppet:///path/to/foo.groovy', :ensure => 'absent') }
+    it { should contain_file('/usr/share/elasticsearch/scripts/foo.groovy').with(:source => 'puppet:///path/to/foo.groovy', :ensure => 'absent') }
   end
 
 end

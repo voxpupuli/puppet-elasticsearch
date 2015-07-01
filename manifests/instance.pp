@@ -243,7 +243,7 @@ define elasticsearch::instance(
 
     file { "${instance_configdir}/scripts":
       ensure => 'link',
-      target => "${elasticsearch::configdir}/scripts",
+      target => "${elasticsearch::params::homedir}/scripts",
     }
 
     # build up new config

@@ -45,7 +45,7 @@ describe "Integration testing" do
       it { should contain 'name: elasticsearch001' }
     end
 
-    describe file('/etc/elasticsearch/templates_import') do
+    describe file('/usr/share/elasticsearch/templates_import') do
       it { should be_directory }
     end
 

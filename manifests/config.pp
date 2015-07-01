@@ -100,18 +100,12 @@ class elasticsearch::config {
       }
     }
 
-    exec { 'mkdir_templates_elasticsearch':
-      command => "mkdir -p ${elasticsearch::configdir}/templates_import",
-      creates => "${elasticsearch::configdir}/templates_import",
+    file { "${elasticsearch::params::homedir}/templates_import":
+      ensure => 'directory',
+      mode   => '0644',
     }
 
-    file { "${elasticsearch::configdir}/templates_import":
-      ensure  => 'directory',
-      mode    => '0644',
-      require => [ Exec['mkdir_templates_elasticsearch'] ],
-    }
-
-    file { "${elasticsearch::configdir}/scripts":
+    file { "${elasticsearch::params::homedir}/scripts":
       ensure => 'directory',
       mode   => '0644',
     }
