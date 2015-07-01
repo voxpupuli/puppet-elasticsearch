@@ -28,6 +28,7 @@ else
 end
 
 hosts.each do |host|
+
   # Install Puppet
   if host.is_pe?
     install_pe
@@ -39,6 +40,10 @@ hosts.each do |host|
     if fact('osfamily') == 'Suse'
       install_package host, 'rubygems ruby-devel augeas-devel libxml2-devel'
       on host, "#{gem_proxy} gem install ruby-augeas --no-ri --no-rdoc"
+    end
+
+    if host[:type] == 'aio'
+      on host, "mkdir -p /var/log/puppetlabs/puppet"
     end
 
   end
