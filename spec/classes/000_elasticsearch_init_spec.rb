@@ -244,7 +244,7 @@ describe 'elasticsearch', :type => 'class' do
           })
         }
 
-        it { should contain_package('elasticsearch').with(:ensure => 'absent') }
+        it { should contain_package('elasticsearch').with(:ensure => 'purged') }
 
       end
 

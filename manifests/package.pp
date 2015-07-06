@@ -162,7 +162,7 @@ class elasticsearch::package {
     } else {
       $pkg_provider = undef
     }
-    $package_ensure = 'absent'
+    $package_ensure = 'purged'
 
     $package_dir = $elasticsearch::package_dir
 
