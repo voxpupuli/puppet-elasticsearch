@@ -1,3 +1,23 @@
+##0.9.8 ( Jul 07, 2015 )
+
+###Summary
+
+
+####Features
+* Work with ES 2.x
+
+####Bugfixes
+* Fix plugin to maintain backwards compatibility
+
+####Changes
+
+####Testing changes
+* ensure testing works with Puppet 4.x ( Rspec and Acceptance )
+
+####Known bugs
+* Possible package conflicts when using ruby/python defines with main package name
+
+
 ##0.9.7 ( Jun 24, 2015 )
 
 ###Summary
