@@ -40,7 +40,7 @@ describe "Hiera tests" do
       it { should contain 'name: es-01' }
     end
 
-    describe file('/etc/elasticsearch/templates_import') do
+    describe file('/usr/share/elasticsearch/templates_import') do
       it { should be_directory }
     end
 
