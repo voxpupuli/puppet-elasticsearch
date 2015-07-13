@@ -3,7 +3,7 @@ def get_url
 
   urls = { 
     'URL_MASTER' => 'http://s3-eu-west-1.amazonaws.com/build-eu.elasticsearch.org/origin/master/nightly/JDK7/elasticsearch-latest-SNAPSHOT.$EXT$',
-    'URL_1x' => 'http://s3-eu-west-1.amazonaws.com/build-eu.elasticsearch.org/origin/1.x/nightly/JDK7/elasticsearch-latest-SNAPSHOT.$EXT$',
+    'URL_17' => 'http://s3-eu-west-1.amazonaws.com/build.eu-west-1.elastic.co/origin/1.7/nightly/JDK7/elasticsearch-latest-SNAPSHOT.$EXT$',
     'URL_16' => 'http://s3-eu-west-1.amazonaws.com/build.eu-west-1.elastic.co/origin/1.6/nightly/JDK7/elasticsearch-latest-SNAPSHOT.$EXT$',
     'URL_15' => 'http://s3-eu-west-1.amazonaws.com/build.eu-west-1.elastic.co/origin/1.5/nightly/JDK7/elasticsearch-latest-SNAPSHOT.$EXT$',
     'URL_14' => 'http://s3-eu-west-1.amazonaws.com/build-eu.elasticsearch.org/origin/1.4/nightly/JDK7/elasticsearch-latest-SNAPSHOT.$EXT$',
