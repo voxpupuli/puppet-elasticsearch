@@ -7,7 +7,7 @@ describe "Integration testing" do
   shell("echo '#{test_settings['bad_json']}' >> #{default['distmoduledir']}/another/files/bad.json")
 
 
-  describe "Setup Elasticsearch" do
+  describe "Setup Elasticsearch", :main => true do
 
     it 'should run successfully' do
       pp = "class { 'elasticsearch': config => { 'cluster.name' => '#{test_settings['cluster_name']}'}, java_install => true, package_url => '#{test_settings['snapshot_package']}' }
@@ -51,7 +51,7 @@ describe "Integration testing" do
 
   end
 
-  describe "Template tests" do
+  describe "Template tests", :template => true do
 
     describe "Insert a template with valid json content" do
 
@@ -90,7 +90,7 @@ describe "Integration testing" do
 
   end
 
-  describe "Plugin tests" do
+  describe "Plugin tests", :plugin => true do
 
     describe "Install a plugin from official repository" do
 
