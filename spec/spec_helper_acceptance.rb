@@ -81,6 +81,8 @@ hosts.each do |host|
         end
     end
 
+    scp_to(host, "#{files_dir}/elasticsearch-bigdesk.zip", "/tmp/elasticsearch-bigdesk.zip")
+
   end
 
   # on debian/ubuntu nodes ensure we get the latest info
@@ -118,6 +120,7 @@ RSpec.configure do |c|
         on host, puppet('module', 'install', 'ceritsc-yum'), { :acceptable_exit_codes => [0,1] }
       end
 
+    on(host, 'mkdir -p etc/puppet/modules/another/files/')
     end
   end
 

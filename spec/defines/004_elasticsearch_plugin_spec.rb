@@ -114,7 +114,7 @@ describe 'elasticsearch::plugin', :type => 'define' do
       } end
 
       it { should contain_elasticsearch__plugin('mobz/elasticsearch-head/1.0.0') }
-      it { should contain_exec('install_plugin_mobz/elasticsearch-head/1.0.0').with(:command => '/usr/share/elasticsearch/bin/plugin install mobz/elasticsearch-head/1.0.0 -url https://github.com/mobz/elasticsearch-head/archive/master.zip', :creates => '/usr/share/elasticsearch/plugins/head', :notify => 'Elasticsearch::Service[es-01]') }
+      it { should contain_exec('install_plugin_mobz/elasticsearch-head/1.0.0').with(:command => '/usr/share/elasticsearch/bin/plugin install mobz/elasticsearch-head/1.0.0 --url https://github.com/mobz/elasticsearch-head/archive/master.zip', :creates => '/usr/share/elasticsearch/plugins/head', :notify => 'Elasticsearch::Service[es-01]') }
       it { should contain_file('/usr/share/elasticsearch/plugins/head/.name').with(:content => 'mobz/elasticsearch-head/1.0.0') }
       it { should contain_exec('purge_plugin_head_old').with(:onlyif => "test -e /usr/share/elasticsearch/plugins/head && test \"$(cat /usr/share/elasticsearch/plugins/head/.name)\" != 'mobz/elasticsearch-head/1.0.0'", :command => '/usr/share/elasticsearch/bin/plugin --remove head', :before => 'Exec[install_plugin_mobz/elasticsearch-head/1.0.0]') }
     end
@@ -129,7 +129,7 @@ describe 'elasticsearch::plugin', :type => 'define' do
       } end
 
       it { should contain_elasticsearch__plugin('mobz/elasticsearch-head/1.0.0') }
-      it { should contain_exec('install_plugin_mobz/elasticsearch-head/1.0.0').with(:command => '/usr/share/elasticsearch/bin/plugin install mobz/elasticsearch-head/1.0.0 -url https://github.com/mobz/elasticsearch-head/archive/master.zip', :creates => '/usr/share/elasticsearch/plugins/head', :notify => 'Elasticsearch::Service[es-01]') }
+      it { should contain_exec('install_plugin_mobz/elasticsearch-head/1.0.0').with(:command => '/usr/share/elasticsearch/bin/plugin install mobz/elasticsearch-head/1.0.0 --url https://github.com/mobz/elasticsearch-head/archive/master.zip', :creates => '/usr/share/elasticsearch/plugins/head', :notify => 'Elasticsearch::Service[es-01]') }
       it { should contain_file('/usr/share/elasticsearch/plugins/head/.name').with(:content => 'mobz/elasticsearch-head/1.0.0') }
       it { should contain_exec('purge_plugin_head_old').with(:onlyif => "test -e /usr/share/elasticsearch/plugins/head && test \"$(cat /usr/share/elasticsearch/plugins/head/.name)\" != 'mobz/elasticsearch-head/1.0.0'", :command => '/usr/share/elasticsearch/bin/plugin --remove head', :before => 'Exec[install_plugin_mobz/elasticsearch-head/1.0.0]') }
     end
@@ -144,10 +144,28 @@ describe 'elasticsearch::plugin', :type => 'define' do
       } end
 
       it { should contain_elasticsearch__plugin('head') }
-      it { should contain_exec('install_plugin_head').with(:command => '/usr/share/elasticsearch/bin/plugin install head -url https://github.com/mobz/elasticsearch-head/archive/master.zip', :creates => '/usr/share/elasticsearch/plugins/head', :notify => 'Elasticsearch::Service[es-01]') }
+      it { should contain_exec('install_plugin_head').with(:command => '/usr/share/elasticsearch/bin/plugin install head --url https://github.com/mobz/elasticsearch-head/archive/master.zip', :creates => '/usr/share/elasticsearch/plugins/head', :notify => 'Elasticsearch::Service[es-01]') }
       it { should contain_file('/usr/share/elasticsearch/plugins/head/.name').with(:content => 'head') }
       it { should contain_exec('purge_plugin_head_old').with(:onlyif => "test -e /usr/share/elasticsearch/plugins/head && test \"$(cat /usr/share/elasticsearch/plugins/head/.name)\" != 'head'", :command => '/usr/share/elasticsearch/bin/plugin --remove head', :before => 'Exec[install_plugin_head]') }
     end
+
+  end
+
+  context "offline plugin install" do
+
+      let(:title) { 'head' }
+      let :params do {
+        :ensure     => 'present',
+        :instances  => 'es-01',
+        :source     => 'puppet:///path/to/my/plugin.zip',
+      } end
+
+      it { should contain_elasticsearch__plugin('head') }
+      it { should contain_file('/tmp/plugin.zip').with(:source => 'puppet:///path/to/my/plugin.zip') }
+      it { should contain_exec('install_plugin_head').with(:command => '/usr/share/elasticsearch/bin/plugin install head --url file:///tmp/plugin.zip', :creates => '/usr/share/elasticsearch/plugins/head', :notify => 'Elasticsearch::Service[es-01]') }
+      it { should contain_file('/usr/share/elasticsearch/plugins/head/.name').with(:content => 'head') }
+      it { should contain_exec('purge_plugin_head_old').with(:onlyif => "test -e /usr/share/elasticsearch/plugins/head && test \"$(cat /usr/share/elasticsearch/plugins/head/.name)\" != 'head'", :command => '/usr/share/elasticsearch/bin/plugin --remove head', :before => 'Exec[install_plugin_head]') }
+
 
   end
   

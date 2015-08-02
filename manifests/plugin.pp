@@ -65,6 +65,7 @@ define elasticsearch::plugin(
     $module_dir  = undef,
     $ensure      = 'present',
     $url         = undef,
+    $source      = undef,
     $proxy_host  = undef,
     $proxy_port  = undef,
 ) {
@@ -111,12 +112,29 @@ define elasticsearch::plugin(
     $proxy = '' # lint:ignore:empty_string_assignment
   }
 
-  if ($url == undef) {
+  if ($source != undef) {
+
+    $filenameArray = split($source, '/')
+    $basefilename = $filenameArray[-1]
+
+    file { "/tmp/${basefilename}":
+      ensure => 'file',
+      source => $source,
+    }
+
+    $real_url = "file:///tmp/${basefilename}"
+  } elsif ($url != undef) {
+    validate_string($url)
+    $real_url = $url
+  } else {
+    $real_url = undef
+  }
+
+  if ($real_url == undef) {
     $install_cmd = "${elasticsearch::plugintool}${proxy} install ${name}"
     $exec_rets = [0,]
   } else {
-    validate_string($url)
-    $install_cmd = "${elasticsearch::plugintool}${proxy} install ${name} -url ${url}"
+    $install_cmd = "${elasticsearch::plugintool}${proxy} install ${name} --url ${real_url}"
     $exec_rets = [0,1]
   }
 
