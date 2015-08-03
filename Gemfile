@@ -7,7 +7,7 @@ gem 'puppet', puppetversion, :require => false
 gem 'beaker', :git => 'https://github.com/electrical/beaker.git', :branch => 'aoi_var'
 gem 'beaker-rspec', :git => 'https://github.com/puppetlabs/beaker-rspec.git', :branch => 'master'
 gem 'metadata-json-lint', :git => 'https://github.com/nibalizer/metadata-json-lint.git', :branch => 'master'
-gem 'rspec-puppet', :git => 'https://github.com/rodjek/rspec-puppet.git', :branch => 'master'
+gem 'rspec-puppet', '2.2.0'
 
 gem 'pry'
 gem 'docker-api', '~> 1.0'
