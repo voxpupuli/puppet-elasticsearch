@@ -162,7 +162,7 @@ Please note that this does not work when you specify 'latest' as a version numbe
 
 ###Scripts
 
-Install [scripts](http://www.elastic.co/guide/en/elasticsearch/reference/1.x/modules-scripting.html) to be used by Elasticsearch.
+Install [scripts](http://www.elastic.co/guide/en/elasticsearch/reference/current/modules-scripting.html) to be used by Elasticsearch.
 These scripts are shared accross all defined instances on the same host.
 
 ```puppet
