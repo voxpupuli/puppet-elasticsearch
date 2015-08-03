@@ -1,6 +1,8 @@
 fixtures:
   repositories:
-    stdlib: https://github.com/puppetlabs/puppetlabs-stdlib.git
+    stdlib:
+      repo: https://github.com/puppetlabs/puppetlabs-stdlib.git
+      branch: '4.7.x'
     apt:
       repo: 'https://github.com/puppetlabs/puppetlabs-apt.git'
       branch: '1.8.x'
