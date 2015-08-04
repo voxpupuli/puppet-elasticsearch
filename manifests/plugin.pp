@@ -27,6 +27,13 @@
 #   Default value: None
 #   This variable is optional
 #
+# [*source*]
+#   Specify the source of the plugin.
+#   This will copy over the plugin to the node and use it for installation.
+#   Useful for offline installation
+#   Value type is string
+#   This variable is optional
+#
 # [*proxy_host*]
 #   Proxy host to use when installing the plugin
 #   Value type is string
