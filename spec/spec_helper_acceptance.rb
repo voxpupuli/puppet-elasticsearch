@@ -52,11 +52,11 @@ hosts.each do |host|
 
     case fact('osfamily')
       when 'RedHat'
-        ext='noarch.rpm'
+        ext='rpm'
       when 'Debian'
         ext='deb'
       when  'Suse'
-        ext='noarch.rpm'
+        ext='rpm'
     end
 
     url = get_url
