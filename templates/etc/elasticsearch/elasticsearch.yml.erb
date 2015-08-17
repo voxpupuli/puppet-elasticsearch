@@ -33,7 +33,7 @@
         return_vals << stuff
       end
     else
-      if val.is_a?(Hash)
+      if val.is_a?(::Hash)
         transform(val).each do |stuff|
           return_vals << { key => stuff }
         end
@@ -52,12 +52,12 @@
     target = dup
 
     hash.keys.each do |key|
-      if hash[key].is_a? Hash and self[key].is_a? Hash
+      if hash[key].is_a? ::Hash and self[key].is_a? ::Hash
         target[key] = target[key].deep_merge_with_array_values_concatenated(hash[key])
         next
       end
 
-      if hash[key].is_a?(Array) && target[key].is_a?(Array)
+      if hash[key].is_a?(::Array) && target[key].is_a?(::Array)
         target[key] = target[key] + hash[key]
       else
         target[key] = hash[key]
