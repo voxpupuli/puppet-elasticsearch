@@ -106,7 +106,7 @@ define elasticsearch::template(
   if ($ensure == 'absent') {
 
     # delete the template file on disk and then on the server
-    file { "${elasticsearch::configdir}/templates_import/elasticsearch-template-${name}.json":
+    file { "${elasticsearch::params::homedir}/templates_import/elasticsearch-template-${name}.json":
       ensure  => 'absent',
       notify  => Exec[ "delete_template_${name}" ],
       require => File[ "${elasticsearch::params::homedir}/templates_import" ],
