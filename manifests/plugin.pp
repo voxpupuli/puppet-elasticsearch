@@ -50,6 +50,16 @@
 #   Specify all the instances related
 #   value type is string or array
 #
+# [*es_port*]
+#   Specify the port that elasticsearch is listening on
+#   value type is string
+#   Default value: 9200
+#
+# [*es_interface*]
+#   Specify the interface that elasticsearch is listening on
+#   value type is string
+#   Default value: localhost
+#
 # === Examples
 #
 # # From official repository
@@ -75,6 +85,8 @@ define elasticsearch::plugin(
     $source      = undef,
     $proxy_host  = undef,
     $proxy_port  = undef,
+    $es_port     = '9200',
+    $es_interface= 'localhost',
 ) {
 
   include elasticsearch
@@ -102,14 +114,14 @@ define elasticsearch::plugin(
 
   # set proxy by override or parse and use proxy_url from
   # elasticsearch::proxy_url or use no proxy at all
-  
+
   if ($proxy_host != undef and $proxy_port != undef) {
     $proxy = " -DproxyPort=${proxy_port} -DproxyHost=${proxy_host}"
   }
   elsif ($elasticsearch::proxy_url != undef) {
     $proxy_host_from_url = regsubst($elasticsearch::proxy_url, '(http|https)://([^:]+)(|:\d+).+', '\2')
     $proxy_port_from_url = regsubst($elasticsearch::proxy_url, '(http|https)://([^:]+)?(:(\d+)).+', '\4')
-    
+
     # validate parsed values before using them
     if (is_string($proxy_host_from_url) and is_integer($proxy_port_from_url)) {
       $proxy = " -DproxyPort=${proxy_port_from_url} -DproxyHost=${proxy_host_from_url}"
@@ -156,6 +168,7 @@ define elasticsearch::plugin(
       exec {"install_plugin_${name}":
         command => $install_cmd,
         creates => "${elasticsearch::plugindir}/${plugin_dir}",
+        onlyif  => "curl -s -XGET 'http://${es_interface}:${es_port}/_cluster/health?pretty=true' | awk -F: '/status/{gsub(\"\\\"\",\"\");gsub(\",\",\"\");gsub(\" \",\"\");print \$2}' | grep -q -w green",
         returns => $exec_rets,
         notify  => $notify_service,
         require => File[$elasticsearch::plugindir],
