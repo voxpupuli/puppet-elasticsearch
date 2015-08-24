@@ -162,7 +162,7 @@ define elasticsearch::plugin(
       }
       file {$name_file_path:
         ensure  => file,
-        content => $name,
+        content => "${name}", # lint:ignore:only_variable_string
         require => Exec["install_plugin_${name}"],
       }
     }
