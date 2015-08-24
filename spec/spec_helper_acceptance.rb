@@ -90,6 +90,9 @@ hosts.each do |host|
   if fact('osfamily') == 'Debian'
     on host, "apt-get update"
   end
+  if fact('osfamily') == 'RedHat'
+    on host, "yum -y update"
+  end
 
 end
 
