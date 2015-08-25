@@ -279,6 +279,7 @@ define elasticsearch::instance(
       mode    => '0644',
       notify  => $notify_service,
       require => Class['elasticsearch::package'],
+      before  => Elasticsearch::Service[$name],
     }
 
     $require_service = Class['elasticsearch::package']

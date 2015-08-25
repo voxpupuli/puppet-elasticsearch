@@ -206,6 +206,8 @@ describe 'elasticsearch::instance', :type => 'define' do
         let(:pre_condition) { 'class {"elasticsearch": }'  }
 
           it { should contain_elasticsearch__service('es-01').with(:init_template => "elasticsearch/etc/init.d/elasticsearch.#{initscript}.erb", :init_defaults => {"CONF_DIR"=>"/etc/elasticsearch/es-01", "CONF_FILE"=>"/etc/elasticsearch/es-01/elasticsearch.yml", "LOG_DIR"=>"/var/log/elasticsearch/es-01", "ES_HOME"=>"/usr/share/elasticsearch"}) }
+          it { should contain_file('/etc/elasticsearch/es-01/elasticsearch.yml').that_comes_before('Elasticsearch::Service[es-01]') }
+          it { should contain_file('/etc/elasticsearch/es-01/logging.yml').that_comes_before('Elasticsearch::Service[es-01]') }
 
       end
 
