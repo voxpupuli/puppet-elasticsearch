@@ -1,3 +1,29 @@
+##0.9.9 ( Sep 01, 2015 )
+
+###Summary
+Bugfix release and extra features
+
+####Features
+* Work with ES 2.x
+* Add Java 8 detection in debian init script
+* Improve offline plugin installation
+
+####Bugfixes
+* Fix a bug with new ruby versions but older puppet versions causing type error
+* Fix config tempate to use correct ruby scoping
+* Fix regex retrieving proxy port while downloading plugin
+* Fix systemd template for better variable handling
+* Template define was using wrong pathing for removal
+
+
+####Changes
+
+####Testing changes
+
+####Known bugs
+* Possible package conflicts when using ruby/python defines with main package name
+
+
 ##0.9.8 ( Jul 07, 2015 )
 
 ###Summary
