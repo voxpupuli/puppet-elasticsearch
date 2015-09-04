@@ -3,12 +3,10 @@ source 'https://rubygems.org'
 puppetversion = ENV['PUPPET_VERSION'] || '~> 3.8.0'
 gem 'puppet', puppetversion, :require => false
 
-#gem 'beaker', :git => 'https://github.com/puppetlabs/beaker.git', :branch => 'master'
-gem 'beaker', :git => 'https://github.com/electrical/beaker.git', :branch => 'aoi_var'
+gem 'beaker', :git => 'https://github.com/puppetlabs/beaker.git', :branch => 'master'
 gem 'beaker-rspec', :git => 'https://github.com/puppetlabs/beaker-rspec.git', :branch => 'master'
 gem 'metadata-json-lint', :git => 'https://github.com/nibalizer/metadata-json-lint.git', :branch => 'master'
 gem 'rspec-puppet', '2.2.0'
-gem 'specinfra', :git => 'https://github.com/electrical/specinfra.git', :branch => 'pkg_check'
 
 gem 'pry'
 gem 'docker-api', '~> 1.0'
