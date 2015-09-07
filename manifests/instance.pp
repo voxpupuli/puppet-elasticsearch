@@ -273,12 +273,17 @@ define elasticsearch::instance(
     $user = $elasticsearch::elasticsearch_user
     $group = $elasticsearch::elasticsearch_group
 
-    file { "${instance_configdir}/elasticsearch.yml":
-      ensure  => file,
-      content => template("${module_name}/etc/elasticsearch/elasticsearch.yml.erb"),
-      mode    => '0644',
-      notify  => $notify_service,
-      require => Class['elasticsearch::package'],
+    datacat_fragment { "main_config_${name}":
+      target => "${instance_configdir}/elasticsearch.yml",
+      data   => $instance_conf,
+    }
+
+    datacat { "${instance_configdir}/elasticsearch.yml":
+      template => "${module_name}/etc/elasticsearch/elasticsearch.yml.erb",
+      notify   => $notify_service,
+      require  => Class['elasticsearch::package'],
+      owner    => $elasticsearch::elasticsearch_user,
+      group    => $elasticsearch::elasticsearch_group,
     }
 
     $require_service = Class['elasticsearch::package']

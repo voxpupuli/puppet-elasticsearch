@@ -8,5 +8,6 @@ fixtures:
       branch: '1.8.x'
     zypprepo: https://github.com/deadpoint/puppet-zypprepo.git
     yum: https://github.com/CERIT-SC/puppet-yum.git
+    datacat: https://github.com/richardc/puppet-datacat.git
   symlinks:
     elasticsearch: "#{source_dir}"

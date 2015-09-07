@@ -20,6 +20,10 @@
     {
       "name": "ceritsc/yum",
       "version_requirement": ">= 0.9.6 < 1.0.0"
+    },
+    {
+      "name": "richardc/datacat",
+      "version_requirement": ">= 0.6.2 < 1.0.0"
     }
   ],
   "operatingsystem_support": [

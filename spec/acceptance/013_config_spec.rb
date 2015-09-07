@@ -1,99 +1,60 @@
-require 'spec_helper'
+require 'spec_helper_acceptance'
 
-describe 'elasticsearch::instance', :type => 'define' do
+describe "elasticsearch class:" do
 
-  default_params = { }
+  describe "Setup single instance" do
 
-  on_supported_os.each do |os, facts|
+    it 'should run successfully' do
+      pp = "class { 'elasticsearch': config => { 'cluster.name' => '#{test_settings['cluster_name']}'}, manage_repo => true, repo_version => '#{test_settings['repo_version']}', java_install => true }
+            elasticsearch::instance { 'es-01': config => { 'node.name' => 'elasticsearch001', 'http.port' => '#{test_settings['port_a']}' } }
+           "
 
-    let(:title) { 'es-01' }
-    context "on #{os}" do
+      # Run it twice and test for idempotency
+      apply_manifest(pp, :catch_failures => true)
+      expect(apply_manifest(pp, :catch_failures => true).exit_code).to be_zero
+    end
 
-      case facts[:osfamily]
-      when 'Debian'
-        let(:defaults_path) { '/etc/default' }
-        let(:pkg_ext) { 'deb' }
-        let(:pkg_prov) { 'dpkg' }
-        case facts[:operatingsystem]
-        when 'Debian'
-          if facts[:operatingsystemmajrelease].to_i >= 8
-            let(:initscript) { 'systemd' }
-          else
-            let(:initscript) { 'Debian' }
-          end
-        when 'Ubuntu'
-          if facts[:operatingsystemmajrelease].to_i >= 15
-            let(:initscript) { 'systemd' }
-          else
-            let(:initscript) { 'Debian' }
-          end
-        end
-      when 'RedHat'
-        let(:defaults_path) { '/etc/sysconfig' }
-        let(:pkg_ext) { 'rpm' }
-        let(:pkg_prov) { 'rpm' }
-        if facts[:operatingsystemmajrelease].to_i >= 7
-          let(:initscript) { 'systemd' }
-        else
-          let(:initscript) { 'RedHat' }
-        end
-      when 'Suse'
-        let(:defaults_path) { '/etc/sysconfig' }
-        let(:pkg_ext) { 'rpm' }
-        let(:pkg_prov) { 'rpm' }
-        let(:initscript) { 'systemd' }
-      end
 
-      let(:facts) do
-        facts.merge({ 'scenario' => '', 'common' => '' })
-      end
+    describe service(test_settings['service_name_a']) do
+      it { should be_enabled }
+      it { should be_running }
+    end
 
-      let (:params) do
-        default_params.merge({ })
-      end
+    describe package(test_settings['package_name']) do
+      it { should be_installed }
+    end
 
-      let(:title) { 'es-01' }
-      let(:pre_condition) { 'class {"elasticsearch": }'  }
+    describe file(test_settings['pid_file_a']) do
+      it { should be_file }
+      its(:content) { should match /[0-9]+/ }
+    end
 
-      context "Service" do
+    describe "Elasticsearch serves requests on" do
+      it {
+        curl_with_retries("check ES on #{test_settings['port_a']}", default, "http://localhost:#{test_settings['port_a']}/?pretty=true", 0)
+      }
+    end
 
-          it { should contain_elasticsearch__service('es-01').with(:init_template => "elasticsearch/etc/init.d/elasticsearch.#{initscript}.erb", :init_defaults => {"CONF_DIR"=>"/etc/elasticsearch/es-01", "CONF_FILE"=>"/etc/elasticsearch/es-01/elasticsearch.yml", "LOG_DIR"=>"/var/log/elasticsearch/es-01", "ES_HOME"=>"/usr/share/elasticsearch"}) }
+    describe file('/etc/elasticsearch/es-01/elasticsearch.yml') do
+      it { should be_file }
+      it { should contain 'name: elasticsearch001' }
+    end
 
-      end
+    describe file('/usr/share/elasticsearch/templates_import') do
+      it { should be_directory }
+    end
 
+    describe file('/usr/share/elasticsearch/scripts') do
+      it { should be_directory }
+    end
+
+    describe file('/etc/elasticsearch/es-01/scripts') do
+      it { should be_symlink }
     end
 
   end
 
-  let :facts do {
-    :operatingsystem => 'CentOS',
-    :kernel => 'Linux',
-    :osfamily => 'RedHat',
-    :operatingsystemmajrelease => '6',
-    :scenario => '',
-    :common => '',
-    :hostname => 'foo'
-  } end
-
-  let(:title) { 'es-01' }
-  let(:pre_condition) { 'class {"elasticsearch": }'  }
-
-
-  context "Config file" do
-
-    context "with nothing set" do
-
-      let :params do {
-        :config => { }
-      } end
-
-      it { should contain_datacat_fragment('main_config_es-01') }
-      it { should contain_datacat('/etc/elasticsearch/es-01/elasticsearch.yml') }
-      #it { should contain_file('/etc/elasticsearch/es-01/elasticsearch.yml').with(:content => "### MANAGED BY PUPPET ###\n---\nnode: \n  name: foo-es-01\npath: \n  data: /usr/share/elasticsearch/data/es-01\n") }
-      it { should contain_datacat_collector('/etc/elasticsearch/es-01/elasticsearch.yml') }
-      it { should contain_file('/etc/elasticsearch/es-01/elasticsearch.yml') }
-
-    end
+  #### TODO: Modify rspec-puppet assertions of config to acceptance tests. Required due to move to datacat ####
 
     context "set a value" do
 
@@ -177,86 +138,6 @@ describe 'elasticsearch::instance', :type => 'define' do
 
 #      it { should contain_file('/etc/elasticsearch/es-01/elasticsearch.yml').with(:content => "### MANAGED BY PUPPET ###\n---\ncluster: \n  name: ClusterName\nnode: \n  name: NodeName\npath: \n  data: /usr/share/elasticsearch/data/es-01\n") }
     end
-
-    context "service restarts" do
-
-      context "does not restart when restart_on_change is false" do
-        let :params do {
-          :config => { 'node' => { 'name' => 'test' }  },
-        } end
-        let(:pre_condition) { 'class {"elasticsearch": config => { }, restart_on_change => false }'  }
-        it { should contain_datacat_fragment('main_config_es-01') }
-        it { should contain_datacat('/etc/elasticsearch/es-01/elasticsearch.yml').without_notify }
-
-#        it { should contain_file('/etc/elasticsearch/es-01/elasticsearch.yml').without_notify }
-      end
-
-      context "should happen restart_on_change is true (default)" do
-        let :params do {
-          :config => { 'node' => { 'name' => 'test' }  },
-        } end
-        let(:pre_condition) { 'class {"elasticsearch": config => { }}'  }
-
-        it { should contain_datacat_fragment('main_config_es-01') }
-        it { should contain_datacat('/etc/elasticsearch/es-01/elasticsearch.yml').with(:notify => "Elasticsearch::Service[es-01]") }
-
-#        it { should contain_file('/etc/elasticsearch/es-01/elasticsearch.yml').with(:notify => "Elasticsearch::Service[es-01]") }
-      end
-
-    end
-
-  end
-
-  context "Config dir" do
-
-    context "default" do
-      let(:pre_condition) { 'class {"elasticsearch": }'  }
-      it { should contain_exec('mkdir_configdir_elasticsearch_es-01') }
-      it { should contain_file('/etc/elasticsearch/es-01').with(:ensure => 'directory') }
-      it { should contain_datacat_fragment('main_config_es-01') }
-      it { should contain_datacat('/etc/elasticsearch/es-01/elasticsearch.yml') }
-
-#      it { should contain_file('/etc/elasticsearch/es-01/elasticsearch.yml') }
-      it { should contain_file('/etc/elasticsearch/es-01/logging.yml') }
-      it { should contain_file('/usr/share/elasticsearch/scripts') }
-      it { should contain_file('/etc/elasticsearch/es-01/scripts').with(:target => '/usr/share/elasticsearch/scripts') }
-    end
-
-    context "Set in main class" do
-      let(:pre_condition) { 'class {"elasticsearch": configdir => "/etc/elasticsearch-config" }'  }
-
-      it { should contain_exec('mkdir_configdir_elasticsearch_es-01') }
-      it { should contain_file('/etc/elasticsearch-config').with(:ensure => 'directory') }
-      it { should contain_file('/usr/share/elasticsearch/templates_import').with(:ensure => 'directory') }
-      it { should contain_file('/etc/elasticsearch-config/es-01').with(:ensure => 'directory') }
-      it { should contain_datacat_fragment('main_config_es-01') }
-      it { should contain_datacat('/etc/elasticsearch-config/es-01/elasticsearch.yml') }
-
-#      it { should contain_file('/etc/elasticsearch-config/es-01/elasticsearch.yml') }
-      it { should contain_file('/etc/elasticsearch-config/es-01/logging.yml') }
-      it { should contain_file('/usr/share/elasticsearch/scripts') }
-      it { should contain_file('/etc/elasticsearch-config/es-01/scripts').with(:target => '/usr/share/elasticsearch/scripts') }
-    end
-
-    context "set in instance" do
-      let(:pre_condition) { 'class {"elasticsearch": }'  }
-      let :params do {
-        :configdir => '/etc/elasticsearch-config/es-01'
-      } end
-
-      it { should contain_exec('mkdir_configdir_elasticsearch_es-01') }
-      it { should contain_file('/etc/elasticsearch').with(:ensure => 'directory') }
-      it { should contain_file('/etc/elasticsearch-config/es-01').with(:ensure => 'directory') }
-      it { should contain_datacat_fragment('main_config_es-01') }
-      it { should contain_datacat('/etc/elasticsearch-config/es-01/elasticsearch.yml') }
-
-#      it { should contain_file('/etc/elasticsearch-config/es-01/elasticsearch.yml') }
-      it { should contain_file('/etc/elasticsearch-config/es-01/logging.yml') }
-      it { should contain_file('/usr/share/elasticsearch/scripts') }
-      it { should contain_file('/etc/elasticsearch-config/es-01/scripts').with(:target => '/usr/share/elasticsearch/scripts') }
-    end
-
-  end
 
 
   context "data directory" do
@@ -373,78 +254,25 @@ describe 'elasticsearch::instance', :type => 'define' do
    end
 
 
-  end
+  describe "Cleanup" do
 
-  context "Logging" do
+    it 'should run successfully' do
+      pp = "class { 'elasticsearch': ensure => 'absent' }
+            elasticsearch::instance{ 'es-01': ensure => 'absent' }
+           "
 
-    let(:pre_condition) { 'class {"elasticsearch": }'  }
-
-    context "default" do
-      it { should contain_file('/etc/elasticsearch/es-01/logging.yml').with_content(/^logger.index.search.slowlog: TRACE, index_search_slow_log_file$/).with(:source => nil) }
+      apply_manifest(pp, :catch_failures => true)
     end
 
-    context "from main class" do
-
-      context "config" do
-        let(:pre_condition) { 'class {"elasticsearch": logging_config => { "index.search.slowlog" => "DEBUG, index_search_slow_log_file" } }'  }
-
-        it { should contain_file('/etc/elasticsearch/es-01/logging.yml').with_content(/^logger.index.search.slowlog: DEBUG, index_search_slow_log_file$/).with(:source => nil) }
-      end
-
-      context "logging file " do
-        let(:pre_condition) { 'class {"elasticsearch": logging_file => "puppet:///path/to/logging.yml" }'  }
-
-        it { should contain_file('/etc/elasticsearch/es-01/logging.yml').with(:source => 'puppet:///path/to/logging.yml', :content => nil) }
-      end
-
+    describe file('/etc/elasticsearch/es-01') do
+      it { should_not be_directory }
     end
 
-    context "from instance" do
-
-      let(:pre_condition) { 'class {"elasticsearch": }'  }
-
-      context "config" do
-        let :params do {
-          :logging_config => { 'index.search.slowlog' => 'INFO, index_search_slow_log_file' }
-        } end
-
-        it { should contain_file('/etc/elasticsearch/es-01/logging.yml').with_content(/^logger.index.search.slowlog: INFO, index_search_slow_log_file$/).with(:source => nil) }
-      end
-
-      context "logging file " do
-        let :params do {
-          :logging_file => 'puppet:///path/to/logging.yml'
-        } end
-
-        it { should contain_file('/etc/elasticsearch/es-01/logging.yml').with(:source => 'puppet:///path/to/logging.yml', :content => nil) }
-      end
-
+    describe service(test_settings['service_name_a']) do
+      it { should_not be_enabled }
+      it { should_not be_running }
     end
 
   end
 
-  context "running as an other user" do
-
-    let(:pre_condition) { 'class {"elasticsearch": elasticsearch_user => "myesuser", elasticsearch_group => "myesgroup" }'  }
-
-    it { should contain_file('/usr/share/elasticsearch/data/es-01').with(:owner => 'myesuser') }
-    it { should contain_file('/etc/elasticsearch/es-01').with(:owner => 'myesuser', :group => 'myesgroup') }
-    it { should contain_file('/etc/elasticsearch/es-01/elasticsearch.yml').with(:owner => 'myesuser', :group => 'myesgroup') }
-    it { should contain_file('/etc/elasticsearch/es-01/logging.yml').with(:owner => 'myesuser', :group => 'myesgroup') }
-  end
-
-    context "setting different service status then main class" do
-
-    let(:pre_condition) { 'class {"elasticsearch": status => "enabled" }'  }
-
-    context "staus option" do
-
-      let :params do {
-        :status => 'running'
-      } end
-
-      it { should contain_service('elasticsearch-instance-es-01').with(:ensure => 'running', :enable => false) }
-
-    end
-  end
 end
