@@ -177,10 +177,17 @@ class elasticsearch::package {
 
   if ($elasticsearch::package_provider == 'package') {
 
+    if $elasticsearch::manage_repo {
+      $pkg_require = Class['apt::update']
+    } else {
+      $pkg_require = undef
+    }
+
     package { $elasticsearch::package_name:
       ensure   => $package_ensure,
       source   => $pkg_source,
       provider => $pkg_provider,
+      require  => $pkg_require,
     }
 
   } else {
