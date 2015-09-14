@@ -71,12 +71,12 @@
   # initial string
   @yml_string = "### MANAGED BY PUPPET ###\n"
 
-  if !@instance_conf.empty?
+  if !@data.empty?
 
     @yml_string += "---\n"
 
     ## Transform shorted keys into full write up
-    transformed_config = transform(@instance_conf)
+    transformed_config = transform(@data)
 
     # Merge it back into a hash
     tmphash = { }
