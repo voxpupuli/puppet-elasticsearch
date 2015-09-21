@@ -42,6 +42,7 @@ This module has been tested against ES 1.0 and up.
 
 * The [stdlib](https://forge.puppetlabs.com/puppetlabs/stdlib) Puppet library.
 * [ceritsc/yum](https://forge.puppetlabs.com/ceritsc/yum) For yum version lock.
+* [richardc/datacat](https://forge.puppetlabs.com/richardc/datacat)
 * Augeas
 
 #### Repository management
