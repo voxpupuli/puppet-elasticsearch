@@ -182,6 +182,11 @@
 #   package upgrades.
 #   Defaults to: true
 #
+# [*shield_users_merge*]
+#   Enable Hiera's merging function for shield users
+#   Defaults to: false
+#
+#
 # The default values for the parameters are set in elasticsearch::params. Have
 # a look at the corresponding <tt>params.pp</tt> manifest file if you need more
 # technical information about them.
@@ -246,7 +251,8 @@ class elasticsearch(
   $instances             = undef,
   $instances_hiera_merge = false,
   $plugins               = undef,
-  $plugins_hiera_merge   = false
+  $plugins_hiera_merge   = false,
+  $shield_users_merge = false,
 ) inherits elasticsearch::params {
 
   anchor {'elasticsearch::begin': }
@@ -359,6 +365,16 @@ class elasticsearch(
     create_resources('elasticsearch::plugin', $x_plugins)
   }
 
+  # Hiera support for esusers
+  validate_bool($shield_users_merge)
+
+  if $shield_users_merge == true {
+    $esusers = hiera_hash('elasticsearch::esusers', $::elasticsearch::esusers)
+    if $esusers {
+      validate_hash($esusers)
+      create_resources('elasticsearch::shield::esuser', $esusers)
+    }
+  }
 
   if $java_install == true {
     # Install java
