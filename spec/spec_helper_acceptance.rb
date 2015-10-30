@@ -52,7 +52,11 @@ hosts.each do |host|
 
     case fact('osfamily')
       when 'RedHat'
-        ext='rpm'
+        if ENV['ES_VERSION'][0,1] == '1'
+          ext='noarch.rpm'
+        else
+          ext='rpm'
+        end
       when 'Debian'
         ext='deb'
       when  'Suse'
