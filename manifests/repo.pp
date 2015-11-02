@@ -32,9 +32,8 @@ class elasticsearch::repo {
 
   case $::osfamily {
     'Debian': {
-      if !defined(Class['apt']) {
-        class { 'apt': }
-      }
+      include ::apt
+      Class['apt::update'] -> Package[$elasticsearch::package_name]
 
       apt::source { 'elasticsearch':
         location    => "http://packages.elastic.co/elasticsearch/${elasticsearch::repo_version}/debian",
