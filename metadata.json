@@ -15,7 +15,7 @@
     },
     {
       "name": "puppetlabs/apt",
-      "version_requirement": ">= 1.4.0 < 2.0.0"
+      "version_requirement": ">= 1.4.0 < 3.0.0"
     },
     {
       "name": "ceritsc/yum",
