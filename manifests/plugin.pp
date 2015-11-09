@@ -77,7 +77,7 @@ define elasticsearch::plugin(
     $proxy_port  = undef,
 ) {
 
-  include elasticsearch
+  include ::elasticsearch
 
   Exec {
     path      => [ '/bin', '/usr/bin', '/usr/local/bin' ],
@@ -91,6 +91,12 @@ define elasticsearch::plugin(
   $notify_service = $elasticsearch::restart_on_change ? {
     false   => undef,
     default => Elasticsearch::Service[$instances],
+  }
+
+  if versioncmp($::elasticsearch_version, '2.0.0') < 0 {
+    $remove_cmd = '--remove'
+  } else {
+    $remove_cmd = 'remove'
   }
 
   if ($module_dir != undef) {
@@ -121,8 +127,8 @@ define elasticsearch::plugin(
 
   if ($source != undef) {
 
-    $filenameArray = split($source, '/')
-    $basefilename = $filenameArray[-1]
+    $filename_array = split($source, '/')
+    $basefilename = $filename_array[-1]
 
     file { "/tmp/${basefilename}":
       ensure => 'file',
@@ -141,7 +147,11 @@ define elasticsearch::plugin(
     $install_cmd = "${elasticsearch::plugintool}${proxy} install ${name}"
     $exec_rets = [0,]
   } else {
-    $install_cmd = "${elasticsearch::plugintool}${proxy} install ${name} --url ${real_url}"
+    if versioncmp($::elasticsearch_version, '2.0.0') < 0 {
+      $install_cmd = "${elasticsearch::plugintool}${proxy} install ${name} --url ${real_url}"
+    } else {
+      $install_cmd = "${elasticsearch::plugintool}${proxy} install ${real_url}"
+    }
     $exec_rets = [0,1]
   }
 
@@ -149,7 +159,7 @@ define elasticsearch::plugin(
     'installed', 'present': {
       $name_file_path = "${elasticsearch::plugindir}/${plugin_dir}/.name"
       exec {"purge_plugin_${plugin_dir}_old":
-        command => "${elasticsearch::plugintool} --remove ${plugin_dir}",
+        command => "${elasticsearch::plugintool} ${remove_cmd} ${plugin_dir}",
         onlyif  => "test -e ${elasticsearch::plugindir}/${plugin_dir} && test \"$(cat ${name_file_path})\" != '${name}'",
         before  => Exec["install_plugin_${name}"],
       }
@@ -167,8 +177,9 @@ define elasticsearch::plugin(
       }
     }
     'absent': {
+      $remove = $::elasticsearch
       exec {"remove_plugin_${name}":
-        command => "${elasticsearch::plugintool} --remove ${plugin_dir}",
+        command => "${elasticsearch::plugintool} ${remove_cmd} ${plugin_dir}",
         onlyif  => "test -d ${elasticsearch::plugindir}/${plugin_dir}",
         notify  => $notify_service,
       }
