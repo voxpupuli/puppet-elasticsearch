@@ -40,7 +40,7 @@ define elasticsearch::script(
     fail("\"${ensure}\" is not a valid ensure parameter value")
   }
 
-  validate_re($source, '^puppet://')
+  validate_re($source, '^(puppet|file)://')
 
   $filenameArray = split($source, '/')
   $basefilename = $filenameArray[-1]
