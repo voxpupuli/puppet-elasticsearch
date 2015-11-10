@@ -168,5 +168,32 @@ describe 'elasticsearch::plugin', :type => 'define' do
 
 
   end
-  
+ 
+  context "ES 2.x support" do
+
+      let(:title) { 'head' }
+      let :facts do {
+        :operatingsystem => 'CentOS',
+        :kernel => 'Linux',
+        :osfamily => 'RedHat',
+        :operatingsystemmajrelease => '6',
+        :scenario => '',
+        :common => '',
+        :elasticsearch_version => '2.0.1'
+      } end
+
+      let :params do {
+        :ensure    => 'present',
+        :instances => 'es-01',
+        :url       => 'http://example.com/path/to/plugin.zip',
+      } end
+
+      it { should contain_elasticsearch__plugin('head') }
+      it { should contain_exec('install_plugin_head').with(:command => '/usr/share/elasticsearch/bin/plugin install http://example.com/path/to/plugin.zip', :creates => '/usr/share/elasticsearch/plugins/head', :notify => 'Elasticsearch::Service[es-01]') }
+      it { should contain_file('/usr/share/elasticsearch/plugins/head/.name').with(:content => 'head') }
+      it { should contain_exec('purge_plugin_head_old').with(:onlyif => "test -e /usr/share/elasticsearch/plugins/head && test \"$(cat /usr/share/elasticsearch/plugins/head/.name)\" != 'head'", :command => '/usr/share/elasticsearch/bin/plugin remove head', :before => 'Exec[install_plugin_head]') }
+
+
+  end
+
 end

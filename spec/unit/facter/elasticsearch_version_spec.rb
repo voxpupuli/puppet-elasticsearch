@@ -11,7 +11,7 @@ describe Facter::Util::Fact do
         es_version_output = <<-EOS
 Version: 1.4.7, Build: de54438/2015-10-22T08:09:48Z, JVM: 1.7.0_71
         EOS
-        Facter::Core::Execution.expects(:exec).with("/usr/share/elasticsearch/bin/elasticsearch -v").returns(es_version_output)
+        Facter::Core::Execution.expects(:exec).with("/usr/share/elasticsearch/bin/elasticsearch -v 2>/dev/null").returns(es_version_output)
         expect(Facter.value(:elasticsearch_version)).to eq("1.4.7")
       end
     end
@@ -20,8 +20,8 @@ Version: 1.4.7, Build: de54438/2015-10-22T08:09:48Z, JVM: 1.7.0_71
         es_version_output = <<-EOS
 Version: 2.0.0, Build: de54438/2015-10-22T08:09:48Z, JVM: 1.8.0_66
         EOS
-        Facter::Core::Execution.expects(:exec).with("/usr/share/elasticsearch/bin/elasticsearch -v").returns("")
-        Facter::Core::Execution.expects(:exec).with("/usr/share/elasticsearch/bin/elasticsearch --version").returns(es_version_output)
+        Facter::Core::Execution.expects(:exec).with("/usr/share/elasticsearch/bin/elasticsearch -v 2>/dev/null").returns("")
+        Facter::Core::Execution.expects(:exec).with("/usr/share/elasticsearch/bin/elasticsearch --version 2>/dev/null").returns(es_version_output)
         expect(Facter.value(:elasticsearch_version)).to eq("2.0.0")
       end
     end
