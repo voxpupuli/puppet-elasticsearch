@@ -25,7 +25,7 @@ This module manages Elasticsearch (http://www.elasticsearch.org/overview/elastic
 
 The elasticsearch module sets up Elasticsearch instances and can manage plugins and templates.
 
-This module has been tested against ES 1.0 and up.
+This module has been tested against all versions of ES 1.x (ES 1.0 - 1.7). **The module is not yet ready for ES 2.x, but it should be soon!**
 
 ##Setup
 
