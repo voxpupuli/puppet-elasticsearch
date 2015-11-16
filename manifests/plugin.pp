@@ -80,7 +80,7 @@ define elasticsearch::plugin(
   include elasticsearch
 
   Exec {
-    path      => [ '/bin', '/usr/bin', '/usr/local/bin' ],
+    path      => [ '/bin', '/usr/bin', '/usr/sbin', '/usr/local/bin', '/usr/local/sbin' ],
     cwd       => '/',
     user      => $elasticsearch::elasticsearch_user,
     tries     => 6,
