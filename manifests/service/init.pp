@@ -113,7 +113,7 @@ define elasticsearch::service::init(
   }
 
 
-  if ( $status != 'unmanaged' and $ensure == 'present' ) {
+  if $ensure == 'present' {
 
     # defaults file content. Either from a hash or file
     if ($init_defaults_file != undef) {
@@ -163,7 +163,7 @@ define elasticsearch::service::init(
 
     }
 
-  } elsif ($status != 'unmanaged') {
+  } else {
 
     file { "/etc/init.d/elasticsearch-${name}":
       ensure    => 'absent',
@@ -178,18 +178,14 @@ define elasticsearch::service::init(
   }
 
 
-  if ( $status != 'unmanaged') {
-
-    # action
-    service { "elasticsearch-instance-${name}":
-      ensure     => $service_ensure,
-      enable     => $service_enable,
-      name       => "elasticsearch-${name}",
-      hasstatus  => $elasticsearch::params::service_hasstatus,
-      hasrestart => $elasticsearch::params::service_hasrestart,
-      pattern    => $elasticsearch::params::service_pattern,
-    }
-
+  # action
+  service { "elasticsearch-instance-${name}":
+    ensure     => $service_ensure,
+    enable     => $service_enable,
+    name       => "elasticsearch-${name}",
+    hasstatus  => $elasticsearch::params::service_hasstatus,
+    hasrestart => $elasticsearch::params::service_hasrestart,
+    pattern    => $elasticsearch::params::service_pattern,
   }
 
 }
