@@ -121,7 +121,7 @@ class elasticsearch::params {
       # main application
       $package = [ 'elasticsearch' ]
     }
-    'OpenSuSE': {
+    'OpenSuSE', 'SLES': {
       $package = [ 'elasticsearch' ]
     }
     default: {
@@ -141,8 +141,9 @@ class elasticsearch::params {
       $pid_dir            = '/var/run/elasticsearch'
 
       if versioncmp($::operatingsystemmajrelease, '7') >= 0 {
-        $init_template     = 'elasticsearch.systemd.erb'
-        $service_providers = 'systemd'
+        $init_template         = 'elasticsearch.systemd.erb'
+        $service_providers     = 'systemd'
+        $system_service_folder = '/lib/systemd/system'
       } else {
         $init_template     = 'elasticsearch.RedHat.erb'
         $service_providers = 'init'
@@ -166,9 +167,10 @@ class elasticsearch::params {
       $service_pattern    = $service_name
       $defaults_location  = '/etc/default'
       if versioncmp($::operatingsystemmajrelease, '8') >= 0 {
-        $init_template     = 'elasticsearch.systemd.erb'
-        $service_providers = 'systemd'
-        $pid_dir           = '/var/run/elasticsearch'
+        $init_template         = 'elasticsearch.systemd.erb'
+        $service_providers     = 'systemd'
+        $system_service_folder = '/lib/systemd/system'
+        $pid_dir               = '/var/run/elasticsearch'
       } else {
         $init_template     = 'elasticsearch.Debian.erb'
         $service_providers = [ 'init' ]
@@ -183,9 +185,10 @@ class elasticsearch::params {
       $defaults_location  = '/etc/default'
 
       if versioncmp($::operatingsystemmajrelease, '15') >= 0 {
-        $init_template     = 'elasticsearch.systemd.erb'
-        $service_providers = 'systemd'
-        $pid_dir           = '/var/run/elasticsearch'
+        $init_template         = 'elasticsearch.systemd.erb'
+        $service_providers     = 'systemd'
+        $system_service_folder = '/lib/systemd/system'
+        $pid_dir               = '/var/run/elasticsearch'
       } else {
         $init_template     = 'elasticsearch.Debian.erb'
         $service_providers = [ 'init' ]
@@ -201,15 +204,20 @@ class elasticsearch::params {
       $defaults_location  = false
       $pid_dir            = false
     }
-    'OpenSuSE': {
-      $service_name       = 'elasticsearch'
-      $service_hasrestart = true
-      $service_hasstatus  = true
-      $service_pattern    = $service_name
-      $service_providers  = 'systemd'
-      $defaults_location  = '/etc/sysconfig'
-      $init_template      = 'elasticsearch.systemd.erb'
-      $pid_dir            = '/var/run/elasticsearch'
+    'OpenSuSE', 'SLES': {
+      $service_name          = 'elasticsearch'
+      $service_hasrestart    = true
+      $service_hasstatus     = true
+      $service_pattern       = $service_name
+      $service_providers     = 'systemd'
+      $defaults_location     = '/etc/sysconfig'
+      $init_template         = 'elasticsearch.systemd.erb'
+      $pid_dir               = '/var/run/elasticsearch'
+      if $::operatingsystem == 'OpenSuSE' and versioncmp($::operatingsystemmajrelease, '12') <= 0 {
+        $system_service_folder = '/lib/systemd/system'
+      } else {
+        $system_service_folder = '/usr/lib/systemd/system'
+      }
     }
     default: {
       fail("\"${module_name}\" provides no service parameters
