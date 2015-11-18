@@ -47,7 +47,7 @@ This module has been tested against all versions of ES 1.x and 2.x
 When using the repository management you will need the following dependency modules:
 
 * Debian/Ubuntu: [Puppetlabs/apt](http://forge.puppetlabs.com/puppetlabs/apt)
-* OpenSuSE: [Darin/zypprepo](https://forge.puppetlabs.com/darin/zypprepo)
+* OpenSuSE/SLES: [Darin/zypprepo](https://forge.puppetlabs.com/darin/zypprepo)
 
 ##Usage
 
@@ -515,6 +515,7 @@ The module has been tested on:
 * CentOS 6/7
 * Ubuntu 12.04, 14.04
 * OpenSuSE 13.x
+* SLES 12
 
 Other distro's that have been reported to work:
 
