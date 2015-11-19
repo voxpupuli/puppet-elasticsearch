@@ -121,7 +121,7 @@ describe 'elasticsearch', :type => 'class' do
 
         case facts[:osfamily]
         when 'Debian'
-          context 'has override apt key' do
+          context 'has override apt key source' do
             it { is_expected.to contain_apt__source('elasticsearch').with({
               :key_source => 'https://packages.elasticsearch.org/GPG-KEY-elasticsearch',
             })}
@@ -132,7 +132,7 @@ describe 'elasticsearch', :type => 'class' do
           end
         when 'Suse'
           context 'has override yum key source' do
-            it { should contain_exec('elasticsearch_suse_import_gpg').with(:command => 'rpmkeys --import http://packages.elastic.co/GPG-KEY-elasticsearch') }
+            it { should contain_exec('elasticsearch_suse_import_gpg').with(:command => 'rpmkeys --import https://packages.elasticsearch.org/GPG-KEY-elasticsearch') }
           end
         end
 
