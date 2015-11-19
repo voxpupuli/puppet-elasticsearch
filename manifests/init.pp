@@ -93,7 +93,7 @@
 #
 # [*proxy_url*]
 #   For http and https downloads you can set a proxy server to use
-#   Format: proto://[user:pass@]server[:port]/ 
+#   Format: proto://[user:pass@]server[:port]/
 #   Defaults to: undef (proxy disabled)
 #
 # [*elasticsearch_user*]
