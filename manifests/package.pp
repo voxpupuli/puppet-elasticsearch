@@ -141,26 +141,22 @@ class elasticsearch::package {
       if ($elasticsearch::package_provider == 'package') {
 
         case $ext {
-          'deb':   { $pkg_provider = 'dpkg' }
-          'rpm':   { $pkg_provider = 'rpm'  }
+          'deb':   { Package { provider => 'dpkg', source => $pkg_source } }
+          'rpm':   { Package { provider => 'rpm', source => $pkg_source } }
           default: { fail("Unknown file extention \"${ext}\".") }
         }
 
       }
 
-    } else {
-      $pkg_source = undef
-      $pkg_provider = undef
     }
 
   # Package removal
   } else {
 
-    $pkg_source = undef
     if ($::operatingsystem == 'OpenSuSE') {
-      $pkg_provider = 'rpm'
-    } else {
-      $pkg_provider = undef
+      Package {
+        provider  => 'rpm',
+      }
     }
     $package_ensure = 'purged'
 
@@ -179,8 +175,6 @@ class elasticsearch::package {
 
     package { $elasticsearch::package_name:
       ensure   => $package_ensure,
-      source   => $pkg_source,
-      provider => $pkg_provider,
     }
 
   } else {
