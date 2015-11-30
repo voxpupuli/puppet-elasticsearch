@@ -47,7 +47,7 @@ class elasticsearch::package {
     } else {
 
       # install specific version
-      $package_ensure = $elasticsearch::real_version
+      $package_ensure = $elasticsearch::pkg_version
 
     }
 

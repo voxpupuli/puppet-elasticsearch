@@ -65,10 +65,10 @@ class elasticsearch::config {
       mode    => '0755',
     }
 
-    file { $elasticsearch::plugindir:
-      ensure  => 'directory',
-      recurse => true,
-    }
+    #file { $elasticsearch::plugindir:
+    #  ensure  => 'directory',
+    #  recurse => true,
+    #}
 
     file { $elasticsearch::datadir:
       ensure  => 'directory',
@@ -133,7 +133,13 @@ class elasticsearch::config {
     }
 
   } elsif ( $elasticsearch::ensure == 'absent' ) {
-    # don't remove anything for now
+
+    file { $elasticsearch::plugindir:
+      ensure => 'absent',
+      force  => true,
+      backup => false,
+    }
+
   }
 
 }

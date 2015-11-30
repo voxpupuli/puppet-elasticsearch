@@ -302,13 +302,13 @@ class elasticsearch(
     case $::osfamily {
       'RedHat', 'Linux', 'Suse': {
         if ($version =~ /.+-\d/) {
-          $real_version = $version
+          $pkg_version = $version
         } else {
-          $real_version = "${version}-1"
+          $pkg_version = "${version}-1"
         }
       }
       default: {
-        $real_version = $version
+        $pkg_version = $version
       }
     }
   }
@@ -398,6 +398,7 @@ class elasticsearch(
     Anchor['elasticsearch::begin']
     -> Class['elasticsearch::package']
     -> Class['elasticsearch::config']
+    -> Elasticsearch::Plugin <| |>
     -> Elasticsearch::Instance <| |>
     -> Elasticsearch::Template <| |>
 
