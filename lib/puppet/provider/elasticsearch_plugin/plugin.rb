@@ -41,11 +41,14 @@ Puppet::Type.type(:elasticsearch_plugin).provide(:plugin) do
   end
 
   def writepluginfile
-    File.write(pluginfile, pluginfile_content)
+    File.open(pluginfile, 'w') do |file|
+      file.write pluginfile_content
+    end
   end
 
   def readpluginfile
-    File.read(pluginfile)
+    f = File.open(pluginfile)
+    f.readline
   end
 
   def install1x
