@@ -65,11 +65,6 @@ class elasticsearch::config {
       mode    => '0755',
     }
 
-    #file { $elasticsearch::plugindir:
-    #  ensure  => 'directory',
-    #  recurse => true,
-    #}
-
     file { $elasticsearch::datadir:
       ensure  => 'directory',
     }
