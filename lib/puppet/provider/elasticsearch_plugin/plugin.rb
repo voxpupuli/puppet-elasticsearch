@@ -108,7 +108,7 @@ Puppet::Type.type(:elasticsearch_plugin).provide(:plugin) do
   end
 
   def is2x?
-    Puppet::Util::Package.versioncmp(@es_version, '2.0.0') >= 0
+    (Puppet::Util::Package.versioncmp(@es_version, '2.0.0') >= 0) && (Puppet::Util::Package.versioncmp(@es_version, '3.0.0') < 0)
   end
 
   def plugin_version(plugin_name)
