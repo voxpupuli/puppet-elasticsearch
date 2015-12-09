@@ -13,7 +13,7 @@ Puppet::Type.type(:elasticsearch_plugin).provide(:plugin) do
       debug "Plugin file #{pluginfile} does not exist"
       return false
     elsif File.exists?(pluginfile) && readpluginfile != pluginfile_content
-      debug "Got #{readpluginfile} Expected #{pluginfile_content}"
+      debug "Got #{readpluginfile} Expected #{pluginfile_content}. Removing for reinstall"
       self.destroy
       false
     else
@@ -23,14 +23,11 @@ Puppet::Type.type(:elasticsearch_plugin).provide(:plugin) do
   end
 
   def pluginfile_content
-    if is2x?
-      items = @resource[:name].split("/")
-      if items.count == 1 # Official plugin
-        version = plugin_version(@resource[:name])
-        return "#{@resource[:name]}/#{version}"
-      else
-        return @resource[:name]
-      end
+    return @resource[:name] if is1x?
+
+    if @resource[:name].split("/").count == 1 # Official plugin
+      version = plugin_version(@resource[:name])
+      return "#{@resource[:name]}/#{version}"
     else
       return @resource[:name]
     end
@@ -112,43 +109,19 @@ Puppet::Type.type(:elasticsearch_plugin).provide(:plugin) do
   end
 
   def plugin_version(plugin_name)
-    items = plugin_name.split("/")
-    if is1x?
-      if items.count == 3 # 'mobz/elasticsearch-head/1.2.3'
-        return items[2].scan(/\d+\.\d+\.\d+(?:\-\S+)?/).first
-      end
-    elsif is2x?
-      if items.count == 1
-        return @es_version
-      elsif items.count == 3
-        return items[2].scan(/\d+\.\d+\.\d+(?:\-\S+)?/).first
-      end
-    end
+    vendor, plugin, version = plugin_name.split('/')
+    return @es_version if is2x? && version.nil?
+    return version.scan(/\d+\.\d+\.\d+(?:\-\S+)?/).first unless version.nil?
     return false
   end
 
   def plugin_name(plugin_name)
 
-    items = plugin_name.split("/")
+    vendor, plugin, version = plugin_name.split('/')
 
-    if items.count == 1
-      endname = items[0]
-    elsif items.count > 1
-      plugin = items[1]
-      if plugin.include?('-') # example elasticsearch-head
-        if plugin.start_with?('elasticsearch-')
-          endname = plugin.gsub('elasticsearch-', '')
-        elsif plugin.start_with?('es-')
-          endname = plugin.gsub('es-', '')
-        else
-          endname = plugin
-        end
-      else
-        endname = plugin
-      end
-    else
-      raise(Puppet::ParseError, "Unable to parse plugin name: #{plugin_name}")
-    end
+    endname = vendor if plugin.nil? # If its a single name plugin like the ES 2.x official plugins
+    endname = plugin.gsub(/(elasticsearch-|es-)/, '') unless plugin.nil?
+
     return endname.downcase if is2x?
     return endname
 
