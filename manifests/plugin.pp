@@ -112,12 +112,13 @@ define elasticsearch::plugin(
     $filenameArray = split($source, '/')
     $basefilename = $filenameArray[-1]
 
-    file { "/tmp/${basefilename}":
+    $file_source = "${elasticsearch::package_dir}/${basefilename}"
+
+    file { $file_source:
       ensure => 'file',
       source => $source,
     }
 
-    $file_source = "/tmp/${basefilename}"
   } elsif ($url != undef) {
     validate_string($url)
   }
