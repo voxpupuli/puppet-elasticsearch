@@ -67,8 +67,8 @@ describe 'elasticsearch::plugin', :type => 'define' do
       } end
 
       it { should contain_elasticsearch__plugin('head') }
-      it { should contain_file('/tmp/plugin.zip').with(:source => 'puppet:///path/to/my/plugin.zip') }
-      it { should contain_elasticsearch_plugin('head').with(:ensure => 'present', :source => '/tmp/plugin.zip') }
+      it { should contain_file('/opt/elasticsearch/swdl/plugin.zip').with(:source => 'puppet:///path/to/my/plugin.zip') }
+      it { should contain_elasticsearch_plugin('head').with(:ensure => 'present', :source => '/opt/elasticsearch/swdl/plugin.zip') }
 
   end
   
