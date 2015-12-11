@@ -15,7 +15,7 @@ Puppet::Type.type(:elasticsearch_plugin).provide(:plugin) do
     elsif File.exists?(pluginfile) && readpluginfile != pluginfile_content
       debug "Got #{readpluginfile} Expected #{pluginfile_content}. Removing for reinstall"
       self.destroy
-      false
+      return false
     else
       debug "Plugin exists"
       return true
