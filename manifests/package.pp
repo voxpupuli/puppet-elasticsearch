@@ -33,8 +33,26 @@ class elasticsearch::package {
 
   #### Package management
 
+
   # set params: in operation
   if $elasticsearch::ensure == 'present' {
+
+    # Create directory to place the package file
+    exec { 'create_package_dir_elasticsearch':
+      cwd     => '/',
+      path    => ['/usr/bin', '/bin'],
+      command => "mkdir -p ${elasticsearch::package_dir}",
+      creates => $elasticsearch::package_dir,
+    }
+
+    file { $elasticsearch::package_dir:
+      ensure  => 'directory',
+      purge   => $elasticsearch::purge_package_dir,
+      force   => $elasticsearch::purge_package_dir,
+      backup  => false,
+      require => Exec['create_package_dir_elasticsearch'],
+    }
+
 
     # Check if we want to install a specific version or not
     if $elasticsearch::version == false {
@@ -47,7 +65,7 @@ class elasticsearch::package {
     } else {
 
       # install specific version
-      $package_ensure = $elasticsearch::real_version
+      $package_ensure = $elasticsearch::pkg_version
 
     }
 
@@ -60,22 +78,6 @@ class elasticsearch::package {
       }
 
       $package_dir = $elasticsearch::package_dir
-
-      # Create directory to place the package file
-      exec { 'create_package_dir_elasticsearch':
-        cwd     => '/',
-        path    => ['/usr/bin', '/bin'],
-        command => "mkdir -p ${elasticsearch::package_dir}",
-        creates => $elasticsearch::package_dir,
-      }
-
-      file { $package_dir:
-        ensure  => 'directory',
-        purge   => $elasticsearch::purge_package_dir,
-        force   => $elasticsearch::purge_package_dir,
-        backup  => false,
-        require => Exec['create_package_dir_elasticsearch'],
-      }
 
       $filenameArray = split($elasticsearch::package_url, '/')
       $basefilename = $filenameArray[-1]
@@ -159,15 +161,6 @@ class elasticsearch::package {
       }
     }
     $package_ensure = 'purged'
-
-    $package_dir = $elasticsearch::package_dir
-
-    file { $package_dir:
-      ensure => 'absent',
-      purge  => true,
-      force  => true,
-      backup => false,
-    }
 
   }
 

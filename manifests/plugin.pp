@@ -79,25 +79,13 @@ define elasticsearch::plugin(
 
   include elasticsearch
 
-  Exec {
-    path      => [ '/bin', '/usr/bin', '/usr/sbin', '/usr/local/bin', '/usr/local/sbin' ],
-    cwd       => '/',
-    user      => $elasticsearch::elasticsearch_user,
-    tries     => 6,
-    try_sleep => 10,
-    timeout   => 600,
-  }
-
   $notify_service = $elasticsearch::restart_on_change ? {
     false   => undef,
     default => Elasticsearch::Service[$instances],
   }
 
   if ($module_dir != undef) {
-      warning("module_dir settings is deprecated for plugin ${name}. The directory is now auto detected.")
-      $plugin_dir = $module_dir
-  } else {
-    $plugin_dir = plugin_dir($name)
+    warning("module_dir settings is deprecated for plugin ${name}. The directory is now auto detected.")
   }
 
   # set proxy by override or parse and use proxy_url from
@@ -116,7 +104,7 @@ define elasticsearch::plugin(
     }
   }
   else {
-    $proxy = '' # lint:ignore:empty_string_assignment
+    $proxy = undef
   }
 
   if ($source != undef) {
@@ -124,53 +112,32 @@ define elasticsearch::plugin(
     $filenameArray = split($source, '/')
     $basefilename = $filenameArray[-1]
 
-    file { "/tmp/${basefilename}":
+    $file_source = "${elasticsearch::package_dir}/${basefilename}"
+
+    file { $file_source:
       ensure => 'file',
       source => $source,
     }
 
-    $real_url = "file:///tmp/${basefilename}"
   } elsif ($url != undef) {
     validate_string($url)
-    $real_url = $url
-  } else {
-    $real_url = undef
-  }
-
-  if ($real_url == undef) {
-    $install_cmd = "${elasticsearch::plugintool}${proxy} install ${name}"
-    $exec_rets = [0,]
-  } else {
-    $install_cmd = "${elasticsearch::plugintool}${proxy} install ${name} --url ${real_url}"
-    $exec_rets = [0,1]
   }
 
   case $ensure {
     'installed', 'present': {
-      $name_file_path = "${elasticsearch::plugindir}/${plugin_dir}/.name"
-      exec {"purge_plugin_${plugin_dir}_old":
-        command => "${elasticsearch::plugintool} --remove ${plugin_dir}",
-        onlyif  => "test -e ${elasticsearch::plugindir}/${plugin_dir} && test \"$(cat ${name_file_path})\" != '${name}'",
-        before  => Exec["install_plugin_${name}"],
+
+      elasticsearch_plugin { $name:
+        ensure     => 'present',
+        source     => $file_source,
+        url        => $url,
+        proxy_args => $proxy,
+        notify     => $notify_service,
       }
-      exec {"install_plugin_${name}":
-        command => $install_cmd,
-        creates => "${elasticsearch::plugindir}/${plugin_dir}",
-        returns => $exec_rets,
-        notify  => $notify_service,
-        require => File[$elasticsearch::plugindir],
-      }
-      file {$name_file_path:
-        ensure  => file,
-        content => "${name}", # lint:ignore:only_variable_string
-        require => Exec["install_plugin_${name}"],
-      }
+
     }
     'absent': {
-      exec {"remove_plugin_${name}":
-        command => "${elasticsearch::plugintool} --remove ${plugin_dir}",
-        onlyif  => "test -d ${elasticsearch::plugindir}/${plugin_dir}",
-        notify  => $notify_service,
+      elasticsearch_plugin { $name:
+        ensure => absent,
       }
     }
     default: {

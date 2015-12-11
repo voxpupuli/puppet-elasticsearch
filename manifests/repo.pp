@@ -76,30 +76,31 @@ class elasticsearch::repo {
   }
 
   # Package pinning
-  if ($elasticsearch::package_pin == true and $elasticsearch::version != false) {
+
     case $::osfamily {
       'Debian': {
-        if !defined(Class['apt']) {
-          class { 'apt': }
+        include ::apt
+
+        if ($elasticsearch::package_pin == true and $elasticsearch::version != false) {
+          apt::pin { $elasticsearch::package_name:
+            ensure   => 'present',
+            packages => $elasticsearch::package_name,
+            version  => $elasticsearch::version,
+            priority => 1000,
+          }
         }
 
-        apt::pin { $elasticsearch::package_name:
-          ensure   => 'present',
-          packages => $elasticsearch::package_name,
-          version  => $elasticsearch::real_version,
-          priority => 1000,
-        }
       }
       'RedHat', 'Linux': {
 
-        yum::versionlock { "0:elasticsearch-${elasticsearch::real_version}.noarch":
-          ensure => 'present',
+        if ($elasticsearch::package_pin == true and $elasticsearch::version != false) {
+          yum::versionlock { "0:elasticsearch-${elasticsearch::pkg_version}.noarch":
+            ensure => 'present',
+          }
         }
       }
       default: {
         warning("Unable to pin package for OSfamily \"${::osfamily}\".")
       }
     }
-  }
-
 }

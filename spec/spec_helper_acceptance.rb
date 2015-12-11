@@ -86,6 +86,7 @@ hosts.each do |host|
     end
 
     scp_to(host, "#{files_dir}/elasticsearch-bigdesk.zip", "/tmp/elasticsearch-bigdesk.zip")
+    scp_to(host, "#{files_dir}/elasticsearch-kopf.zip", "/tmp/elasticsearch-kopf.zip")
 
   end
 
