@@ -5,7 +5,7 @@ fixtures:
       branch: '4.7.x'
     apt:
       repo: 'https://github.com/puppetlabs/puppetlabs-apt.git'
-      branch: '1.8.x'
+      branch: '2.2.x'
     zypprepo: https://github.com/deadpoint/puppet-zypprepo.git
     yum: https://github.com/CERIT-SC/puppet-yum.git
     datacat: https://github.com/richardc/puppet-datacat.git

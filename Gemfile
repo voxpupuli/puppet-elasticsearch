@@ -3,7 +3,7 @@ source 'https://rubygems.org'
 puppetversion = ENV['PUPPET_VERSION'] || '~> 3.8.0'
 gem 'puppet', puppetversion, :require => false
 
-gem 'beaker', '2.27.0'
+gem 'beaker'
 gem 'beaker-rspec'
 gem 'metadata-json-lint'
 gem 'rspec-puppet', '2.2.0'
