@@ -95,6 +95,7 @@ class elasticsearch::config {
       }
     }
 
+
     file { "${elasticsearch::params::homedir}/templates_import":
       ensure => 'directory',
       mode   => '0644',
