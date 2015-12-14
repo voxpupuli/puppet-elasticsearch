@@ -172,7 +172,7 @@ describe "elasticsearch 2x:" do
         "
 
         # Run it twice and test for idempotency
-        apply_manifest(pp, :catch_failures => true, :debug => true)
+        apply_manifest(pp, :catch_failures => true)
         expect(apply_manifest(pp, :catch_failures => true).exit_code).to be_zero
 
       end
@@ -195,7 +195,7 @@ describe "elasticsearch 2x:" do
         "
 
         # Run it twice and test for idempotency
-        apply_manifest(pp, :catch_failures => true, :debug => true)
+        apply_manifest(pp, :catch_failures => true)
         expect(apply_manifest(pp, :catch_failures => true).exit_code).to be_zero
 
       end
