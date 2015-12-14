@@ -1,7 +1,5 @@
 #Elasticsearch Puppet module
 
-[![Build Status](https://travis-ci.org/elastic/puppet-elasticsearch.png?branch=master)](https://travis-ci.org/elastic/puppet-elasticsearch)
-
 ####Table of Contents
 
 1. [Overview](#overview)
@@ -25,7 +23,7 @@ This module manages Elasticsearch (http://www.elasticsearch.org/overview/elastic
 
 The elasticsearch module sets up Elasticsearch instances and can manage plugins and templates.
 
-This module has been tested against all versions of ES 1.x (ES 1.0 - 1.7). **The module is not yet ready for ES 2.x, but it should be soon!**
+This module has been tested against all versions of ES 1.x and 2.x
 
 ##Setup
 
@@ -48,7 +46,7 @@ This module has been tested against all versions of ES 1.x (ES 1.0 - 1.7). **The
 #### Repository management
 When using the repository management you will need the following dependency modules:
 
-* Debian/Ubuntu: [Puppetlabs/apt](http://forge.puppetlabs.com/puppetlabs/apt) Version 1.8.x or lower.
+* Debian/Ubuntu: [Puppetlabs/apt](http://forge.puppetlabs.com/puppetlabs/apt)
 * OpenSuSE: [Darin/zypprepo](https://forge.puppetlabs.com/darin/zypprepo)
 
 ##Usage
@@ -161,6 +159,11 @@ elasticsearch::plugin { 'elasticsearch/elasticsearch-cloud-aws/2.4.1':
 ```
 
 Please note that this does not work when you specify 'latest' as a version number.
+
+####ES 2.x official plugins
+For the Elasticsearch commercial plugins you can refer them to the simple name.
+
+See the [Plugin installation](https://www.elastic.co/guide/en/elasticsearch/plugins/current/installation.html) for more details.
 
 ###Scripts
 
