@@ -129,7 +129,12 @@ RSpec.configure do |c|
         on host, puppet('module', 'install', 'ceritsc-yum'), { :acceptable_exit_codes => [0,1] }
       end
 
-    on(host, 'mkdir -p etc/puppet/modules/another/files/')
+      if host.is_pe?
+        on(host, 'sed -i -e "s/PATH=PATH:\/opt\/puppet\/bin:/PATH=PATH:/" ~/.ssh/environment')
+      end
+
+      on(host, 'mkdir -p etc/puppet/modules/another/files/')
+
     end
   end
 
