@@ -49,7 +49,7 @@ describe provider_class do
 
       it 'with proxy' do
         resource[:proxy_args] = '-dproxyport=3128 -dproxyhost=localhost'
-        provider.expects(:plugin).with(['-dproxyport=3128 -dproxyhost=localhost', 'install', [resource_name] ])
+        provider.expects(:plugin).with([['-dproxyport=3128', '-dproxyhost=localhost'], 'install', [resource_name] ])
         provider.create
       end
 
@@ -95,7 +95,7 @@ describe provider_class do
 
       it 'with proxy' do
         resource[:proxy_args] = '-dproxyport=3128 -dproxyhost=localhost'
-        provider.expects(:plugin).with(['-dproxyport=3128 -dproxyhost=localhost', 'install', [resource_name] ])
+        provider.expects(:plugin).with([['-dproxyport=3128', '-dproxyhost=localhost'], 'install', [resource_name] ])
         provider.create
       end
     end

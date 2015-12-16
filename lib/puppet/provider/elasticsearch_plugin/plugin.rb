@@ -73,10 +73,11 @@ Puppet::Type.type(:elasticsearch_plugin).provide(:plugin) do
   def create
     es_version
     commands = []
-    commands << @resource[:proxy_args] if @resource[:proxy_args]
+    commands << @resource[:proxy_args].split(' ') if @resource[:proxy_args]
     commands << 'install'
     commands << install1x if is1x?
     commands << install2x if is2x?
+    debug("Commands: #{commands.inspect}")
     
     plugin(commands)
     writepluginfile
