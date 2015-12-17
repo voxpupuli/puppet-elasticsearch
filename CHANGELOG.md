@@ -1,3 +1,22 @@
+##0.10.1 ( Dec 17, 2015 )
+
+###Summary
+Bugfix release for proxy functionality in plugin installation
+
+####Features
+
+####Bugfixes
+* Proxy settings were not passed on correctly
+
+####Changes
+* Cleanup .pmtignore to exclude more files
+
+####Testing changes
+
+####Known bugs
+* Possible package conflicts when using ruby/python defines with main package name
+
+
 ##0.10.0 ( Dec 14, 2015 )
 
 ###Summary
