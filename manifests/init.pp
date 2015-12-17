@@ -93,7 +93,7 @@
 #
 # [*proxy_url*]
 #   For http and https downloads you can set a proxy server to use
-#   Format: proto://[user:pass@]server[:port]/ 
+#   Format: proto://[user:pass@]server[:port]/
 #   Defaults to: undef (proxy disabled)
 #
 # [*elasticsearch_user*]
@@ -135,6 +135,14 @@
 #
 # [*repo_version*]
 #   Our repositories are versioned per major version (0.90, 1.0) select here which version you want
+#
+# [*repo_key_id*]
+#   String.  The apt GPG key id
+#   Default: D88E42B4
+#
+# [*repo_key_source*]
+#   String.  URL of the apt GPG key
+#   Default: http://packages.elastic.co/GPG-KEY-elasticsearch
 #
 # [*logging_config*]
 #   Hash representation of information you want in the logging.yml file
@@ -228,6 +236,8 @@ class elasticsearch(
   $java_package          = undef,
   $manage_repo           = false,
   $repo_version          = undef,
+  $repo_key_id           = 'D88E42B4',
+  $repo_key_source       = 'http://packages.elastic.co/GPG-KEY-elasticsearch',
   $logging_file          = undef,
   $logging_config        = undef,
   $logging_template      = undef,
@@ -302,13 +312,13 @@ class elasticsearch(
     case $::osfamily {
       'RedHat', 'Linux', 'Suse': {
         if ($version =~ /.+-\d/) {
-          $real_version = $version
+          $pkg_version = $version
         } else {
-          $real_version = "${version}-1"
+          $pkg_version = "${version}-1"
         }
       }
       default: {
-        $real_version = $version
+        $pkg_version = $version
       }
     }
   }
@@ -398,6 +408,7 @@ class elasticsearch(
     Anchor['elasticsearch::begin']
     -> Class['elasticsearch::package']
     -> Class['elasticsearch::config']
+    -> Elasticsearch::Plugin <| |>
     -> Elasticsearch::Instance <| |>
     -> Elasticsearch::Template <| |>
 

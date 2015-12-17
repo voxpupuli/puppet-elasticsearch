@@ -1,3 +1,49 @@
+##0.10.1 ( Dec 17, 2015 )
+
+###Summary
+Bugfix release for proxy functionality in plugin installation
+
+####Features
+
+####Bugfixes
+* Proxy settings were not passed on correctly
+
+####Changes
+* Cleanup .pmtignore to exclude more files
+
+####Testing changes
+
+####Known bugs
+* Possible package conflicts when using ruby/python defines with main package name
+
+
+##0.10.0 ( Dec 14, 2015 )
+
+###Summary
+Module now works with ES 2.x completely
+
+####Features
+* Work with ES 2.x new plugin system and remain to work with 1.x
+* Implemented datacat module from Richard Clamp so other modules can hook into it for adding configuration options
+* Fixed init and systemd files to work with 1.x and 2.x
+* Made the module work with newer pl-apt module versions
+* Export es_include so it is passed on to ES
+* Ability to supply long gpg key for apt repo
+
+####Bugfixes
+* Documentation and typographical fixes
+* Do not force puppet:/// schema resource
+* Use package resource defaults rather than setting provider and source
+
+####Changes
+
+####Testing changes
+* Improve unit testing and shorten the runtime
+
+####Known bugs
+* Possible package conflicts when using ruby/python defines with main package name
+
+
 ##0.9.9 ( Sep 01, 2015 )
 
 ###Summary
