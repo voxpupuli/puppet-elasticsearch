@@ -82,6 +82,15 @@ define elasticsearch::service(
         init_template      => $init_template,
       }
     }
+    'openrc': {
+      elasticsearch::service::openrc { $name:
+        ensure             => $ensure,
+        status             => $status,
+        init_defaults_file => $init_defaults_file,
+        init_defaults      => $init_defaults,
+        init_template      => $init_template,
+      }
+    }
     default: {
       fail("Unknown service provider ${elasticsearch::real_service_provider}")
     }
