@@ -4,8 +4,15 @@ Puppet::Type.type(:elasticsearch_plugin).provide(:plugin) do
   desc "A provider for the resource type `elasticsearch_plugin`,
         which handles plugin installation"
 
-  commands :plugin => '/usr/share/elasticsearch/bin/plugin'
-  commands :es => '/usr/share/elasticsearch/bin/elasticsearch'
+  os = Facter['osfamily'].value
+  if os == 'OpenBSD'
+    commands :plugin => '/usr/local/elasticsearch/bin/plugin'
+    commands :es => '/usr/local/elasticsearch/bin/elasticsearch'
+    commands :javapathhelper => '/usr/local/bin/javaPathHelper'
+  else
+    commands :plugin => '/usr/share/elasticsearch/bin/plugin'
+    commands :es => '/usr/share/elasticsearch/bin/elasticsearch'
+  end
 
   def exists?
     es_version
@@ -100,11 +107,23 @@ Puppet::Type.type(:elasticsearch_plugin).provide(:plugin) do
 
   def es_version
     return @es_version if @es_version
+    es_save = ENV['ES_INCLUDE']
+    java_save = ENV['JAVA_HOME']
+
+    os = Facter['osfamily'].value
+    if os == 'OpenBSD'
+      ENV['JAVA_HOME'] = javapathhelper('-h', 'elasticsearch').chomp
+      ENV['ES_INCLUDE'] = '/etc/elasticsearch/elasticsearch.in.sh'
+    end
     begin
       version = es('-version')
     rescue
+      ENV['ES_INCLUDE'] = es_save if es_save
+      ENV['JAVA_HOME'] = java_save if java_save
       raise "Unknown ES version. Got #{version.inspect}"
     ensure
+      ENV['ES_INCLUDE'] = es_save if es_save
+      ENV['JAVA_HOME'] = java_save if java_save
       @es_version = version.scan(/\d+\.\d+\.\d+(?:\-\S+)?/).first
       debug "Found ES version #{@es_version}"
     end
