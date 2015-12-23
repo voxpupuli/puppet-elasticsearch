@@ -23,6 +23,7 @@ define elasticsearch::shield::esuser($username, $password, $roles=$title) {
   
   # TODO: what happens if we add roles - this route we only set role on useradd
   exec { "useradd shield::esuser::${username}":
+    user    => $::elasticsearch::elasticsearch_user,
     path    => [ '/usr/bin', '/usr/share/elasticsearch/bin/shield' ],
     command => "esusers useradd ${username} -p \"${password}\" -r ${roles} &> /dev/null",
     unless  => "esusers list ${username} &> /dev/null",
