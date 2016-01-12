@@ -79,7 +79,18 @@ Puppet::Type.type(:elasticsearch_plugin).provide(:plugin) do
     commands << install2x if is2x?
     debug("Commands: #{commands.inspect}")
     
-    plugin(commands)
+    retry_count = 3
+    retry_times = 0
+    begin
+      plugin(commands)
+    rescue Puppet::ExecutionFailure => e
+      retry_times += 1
+      debug("Failed to install plugin. Retrying... #{retry_times} of #{retry_count}")
+      sleep 2
+      retry if retry_times < retry_count
+      raise "Failed to install plugin. Received error: #{e.inspect}"
+    end
+
     writepluginfile
   end
 
