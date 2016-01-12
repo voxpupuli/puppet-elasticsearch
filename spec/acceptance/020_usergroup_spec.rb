@@ -71,7 +71,8 @@ describe "elasticsearch class:" do
 
     it 'should run successfully' do
       pp = "class { 'elasticsearch': ensure => 'absent' }
-            elasticsearch::instance{ 'es-01': ensure => 'absent' }
+            elasticsearch::instance{ 'es-01': ensure => 'absent' } ->
+            file { '/usr/share/elasticsearch': ensure => 'absent', force => true }
            "
 
       apply_manifest(pp, :catch_failures => true)
