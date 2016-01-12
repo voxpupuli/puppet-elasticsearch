@@ -101,9 +101,7 @@ Puppet::Type.type(:elasticsearch_plugin).provide(:plugin) do
   def es_version
     return @es_version if @es_version
     begin
-      version = es('-v') # ES 1.x
-    rescue
-      version = es('--version') # ES 2.x
+      version = es('-version')
     rescue
       raise "Unknown ES version. Got #{version.inspect}"
     ensure

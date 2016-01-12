@@ -47,7 +47,7 @@ end
         )
         allow(File).to receive(:open)
         provider = prov_c.new(resource)
-        provider.expects(:es).with('-v').returns('Version: 1.7.3, Build: b88f43f/2015-07-29T09:54:16Z, JVM: 1.7.0_79')
+        provider.expects(:es).with('-version').returns('Version: 1.7.3, Build: b88f43f/2015-07-29T09:54:16Z, JVM: 1.7.0_79')
         provider.expects(:plugin).with(['install', ['lmenezes/elasticsearch-kopf']])
         provider.create
       end
