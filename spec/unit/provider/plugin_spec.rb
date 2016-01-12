@@ -21,7 +21,7 @@ describe provider_class do
 
   describe "ES 1.x" do
     before(:each) do
-      provider_class.expects(:es).with('-v').returns("Version: 1.7.1, Build: b88f43f/2015-07-29T09:54:16Z, JVM: 1.7.0_79")
+      provider_class.expects(:es).with('-version').returns("Version: 1.7.1, Build: b88f43f/2015-07-29T09:54:16Z, JVM: 1.7.0_79")
       allow(File).to receive(:open)
       provider.es_version
     end
@@ -67,8 +67,7 @@ describe provider_class do
   describe "ES 2.x" do
 
     before(:each) do
-      allow(provider_class).to receive(:es).with('-v').and_raise(Puppet::ExecutionFailure)
-      allow(provider_class).to receive(:es).with('--version').and_return("Version: 2.0.0, Build: de54438/2015-10-22T08:09:48Z, JVM: 1.8.0_66")
+      allow(provider_class).to receive(:es).with('-version').and_return("Version: 2.0.0, Build: de54438/2015-10-22T08:09:48Z, JVM: 1.8.0_66")
       allow(File).to receive(:open)
       provider.es_version
     end
