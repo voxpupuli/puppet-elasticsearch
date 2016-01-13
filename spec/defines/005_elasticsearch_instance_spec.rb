@@ -312,11 +312,11 @@ describe 'elasticsearch::instance', :type => 'define' do
     it { should contain_file('/etc/elasticsearch/es-01/logging.yml').with(:owner => 'myesuser', :group => 'myesgroup') }
   end
 
-    context "setting different service status then main class" do
+  context "setting different service status then main class" do
 
     let(:pre_condition) { 'class {"elasticsearch": status => "enabled" }'  }
 
-    context "staus option" do
+    context "status option" do
 
       let :params do {
         :status => 'running'
@@ -325,5 +325,22 @@ describe 'elasticsearch::instance', :type => 'define' do
       it { should contain_service('elasticsearch-instance-es-01').with(:ensure => 'running', :enable => false) }
 
     end
+
+  end
+
+  context "init_template" do
+
+    context "default" do
+      let(:pre_condition) { 'class {"elasticsearch": }'  }
+
+      it { should contain_elasticsearch__service('es-01').with(:init_template => 'elasticsearch/etc/init.d/elasticsearch.RedHat.erb') }
+    end
+
+    context "override in main class" do
+      let(:pre_condition) { 'class {"elasticsearch": init_template => "elasticsearch/etc/init.d/elasticsearch.systemd.erb" }'  }
+
+      it { should contain_elasticsearch__service('es-01').with(:init_template => 'elasticsearch/etc/init.d/elasticsearch.systemd.erb') }
+    end
+
   end
 end
