@@ -227,7 +227,7 @@ class elasticsearch(
   $service_provider      = 'init',
   $init_defaults         = undef,
   $init_defaults_file    = undef,
-  $init_template         = undef,
+  $init_template         = "${module_name}/etc/init.d/${elasticsearch::params::init_template}",
   $config                = undef,
   $datadir               = $elasticsearch::params::datadir,
   $plugindir             = $elasticsearch::params::plugindir,
