@@ -113,7 +113,7 @@ define elasticsearch::service::init(
   }
 
 
-  if ( $status != 'unmanaged' and $ensure == 'present' ) {
+  if ( $ensure == 'present' ) {
 
     # defaults file content. Either from a hash or file
     if ($init_defaults_file != undef) {
@@ -127,11 +127,13 @@ define elasticsearch::service::init(
         notify => $notify_service,
       }
 
-    } elsif ($init_defaults != undef and is_hash($init_defaults) ) {
+    } else {
 
-      if(has_key($init_defaults, 'ES_USER')) {
-        if($init_defaults['ES_USER'] != $elasticsearch::elasticsearch_user) {
-          fail('Found ES_USER setting for init_defaults but is not same as elasticsearch_user setting. Please use elasticsearch_user setting.')
+      if ($init_defaults != undef and is_hash($init_defaults) ) {
+        if(has_key($init_defaults, 'ES_USER')) {
+          if($init_defaults['ES_USER'] != $elasticsearch::elasticsearch_user) {
+            fail('Found ES_USER setting for init_defaults but is not same as elasticsearch_user setting. Please use elasticsearch_user setting.')
+          }
         }
       }
 
@@ -163,7 +165,7 @@ define elasticsearch::service::init(
 
     }
 
-  } elsif ($status != 'unmanaged') {
+  } else {
 
     file { "/etc/init.d/elasticsearch-${name}":
       ensure    => 'absent',
@@ -177,19 +179,15 @@ define elasticsearch::service::init(
 
   }
 
-
-  if ( $status != 'unmanaged') {
-
-    # action
-    service { "elasticsearch-instance-${name}":
-      ensure     => $service_ensure,
-      enable     => $service_enable,
-      name       => "elasticsearch-${name}",
-      hasstatus  => $elasticsearch::params::service_hasstatus,
-      hasrestart => $elasticsearch::params::service_hasrestart,
-      pattern    => $elasticsearch::params::service_pattern,
-    }
-
+  # action
+  service { "elasticsearch-instance-${name}":
+    ensure     => $service_ensure,
+    enable     => $service_enable,
+    name       => "elasticsearch-${name}",
+    hasstatus  => $elasticsearch::params::service_hasstatus,
+    hasrestart => $elasticsearch::params::service_hasrestart,
+    pattern    => $elasticsearch::params::service_pattern,
   }
+
 
 }
