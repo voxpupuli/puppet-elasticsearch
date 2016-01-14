@@ -262,7 +262,7 @@ define elasticsearch::instance(
       $global_init_defaults = { }
     }
 
-    $instance_init_defaults_main = { 'CONF_DIR' => $instance_configdir, 'CONF_FILE' => "${instance_configdir}/elasticsearch.yml", 'LOG_DIR' => "/var/log/elasticsearch/${name}", 'ES_HOME' => '/usr/share/elasticsearch' }
+    $instance_init_defaults_main = { 'CONF_DIR' => $instance_configdir, 'CONF_FILE' => "${instance_configdir}/elasticsearch.yml", 'LOG_DIR' => "/var/log/elasticsearch/${name}", 'ES_HOME' => '/usr/share/elasticsearch', 'PATH' => $::path }
 
     if (is_hash($init_defaults)) {
       $instance_init_defaults = $init_defaults
