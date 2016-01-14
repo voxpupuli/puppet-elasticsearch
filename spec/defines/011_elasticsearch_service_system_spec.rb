@@ -43,10 +43,10 @@ describe 'elasticsearch::service::systemd', :type => 'define' do
       :status => 'unmanaged'
     } end
 
+
     it { should contain_elasticsearch__service__systemd('es-01') }
-    it { should_not contain_service('elasticsearch-instance-es-01') }
-    it { should_not contain_file('/lib/systemd/system/elasticsearch-es-01.service') }
-    it { should_not contain_file('/etc/sysconfig/elasticsearch-es-01') }
+    it { should contain_service('elasticsearch-instance-es-01').with(:enable => false) }
+    it { should contain_augeas('defaults_es-01') }
 
   end
 

@@ -79,7 +79,8 @@ define elasticsearch::instance(
   $logging_template   = undef,
   $logging_level      = $elasticsearch::default_logging_level,
   $init_defaults      = undef,
-  $init_defaults_file = undef
+  $init_defaults_file = undef,
+  $init_template      = $elasticsearch::init_template
 ) {
 
   require elasticsearch::params
@@ -211,7 +212,6 @@ define elasticsearch::instance(
       owner   => $elasticsearch::elasticsearch_user,
       group   => undef,
       mode    => '0644',
-      recurse => true,
       require => [ Exec["mkdir_datadir_elasticsearch_${name}"], Class['elasticsearch::package'] ],
       before  => Elasticsearch::Service[$name],
     }
@@ -309,7 +309,7 @@ define elasticsearch::instance(
     status             => $status,
     init_defaults      => $init_defaults_new,
     init_defaults_file => $init_defaults_file,
-    init_template      => "${module_name}/etc/init.d/${elasticsearch::params::init_template}",
+    init_template      => $init_template,
     require            => $require_service,
     before             => $before_service,
   }
