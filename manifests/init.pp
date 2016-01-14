@@ -120,6 +120,11 @@
 # [*config*]
 #   Elasticsearch configuration hash
 #
+# [*manage_datadir*]
+#   Whether or not this module should create the datadir/s.  This allows you to
+#   create the directories for instance using LVM outside of this module.
+#   Defaults to <tt>true</tt>.
+#
 # [*datadir*]
 #   Allows you to set the data directory of Elasticsearch
 #
@@ -229,6 +234,7 @@ class elasticsearch(
   $init_defaults_file    = undef,
   $init_template         = "${module_name}/etc/init.d/${elasticsearch::params::init_template}",
   $config                = undef,
+  $manage_datadir        = true,
   $datadir               = $elasticsearch::params::datadir,
   $plugindir             = $elasticsearch::params::plugindir,
   $plugintool            = $elasticsearch::params::plugintool,
@@ -298,6 +304,7 @@ class elasticsearch(
   # java install validation
   validate_bool($java_install)
 
+  # manage repo
   validate_bool($manage_repo)
 
   if ($manage_repo == true) {

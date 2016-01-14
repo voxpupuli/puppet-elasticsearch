@@ -222,9 +222,9 @@ describe 'elasticsearch::instance', :type => 'define' do
        :config  => { 'path.data' => '/var/lib/elasticsearch/otherdata' }
      } end
 
-      it { should contain_exec('mkdir_datadir_elasticsearch_es-01') }
-      it { should contain_file('/var/lib/elasticsearch/data').with( :ensure => 'directory') }
-      it { should_not contain_file('/var/lib/elasticsearch/otherdata').with( :ensure => 'directory') }
+     it { should contain_exec('mkdir_datadir_elasticsearch_es-01') }
+     it { should contain_file('/var/lib/elasticsearch/data').with( :ensure => 'directory') }
+     it { should_not contain_file('/var/lib/elasticsearch/otherdata').with( :ensure => 'directory') }
    end
 
    context "Conflicting setting path => data" do
@@ -250,6 +250,32 @@ describe 'elasticsearch::instance', :type => 'define' do
       it { should contain_file('/var/lib/elasticsearch/data').with( :ensure => 'directory') }
    end
 
+   context "With manage_datadir set to false" do
+     let(:pre_condition) { 'class {"elasticsearch": }' }
+     let :params do {
+       :manage_datadir => false,
+       :datadir => '/var/lib/elasticsearch/data',
+       :config  => { 'path' => { 'home' => '/var/lib/elasticsearch' } }
+     } end
+
+     it { should_not contain_exec('mkdir_datadir_elasticsearch_es-01') }
+     it { should_not contain_file('/var/lib/elasticsearch/data').with( :ensure => 'directory') }
+   end
+
+   context "With manage_datadir set to false and dir is already in catalog" do
+     let(:pre_condition) { 'file {"/var/lib/elasticsearch/data":
+                              ensure => directory,
+                            }
+                            class {"elasticsearch": }' }
+     let :params do {
+       :manage_datadir => false,
+       :datadir => '/var/lib/elasticsearch/data',
+       :config  => { 'path' => { 'home' => '/var/lib/elasticsearch' } }
+     } end
+
+     it { should_not contain_exec('mkdir_datadir_elasticsearch_es-01') }
+     it { should contain_file('/var/lib/elasticsearch/data').that_comes_before('Elasticsearch::Service[es-01]') }
+   end
 
   end
 
