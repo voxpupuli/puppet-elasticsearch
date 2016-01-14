@@ -78,7 +78,7 @@ define elasticsearch::instance(
   $status             = $elasticsearch::status,
   $config             = undef,
   $configdir          = undef,
-  $manage_datadir     = true,
+  $manage_datadir     = $elasticsearch::manage_datadir,
   $datadir            = undef,
   $logging_file       = undef,
   $logging_config     = undef,
