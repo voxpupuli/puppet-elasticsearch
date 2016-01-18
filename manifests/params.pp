@@ -124,6 +124,9 @@ class elasticsearch::params {
     'OpenSuSE': {
       $package = [ 'elasticsearch' ]
     }
+    'Gentoo': {
+      $package = [ 'app-misc/elasticsearch' ]
+    }
     default: {
       fail("\"${module_name}\" provides no package default value
             for \"${::operatingsystem}\"")
@@ -210,6 +213,16 @@ class elasticsearch::params {
       $defaults_location  = '/etc/sysconfig'
       $init_template      = 'elasticsearch.systemd.erb'
       $pid_dir            = '/var/run/elasticsearch'
+    }
+    'Gentoo': {
+      $service_name       = 'elasticsearch'
+      $service_hasrestart = true
+      $service_hasstatus  = true
+      $service_pattern    = $service_name
+      $service_providers  = 'openrc'
+      $defaults_location  = '/etc/conf.d'
+      $init_template      = 'elasticsearch.openrc.erb'
+      $pid_dir            = '/run/elasticsearch'
     }
     default: {
       fail("\"${module_name}\" provides no service parameters
