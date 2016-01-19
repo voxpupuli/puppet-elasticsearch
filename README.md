@@ -96,7 +96,6 @@ elasticsearch::instance { 'es-01': }
 This will set up its own data directory and set the node name to `$hostname-$instance_name`
 
 ####Advanced options
-
 Instance specific options can be given:
 
 ```puppet
@@ -114,19 +113,37 @@ See [Advanced features](#advanced-features) for more information
 Install [a variety of plugins](http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/modules-plugins.html#known-plugins). Note that `module_dir` is where the plugin will install itself to and must match that published by the plugin author; it is not where you would like to install it yourself.
 
 ####From official repository
+Direclty inside puppet code:
 ```puppet
 elasticsearch::plugin{'lmenezes/elasticsearch-kopf':
   instances  => 'instance_name'
 }
 ```
+or with hiera binding:
+```YAML
+---
+elasticsearch::plugins:
+    lmenezes/elasticsearch-kopf:
+        instances: 'instance_name'
+```
+
+
 ####From custom url
+Direclty inside puppet code:
 ```puppet
 elasticsearch::plugin{ 'jetty':
   url        => 'https://oss-es-plugins.s3.amazonaws.com/elasticsearch-jetty/elasticsearch-jetty-1.2.1.zip',
   instances  => 'instance_name'
 }
 ```
-
+or with hiera binding:
+```YAML
+---
+elasticsearch::plugins:
+    jetty:
+        url: 'https://oss-es-plugins.s3.amazonaws.com/elasticsearch-jetty/elasticsearch-jetty-1.2.1.zip'
+        instances: 'instance_name'
+```
 
 ####Using a proxy
 You can also use a proxy if required by setting the `proxy_host` and `proxy_port` options:
@@ -136,6 +153,15 @@ elasticsearch::plugin { 'lmenezes/elasticsearch-kopf',
   proxy_host => 'proxy.host.com',
   proxy_port => 3128
 }
+```
+or with hiera binding:
+```YAML
+---
+elasticsearch::plugins:
+    lmenezes/elasticsearch-kopf:
+        instances: 'instance_name'
+        proxy_host: 'proxy.host.com'
+        proxy_port: 3128
 ```
 
 #####Plugin name could be:
@@ -189,6 +215,14 @@ elasticsearch::template { 'templatename':
 }
 ```
 
+The same result could be achieved with hiera:
+```YAML
+---
+elasticsearch::templates :
+    templatename :
+        file : 'puppet:///path/to/template.json'
+```
+
 #### Add a new template using content
 
 This will install and/or replace the template in Elasticsearch:
@@ -197,6 +231,17 @@ This will install and/or replace the template in Elasticsearch:
 elasticsearch::template { 'templatename':
   content => '{"template":"*","settings":{"number_of_replicas":0}}'
 }
+```
+
+The same result could be achieved with hiera:
+```YAML
+---
+elasticsearch::templates :
+    templatename :
+        content :
+            template: "*"
+            settings:
+                number_of_replicas: 0
 ```
 
 #### Delete a template
@@ -281,7 +326,7 @@ class { 'elasticsearch':
 ```
 Setting proxy_url to a location will enable download using the provided proxy
 server. This parameter is also used by elasticsearch::plugin. Setting the port
-in the proxy_url is mandatory. proxy_url defaults to undef (proxy disabled). 
+in the proxy_url is mandatory. proxy_url defaults to undef (proxy disabled).
 
 #####puppet://
 ```puppet

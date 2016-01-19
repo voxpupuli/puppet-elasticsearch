@@ -26,7 +26,7 @@
 #
 # [*content*]
 #   Contents of the template ( json )
-#   Value type is string
+#   Value types are string or hash
 #   Default value: undef
 #   This variable is optional
 #
@@ -54,7 +54,7 @@ define elasticsearch::template(
   $port    = 9200
 ) {
 
-  require elasticsearch
+  include elasticsearch
 
   # ensure
   if ! ($ensure in [ 'present', 'absent' ]) {
@@ -84,8 +84,18 @@ define elasticsearch::template(
       fail('The variables "file" and "content" cannot be empty when inserting or updating a template.')
     } elsif $file != undef and $content != undef {
       fail('The variables "file" and "content" cannot be used together when inserting or updating a template.')
-    } else { # we are good to go. notify to insert in case we deleted
+    } elsif $file != undef  { # we are good to go. notify to insert in case we deleted
       $insert_notify = Exec[ "insert_template_${name}" ]
+    } elsif $content != undef {
+      if is_hash($content) { # Content from hiera
+        $real_content = inline_template('<%= @content.to_json.to_s %>')
+        $insert_notify = Exec[ "insert_template_${name}" ]
+      } elsif is_string($content) {
+        $real_content = $content
+        $insert_notify = Exec[ "insert_template_${name}" ]
+      } else {
+        fail('The variable "content" must be a string or a hash.')
+      }
     }
 
   } else {
@@ -127,7 +137,7 @@ define elasticsearch::template(
       # place the template file using content
       file { "${elasticsearch::params::homedir}/templates_import/elasticsearch-template-${name}.json":
         ensure  => file,
-        content => $content,
+        content => $real_content,
         notify  => Exec[ "delete_template_${name}" ],
         require => File[ "${elasticsearch::params::homedir}/templates_import" ],
       }
