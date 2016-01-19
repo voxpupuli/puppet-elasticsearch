@@ -38,7 +38,7 @@ describe 'elasticsearch::service::init', :type => 'define' do
   context "unmanaged" do
       let :params do {
         :ensure => 'present',
-	:status => 'unmanaged'
+        :status => 'unmanaged'
       } end
 
     it { should contain_elasticsearch__service__init('es-01') }
@@ -52,8 +52,8 @@ describe 'elasticsearch::service::init', :type => 'define' do
     context "Set via file" do
       let :params do {
         :ensure => 'present',
-	:status => 'enabled',
-	:init_defaults_file => 'puppet:///path/to/initdefaultsfile'
+        :status => 'enabled',
+        :init_defaults_file => 'puppet:///path/to/initdefaultsfile'
       } end
 
       it { should contain_file('/etc/sysconfig/elasticsearch-es-01').with(:source => 'puppet:///path/to/initdefaultsfile', :notify => 'Service[elasticsearch-instance-es-01]', :before => 'Service[elasticsearch-instance-es-01]') }
@@ -62,8 +62,8 @@ describe 'elasticsearch::service::init', :type => 'define' do
     context "Set via hash" do
       let :params do {
         :ensure => 'present',
-	:status => 'enabled',
-	:init_defaults => {'ES_HOME' => '/usr/share/elasticsearch' }
+        :status => 'enabled',
+        :init_defaults => {'ES_HOME' => '/usr/share/elasticsearch' }
       } end
 
       it { should contain_augeas('defaults_es-01').with(:incl => '/etc/sysconfig/elasticsearch-es-01', :changes => "set ES_GROUP 'elasticsearch'\nset ES_HOME '/usr/share/elasticsearch'\nset ES_USER 'elasticsearch'\nset MAX_OPEN_FILES '65535'\n", :notify => 'Service[elasticsearch-instance-es-01]', :before => 'Service[elasticsearch-instance-es-01]') }
@@ -75,8 +75,8 @@ describe 'elasticsearch::service::init', :type => 'define' do
       context "Set via file" do
         let :params do {
           :ensure => 'present',
-	  :status => 'enabled',
-	  :init_defaults_file => 'puppet:///path/to/initdefaultsfile'
+          :status => 'enabled',
+          :init_defaults_file => 'puppet:///path/to/initdefaultsfile'
         } end
 
         it { should contain_file('/etc/sysconfig/elasticsearch-es-01').with(:source => 'puppet:///path/to/initdefaultsfile', :notify => nil, :before => 'Service[elasticsearch-instance-es-01]') }
@@ -85,8 +85,8 @@ describe 'elasticsearch::service::init', :type => 'define' do
       context "Set via hash" do
         let :params do {
           :ensure => 'present',
-  	  :status => 'enabled',
-  	  :init_defaults => {'ES_HOME' => '/usr/share/elasticsearch' }
+          :status => 'enabled',
+          :init_defaults => {'ES_HOME' => '/usr/share/elasticsearch' }
         } end
 
         it { should contain_augeas('defaults_es-01').with(:incl => '/etc/sysconfig/elasticsearch-es-01', :changes => "set ES_GROUP 'elasticsearch'\nset ES_HOME '/usr/share/elasticsearch'\nset ES_USER 'elasticsearch'\nset MAX_OPEN_FILES '65535'\n", :notify => nil, :before => 'Service[elasticsearch-instance-es-01]') }
@@ -102,8 +102,8 @@ describe 'elasticsearch::service::init', :type => 'define' do
     context "Via template" do
       let :params do {
         :ensure => 'present',
-	:status => 'enabled',
-	:init_template => 'elasticsearch/etc/init.d/elasticsearch.RedHat.erb'
+        :status => 'enabled',
+        :init_template => 'elasticsearch/etc/init.d/elasticsearch.RedHat.erb'
       } end
 
       it { should contain_file('/etc/init.d/elasticsearch-es-01').with(:notify => 'Service[elasticsearch-instance-es-01]', :before => 'Service[elasticsearch-instance-es-01]') }
@@ -114,8 +114,8 @@ describe 'elasticsearch::service::init', :type => 'define' do
 
       let :params do {
         :ensure => 'present',
-	:status => 'enabled',
-	:init_template => 'elasticsearch/etc/init.d/elasticsearch.RedHat.erb'
+        :status => 'enabled',
+        :init_template => 'elasticsearch/etc/init.d/elasticsearch.RedHat.erb'
       } end
 
       it { should contain_file('/etc/init.d/elasticsearch-es-01').with(:notify => nil, :before => 'Service[elasticsearch-instance-es-01]') }
