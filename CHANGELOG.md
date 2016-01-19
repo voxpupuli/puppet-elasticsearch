@@ -1,3 +1,29 @@
+##0.10.2 ( Jan 19, 2016 )
+
+###Summary
+Bugfix release and adding Gentoo support
+
+####Features
+* Added Gentoo support
+
+####Bugfixes
+* Create init script when set to unmanaged
+* init_template variable was not passed on correctly to other classes / defines
+* Fix issue with plugin type that caused run to stall
+* Export ES_GC_LOG_FILE in init scripts
+
+####Changes
+* Improve documentation about init_defaults
+* Update common files
+* Removed recurse option on data directory management
+* Add retry functionality to plugin type
+
+####Testing changes
+
+####Known bugs
+* Possible package conflicts when using ruby/python defines with main package name
+
+
 ##0.10.1 ( Dec 17, 2015 )
 
 ###Summary
