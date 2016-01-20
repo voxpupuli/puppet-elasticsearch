@@ -147,6 +147,9 @@ class elasticsearch::package {
           'rpm':   { Package { provider => 'rpm', source => $pkg_source } }
           default: { fail("Unknown file extention \"${ext}\".") }
         }
+        
+        # restart services after packages updates
+        Package[$elasticsearch::package_name] ~> Elasticsearch::Service <| |>
 
       }
 
