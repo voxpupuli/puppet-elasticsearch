@@ -167,8 +167,15 @@ class elasticsearch::package {
   if ($elasticsearch::package_provider == 'package') {
 
     package { $elasticsearch::package_name:
-      ensure   => $package_ensure,
+      ensure => $package_ensure,
+      notify => Exec['remove_plugin_dir'],
     }
+
+    exec { 'remove_plugin_dir':
+      refreshonly => true,
+      command     => "rm -rf ${elasticsearch::plugindir}",
+    }
+
 
   } else {
     fail("\"${elasticsearch::package_provider}\" is not supported")
