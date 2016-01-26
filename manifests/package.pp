@@ -37,6 +37,8 @@ class elasticsearch::package {
   # set params: in operation
   if $elasticsearch::ensure == 'present' {
 
+    Package[$elasticsearch::package_name] ~> Elasticsearch::Service <| |>
+
     # Create directory to place the package file
     exec { 'create_package_dir_elasticsearch':
       cwd     => '/',
