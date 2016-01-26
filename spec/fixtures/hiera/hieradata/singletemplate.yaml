@@ -1,0 +1,46 @@
+---
+elasticsearch::instances:
+  es-01:
+    config:
+      node.name: es-01
+elasticsearch::templates:
+  foo:
+    content:
+      mappings:
+        _default_:
+          _all:
+            enabled: true
+          dynamic_templates:
+          - string_fields:
+              mapping:
+                fields:
+                  raw:
+                    ignore_above: 256
+                    index: not_analyzed
+                    type: string
+                  '{name}':
+                    index: analyzed
+                    omit_norms: true
+                    type: string
+                type: multi_field
+              match: '*'
+              match_mapping_type: string
+          properties:
+            '@version':
+              index: not_analyzed
+              type: string
+            geoip:
+              dynamic: true
+              path: full
+              properties:
+                location:
+                  type: geo_point
+              type: object
+      settings:
+        analysis:
+          analyzer:
+            default:
+              stopwords: _none_
+              type: standard
+        index.refresh_interval: 5s
+      template: logstash-*

@@ -3,7 +3,7 @@
 # /etc/init.d/elasticsearch-<%= @name %> -- startup script for Elasticsearch
 #
 # Written by Miquel van Smoorenburg <miquels@cistron.nl>.
-# Modified for Debian GNU/Linux	by Ian Murdock <imurdock@gnu.ai.mit.edu>.
+# Modified for Debian GNU/Linux by Ian Murdock <imurdock@gnu.ai.mit.edu>.
 # Modified for Tomcat by Stefan Gybas <sgybas@debian.org>.
 # Modified for Tomcat6 by Thierry Carrez <thierry.carrez@ubuntu.com>.
 # Additional improvements by Jason Brittain <jason.brittain@mulesoft.com>.
@@ -25,15 +25,15 @@ DESC="Elasticsearch Server <%= @name %>"
 DEFAULT=/etc/default/$NAME
 
 if [ `id -u` -ne 0 ]; then
-	echo "You need root privileges to run this script"
-	exit 1
+    echo "You need root privileges to run this script"
+    exit 1
 fi
 
 
 . /lib/lsb/init-functions
 
 if [ -r /etc/default/rcS ]; then
-	. /etc/default/rcS
+    . /etc/default/rcS
 fi
 
 
@@ -98,7 +98,7 @@ MAX_MAP_COUNT=262144
 
 # overwrite settings from default file
 if [ -f "$DEFAULT" ]; then
-	. "$DEFAULT"
+    . "$DEFAULT"
 fi
 
 # Define other required variables
@@ -118,90 +118,90 @@ export ES_GC_LOG_FILE
 test -x $DAEMON || exit 0
 
 checkJava() {
-	if [ -x "$JAVA_HOME/bin/java" ]; then
-		JAVA="$JAVA_HOME/bin/java"
-	else
-		JAVA=`which java`
-	fi
+    if [ -x "$JAVA_HOME/bin/java" ]; then
+        JAVA="$JAVA_HOME/bin/java"
+    else
+        JAVA=`which java`
+    fi
 
-	if [ ! -x "$JAVA" ]; then
-		echo "Could not find any executable java binary. Please install java in your PATH or set JAVA_HOME"
-		exit 1
-	fi
+    if [ ! -x "$JAVA" ]; then
+        echo "Could not find any executable java binary. Please install java in your PATH or set JAVA_HOME"
+        exit 1
+    fi
 }
 
 case "$1" in
   start)
-	checkJava
+    checkJava
 
-	if [ -n "$MAX_LOCKED_MEMORY" -a -z "$ES_HEAP_SIZE" ]; then
-		log_failure_msg "MAX_LOCKED_MEMORY is set - ES_HEAP_SIZE must also be set"
-		exit 1
-	fi
+    if [ -n "$MAX_LOCKED_MEMORY" -a -z "$ES_HEAP_SIZE" ]; then
+        log_failure_msg "MAX_LOCKED_MEMORY is set - ES_HEAP_SIZE must also be set"
+        exit 1
+    fi
 
-	log_daemon_msg "Starting $DESC"
+    log_daemon_msg "Starting $DESC"
 
-	pid=`pidofproc -p $PID_FILE elasticsearch`
-	if [ -n "$pid" ] ; then
-		log_begin_msg "Already running."
-		log_end_msg 0
-		exit 0
-	fi
+    pid=`pidofproc -p $PID_FILE elasticsearch`
+    if [ -n "$pid" ] ; then
+        log_begin_msg "Already running."
+        log_end_msg 0
+        exit 0
+    fi
 
-	# Prepare environment
-	mkdir -p "$LOG_DIR" "$DATA_DIR" "$WORK_DIR" && chown "$ES_USER":"$ES_GROUP" "$LOG_DIR" "$DATA_DIR" "$WORK_DIR"
-	touch "$PID_FILE" && chown "$ES_USER":"$ES_GROUP" "$PID_FILE"
+    # Prepare environment
+    mkdir -p "$LOG_DIR" "$DATA_DIR" "$WORK_DIR" && chown "$ES_USER":"$ES_GROUP" "$LOG_DIR" "$DATA_DIR" "$WORK_DIR"
+    touch "$PID_FILE" && chown "$ES_USER":"$ES_GROUP" "$PID_FILE"
 
-	if [ -n "$MAX_OPEN_FILES" ]; then
-		ulimit -n $MAX_OPEN_FILES
-	fi
+    if [ -n "$MAX_OPEN_FILES" ]; then
+        ulimit -n $MAX_OPEN_FILES
+    fi
 
-	if [ -n "$MAX_LOCKED_MEMORY" ]; then
-		ulimit -l $MAX_LOCKED_MEMORY
-	fi
+    if [ -n "$MAX_LOCKED_MEMORY" ]; then
+        ulimit -l $MAX_LOCKED_MEMORY
+    fi
 
-	if [ -n "$MAX_MAP_COUNT" ]; then
-		sysctl -q -w vm.max_map_count=$MAX_MAP_COUNT
-	fi
+    if [ -n "$MAX_MAP_COUNT" ]; then
+        sysctl -q -w vm.max_map_count=$MAX_MAP_COUNT
+    fi
 
-	# Start Daemon
-	start-stop-daemon --start -b --user "$ES_USER" -c "$ES_USER" --pidfile "$PID_FILE" --exec $DAEMON -- $DAEMON_OPTS
-	log_end_msg $?
-	;;
+    # Start Daemon
+    start-stop-daemon --start -b --user "$ES_USER" -c "$ES_USER" --pidfile "$PID_FILE" --exec $DAEMON -- $DAEMON_OPTS
+    log_end_msg $?
+    ;;
   stop)
-	log_daemon_msg "Stopping $DESC"
+    log_daemon_msg "Stopping $DESC"
 
-	if [ -f "$PID_FILE" ]; then
-		start-stop-daemon --stop --pidfile "$PID_FILE" \
-			--user "$ES_USER" \
-			--retry=TERM/20/KILL/5 >/dev/null
-		if [ $? -eq 1 ]; then
-			log_progress_msg "$DESC is not running but pid file exists, cleaning up"
-		elif [ $? -eq 3 ]; then
-			PID="`cat $PID_FILE`"
-			log_failure_msg "Failed to stop $DESC (pid $PID)"
-			exit 1
-		fi
-		rm -f "$PID_FILE"
-	else
-		log_progress_msg "(not running)"
-	fi
-	log_end_msg 0
-	;;
+    if [ -f "$PID_FILE" ]; then
+        start-stop-daemon --stop --pidfile "$PID_FILE" \
+            --user "$ES_USER" \
+            --retry=TERM/20/KILL/5 >/dev/null
+        if [ $? -eq 1 ]; then
+            log_progress_msg "$DESC is not running but pid file exists, cleaning up"
+        elif [ $? -eq 3 ]; then
+            PID="`cat $PID_FILE`"
+            log_failure_msg "Failed to stop $DESC (pid $PID)"
+            exit 1
+        fi
+        rm -f "$PID_FILE"
+    else
+        log_progress_msg "(not running)"
+    fi
+    log_end_msg 0
+    ;;
   status)
-	status_of_proc -p $PID_FILE elasticsearch elasticsearch && exit 0 || exit $?
+    status_of_proc -p $PID_FILE elasticsearch elasticsearch && exit 0 || exit $?
     ;;
   restart|force-reload)
-	if [ -f "$PID_FILE" ]; then
-		$0 stop
-		sleep 1
-	fi
-	$0 start
-	;;
+    if [ -f "$PID_FILE" ]; then
+        $0 stop
+        sleep 1
+    fi
+    $0 start
+    ;;
   *)
-	log_success_msg "Usage: $0 {start|stop|restart|force-reload|status}"
-	exit 1
-	;;
+    log_success_msg "Usage: $0 {start|stop|restart|force-reload|status}"
+    exit 1
+    ;;
 esac
 
 exit 0

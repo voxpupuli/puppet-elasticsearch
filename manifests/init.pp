@@ -176,6 +176,14 @@
 #   Enable Hiera's merging function for the plugins
 #   Defaults to: false
 #
+# [*templates*]
+#   Define templates via a hash. This is mainly used with Hiera's auto binding
+#   Defaults to: undef
+#
+# [*templates_hiera_merge*]
+#   Enable Hiera's merging function for the templates
+#   Defaults to: false
+#
 # [*package_pin*]
 #   Enables package version pinning.
 #   This pins the package version to the set version number and avoids
@@ -246,7 +254,9 @@ class elasticsearch(
   $instances             = undef,
   $instances_hiera_merge = false,
   $plugins               = undef,
-  $plugins_hiera_merge   = false
+  $plugins_hiera_merge   = false,
+  $templates             = undef,
+  $templates_hiera_merge = false,
 ) inherits elasticsearch::params {
 
   anchor {'elasticsearch::begin': }
@@ -359,6 +369,19 @@ class elasticsearch(
     create_resources('elasticsearch::plugin', $x_plugins)
   }
 
+  # Hiera support for templates
+  validate_bool($templates_hiera_merge)
+
+  if $templates_hiera_merge == true {
+    $x_templates = hiera_hash('elasticsearch::templates', $::elasticsearch::templates)
+  } else {
+    $x_templates = $templates
+  }
+
+  if $x_templates {
+    validate_hash($x_templates)
+    create_resources('elasticsearch::template', $x_templates)
+  }
 
   if $java_install == true {
     # Install java
