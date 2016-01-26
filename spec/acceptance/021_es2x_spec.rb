@@ -169,6 +169,8 @@ describe "elasticsearch 2x:" do
         pp = "class { 'elasticsearch': config => { 'node.name' => 'elasticsearch001', 'cluster.name' => '#{test_settings['cluster_name']}' }, manage_repo => true, repo_version => '#{test_settings['repo_version2x']}', java_install => true, version => '2.0.0' }
               elasticsearch::instance { 'es-01': config => { 'node.name' => 'elasticsearch001', 'http.port' => '#{test_settings['port_a']}' } }
               elasticsearch::plugin{'cloud-aws': instances => 'es-01' }
+              elasticsearch::plugin{'marvel-agent': instances => 'es-01' }
+              elasticsearch::plugin{'license': instances => 'es-01' }
         "
 
         # Run it twice and test for idempotency
@@ -192,6 +194,8 @@ describe "elasticsearch 2x:" do
         pp = "class { 'elasticsearch': config => { 'node.name' => 'elasticsearch001', 'cluster.name' => '#{test_settings['cluster_name']}' }, manage_repo => true, repo_version => '#{test_settings['repo_version2x']}', java_install => true, version => '2.0.1' }
               elasticsearch::instance { 'es-01': config => { 'node.name' => 'elasticsearch001', 'http.port' => '#{test_settings['port_a']}' } }
               elasticsearch::plugin{'cloud-aws': instances => 'es-01' }
+              elasticsearch::plugin{'marvel-agent': instances => 'es-01' }
+              elasticsearch::plugin{'license': instances => 'es-01' }
         "
 
         # Run it twice and test for idempotency
