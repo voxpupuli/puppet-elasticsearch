@@ -77,6 +77,7 @@ define elasticsearch::instance(
   $config             = undef,
   $configdir          = undef,
   $datadir            = undef,
+  $logdir             = undef,
   $logging_file       = undef,
   $logging_config     = undef,
   $logging_template   = undef,
@@ -204,6 +205,34 @@ define elasticsearch::instance(
       $dirs = $instance_datadir
     }
 
+    # Manage instance log directory
+    if ($logdir == undef) {
+      $instance_logdir = "${elasticsearch::logdir}/${name}"
+    } else {
+      $instance_logdir = $logdir
+    }
+
+    if(has_key($instance_config, 'path.logs')) {
+      $instance_logdir_config = { 'path.logs' => $instance_logdir }
+    } elsif(has_key($instance_config, 'path')) {
+      if(has_key($instance_config['path'], 'logs')) {
+        $instance_logdir_config = { 'path' => { 'logs' => $instance_logdir } }
+      } else {
+        $instance_logdir_config = { 'path.logs' => $instance_logdir }
+      }
+    } else {
+      $instance_logdir_config = { 'path.logs' => $instance_logdir }
+    }
+
+    file { $instance_logdir:
+      ensure  => 'directory',
+      owner   => $elasticsearch::elasticsearch_user,
+      group   => undef,
+      mode    => '0644',
+      require => Class['elasticsearch::package'],
+      before  => Elasticsearch::Service[$name],
+    }
+
     exec { "mkdir_datadir_elasticsearch_${name}":
       command => "mkdir -p ${dirs}",
       creates => $instance_datadir,
@@ -252,7 +281,7 @@ define elasticsearch::instance(
     }
 
     # build up new config
-    $instance_conf = merge($main_config, $instance_node_name, $instance_config, $instance_datadir_config)
+    $instance_conf = merge($main_config, $instance_node_name, $instance_config, $instance_datadir_config, $instance_logdir_config)
 
     # defaults file content
     # ensure user did not provide both init_defaults and init_defaults_file
@@ -266,7 +295,7 @@ define elasticsearch::instance(
       $global_init_defaults = { }
     }
 
-    $instance_init_defaults_main = { 'CONF_DIR' => $instance_configdir, 'CONF_FILE' => "${instance_configdir}/elasticsearch.yml", 'LOG_DIR' => "/var/log/elasticsearch/${name}", 'ES_HOME' => '/usr/share/elasticsearch' }
+    $instance_init_defaults_main = { 'CONF_DIR' => $instance_configdir, 'CONF_FILE' => "${instance_configdir}/elasticsearch.yml", 'LOG_DIR' => "${instance_logdir}", 'ES_HOME' => '/usr/share/elasticsearch' }
 
     if (is_hash($init_defaults)) {
       $instance_init_defaults = $init_defaults
