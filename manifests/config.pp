@@ -48,7 +48,7 @@ class elasticsearch::config {
       mode   => '0644',
     }
 
-    file { $elasticsearch::params::logdir:
+    file { $elasticsearch::logdir:
       ensure  => 'directory',
       group   => undef,
       mode    => '0644',

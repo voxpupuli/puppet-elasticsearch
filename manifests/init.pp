@@ -230,6 +230,7 @@ class elasticsearch(
   $init_template         = "${module_name}/etc/init.d/${elasticsearch::params::init_template}",
   $config                = undef,
   $datadir               = $elasticsearch::params::datadir,
+  $logdir                = $elasticsearch::params::logdir,
   $plugindir             = $elasticsearch::params::plugindir,
   $plugintool            = $elasticsearch::params::plugintool,
   $java_install          = false,
