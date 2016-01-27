@@ -127,7 +127,6 @@ elasticsearch::plugin{ 'jetty':
 }
 ```
 
-
 ####Using a proxy
 You can also use a proxy if required by setting the `proxy_host` and `proxy_port` options:
 ```puppet

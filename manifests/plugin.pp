@@ -131,6 +131,7 @@ define elasticsearch::plugin(
         source     => $file_source,
         url        => $url,
         proxy_args => $proxy,
+        plugin_dir => $::elasticsearch::plugindir,
         notify     => $notify_service,
       }
 
