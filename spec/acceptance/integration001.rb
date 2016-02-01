@@ -97,7 +97,9 @@ describe "Integration testing" do
       it 'should run successfully' do
         pp = "class { 'elasticsearch': config => { 'cluster.name' => '#{test_settings['cluster_name']}'}, java_install => true, package_url => '#{test_settings['snapshot_package']}' }
               elasticsearch::instance { 'es-01': config => { 'node.name' => 'elasticsearch001', 'http.port' => '#{test_settings['port_a']}' } }
-              elasticsearch::plugin{'lmenezes/elasticsearch-kopf': instances => 'es-01' }
+              elasticsearch::plugin{'license': instances => 'es-01' }
+              elasticsearch::plugin{'watcher': instances => 'es-01' }
+              elasticsearch::plugin{'marvel-agent': instances => 'es-01' }
              "
 
         # Run it twice and test for idempotency
@@ -120,11 +122,11 @@ describe "Integration testing" do
       end
 
       it 'make sure the directory exists' do
-        shell('ls /usr/share/elasticsearch/plugins/kopf/', {:acceptable_exit_codes => 0})
+        shell('ls /usr/share/elasticsearch/plugins/license/', {:acceptable_exit_codes => 0})
       end
 
       it 'make sure elasticsearch reports it as existing' do
-        curl_with_retries('validated plugin as installed', default, "http://localhost:#{test_settings['port_a']}/_nodes/?plugin | grep kopf", 0)
+        curl_with_retries('validated plugin as installed', default, "http://localhost:#{test_settings['port_a']}/_nodes/?plugin | grep license", 0)
       end
 
     end
