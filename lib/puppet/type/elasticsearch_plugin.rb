@@ -28,4 +28,8 @@ Puppet::Type.newtype(:elasticsearch_plugin) do
     defaultto '/usr/share/elasticsearch/plugins'
   end
 
+  newparam(:install_options) do
+    desc 'Installation options'
+  end
+
 end
