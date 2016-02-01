@@ -77,11 +77,18 @@ Puppet::Type.type(:elasticsearch_plugin).provide(:plugin) do
     commands
   end
 
+  def install_options
+    return @resource[:install_options].join(' ') if @resource[:install_options].is_a?(Array)
+    return @resource[:install_options]
+  end
+
   def create
     es_version
     commands = []
     commands << @resource[:proxy_args].split(' ') if @resource[:proxy_args]
+    commands << install_options if @resource[:install_options]
     commands << 'install'
+    commands << '--batch' if is22x?
     commands << install1x if is1x?
     commands << install2x if is2x?
     debug("Commands: #{commands.inspect}")
@@ -136,6 +143,11 @@ Puppet::Type.type(:elasticsearch_plugin).provide(:plugin) do
   def is2x?
     (Puppet::Util::Package.versioncmp(@es_version, '2.0.0') >= 0) && (Puppet::Util::Package.versioncmp(@es_version, '3.0.0') < 0)
   end
+
+  def is22x?
+    (Puppet::Util::Package.versioncmp(@es_version, '2.2.0') >= 0) && (Puppet::Util::Package.versioncmp(@es_version, '3.0.0') < 0)
+  end
+
 
   def plugin_version(plugin_name)
     vendor, plugin, version = plugin_name.split('/')

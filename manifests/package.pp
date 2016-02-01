@@ -38,6 +38,7 @@ class elasticsearch::package {
   if $elasticsearch::ensure == 'present' {
 
     Package[$elasticsearch::package_name] ~> Elasticsearch::Service <| |>
+    Package[$elasticsearch::package_name] ~> Exec['remove_plugin_dir']
 
     # Create directory to place the package file
     $package_dir = $elasticsearch::package_dir
@@ -169,7 +170,6 @@ class elasticsearch::package {
 
     package { $elasticsearch::package_name:
       ensure => $package_ensure,
-      notify => Exec['remove_plugin_dir'],
     }
 
     exec { 'remove_plugin_dir':
