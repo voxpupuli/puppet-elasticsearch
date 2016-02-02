@@ -118,6 +118,7 @@ define elasticsearch::plugin(
     file { $file_source:
       ensure => 'file',
       source => $source,
+      before => Elasticsearch_plugin[$name],
     }
 
   } elsif ($url != undef) {
