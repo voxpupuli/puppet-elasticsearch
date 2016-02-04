@@ -59,12 +59,6 @@ class elasticsearch::config {
       ensure  => 'directory',
     }
 
-    file { "${elasticsearch::params::homedir}/bin":
-      ensure  => 'directory',
-      recurse => true,
-      mode    => '0755',
-    }
-
     file { $elasticsearch::datadir:
       ensure  => 'directory',
     }
