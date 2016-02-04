@@ -97,10 +97,8 @@ describe "Integration testing" do
       it 'should run successfully' do
         pp = "class { 'elasticsearch': config => { 'cluster.name' => '#{test_settings['cluster_name']}'}, java_install => true, package_url => '#{test_settings['snapshot_package']}' }
               elasticsearch::instance { 'es-01': config => { 'node.name' => 'elasticsearch001', 'http.port' => '#{test_settings['port_a']}' } }
-              elasticsearch::plugin{'license': instances => 'es-01' }
-              elasticsearch::plugin{'watcher': instances => 'es-01' }
-              elasticsearch::plugin{'marvel-agent': instances => 'es-01' }
              "
+        test_settings['plugin_list'].each { |plugin| pp.concat("elasticsearch::plugin{'#{plugin}': instances => 'es-01' }") }
 
         # Run it twice and test for idempotency
         apply_manifest(pp, :catch_failures => true)
