@@ -30,3 +30,16 @@ def get_url
   return url
 
 end
+
+def plugin_list
+
+  es1_list = [ 'elasticsearch/marvel/latest', 'elasticsearch/license/latest', 'elasticsearch/watcher/latest' ]
+  es2_list = [ 'marvel-agent', 'license', 'watcher' ]
+
+  es_version = ENV['ES_VERSION']
+  if es_version =~ /^2/
+    return es2_list
+  else
+    return es1_list
+  end
+end
