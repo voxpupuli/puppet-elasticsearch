@@ -65,6 +65,7 @@ hosts.each do |host|
 
     url = get_url
     RSpec.configuration.test_settings['snapshot_package'] = url.gsub('$EXT$', ext)
+    RSpec.configuration.test_settings['plugin_list'] = plugin_list
 
   else
 
