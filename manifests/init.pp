@@ -89,7 +89,7 @@
 #
 # [*package_dl_timeout*]
 #   For http,https and ftp downloads you can set howlong the exec resource may take.
-#   Defaults to: 600 seconds
+#   Defaults to: undef (Puppet's default of 300 or a resource default will be used).
 #
 # [*proxy_url*]
 #   For http and https downloads you can set a proxy server to use

@@ -118,12 +118,17 @@ class elasticsearch::package {
           exec { 'download_package_elasticsearch':
             command     => "${elasticsearch::params::download_tool} ${pkg_source} ${elasticsearch::package_url} 2> /dev/null",
             creates     => $pkg_source,
-            environment => $exec_environment,
             timeout     => $elasticsearch::package_dl_timeout,
             require     => File[$package_dir],
             before      => $before,
           }
 
+          # We do this to allow the flexibility to use an Exec timeout globally via a resource default.
+          if $elasticsearch::package_dl_timeout {
+            Exec['download_package_elasticsearch'] {
+              timeout => $elasticsearch::package_dl_timeout,
+            }
+          }
         }
         'file': {
 
