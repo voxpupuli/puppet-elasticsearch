@@ -67,6 +67,12 @@
 # [*service_flags*]
 #   Service flags used for the OpenBSD service configuration, defaults to undef.
 #
+# [*init_template*]
+#   Service file as a template
+#
+# [*logdir*]
+#   Log directory for this instance.
+#
 # === Authors
 #
 # * Richard Pijnenburg <mailto:richard.pijnenburg@elasticsearch.com>

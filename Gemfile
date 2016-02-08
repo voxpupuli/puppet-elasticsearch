@@ -6,7 +6,7 @@ gem 'puppet', puppetversion, :require => false
 gem 'beaker'
 gem 'beaker-rspec'
 gem 'metadata-json-lint'
-gem 'rspec-puppet', '2.2.0'
+gem 'rspec-puppet'
 
 gem 'pry'
 gem 'docker-api', '~> 1.0'
