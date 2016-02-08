@@ -182,6 +182,9 @@
 #   package upgrades.
 #   Defaults to: true
 #
+# [*logdir*]
+#   Use different directory for logging
+#
 # The default values for the parameters are set in elasticsearch::params. Have
 # a look at the corresponding <tt>params.pp</tt> manifest file if you need more
 # technical information about them.
