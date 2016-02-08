@@ -50,6 +50,9 @@
 #   Specify all the instances related
 #   value type is string or array
 #
+# [*install_options*]
+#   Pass options to the plugin installer
+#
 # === Examples
 #
 # # From official repository
