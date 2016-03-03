@@ -110,6 +110,7 @@ RSpec.configure do |c|
 
   # Configure all nodes in nodeset
   c.before :suite do
+
     # Install module and dependencies
     puppet_module_install(:source => proj_root, :module_name => 'elasticsearch')
     hosts.each do |host|
