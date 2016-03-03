@@ -11,21 +11,7 @@ RSpec.configure do |c|
   c.add_setting :test_settings, :default => {}
 end
 
-files_dir = ENV['files_dir'] || '/home/jenkins/puppet'
-
-proxy_host = ENV['BEAKER_PACKAGE_PROXY'] || ''
-
-if !proxy_host.empty?
-  gem_proxy = "http_proxy=#{proxy_host}" unless proxy_host.empty?
-
-  hosts.each do |host|
-    on host, "echo 'export http_proxy='#{proxy_host}'' >> /root/.bashrc"
-    on host, "echo 'export https_proxy='#{proxy_host}'' >> /root/.bashrc"
-    on host, "echo 'export no_proxy=\"localhost,127.0.0.1,localaddress,.localdomain.com,#{host.name}\"' >> /root/.bashrc"
-  end
-else
-  gem_proxy = ''
-end
+files_dir = ENV['files_dir'] || './spec/fixtures/artifacts'
 
 hosts.each do |host|
 
