@@ -33,9 +33,7 @@ hosts.each do |host|
   if host.is_pe?
     install_pe
   else
-    puppetversion = ENV['VM_PUPPET_VERSION']
-    on host, "#{gem_proxy} gem install puppet --no-ri --no-rdoc --version '~> #{puppetversion}'"
-    on host, "mkdir -p #{host['distmoduledir']}"
+    install_puppet_on host, :default_action => 'gem_install'
 
     if fact('osfamily') == 'Suse'
       install_package host, 'rubygems ruby-devel augeas-devel libxml2-devel'
@@ -102,8 +100,6 @@ hosts.each do |host|
 end
 
 RSpec.configure do |c|
-  # Project root
-  proj_root = File.expand_path(File.join(File.dirname(__FILE__), '..'))
 
   # Readable test descriptions
   c.formatter = :documentation
@@ -112,22 +108,29 @@ RSpec.configure do |c|
   c.before :suite do
 
     # Install module and dependencies
-    puppet_module_install(:source => proj_root, :module_name => 'elasticsearch')
+    install_dev_puppet_module :ignore_list => [
+      'junit'
+    ] + Beaker::DSL::InstallUtils::ModuleUtils::PUPPET_MODULE_INSTALL_IGNORE
+
     hosts.each do |host|
 
       copy_hiera_data_to(host, 'spec/fixtures/hiera/hieradata/')
-      on host, puppet('module','install','puppetlabs-java'), { :acceptable_exit_codes => [0,1] }
-      on host, puppet('module','install','richardc-datacat'), { :acceptable_exit_codes => [0,1] }
 
-      if fact('osfamily') == 'Debian'
-        on host, puppet('module','install','puppetlabs-apt', '--version=1.8.0'), { :acceptable_exit_codes => [0,1] }
-      end
-      if fact('osfamily') == 'Suse'
-        on host, puppet('module','install','darin-zypprepo'), { :acceptable_exit_codes => [0,1] }
-      end
-      if fact('osfamily') == 'RedHat'
-        on host, puppet('module', 'upgrade', 'puppetlabs-stdlib'), {  :acceptable_exit_codes => [0,1] }
-        on host, puppet('module', 'install', 'ceritsc-yum'), { :acceptable_exit_codes => [0,1] }
+      modules = ['stdlib', 'java', 'datacat']
+
+      dist_module = {
+        'Debian' => 'apt',
+        'Suse'   => 'zypprepo',
+        'RedHat' => 'yum',
+      }[fact('osfamily')]
+
+      modules << dist_module if not dist_module.nil?
+
+      modules.each do |mod|
+        copy_module_to host, {
+          :module_name => mod,
+          :source      => "spec/fixtures/modules/#{mod}"
+        }
       end
 
       if host.is_pe?
