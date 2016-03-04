@@ -5,11 +5,12 @@ HOSTS:
       - database
       - dashboard
     platform: el-7-x86_64
-    image: electrical/centos:7
+    image: centos:7
     hypervisor: docker
-    docker_cmd: '["/usr/sbin/init"]'
-    docker_image_commands:
-      - 'yum install -y wget ntpdate rubygems ruby-devel augeas-devel ruby-augeas tar'
+    docker_cmd: ["/sbin/init"]
     docker_preserve_image: true
+    docker_image_commands:
+      - mkdir -p /etc/selinux/targeted/contexts/
+      - echo '<busconfig><selinux></selinux></busconfig>' > /etc/selinux/targeted/contexts/dbus_contexts
 CONFIG:
   type: foss
