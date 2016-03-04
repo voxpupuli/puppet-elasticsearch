@@ -10,3 +10,6 @@ spec/reports/
 spec/logs
 log
 *.lock
+*.rpm
+*.deb
+*.tar.gz
