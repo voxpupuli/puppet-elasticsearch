@@ -54,23 +54,31 @@ hosts.each do |host|
 
     case fact('osfamily')
       when 'RedHat'
-        scp_to(host, "#{files_dir}/elasticsearch-1.3.1.noarch.rpm", '/tmp/elasticsearch-1.3.1.noarch.rpm')
+        package_name = 'elasticsearch-1.3.1.noarch.rpm'
       when 'Debian'
         case fact('lsbmajdistrelease')
           when '6'
-            scp_to(host, "#{files_dir}/elasticsearch-1.1.0.deb", '/tmp/elasticsearch-1.1.0.deb')
+            package_name = 'elasticsearch-1.1.0.deb'
           else
-            scp_to(host, "#{files_dir}/elasticsearch-1.3.1.deb", '/tmp/elasticsearch-1.3.1.deb')
+            package_name = 'elasticsearch-1.3.1.deb'
         end
       when 'Suse'
         case fact('operatingsystem')
           when 'OpenSuSE'
-            scp_to(host, "#{files_dir}/elasticsearch-1.3.1.noarch.rpm", '/tmp/elasticsearch-1.3.1.noarch.rpm')
+            package_name = 'elasticsearch-1.3.1.noarch.rpm'
         end
     end
 
+    snapshot_package = {
+        :src => "#{files_dir}/#{package_name}",
+        :dst => "/tmp/#{package_name}"
+    }
+
+    scp_to(host, snapshot_package[:src], snapshot_package[:dst])
     scp_to(host, "#{files_dir}/elasticsearch-bigdesk.zip", "/tmp/elasticsearch-bigdesk.zip")
     scp_to(host, "#{files_dir}/elasticsearch-kopf.zip", "/tmp/elasticsearch-kopf.zip")
+
+    RSpec.configuration.test_settings['snapshot_package'] = "file:#{snapshot_package[:dst]}"
 
   end
 
