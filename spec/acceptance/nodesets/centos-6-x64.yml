@@ -9,5 +9,7 @@ HOSTS:
     hypervisor: docker
     docker_cmd: ["/sbin/init"]
     docker_preserve_image: true
+    docker_image_commands:
+      - yum install -y wget
 CONFIG:
   type: foss
