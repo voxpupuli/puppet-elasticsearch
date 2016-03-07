@@ -1,0 +1,19 @@
+---
+sudo: required
+services:
+  - docker
+
+branches:
+  only:
+    - travis-poc
+
+language: ruby
+
+env:
+  - DISTRO=debian-8-x64
+
+install:
+  - make
+
+script:
+  - make test-rspec
