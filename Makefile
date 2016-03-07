@@ -2,7 +2,7 @@ DISTRO ?= debian-8-x64
 
 bundle: .vendor
 .vendor:
-	rm *.lock
+	-rm *.lock
 	bundle install --path .vendor
 
 .PHONY: fixtures
