@@ -22,14 +22,14 @@ hosts.each do |host|
     install_puppet_on host, :default_action => 'gem_install'
 
     if fact('osfamily') == 'Suse'
-      install_package host, 'rubygems ruby-devel augeas-devel libxml2-devel'
-      on host, "#{gem_proxy} gem install ruby-augeas --no-ri --no-rdoc"
+      install_package host, 'augeas-devel libxml2-devel'
+      install_package host, '-t pattern devel_ruby'
+      on host, "gem install ruby-augeas --no-ri --no-rdoc"
     end
 
     if host[:type] == 'aio'
       on host, "mkdir -p /var/log/puppetlabs/puppet"
     end
-
   end
 
   if ENV['ES_VERSION']
@@ -49,7 +49,6 @@ hosts.each do |host|
 
     url = get_url
     RSpec.configuration.test_settings['snapshot_package'] = url.gsub('$EXT$', ext)
-
   else
 
     case fact('osfamily')
