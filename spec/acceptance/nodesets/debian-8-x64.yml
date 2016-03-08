@@ -7,14 +7,9 @@ HOSTS:
     platform: debian-8-amd64
     image: debian:8
     hypervisor: docker
-    docker_cmd: ["/sbin/init"]
+    docker_cmd: ["/bin/systemd"]
     docker_preserve_image: true
     docker_image_commands:
       - apt-get install -yq wget
-    mount_folders:
-      selinux:
-        host_path: /sys/fs/selinux
-        container_path: /sys/fs/selinux
-        opts: ro
 CONFIG:
   type: foss
