@@ -7,6 +7,7 @@ HOSTS:
     platform: ubuntu-12.04-amd64
     image: ubuntu:12.04
     hypervisor: docker
+    docker_cmd: ["/sbin/init"]
     docker_preserve_image: true
 CONFIG:
   type: foss
