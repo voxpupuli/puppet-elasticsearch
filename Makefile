@@ -1,4 +1,4 @@
-DISTRO ?= debian-8-x64
+DISTRO ?= ubuntu-server-1404-x64
 
 bundle: .vendor
 .vendor:
