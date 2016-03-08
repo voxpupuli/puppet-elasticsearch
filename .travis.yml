@@ -18,6 +18,7 @@ env:
     - DISTRO=centos-7-x64
     - DISTRO=debian-7-x64
     - DISTRO=debian-8-x64
+    - DISTRO=ubuntu-server-1204-x64
     - DISTRO=ubuntu-server-1404-x64
 
 install:
