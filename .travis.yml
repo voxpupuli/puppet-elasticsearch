@@ -5,19 +5,22 @@ services:
 
 branches:
   only:
-    - travis-poc
+    - cleanup-ci
 
 language: ruby
 
 env:
-  - DISTRO=centos-6-x64
-  - DISTRO=centos-7-x64
-  - DISTRO=debian-7-x64
-  - DISTRO=debian-8-x64
-  - DISTRO=ubuntu-server-1404-x64
+  global:
+    - TEST_SUITE=beaker
+  matrix:
+    - TEST_SUITE=intake
+    - DISTRO=centos-6-x64
+    - DISTRO=centos-7-x64
+    - DISTRO=debian-7-x64
+    - DISTRO=debian-8-x64
+    - DISTRO=ubuntu-server-1404-x64
 
 install:
   - make
 script:
-  - make test-rspec
-  - make test-integration
+  - make test-$TEST_SUITE

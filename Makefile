@@ -14,6 +14,12 @@ clean:
 	bundle exec rake spec_clean
 	rm -rf .bundle .vendor
 
+.PHONY: test-intake
+test-intake: test-docs test-rspec
+
+.PHONY: test-beaker
+test-beaker: test-acceptance test-integration
+
 .PHONY: test-acceptance
 test-acceptance: bundle fixtures
 	BEAKER_set=$(DISTRO) bundle exec rspec --require ci/reporter/rspec --format CI::Reporter::RSpecFormatter spec/acceptance/*_spec.rb
