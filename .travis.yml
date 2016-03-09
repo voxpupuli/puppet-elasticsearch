@@ -7,6 +7,12 @@ branches:
   only:
     - cleanup-ci
 
+cache:
+  bundler: true
+  directories:
+    - spec/fixtures/artifacts
+    - spec/fixtures/modules
+
 language: ruby
 
 env:
