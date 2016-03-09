@@ -11,9 +11,10 @@ language: ruby
 
 env:
   global:
-    - TEST_SUITE=beaker
+    - TEST_SUITE=acceptance
   matrix:
     - TEST_SUITE=intake
+    - TEST_SUITE=integration
     - DISTRO=centos-6-x64
     - DISTRO=centos-7-x64
     - DISTRO=debian-7-x64
