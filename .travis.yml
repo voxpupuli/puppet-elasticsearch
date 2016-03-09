@@ -27,6 +27,10 @@ env:
     - DISTRO=debian-8-x64
     - DISTRO=ubuntu-server-1204-x64
     - DISTRO=ubuntu-server-1404-x64
+    - DISTRO=opensuse-13-x64
+matrix:
+  allow_failures:
+    - env: DISTRO=opensuse-13-x64
 
 install:
   - bundle install --path .vendor
