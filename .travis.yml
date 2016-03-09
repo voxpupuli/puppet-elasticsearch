@@ -3,10 +3,6 @@ sudo: required
 services:
   - docker
 
-branches:
-  only:
-    - cleanup-ci
-
 cache:
   bundler: true
   directories:
