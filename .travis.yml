@@ -31,6 +31,7 @@ env:
 matrix:
   allow_failures:
     - env: DISTRO=opensuse-13-x64
+    - env: DISTRO=centos-6-x64
 
 install:
   - bundle install --path .vendor
