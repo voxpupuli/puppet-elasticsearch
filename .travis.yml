@@ -29,6 +29,7 @@ env:
     - DISTRO=ubuntu-server-1404-x64
 
 install:
-  - make
+  - bundle install --path .vendor
+  - bundle exec rake spec_prep
 script:
   - make test-$TEST_SUITE
