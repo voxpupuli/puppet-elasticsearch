@@ -1,13 +1,22 @@
 fixtures:
-  repositories:
+  forge_modules:
     stdlib:
-      repo: https://github.com/puppetlabs/puppetlabs-stdlib.git
-      branch: '4.7.x'
+      repo: puppetlabs/stdlib
+      ref: 4.11.0
+    java:
+      repo: puppetlabs/java
+      ref: 1.4.3
+    datacat:
+      repo: richardc/datacat
+      ref: 0.6.2
     apt:
-      repo: 'https://github.com/puppetlabs/puppetlabs-apt.git'
-      branch: '2.2.x'
-    zypprepo: https://github.com/deadpoint/puppet-zypprepo.git
-    yum: https://github.com/CERIT-SC/puppet-yum.git
-    datacat: https://github.com/richardc/puppet-datacat.git
+      repo: puppetlabs/apt
+      ref: 2.2.2
+    yum:
+      repo: ceritsc/yum
+      ref: 0.9.6
+    zypprepo:
+      repo: darin/zypprepo
+      ref: 1.0.2
   symlinks:
     elasticsearch: "#{source_dir}"
