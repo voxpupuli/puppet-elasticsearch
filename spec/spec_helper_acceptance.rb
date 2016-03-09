@@ -80,16 +80,6 @@ hosts.each do |host|
     RSpec.configuration.test_settings['snapshot_package'] = "file:#{snapshot_package[:dst]}"
 
   end
-
-  # on debian/ubuntu nodes ensure we get the latest info
-  # Can happen we have stalled data in the images
-  if fact('osfamily') == 'Debian'
-    on host, "apt-get update"
-  end
-  if fact('osfamily') == 'RedHat'
-    on host, "yum -y update"
-  end
-
 end
 
 RSpec.configure do |c|
