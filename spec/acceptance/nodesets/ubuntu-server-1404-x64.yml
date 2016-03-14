@@ -4,9 +4,13 @@ HOSTS:
       - master
       - database
       - dashboard
-    platform: ubuntu-14.04-x64
+    platform: ubuntu-14.04-amd64
     image: ubuntu:14.04
     hypervisor: docker
+    docker_cmd: ["/sbin/init"]
     docker_preserve_image: true
+    docker_image_commands:
+      - apt-get install -yq libssl-dev
+      - ln -sf /sbin/initctl.distrib /sbin/initctl
 CONFIG:
   type: foss

@@ -10,6 +10,6 @@ HOSTS:
     docker_cmd: ["/sbin/init"]
     docker_preserve_image: true
     docker_image_commands:
-      - apt-get install -yq wget
+      - apt-get install -yq wget libssl-dev
 CONFIG:
   type: foss
