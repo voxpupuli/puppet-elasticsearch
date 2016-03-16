@@ -240,7 +240,7 @@ class elasticsearch(
   $java_package          = undef,
   $manage_repo           = false,
   $repo_version          = undef,
-  $repo_key_id           = 'D88E42B4',
+  $repo_key_id           = '46095ACC8548582C1A2699A9D27D666CD88E42B4',
   $repo_key_source       = 'http://packages.elastic.co/GPG-KEY-elasticsearch',
   $logging_file          = undef,
   $logging_config        = undef,
