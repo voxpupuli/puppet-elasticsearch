@@ -13,4 +13,5 @@ HOSTS:
       - apt-get install -yq libssl-dev
       - ln -sf /sbin/initctl.distrib /sbin/initctl
 CONFIG:
+  log_level: debug
   type: foss
