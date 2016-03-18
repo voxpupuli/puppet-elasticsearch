@@ -7,11 +7,12 @@ PE_VER ?= 3.8.0
 
 .PHONY: fixtures
 fixtures: .vendor
-	bundle exec rake spec_prep
+	bundle exec rake artifacts:prep
 
 .PHONY: clean
 clean:
 	bundle exec rake spec_clean
+	bundle exec rake artifacts:clean
 	rm -rf .bundle .vendor
 
 .PHONY: test-intake
