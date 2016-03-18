@@ -32,9 +32,13 @@ matrix:
   allow_failures:
     - env: DISTRO=opensuse-13-x64
     - env: DISTRO=centos-6-x64
+    - env: DISTRO=centos-6-x64 PE=true
+    - env: DISTRO=ubuntu-server-1204-x64 PE=true
+    - env: DISTRO=ubuntu-server-1404-x64 PE=true
 
 install:
   - bundle install --path .vendor
   - bundle exec rake spec_prep
+  - bundle exec rake artifacts:prep
 script:
   - make test-$TEST_SUITE
