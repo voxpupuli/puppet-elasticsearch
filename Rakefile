@@ -71,26 +71,30 @@ end
 
 artifacts.each { |_, fn| fn.replace "spec/fixtures/artifacts/#{fn}" }
 
-Rake::Task['spec_prep'].enhance do
-  artifacts.each do |url, fp|
-    next if File.exists? fp
-    puts "Fetching #{url}..."
-    found = false
-    until found
-      uri = URI::parse(url)
-      conn = Net::HTTP.new(uri.host, uri.port)
-      conn.use_ssl = true
-      res = conn.get(uri.path)
-      if res.header['location']
-        url = res.header['location']
-      else
-        found = true
+namespace :artifacts do
+  desc "Fetch artifacts for tests"
+  task :prep do
+    artifacts.each do |url, fp|
+      next if File.exists? fp
+      puts "Fetching #{url}..."
+      found = false
+      until found
+        uri = URI::parse(url)
+        conn = Net::HTTP.new(uri.host, uri.port)
+        conn.use_ssl = true
+        res = conn.get(uri.path)
+        if res.header['location']
+          url = res.header['location']
+        else
+          found = true
+        end
       end
+      File.open(fp, 'w+') { |fh| fh.write res.body }
     end
-    File.open(fp, 'w+') { |fh| fh.write res.body }
   end
-end
 
-Rake::Task['spec_clean'].enhance do
-  FileUtils.rm_rf(Dir.glob('spec/fixtures/artifacts/*'))
+  desc "Purge fetched artifacts"
+  task :clean do
+    FileUtils.rm_rf(Dir.glob('spec/fixtures/artifacts/*'))
+  end
 end
