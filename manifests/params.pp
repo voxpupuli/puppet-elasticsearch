@@ -128,6 +128,12 @@ class elasticsearch::params {
     }
   }
 
+  if $::operatingsystem == 'OpenSuSE' and versioncmp($::operatingsystemmajrelease, '13') >= 0 {
+    $systemd_root = '/usr/lib/systemd/system'
+  } else {
+    $systemd_root = '/lib/systemd/system'
+  }
+
   # packages
   case $::operatingsystem {
     'RedHat', 'CentOS', 'Fedora', 'Scientific', 'Amazon', 'OracleLinux', 'SLC': {
