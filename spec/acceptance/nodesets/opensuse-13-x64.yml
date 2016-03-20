@@ -4,7 +4,7 @@ HOSTS:
       - master
       - database
       - dashboard
-    platform: sles-13-x64
+    platform: sles-13-x86_64
     image: opensuse:13.2
     hypervisor: docker
     docker_cmd: ["/bin/systemd"]
