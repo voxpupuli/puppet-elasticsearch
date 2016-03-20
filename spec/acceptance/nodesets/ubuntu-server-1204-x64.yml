@@ -9,5 +9,9 @@ HOSTS:
     hypervisor: docker
     docker_cmd: ["/sbin/init"]
     docker_preserve_image: true
+    docker_image_commands:
+      - apt-get install -yq libssl-dev
+      - ln -sf /sbin/initctl.distrib /sbin/initctl
 CONFIG:
+  log_level: debug
   type: foss
