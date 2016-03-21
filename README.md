@@ -1,4 +1,4 @@
-#Elasticsearch Puppet module
+#Elasticsearch Puppet module [![Build Status](https://travis-ci.org/elastic/puppet-elasticsearch.svg?branch=master)](https://travis-ci.org/elastic/puppet-elasticsearch)
 
 ####Table of Contents
 
