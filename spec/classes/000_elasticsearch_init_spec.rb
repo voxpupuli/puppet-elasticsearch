@@ -38,6 +38,13 @@ describe 'elasticsearch', :type => 'class' do
         let(:version_add) { '-1' }
       end
 
+      if facts[:operatingsystem] == 'OpenSuSE' and
+        facts[:operatingsystemrelease].to_i >= 13
+        let(:systemd_path) { '/usr/lib/systemd/system' }
+      else
+        let(:systemd_path) { '/lib/systemd/system' }
+      end
+
       let(:facts) do
         facts.merge({ 'scenario' => '', 'common' => '' })
       end
@@ -62,7 +69,7 @@ describe 'elasticsearch', :type => 'class' do
         it { should contain_file('/usr/share/elasticsearch/scripts') }
         it { should contain_file('/usr/share/elasticsearch') }
         it { should contain_file('/usr/share/elasticsearch/lib') }
-	it { should contain_augeas("#{defaults_path}/elasticsearch") }
+        it { should contain_augeas("#{defaults_path}/elasticsearch") }
 
         it { should contain_exec('remove_plugin_dir') }
 
@@ -71,11 +78,11 @@ describe 'elasticsearch', :type => 'class' do
           it { should contain_file('/usr/lib/tmpfiles.d/elasticsearch.conf') }
         end
 
-	# file removal from package
-	it { should contain_file('/etc/init.d/elasticsearch').with(:ensure => 'absent') }
-	it { should contain_file('/lib/systemd/system/elasticsearch.service').with(:ensure => 'absent') }
-	it { should contain_file('/etc/elasticsearch/elasticsearch.yml').with(:ensure => 'absent') }
-	it { should contain_file('/etc/elasticsearch/logging.yml').with(:ensure => 'absent') }
+        # file removal from package
+        it { should contain_file('/etc/init.d/elasticsearch').with(:ensure => 'absent') }
+        it { should contain_file("#{systemd_path}/elasticsearch.service").with(:ensure => 'absent') }
+        it { should contain_file('/etc/elasticsearch/elasticsearch.yml').with(:ensure => 'absent') }
+        it { should contain_file('/etc/elasticsearch/logging.yml').with(:ensure => 'absent') }
       end
 
       context 'package installation' do
@@ -244,7 +251,12 @@ describe 'elasticsearch', :type => 'class' do
           })
         }
 
-        it { should contain_package('elasticsearch').with(:ensure => 'purged') }
+        case facts[:osfamily]
+        when 'Suse'
+          it { should contain_package('elasticsearch').with(:ensure => 'absent') }
+        else
+          it { should contain_package('elasticsearch').with(:ensure => 'purged') }
+        end
         it { should contain_file('/usr/share/elasticsearch/plugins').with(:ensure => 'absent') }
 
       end
