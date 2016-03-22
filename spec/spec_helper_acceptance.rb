@@ -19,9 +19,11 @@ hosts.each do |host|
   if host.is_pe?
     install_pe
   else
-    install_puppet_on host, :default_action => 'gem_install'
+    unless host['platform'] =~ /sles/
+      install_puppet_on host, :default_action => 'gem_install'
+    end
 
-    if fact('osfamily') == 'Suse'
+    if fact('operatingsystem') == 'OpenSuSE'
       install_package host, 'augeas-devel libxml2-devel'
       install_package host, '-t pattern devel_ruby'
       on host, "gem install ruby-augeas --no-ri --no-rdoc"
@@ -62,10 +64,7 @@ hosts.each do |host|
             package_name = 'elasticsearch-1.3.1.deb'
         end
       when 'Suse'
-        case fact('operatingsystem')
-          when 'OpenSuSE'
-            package_name = 'elasticsearch-1.3.1.noarch.rpm'
-        end
+        package_name = 'elasticsearch-1.3.1.noarch.rpm'
     end
 
     snapshot_package = {
