@@ -1,0 +1,17 @@
+HOSTS:
+  sles-12-x64:
+    roles:
+      - master
+      - database
+      - dashboard
+    platform: sles-12-x64
+    image: dliappis/sles:12
+    hypervisor: docker
+    docker_cmd: ["/sbin/init"]
+    docker_preserve_image: true
+    docker_image_commands:
+      - mkdir -p /etc/puppetlabs/code /etc/puppet/modules
+      - ln -sf /etc/puppet/modules /etc/puppetlabs/code/modules
+      - ln -s /usr/lib/systemd/system/sshd.service /etc/systemd/system/multi-user.target.wants/sshd.service
+CONFIG:
+  type: foss
