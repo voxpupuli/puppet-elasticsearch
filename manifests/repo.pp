@@ -68,6 +68,10 @@ class elasticsearch::repo {
         gpgcheck    => 1,
         gpgkey      => $::elasticsearch::repo_key_source,
         type        => 'yum',
+      } ~>
+      exec { 'elasticsearch_zypper_refresh_elasticsearch':
+        command     => 'zypper refresh elasticsearch',
+        refreshonly => true,
       }
     }
     default: {

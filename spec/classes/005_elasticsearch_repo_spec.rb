@@ -58,6 +58,7 @@ describe 'elasticsearch', :type => 'class' do
         context 'has zypper repo parts' do
           it { should contain_exec('elasticsearch_suse_import_gpg').with(:command => 'rpmkeys --import http://packages.elastic.co/GPG-KEY-elasticsearch') }
           it { should contain_zypprepo('elasticsearch').with(:baseurl => 'http://packages.elastic.co/elasticsearch/1.3/centos') }
+          it { should contain_exec('elasticsearch_zypper_refresh_elasticsearch') }
         end
       end
 

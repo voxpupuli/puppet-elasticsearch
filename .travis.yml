@@ -27,7 +27,6 @@ env:
   - DISTRO=sles-12-x64
 matrix:
   allow_failures:
-  - env: DISTRO=opensuse-13-x64
   - env: DISTRO=centos-6-x64
   - env: DISTRO=centos-6-x64 PE=true
   - env: DISTRO=ubuntu-server-1204-x64 PE=true
