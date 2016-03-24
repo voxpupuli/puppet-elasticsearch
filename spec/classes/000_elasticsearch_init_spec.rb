@@ -13,6 +13,7 @@ describe 'elasticsearch', :type => 'class' do
       case facts[:osfamily]
       when 'Debian'
         let(:defaults_path) { '/etc/default' }
+        let(:system_service_folder) { '/lib/systemd/system' }
         let(:pkg_ext) { 'deb' }
         let(:pkg_prov) { 'dpkg' }
         let(:version_add) { '' }
@@ -24,6 +25,7 @@ describe 'elasticsearch', :type => 'class' do
         end
       when 'RedHat'
         let(:defaults_path) { '/etc/sysconfig' }
+        let(:system_service_folder) { '/lib/systemd/system' }
         let(:pkg_ext) { 'rpm' }
         let(:pkg_prov) { 'rpm' }
         let(:version_add) { '-1' }
