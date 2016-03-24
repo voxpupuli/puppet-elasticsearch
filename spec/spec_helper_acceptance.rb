@@ -21,11 +21,14 @@ hosts.each do |host|
   else
     unless host['platform'] =~ /sles/
       install_puppet_on host, :default_action => 'gem_install'
+      ruby_dev = '-t pattern devel_ruby'
+    else
+      ruby_dev = 'ruby-devel'
     end
 
-    if fact('operatingsystem') == 'OpenSuSE'
-      install_package host, 'augeas-devel libxml2-devel'
-      install_package host, '-t pattern devel_ruby'
+    if fact('osfamily') == 'Suse'
+      install_package host, '--force-resolution augeas-devel libxml2-devel'
+      install_package host, ruby_dev
       on host, "gem install ruby-augeas --no-ri --no-rdoc"
     end
 
