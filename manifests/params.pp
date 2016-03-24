@@ -138,7 +138,7 @@ class elasticsearch::params {
       # main application
       $package = [ 'elasticsearch' ]
     }
-    'OpenSuSE': {
+    'OpenSuSE', 'SLES': {
       $package = [ 'elasticsearch' ]
     }
     'Gentoo': {
@@ -227,7 +227,7 @@ class elasticsearch::params {
       $defaults_location  = false
       $pid_dir            = false
     }
-    'OpenSuSE': {
+    'OpenSuSE', 'SLES': {
       $service_name          = 'elasticsearch'
       $service_hasrestart    = true
       $service_hasstatus     = true
