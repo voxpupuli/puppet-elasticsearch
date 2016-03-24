@@ -163,7 +163,7 @@ define elasticsearch::service::systemd(
         $memlock = undef
       }
 
-      file { "${elasticsearch::params::systemd_root}/elasticsearch-${name}.service":
+      file { "${elasticsearch::params::systemd_service_path}/elasticsearch-${name}.service":
         ensure  => $ensure,
         content => template($init_template),
         before  => Service["elasticsearch-instance-${name}"],
@@ -176,7 +176,7 @@ define elasticsearch::service::systemd(
 
   } else {
 
-    file { "${elasticsearch::params::systemd_root}/elasticsearch-${name}.service":
+    file { "${elasticsearch::params::systemd_service_path}/elasticsearch-${name}.service":
       ensure    => 'absent',
       subscribe => Service["elasticsearch-instance-${name}"],
       notify    => Exec["systemd_reload_${name}"],

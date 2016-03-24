@@ -11,7 +11,7 @@ describe 'elasticsearch::service::systemd', :type => 'define' do
       },
       {
         'operatingsystem' => 'CentOS',
-        'operatingsystemrelease' => ['6', '7'],
+        'operatingsystemrelease' => ['7'],
       }
     ]
   }).each do |os, facts|
@@ -24,9 +24,9 @@ describe 'elasticsearch::service::systemd', :type => 'define' do
 
       if facts[:operatingsystem] == 'OpenSuSE' and
         facts[:operatingsystemrelease].to_i >= 13
-        let(:systemd_path) { '/usr/lib/systemd/system' }
+        let(:systemd_service_path) { '/usr/lib/systemd/system' }
       else
-        let(:systemd_path) { '/lib/systemd/system' }
+        let(:systemd_service_path) { '/lib/systemd/system' }
       end
 
       context "Setup service" do
@@ -124,7 +124,7 @@ describe 'elasticsearch::service::systemd', :type => 'define' do
         :init_template => 'elasticsearch/etc/init.d/elasticsearch.systemd.erb'
           } end
 
-          it { should contain_file("#{systemd_path}/elasticsearch-es-01.service").with(:before => 'Service[elasticsearch-instance-es-01]') }
+          it { should contain_file("#{systemd_service_path}/elasticsearch-es-01.service").with(:before => 'Service[elasticsearch-instance-es-01]') }
         end
 
         context "No restart when 'restart_on_change' is false" do
@@ -136,7 +136,7 @@ describe 'elasticsearch::service::systemd', :type => 'define' do
         :init_template => 'elasticsearch/etc/init.d/elasticsearch.systemd.erb'
           } end
 
-          it { should contain_file("#{systemd_path}/elasticsearch-es-01.service").with(:notify => 'Exec[systemd_reload_es-01]', :before => 'Service[elasticsearch-instance-es-01]') }
+          it { should contain_file("#{systemd_service_path}/elasticsearch-es-01.service").with(:notify => 'Exec[systemd_reload_es-01]', :before => 'Service[elasticsearch-instance-es-01]') }
 
         end
       end

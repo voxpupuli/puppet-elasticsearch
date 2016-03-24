@@ -17,6 +17,7 @@ describe 'elasticsearch', :type => 'class' do
         let(:pkg_prov) { 'dpkg' }
         let(:version_add) { '' }
         if facts[:lsbmajdistrelease] >= '8'
+          let(:systemd_service_path) { '/lib/systemd/system' }
           test_pid = true
         else
           test_pid = false
@@ -27,6 +28,7 @@ describe 'elasticsearch', :type => 'class' do
         let(:pkg_prov) { 'rpm' }
         let(:version_add) { '-1' }
         if facts[:operatingsystemmajrelease] >= '7'
+          let(:systemd_service_path) { '/lib/systemd/system' }
           test_pid = true
         else
           test_pid = false
@@ -36,13 +38,12 @@ describe 'elasticsearch', :type => 'class' do
         let(:pkg_ext) { 'rpm' }
         let(:pkg_prov) { 'rpm' }
         let(:version_add) { '-1' }
-      end
-
-      if facts[:operatingsystem] == 'OpenSuSE' and
-        facts[:operatingsystemrelease].to_i >= 13
-        let(:systemd_path) { '/usr/lib/systemd/system' }
-      else
-        let(:systemd_path) { '/lib/systemd/system' }
+        if facts[:operatingsystem] == 'OpenSuSE' and
+            facts[:operatingsystemrelease].to_i <= 12
+          let(:systemd_service_path) { '/lib/systemd/system' }
+        else
+          let(:systemd_service_path) { '/usr/lib/systemd/system' }
+        end
       end
 
       let(:facts) do
@@ -80,7 +81,7 @@ describe 'elasticsearch', :type => 'class' do
 
         # file removal from package
         it { should contain_file('/etc/init.d/elasticsearch').with(:ensure => 'absent') }
-        it { should contain_file("#{systemd_path}/elasticsearch.service").with(:ensure => 'absent') }
+        it { should contain_file("#{systemd_service_path}/elasticsearch.service").with(:ensure => 'absent') if defined? systemd_service_path }
         it { should contain_file('/etc/elasticsearch/elasticsearch.yml').with(:ensure => 'absent') }
         it { should contain_file('/etc/elasticsearch/logging.yml').with(:ensure => 'absent') }
       end
@@ -281,6 +282,7 @@ describe 'elasticsearch', :type => 'class' do
           it { should contain_class('elasticsearch::repo').that_requires('Anchor[elasticsearch::begin]') }
           it { should contain_exec('elasticsearch_suse_import_gpg') }
           it { should contain_zypprepo('elasticsearch').with(:baseurl => 'http://packages.elastic.co/elasticsearch/1.0/centos') }
+          it { should contain_exec('elasticsearch_zypper_refresh_elasticsearch') }
         end
 
       end
