@@ -19,7 +19,7 @@ hosts.each do |host|
   if host.is_pe?
     install_pe
   else
-    unless host =~ /sles/
+    unless host['name'] =~ /sles/
       install_puppet_on host, :default_action => 'gem_install'
     end
 
