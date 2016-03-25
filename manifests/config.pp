@@ -104,8 +104,10 @@ class elasticsearch::config {
     file { '/etc/init.d/elasticsearch':
       ensure => 'absent',
     }
-    file { '/lib/systemd/system/elasticsearch.service':
-      ensure => 'absent',
+    if $elasticsearch::params::systemd_service_path {
+      file { "${elasticsearch::params::systemd_service_path}/elasticsearch.service":
+        ensure => 'absent',
+      }
     }
 
     $new_init_defaults = { 'CONF_DIR' => $elasticsearch::configdir }
