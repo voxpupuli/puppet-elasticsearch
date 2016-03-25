@@ -85,6 +85,7 @@
     {
       "operatingsystem": "SLES",
       "operatingsystemrelease": [
+        "11.3",
         "12.0"
       ]
     }

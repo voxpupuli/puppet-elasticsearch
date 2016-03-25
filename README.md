@@ -516,7 +516,7 @@ The module has been tested on:
 * CentOS 6/7
 * Ubuntu 12.04, 14.04
 * OpenSuSE 13.x
-* SLES 12
+* SLES 11sp4/12
 
 Other distro's that have been reported to work:
 
