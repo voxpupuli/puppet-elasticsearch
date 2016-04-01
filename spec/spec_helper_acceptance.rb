@@ -19,9 +19,7 @@ hosts.each do |host|
   if host.is_pe?
     install_pe
   else
-    unless host['name'] =~ /sles/
-      install_puppet_on host, :default_action => 'gem_install'
-    end
+    install_puppet_on host, :default_action => 'gem_install'
 
     if fact('osfamily') == 'Suse'
       install_package host, '--force-resolution augeas-devel libxml2-devel'
