@@ -259,6 +259,10 @@ class elasticsearch::params {
         $service_providers = [ 'init' ]
         $pid_dir           = false
       }
+
+      if $::operatingsystemrelease == '11.4' {
+        $java_package = 'java-1_7_1-ibm'
+      }
     }
     'Gentoo': {
       $service_name       = 'elasticsearch'
