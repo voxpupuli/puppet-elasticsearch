@@ -138,7 +138,7 @@ class elasticsearch::params {
       # main application
       $package = [ 'elasticsearch' ]
     }
-    'OpenSuSE': {
+    'OpenSuSE', 'SLES': {
       $package = [ 'elasticsearch' ]
     }
     'Gentoo': {
@@ -260,6 +260,16 @@ class elasticsearch::params {
       $service_providers  = 'openbsd'
       $defaults_location  = undef
       $init_template      = 'elasticsearch.OpenBSD.erb'
+      $pid_dir            = '/var/run/elasticsearch'
+    }
+    'SLES': {
+      $service_name       = 'elasticsearch'
+      $service_hasrestart = true
+      $service_hasstatus  = true
+      $service_pattern    = $service_name
+      $service_providers  = 'init'
+      $defaults_location  = '/etc/sysconfig'
+      $init_template      = 'elasticsearch.SLES.erb'
       $pid_dir            = '/var/run/elasticsearch'
     }
     default: {
