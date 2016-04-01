@@ -3,6 +3,7 @@ PE ?= false
 PE_VER ?= 3.8.0
 
 .vendor:
+	bundle update || true
 	bundle install --path .vendor
 
 .PHONY: fixtures
