@@ -60,10 +60,17 @@ RSpec::Core::RakeTask.new('beaker:integration') do |c|
 end
 task 'beaker:integration' => [:spec_prep, 'artifacts:prep']
 
+desc 'Run acceptance tests'
+RSpec::Core::RakeTask.new('beaker:acceptance') do |c|
+  c.pattern = 'spec/acceptance/*.rb'
+end
+task 'beaker:acceptance' => [:spec_prep, 'artifacts:prep']
+
 
 if not ENV['BEAKER_IS_PE'].nil? and ENV['BEAKER_IS_PE'] == 'true'
   task :beaker => 'artifacts:pe'
   task 'beaker:integration' => 'artifacts:pe'
+  task 'beaker:acceptance' => 'artifacts:pe'
 end
 
 

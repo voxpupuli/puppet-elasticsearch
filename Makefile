@@ -2,6 +2,14 @@ DISTRO ?= ubuntu-server-1404-x64
 PE ?= false
 PE_VER ?= 2015.3.3
 
+ifeq ($(PE), true)
+	PE_VER ?= 2015.3.3
+	BEAKER_PE_VER := $(PE_VER)
+	BEAKER_IS_PE := $(PE)
+	export BEAKER_PE_VER
+	export BEAKER_IS_PE
+endif
+
 .vendor:
 	bundle install --path .vendor
 
@@ -17,10 +25,8 @@ test-intake: test-docs test-rspec
 .PHONY: test-acceptance
 test-acceptance: .vendor
 	BEAKER_PE_DIR=spec/fixtures/artifacts \
-		BEAKER_PE_VER=$(PE_VER) \
-		BEAKER_IS_PE=$(PE) \
 		BEAKER_set=$(DISTRO) \
-		bundle exec rake beaker
+		bundle exec rake beaker:acceptance
 
 .PHONY: test-integration
 test-integration: .vendor
