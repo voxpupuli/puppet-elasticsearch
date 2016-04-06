@@ -182,7 +182,6 @@
 #   package upgrades.
 #   Defaults to: true
 #
-<<<<<<< HEAD
 # [*use_ssl*]
 #   Enable auth on api calls.
 #   Defaults to: false
