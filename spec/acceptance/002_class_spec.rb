@@ -10,7 +10,7 @@ describe "elasticsearch class:" do
            "
 
       # Run it twice and test for idempotency
-      apply_manifest(pp, :catch_failures => true)
+      apply_manifest pp, :catch_failures => true
       expect(apply_manifest(pp, :catch_failures => true).exit_code).to be_zero
     end
 
