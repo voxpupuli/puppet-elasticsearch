@@ -12,5 +12,4 @@ HOSTS:
     docker_image_commands:
       - yum install -y wget
 CONFIG:
-  log_level: debug
   type: foss
