@@ -1,3 +1,26 @@
+##0.10.3 ( Feb 08, 2016 )
+
+###Summary
+Adding support for OpenBSD and minor fixes
+
+####Features
+* Add required changes to work with ES 2.2.x plugins
+* Support for custom log directory
+* Support for OpenBSD
+
+####Bugfixes
+* Add correct relation to file resource and plugin installation
+* Notify service when upgrading the package
+
+####Changes
+* Remove plugin dir when upgrading Elasticsearch
+
+####Testing changes
+
+####Known bugs
+* Possible package conflicts when using ruby/python defines with main package name
+
+
 ##0.10.2 ( Jan 19, 2016 )
 
 ###Summary

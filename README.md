@@ -1,4 +1,4 @@
-#Elasticsearch Puppet module
+#Elasticsearch Puppet module [![Build Status](https://travis-ci.org/elastic/puppet-elasticsearch.svg?branch=master)](https://travis-ci.org/elastic/puppet-elasticsearch)
 
 ####Table of Contents
 
@@ -42,6 +42,7 @@ This module has been tested against all versions of ES 1.x and 2.x
 * [ceritsc/yum](https://forge.puppetlabs.com/ceritsc/yum) For yum version lock.
 * [richardc/datacat](https://forge.puppetlabs.com/richardc/datacat)
 * [Augeas](http://augeas.net/)
+* [puppetlabs-java](https://forge.puppetlabs.com/puppetlabs/java) for Java installation (optional).
 
 #### Repository management
 When using the repository management you will need the following dependency modules:
@@ -526,6 +527,7 @@ Testing on other platforms has been light and cannot be guaranteed.
 
 ##Development
 
+Please see the [CONTRIBUTING.md][CONTRIBUTING.md] file for instructions regarding development environments and testing.
 
 ##Support
 

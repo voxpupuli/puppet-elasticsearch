@@ -182,6 +182,7 @@
 #   package upgrades.
 #   Defaults to: true
 #
+<<<<<<< HEAD
 # [*use_ssl*]
 #   Enable auth on api calls.
 #   Defaults to: false
@@ -197,6 +198,9 @@
 # [*ssl_password*]
 #   Defines the password for authentication.
 #   Defaults to: undef
+#
+# [*logdir*]
+#   Use different directory for logging
 #
 # The default values for the parameters are set in elasticsearch::params. Have
 # a look at the corresponding <tt>params.pp</tt> manifest file if you need more

@@ -161,8 +161,10 @@ class elasticsearch::package {
       Package {
         provider  => 'rpm',
       }
+      $package_ensure = 'absent'
+    } else {
+      $package_ensure = 'purged'
     }
-    $package_ensure = 'purged'
 
   }
 
