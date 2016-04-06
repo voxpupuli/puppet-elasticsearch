@@ -62,7 +62,7 @@ task 'beaker:integration' => [:spec_prep, 'artifacts:prep']
 
 desc 'Run acceptance tests'
 RSpec::Core::RakeTask.new('beaker:acceptance') do |c|
-  c.pattern = 'spec/acceptance/*.rb'
+  c.pattern = 'spec/acceptance/*_spec.rb'
 end
 task 'beaker:acceptance' => [:spec_prep, 'artifacts:prep']
 
