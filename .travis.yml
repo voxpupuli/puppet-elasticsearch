@@ -22,16 +22,19 @@ env:
   - DISTRO=centos-7-x64 PE=true PE_VER=3.7.2
   - DISTRO=centos-7-x64 PE=true PE_VER=2016.1.1
   - DISTRO=debian-7-x64
+  - DISTRO=debian-7-x64 PE=true
+  - DISTRO=debian-7-x64 PE=true PE_VER=3.7.2
+    # No 2016.x release for debian 7
   - DISTRO=debian-8-x64
   - DISTRO=ubuntu-server-1204-x64
   - DISTRO=ubuntu-server-1204-x64 PE=true
+  - DISTRO=ubuntu-server-1204-x64 PE=true PE_VER=3.7.2
+  - DISTRO=ubuntu-server-1204-x64 PE=true PE_VER=2016.1.1
   - DISTRO=ubuntu-server-1404-x64
   - DISTRO=ubuntu-server-1404-x64 PE=true
+  - DISTRO=ubuntu-server-1404-x64 PE=true PE_VER=3.7.2
+  - DISTRO=ubuntu-server-1404-x64 PE=true PE_VER=2016.1.1
   - DISTRO=opensuse-13-x64
-matrix:
-  allow_failures:
-  - env: DISTRO=ubuntu-server-1204-x64 PE=true
-  - env: DISTRO=ubuntu-server-1404-x64 PE=true
 install:
 - bundle install --path .vendor
 - bundle exec rake spec_prep
