@@ -2,7 +2,7 @@ DISTRO ?= ubuntu-server-1404-x64
 PE ?= false
 
 ifeq ($(PE), true)
-	PE_VER ?= 3.8.0
+	PE_VER ?= 3.8.3
 	BEAKER_PE_VER := $(PE_VER)
 	BEAKER_IS_PE := $(PE)
 	export BEAKER_PE_VER
