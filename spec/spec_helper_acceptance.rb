@@ -12,7 +12,6 @@ RSpec.configure do |c|
 end
 
 files_dir = ENV['files_dir'] || './spec/fixtures/artifacts'
-puppet_version = ENV['PUPPET_VERSION'] || '3.8.6'
 
 hosts.each do |host|
 
@@ -20,10 +19,7 @@ hosts.each do |host|
   if host.is_pe?
     install_pe
   else
-    install_puppet_on host, {
-      :version        => puppet_version,
-      :default_action => 'gem_install',
-    }
+    install_puppet_on host, :default_action => 'gem_install'
 
     if fact('osfamily') == 'Suse'
       install_package host, 'augeas-devel libxml2-devel'

@@ -1,5 +1,4 @@
 DISTRO ?= ubuntu-server-1404-x64
-PUPPET_VERSION ?= 3.8.6
 PE ?= false
 
 ifeq ($(PE), true)
