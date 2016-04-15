@@ -124,7 +124,11 @@ define elasticsearch::plugin(
       before => Elasticsearch_plugin[$name],
     }
 
-  } elsif ($url != undef) {
+  } else {
+    $file_source = undef
+  }
+
+  if ($url != undef) {
     validate_string($url)
   }
 

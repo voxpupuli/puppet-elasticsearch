@@ -175,6 +175,9 @@ describe "Hiera tests" do
       it { should_not be_running }
     end
 
+    after do
+      write_hiera_config([])
+    end
   end
 
 
