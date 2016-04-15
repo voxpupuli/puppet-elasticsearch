@@ -113,6 +113,8 @@ class elasticsearch::package {
               "http_proxy=${elasticsearch::proxy_url}",
               "https_proxy=${elasticsearch::proxy_url}",
             ]
+          } else {
+            $exec_environment = []
           }
 
           exec { 'download_package_elasticsearch':
@@ -161,8 +163,10 @@ class elasticsearch::package {
       Package {
         provider  => 'rpm',
       }
+      $package_ensure = 'absent'
+    } else {
+      $package_ensure = 'purged'
     }
-    $package_ensure = 'purged'
 
   }
 
