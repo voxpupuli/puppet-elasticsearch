@@ -51,6 +51,7 @@ class elasticsearch::repo {
         gpgcheck => 1,
         gpgkey   => $::elasticsearch::repo_key_source,
         enabled  => 1,
+        proxy    => $::elasticsearch::repo_proxy,
       }
     }
     'Suse': {
