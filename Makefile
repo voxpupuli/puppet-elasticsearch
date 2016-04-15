@@ -1,5 +1,6 @@
 DISTRO ?= ubuntu-server-1404-x64
 PE ?= false
+STRICT_VARIABLES ?= yes
 
 ifeq ($(PE), true)
 	PE_VER ?= 3.8.3
@@ -47,4 +48,5 @@ test-docs: bundle
 test-rspec: bundle
 	bundle exec rake lint
 	bundle exec rake validate
-	bundle exec rake spec_verbose
+	STRICT_VARIABLES=$(STRICT_VARIABLES) \
+		bundle exec rake spec_verbose
