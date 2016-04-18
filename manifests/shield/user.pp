@@ -38,7 +38,6 @@
 #
 define elasticsearch::shield::user (
   $ensure    = 'present',
-  $instances = []
   $password  = undef,
   $provider  = 'file',
   $roles     = [],
@@ -51,10 +50,5 @@ define elasticsearch::shield::user (
     password => $password,
     provider => $provider,
     roles    => $roles,
-  }
-
-  datacat_fragment { "shield_user_config_${instance}":
-    target => "${instance_configdir}/elasticsearch.yml",
-    data   => $instance_conf,
   }
 }
