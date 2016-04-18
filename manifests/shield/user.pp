@@ -37,10 +37,10 @@
 # * Tyler Langlois <mailto:tyler@elastic.co>
 #
 define elasticsearch::shield::user (
-  $ensure    = 'present',
-  $password  = undef,
-  $provider  = 'file',
-  $roles     = [],
+  $ensure   = 'present',
+  $password = undef,
+  $provider = 'file',
+  $roles    = [],
 ) {
   validate_string($ensure, $password, $provider)
   validate_array($roles)

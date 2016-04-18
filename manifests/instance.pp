@@ -92,7 +92,7 @@ define elasticsearch::instance(
   $init_defaults      = undef,
   $init_defaults_file = undef,
   $init_template      = $elasticsearch::init_template,
-  $shield             = undef,
+  $shield             = false,
 ) {
 
   require elasticsearch::params
@@ -231,28 +231,6 @@ define elasticsearch::instance(
       $instance_logdir_config = { 'path.logs' => $instance_logdir }
     }
 
-    validate_bool($shield)
-    if ($shield == true) {
-      $shield_config = {
-        'shield'          => {
-          'authc.realms.esusers' => {
-            'type'          => 'esusers',
-            'files'         => {
-              'users'       => "${elasticsearch::configdir}/shield/users",
-              'users_roles' =>
-                "${elasticsearch::configdir}/shield/users_roles",
-              'role_mapping' =>
-                "${elasticsearch::configdir}/shield/role_mapping.yml",
-            },
-          },
-          'authz.store.file.roles' =>
-            "${elasticsearch::configdir}/shield/roles.yml",
-        },
-      }
-    } else {
-      $shield_config = {}
-    }
-
     file { $instance_logdir:
       ensure  => 'directory',
       owner   => $elasticsearch::elasticsearch_user,
@@ -309,8 +287,19 @@ define elasticsearch::instance(
       target => "${elasticsearch::params::homedir}/scripts",
     }
 
+    validate_bool($shield)
+    if $shield {
+      file { "${instance_configdir}/shield":
+        ensure  => 'directory',
+        mode    => '0644',
+        source  => "${elasticsearch::configdir}/shield",
+        recurse => true,
+        before  => Elasticsearch::Service[$name],
+      }
+    }
+
     # build up new config
-    $instance_conf = merge($main_config, $instance_node_name, $instance_config, $instance_datadir_config, $instance_logdir_config, $shield_config)
+    $instance_conf = merge($main_config, $instance_node_name, $instance_config, $instance_datadir_config, $instance_logdir_config)
 
     # defaults file content
     # ensure user did not provide both init_defaults and init_defaults_file
