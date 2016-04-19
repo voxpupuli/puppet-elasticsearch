@@ -100,11 +100,26 @@ class elasticsearch::config {
       mode   => '0644',
     }
 
+    # Resources for shield management
     file { "${elasticsearch::configdir}/shield":
       ensure => 'directory',
       mode   => '0644',
       owner  => 'root',
       group  => 'root',
+    }
+
+    datacat { "${elasticsearch::configdir}/shield/roles.yml":
+      template => "${module_name}/etc/elasticsearch/shield/roles.yml.erb",
+      owner    => 'root',
+      group    => 'root',
+    }
+
+    validate_bool($elasticsearch::default_roles)
+    if $elasticsearch::default_roles {
+      datacat_fragment { "default elasticsearch_shield_roles":
+        target => "${elasticsearch::configdir}/shield/roles.yml",
+        data   => $elasticsearch::params::default_roles,
+      }
     }
 
     # Removal of files that are provided with the package which we don't use
