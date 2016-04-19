@@ -29,6 +29,7 @@ Puppet::Type.type(:elasticsearch_shield_user).provide(:file) do
       user.map(&:strip!)
       username, roles = user
       roles.delete!('-')
+      roles.delete!('*')
       {
         :name => username,
         :ensure => :present,
