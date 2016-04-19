@@ -92,7 +92,6 @@ define elasticsearch::instance(
   $init_defaults      = undef,
   $init_defaults_file = undef,
   $init_template      = $elasticsearch::init_template,
-  $shield             = false,
 ) {
 
   require elasticsearch::params
@@ -287,15 +286,12 @@ define elasticsearch::instance(
       target => "${elasticsearch::params::homedir}/scripts",
     }
 
-    validate_bool($shield)
-    if $shield {
-      file { "${instance_configdir}/shield":
-        ensure  => 'directory',
-        mode    => '0644',
-        source  => "${elasticsearch::configdir}/shield",
-        recurse => true,
-        before  => Elasticsearch::Service[$name],
-      }
+    file { "${instance_configdir}/shield":
+      ensure  => 'directory',
+      mode    => '0644',
+      source  => "${elasticsearch::configdir}/shield",
+      recurse => true,
+      before  => Elasticsearch::Service[$name],
     }
 
     # build up new config
