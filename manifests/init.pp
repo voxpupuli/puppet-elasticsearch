@@ -250,7 +250,8 @@ class elasticsearch(
   $instances             = undef,
   $instances_hiera_merge = false,
   $plugins               = undef,
-  $plugins_hiera_merge   = false
+  $plugins_hiera_merge   = false,
+  $default_roles         = true,
 ) inherits elasticsearch::params {
 
   anchor {'elasticsearch::begin': }
@@ -413,6 +414,7 @@ class elasticsearch(
     -> Class['elasticsearch::package']
     -> Class['elasticsearch::config']
     -> Elasticsearch::Plugin <| |>
+    -> Elasticsearch::Shield::Role <| |>
     -> Elasticsearch::Shield::User <| |>
     -> Elasticsearch::Instance <| |>
     -> Elasticsearch::Template <| |>
