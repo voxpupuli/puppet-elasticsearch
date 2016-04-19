@@ -100,6 +100,13 @@ class elasticsearch::config {
       mode   => '0644',
     }
 
+    file { "${elasticsearch::configdir}/shield":
+      ensure => 'directory',
+      mode   => '0644',
+      owner  => 'root',
+      group  => 'root',
+    }
+
     # Removal of files that are provided with the package which we don't use
     file { '/etc/init.d/elasticsearch':
       ensure => 'absent',
