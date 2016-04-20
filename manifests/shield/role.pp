@@ -26,12 +26,14 @@
 # * Tyler Langlois <mailto:tyler@elastic.co>
 #
 define elasticsearch::shield::role (
+  $ensure     = 'present',
   $privileges = {},
 ) {
+  validate_string($ensure)
   validate_hash($privileges)
 
-  datacat_fragment { "elasticsearch_shield_role_${name}":
-    target => "${elasticsearch::configdir}/shield/roles.yml",
-    data   => { "${name}" => $privileges },
+  elasticsearch_shield_role { $name :
+    ensure     => $ensure,
+    privileges => $privileges,
   }
 }
