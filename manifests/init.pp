@@ -359,7 +359,9 @@ class elasticsearch(
     }
   } else {
     $protocol = 'http'
+    # lint:ignore:empty_string_assignment
     $ssl_args = ''
+    # lint:endignore
   }
 
   #### Manage actions
