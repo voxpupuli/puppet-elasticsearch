@@ -18,7 +18,10 @@ describe 'elasticsearch::service::systemd', :type => 'define' do
 
     context "on #{os}" do
 
-      let(:facts) { facts }
+      let(:facts) { facts.merge({
+          :scenario => '',
+          :common => ''
+      }) }
       let(:title) { 'es-01' }
       let(:pre_condition) { 'class {"elasticsearch": config => { "node" => {"name" => "test" }}}' }
 
