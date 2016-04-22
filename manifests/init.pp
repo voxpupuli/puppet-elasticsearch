@@ -144,6 +144,10 @@
 #   String.  URL of the apt GPG key
 #   Default: http://packages.elastic.co/GPG-KEY-elasticsearch
 #
+# [*repo_proxy*]
+#   String.  URL for repository proxy
+#   Default: undef
+#
 # [*logging_config*]
 #   Hash representation of information you want in the logging.yml file
 #
@@ -242,6 +246,7 @@ class elasticsearch(
   $repo_version          = undef,
   $repo_key_id           = 'D88E42B4',
   $repo_key_source       = 'http://packages.elastic.co/GPG-KEY-elasticsearch',
+  $repo_proxy            = undef,
   $logging_file          = undef,
   $logging_config        = undef,
   $logging_template      = undef,
