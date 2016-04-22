@@ -251,7 +251,6 @@ class elasticsearch(
   $instances_hiera_merge = false,
   $plugins               = undef,
   $plugins_hiera_merge   = false,
-  $default_roles         = true,
 ) inherits elasticsearch::params {
 
   anchor {'elasticsearch::begin': }
