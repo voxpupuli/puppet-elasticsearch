@@ -78,20 +78,27 @@
 # * Richard Pijnenburg <mailto:richard.pijnenburg@elasticsearch.com>
 #
 define elasticsearch::instance(
-  $ensure             = $elasticsearch::ensure,
-  $status             = $elasticsearch::status,
-  $config             = undef,
-  $configdir          = undef,
-  $datadir            = undef,
-  $logdir             = undef,
-  $logging_file       = undef,
-  $logging_config     = undef,
-  $logging_template   = undef,
-  $logging_level      = $elasticsearch::default_logging_level,
-  $service_flags      = undef,
-  $init_defaults      = undef,
-  $init_defaults_file = undef,
-  $init_template      = $elasticsearch::init_template,
+  $ensure               = $elasticsearch::ensure,
+  $status               = $elasticsearch::status,
+  $config               = undef,
+  $configdir            = undef,
+  $datadir              = undef,
+  $logdir               = undef,
+  $logging_file         = undef,
+  $logging_config       = undef,
+  $logging_template     = undef,
+  $logging_level        = $elasticsearch::default_logging_level,
+  $service_flags        = undef,
+  $init_defaults        = undef,
+  $init_defaults_file   = undef,
+  $init_template        = $elasticsearch::init_template,
+  $ssl                  = false,
+  $ca_certificate       = undef,
+  $certificate          = undef,
+  $private_key          = undef,
+  $private_key_password = undef,
+  $keystore_password    = undef,
+  $keystore_path        = undef,
 ) {
 
   require elasticsearch::params
@@ -230,6 +237,50 @@ define elasticsearch::instance(
       $instance_logdir_config = { 'path.logs' => $instance_logdir }
     }
 
+    validate_bool($ssl)
+    if $ssl {
+      validate_absolute_path($ca_certificate, $certificate, $private_key)
+      validate_string($keystore_password)
+
+      if ($keystore_path == undef) {
+        $_keystore_path = "${instance_configdir}/shield/${name}.ks"
+      } else {
+        validate_absolute_path($keystore_path)
+        $_keystore_path = $keystore_path
+      }
+
+      $tls_config = {
+        'shield' => {
+          'ssl' => {
+            'keystore' => {
+              'path' => $_keystore_path,
+              'password' => $keystore_password,
+            },
+          },
+          'transport' => { 'ssl' => true, },
+          'http' => { 'ssl' => true, },
+        },
+      }
+
+      # Trust CA Certificate
+      java_ks { "elasticsearch_instance_${name}_keystore_ca":
+        ensure       => 'latest',
+        certificate  => $ca_certificate,
+        target       => $_keystore_path,
+        password     => $keystore_password,
+        trustcacerts => true,
+      }
+
+      # Load node certificate and private key
+      java_ks { "elasticsearch_instance_${name}_keystore_node":
+        ensure      => 'latest',
+        certificate => $certificate,
+        private_key => $private_key,
+        target      => $_keystore_path,
+        password    => $keystore_password,
+      }
+    } else { $tls_config = {} }
+
     file { $instance_logdir:
       ensure  => 'directory',
       owner   => $elasticsearch::elasticsearch_user,
@@ -290,12 +341,12 @@ define elasticsearch::instance(
       ensure  => 'directory',
       mode    => '0644',
       source  => "${elasticsearch::configdir}/shield",
-      recurse => true,
+      recurse => remote,
       before  => Elasticsearch::Service[$name],
     }
 
     # build up new config
-    $instance_conf = merge($main_config, $instance_node_name, $instance_config, $instance_datadir_config, $instance_logdir_config)
+    $instance_conf = merge($main_config, $instance_node_name, $instance_config, $instance_datadir_config, $instance_logdir_config, $tls_config)
 
     # defaults file content
     # ensure user did not provide both init_defaults and init_defaults_file

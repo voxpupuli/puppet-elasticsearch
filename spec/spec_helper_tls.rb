@@ -1,6 +1,6 @@
 require 'openssl'
 
-def gen_certs password
+def gen_certs
   ca_key = OpenSSL::PKey::RSA.new 2048
   cipher = OpenSSL::Cipher::Cipher.new 'AES-128-CBC'
 
@@ -27,7 +27,7 @@ def gen_certs password
 
   # Node Key
   key = OpenSSL::PKey::RSA.new 2048
-  node_name = OpenSSL::X509::Name.parse 'CN=centos-7-x64/DC=example'
+  node_name = OpenSSL::X509::Name.parse 'CN=localhost/DC=example'
 
   # Node Cert
   cert = OpenSSL::X509::Certificate.new
@@ -60,7 +60,7 @@ def gen_certs password
 
   {
     :ca   => ca_cert.to_pem,
-    :key  => key.export(cipher, password),
+    :key  => key.to_pem,
     :cert => cert.to_pem
   }
 end
