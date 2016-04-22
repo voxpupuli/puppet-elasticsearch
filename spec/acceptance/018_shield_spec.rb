@@ -34,51 +34,35 @@ EOF
       expect(apply_manifest(single_manifest, :catch_failures => true).exit_code).to be_zero
     end
 
-    describe server(:container) do
-      describe http "http://localhost:9200/_cluster/health" do
-        it 'denies unauthorized access' do
-          expect(response.status).to eq(401)
-        end
+    describe "secured REST endpoint" do
+      it 'denies unauthorized access' do
+        curl_with_retries(
+          'anonymous cluster health request',
+          default,
+          "-s -I http://localhost:9200/_cluster/health " \
+            "| grep '401 Unauthorized'", 0)
       end
 
-      describe http(
-        "http://localhost:9200/_cluster/health",
-        basic_auth: [@user, @user_password],
-      ) do
-        it 'permits authorized access' do
-          expect(response.status).to eq(200)
-        end
+      it 'permits authorized access' do
+        curl_with_retries(
+          'elastic user cluster health request',
+          default,
+          "-s -I -u #{@user}:#{@user_password} "\
+          "http://localhost:9200/_cluster/health " \
+            "| grep '200 Okay'", 0)
       end
     end
-    # it 'denies unauthorized access' do
-    #   curl_with_retries(
-    #     'anonymous cluster health request',
-    #     default,
-    #     "https://#{default[:name]}:9200/_cluster/health " \
-    #       "| grep head", 0)
-    #   expect(response.status).to eq(401)
-    # end
-    #
-    # it 'permits authorized access' do
-    #   expect(response.status).to eq(200)
-    # end
   end
 
   # Big setup for TLS key and cert generation.
   before :all do
+    # Authentication instance variables
     @user = 'elastic'
     @user_password = SecureRandom.hex
     @keystore_password = SecureRandom.hex
-    @password_file = '/tmp/key_password'
-    @auth = "Basic "
-    @auth << Base64.encode64("#{@user}:#{@user_password}").strip
     @tls = {}
 
-    # Set up CA test files
-    #
-    # TODO remove once debugging key no longer needed
-    create_remote_file hosts, @password_file, @keystore_password
-
+    # Setup TLS cert placement
     gen_certs(@keystore_password).each do |cert, pem|
       path = "/tmp/#{cert}.pem"
       @tls[cert] = path

@@ -20,7 +20,6 @@ gem 'puppetlabs_spec_helper'
 gem 'puppet-syntax'
 gem 'rspec-puppet-facts'
 gem 'webmock'
-gem 'infrataster'
 
 # Extra Puppet-lint gems
 gem 'puppet-lint-appends-check', :require => false
