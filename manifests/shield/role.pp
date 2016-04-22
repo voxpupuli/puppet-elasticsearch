@@ -31,6 +31,7 @@ define elasticsearch::shield::role (
 ) {
   validate_string($ensure)
   validate_hash($privileges)
+  validate_slength("${name}", 30, 1)
 
   elasticsearch_shield_role { $name :
     ensure     => $ensure,
