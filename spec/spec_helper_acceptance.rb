@@ -1,7 +1,9 @@
 require 'beaker-rspec'
 require 'pry'
 require 'securerandom'
+require 'infrataster/rspec'
 require_relative 'spec_acceptance_integration'
+require_relative 'spec_helper_tls'
 
 def test_settings
   RSpec.configuration.test_settings
@@ -79,6 +81,15 @@ hosts.each do |host|
 
     RSpec.configuration.test_settings['snapshot_package'] = "file:#{snapshot_package[:dst]}"
 
+  end
+
+  Infrataster::Server.define(:proxy) do |server|
+    server.address = host[:ip]
+    server.ssh = host[:ssh]
+  end
+  Infrataster::Server.define(:container) do |server|
+    server.address = '127.0.0.1'
+    server.from = :proxy
   end
 end
 
