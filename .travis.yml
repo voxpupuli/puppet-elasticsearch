@@ -32,6 +32,8 @@ env:
   - DISTRO=ubuntu-server-1404-x64 PE=true
   - DISTRO=ubuntu-server-1404-x64 PE=true PE_VER=2016.1.1
   - DISTRO=opensuse-13-x64
+  - DISTRO=oracle-6-x64
+  - DISTRO=oracle-7-x64
 install:
 - bundle install --path .vendor
 - bundle exec rake spec_prep
