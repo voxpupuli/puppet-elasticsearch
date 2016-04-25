@@ -1,6 +1,7 @@
 require 'beaker-rspec'
 require 'pry'
 require 'securerandom'
+require 'thread'
 require_relative 'spec_acceptance_integration'
 
 def test_settings
@@ -17,7 +18,9 @@ hosts.each do |host|
 
   # Install Puppet
   if host.is_pe?
+    pe_progress = Thread.new { while sleep 5 ; print '.' ; end }
     install_pe
+    pe_progress.exit
   else
     install_puppet_on host, :default_action => 'gem_install'
 
