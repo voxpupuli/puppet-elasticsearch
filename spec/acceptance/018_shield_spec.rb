@@ -75,7 +75,9 @@ Elasticsearch::Plugin { instances => ['es-01'],  }
 
 elasticsearch::shield::role { '#{@role}':
   privileges => {
-    'cluster' => ['cluster:monitor'],
+    'indices' => {
+      '#{@role}' => 'create_index'
+    }
   }
 }
 
@@ -98,7 +100,7 @@ EOF
     end
 
     describe "secured REST endpoint" do
-      it 'denies unauthorized privileges' do
+      it 'denies unauthorized access' do
         curl_with_retries(
           'unauthorized elastic user creating an index',
           default,
@@ -109,10 +111,10 @@ EOF
 
       it 'permits authorized access' do
         curl_with_retries(
-          'authorized elastic user accessing cluster monitor privileges',
+          'authorized elastic user creating an index',
           default,
-          "-s -I -XGET -u #{@user}:#{@user_password} "\
-          "http://localhost:9200/_cluster/health " \
+          "-s -I -u #{@user}:#{@user_password} "\
+          "-XPUT http://localhost:9200/#{@role} " \
             "| grep '200 OK'", 0)
       end
     end
