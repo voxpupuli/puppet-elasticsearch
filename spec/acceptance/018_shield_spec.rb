@@ -154,6 +154,18 @@ EOF
         ).exit_code).to be_zero
       end
     end
+
+    describe "REST endpoint" do
+      it 'serves over HTTPS' do
+        curl_with_retries(
+          'authenticated local https node health',
+          default,
+          "-s -I -u #{@user}:#{@user_password} "\
+            "--cacert #{@tls[:ca]} " \
+            "-XGET https://localhost:9200 " \
+            "| grep '200 OK'", 0)
+      end
+    end
   end
 
 
