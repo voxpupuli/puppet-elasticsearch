@@ -42,16 +42,26 @@
 #   Default value: 9200
 #   This variable is optional
 #
+# [*protocol*]
+#   Defines the protocol to use for api calls using curl
+#   Default value from main class is: http
+#
+# [*ssl_args*]
+#   SSL arguments for curl commands.
+#   Default value from main class is an empty string.
+#
 # === Authors
 #
 # * Richard Pijnenburg <mailto:richard.pijnenburg@elasticsearch.com>
 #
 define elasticsearch::template(
-  $ensure  = 'present',
-  $file    = undef,
-  $content = undef,
-  $host    = 'localhost',
-  $port    = 9200
+  $ensure   = 'present',
+  $file     = undef,
+  $content  = undef,
+  $host     = 'localhost',
+  $port     = 9200,
+  $protocol = $::elasticsearch::protocol,
+  $ssl_args = $::elasticsearch::ssl_args
 ) {
 
   require elasticsearch
@@ -73,7 +83,7 @@ define elasticsearch::template(
   }
 
   # Build up the url
-  $es_url = "http://${host}:${port}/_template/${name}"
+  $es_url = "${protocol}://${host}:${port}/_template/${name}"
 
   # Can't do a replace and delete at the same time
 
@@ -97,8 +107,8 @@ define elasticsearch::template(
   # Delete the existing template
   # First check if it exists of course
   exec { "delete_template_${name}":
-    command     => "curl -s -XDELETE ${es_url}",
-    onlyif      => "test $(curl -s '${es_url}?pretty=true' | wc -l) -gt 1",
+    command     => "curl ${ssl_args} -s -XDELETE ${es_url}",
+    onlyif      => "test $(curl ${ssl_args} -s '${es_url}?pretty=true' | wc -l) -gt 1",
     notify      => $insert_notify,
     refreshonly => true,
   }
@@ -134,8 +144,8 @@ define elasticsearch::template(
     }
 
     exec { "insert_template_${name}":
-      command     => "curl -sL -w \"%{http_code}\\n\" -XPUT ${es_url} -d @${elasticsearch::params::homedir}/templates_import/elasticsearch-template-${name}.json -o /dev/null | egrep \"(200|201)\" > /dev/null",
-      unless      => "test $(curl -s '${es_url}?pretty=true' | wc -l) -gt 1",
+      command     => "curl ${ssl_args} -sL -w \"%{http_code}\\n\" -XPUT ${es_url} -d @${elasticsearch::params::homedir}/templates_import/elasticsearch-template-${name}.json -o /dev/null | egrep \"(200|201)\" > /dev/null",
+      unless      => "test $(curl ${ssl_args} -s '${es_url}?pretty=true' | wc -l) -gt 1",
       refreshonly => true,
       loglevel    => 'debug',
     }
