@@ -186,6 +186,22 @@
 #   package upgrades.
 #   Defaults to: true
 #
+# [*use_ssl*]
+#   Enable auth on api calls.
+#   Defaults to: false
+#
+# [*validate_ssl*]
+#   Enable ssl validation on api calls.
+#   Defaults to: true
+#
+# [*ssl_user*]
+#   Defines the username for authentication.
+#   Defaults to: undef
+#
+# [*ssl_password*]
+#   Defines the password for authentication.
+#   Defaults to: undef
+#
 # [*logdir*]
 #   Use different directory for logging
 #
@@ -255,7 +271,11 @@ class elasticsearch(
   $instances             = undef,
   $instances_hiera_merge = false,
   $plugins               = undef,
-  $plugins_hiera_merge   = false
+  $plugins_hiera_merge   = false,
+  $use_ssl               = false,
+  $validate_ssl          = true,
+  $ssl_user              = undef,
+  $ssl_password          = undef
 ) inherits elasticsearch::params {
 
   anchor {'elasticsearch::begin': }
@@ -330,6 +350,23 @@ class elasticsearch(
         $pkg_version = $version
       }
     }
+  }
+
+  # Setup SSL authentication args for use in any type that hits an api
+  if $use_ssl {
+    validate_string($ssl_user)
+    validate_string($ssl_password)
+    $protocol = 'https'
+    if $validate_ssl {
+      $ssl_args = "-u ${ssl_user}:${ssl_password}"
+    } else {
+      $ssl_args = "-k -u ${ssl_user}:${ssl_password}"
+    }
+  } else {
+    $protocol = 'http'
+    # lint:ignore:empty_string_assignment
+    $ssl_args = ''
+    # lint:endignore
   }
 
   #### Manage actions
