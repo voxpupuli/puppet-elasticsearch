@@ -7,7 +7,7 @@ def gen_certs
   # CA Cert
   ca_name = OpenSSL::X509::Name.parse 'CN=ca/DC=example'
   ca_cert = OpenSSL::X509::Certificate.new
-  ca_cert.serial = 0
+  ca_cert.serial = 1000000
   ca_cert.version = 2
   ca_cert.not_before = Time.now
   ca_cert.not_after = Time.now + 86400
@@ -31,7 +31,7 @@ def gen_certs
 
   # Node Cert
   cert = OpenSSL::X509::Certificate.new
-  cert.serial = 0
+  cert.serial = 1000001
   cert.version = 2
   cert.not_before = Time.now
   cert.not_after = Time.now + 6000
