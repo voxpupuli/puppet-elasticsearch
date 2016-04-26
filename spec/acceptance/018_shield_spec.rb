@@ -128,9 +128,9 @@ EOF
         base_manifest + <<EOF
 elasticsearch::instance { 'es-01':
   ssl                  => true,
-  ca_certificate       => '#{@tls[:ca]}',
-  certificate          => '#{@tls[:cert]}',
-  private_key          => '#{@tls[:key]}',
+  ca_certificate       => '#{@tls[:ca][:cert][:path]}',
+  certificate          => '#{@tls[:clients].first[:cert][:path]}',
+  private_key          => '#{@tls[:clients].first[:key][:path]}',
   private_key_password => '#{@keystore_password}',
   keystore_password    => '#{@keystore_password}',
 }
@@ -142,7 +142,7 @@ elasticsearch::shield::user { '#{@user}':
   roles => ['admin'],
 }
 EOF
-      end
+        end
 
       it 'should apply cleanly' do
         apply_manifest single_manifest, :catch_failures => true
@@ -177,13 +177,15 @@ EOF
     @user_password = SecureRandom.hex
     @keystore_password = SecureRandom.hex
     @role = [*('a'..'z')].sample(8).join
-    @tls = {}
 
     # Setup TLS cert placement
-    gen_certs.each do |cert, pem|
-      path = "/tmp/#{cert}.pem"
-      @tls[cert] = path
-      create_remote_file hosts, path, pem
+    @tls = gen_certs(2, '/tmp')
+
+    create_remote_file hosts, @tls[:ca][:cert][:path], @tls[:ca][:cert][:pem]
+    @tls[:clients].each do |node|
+      node.each do |type, params|
+        create_remote_file hosts, params[:path], params[:pem]
+      end
     end
   end
 end
