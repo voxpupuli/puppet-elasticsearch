@@ -6,8 +6,10 @@ Puppet::Type.type(:elasticsearch_shield_user).provide(:file) do
   os = Facter.value('osfamily')
   if os == 'OpenBSD'
     commands :esusers => '/usr/local/elasticsearch/bin/shield/esusers'
+    commands :es => '/usr/local/elasticsearch/bin/elasticsearch'
   else
     commands :esusers => '/usr/share/elasticsearch/bin/shield/esusers'
+    commands :es => '/usr/share/elasticsearch/bin/elasticsearch'
   end
 
   def self.users
