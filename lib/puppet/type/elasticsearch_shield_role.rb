@@ -12,7 +12,7 @@ Puppet::Type.newtype(:elasticsearch_shield_role) do
     validate do |value|
       case value.length
       when 1..30
-        unless value =~ /^\w/
+        unless value =~ /^[a-zA-Z_]/
           raise ArgumentError, 'Role name must begin with A-Z, a-z, or _.'
         end
       else
