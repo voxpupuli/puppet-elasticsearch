@@ -122,10 +122,12 @@ EOF
 
   describe 'tls' do
 
-    describe 'single instance manifest' do
+    describe 'single instance' do
 
-      let :single_manifest do
-        base_manifest + <<EOF
+      describe 'manifest' do
+
+        let :single_manifest do
+          base_manifest + <<EOF
 elasticsearch::instance { 'es-01':
   ssl                  => true,
   ca_certificate       => '#{@tls[:ca][:cert][:path]}',
@@ -144,26 +146,81 @@ elasticsearch::shield::user { '#{@user}':
 EOF
         end
 
-      it 'should apply cleanly' do
-        apply_manifest single_manifest, :catch_failures => true
+        it 'should apply cleanly' do
+          apply_manifest single_manifest, :catch_failures => true
+        end
+
+        it 'should be idempotent' do
+          expect(apply_manifest(
+            single_manifest, :catch_failures => true
+          ).exit_code).to be_zero
+        end
       end
 
-      it 'should be idempotent' do
-        expect(apply_manifest(
-          single_manifest, :catch_failures => true
-        ).exit_code).to be_zero
+      describe "REST endpoint" do
+        it 'serves over HTTPS' do
+          curl_with_retries(
+            'authenticated local https node health',
+            default,
+            "-s -I -u #{@user}:#{@user_password} "\
+              "--cacert #{@tls[:ca][:cert][:path]} " \
+              "-XGET https://localhost:9200 " \
+              "| grep '200 OK'", 0)
+        end
       end
     end
 
-    describe "REST endpoint" do
-      it 'serves over HTTPS' do
-        curl_with_retries(
-          'authenticated local https node health',
-          default,
-          "-s -I -u #{@user}:#{@user_password} "\
-            "--cacert #{@tls[:ca]} " \
-            "-XGET https://localhost:9200 " \
-            "| grep '200 OK'", 0)
+    describe 'multi-instance' do
+
+      describe 'manifest' do
+
+        let :multi_manifest do
+          base_manifest + %Q{
+elasticsearch::shield::user { '#{@user}':
+  password => '#{@user_password}',
+  roles => ['admin'],
+}
+          } + @tls[:clients].each_with_index.map do |cert, i|
+            %Q{
+elasticsearch::instance { 'es-%02d':
+  ssl                  => true,
+  ca_certificate       => '#{@tls[:ca][:cert][:path]}',
+  certificate          => '#{cert[:cert][:path]}',
+  private_key          => '#{cert[:key][:path]}',
+  private_key_password => '#{@keystore_password}',
+  keystore_password    => '#{@keystore_password}',
+  config => {
+    'discovery.zen.minimum_master_nodes' => %s,
+    'shield.ssl.hostname_verification' => false,
+  }
+}
+            } % [i+1, i+1, @tls[:clients].length]
+          end.join("\n") + %Q{
+Elasticsearch::Plugin { instances => %s, }
+          } % @tls[:clients].each_with_index.map { |_, i| "es-%02d" % (i+1)}.to_s
+        end
+
+        it 'should apply cleanly' do
+          apply_manifest multi_manifest, :catch_failures => true
+        end
+
+        it 'should be idempotent' do
+          expect(apply_manifest(
+            multi_manifest, :catch_failures => true
+          ).exit_code).to be_zero
+        end
+      end
+
+      describe "cat nodes" do
+        it 'returns TLS-clustered nodes' do
+          curl_with_retries(
+            'authenticated local https node health',
+            default,
+            "-s -u #{@user}:#{@user_password} "\
+              "--cacert #{@tls[:ca][:cert][:path]} " \
+              "-XGET https://localhost:9200/_cat/nodes " \
+              "| wc -l | grep '^2$'", 0)
+        end
       end
     end
   end
