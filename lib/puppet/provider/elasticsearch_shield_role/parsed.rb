@@ -10,12 +10,17 @@ Puppet::Type.type(:elasticsearch_shield_role).provide(
   desc "Provider for Shield file (esusers) user resources."
 
   def self.parse text
-    YAML.load(text).map do |role, privileges|
-      {
-        :name => role,
-        :ensure => :present,
-        :privileges => privileges,
-      }
+    yaml = YAML.load text
+    if yaml
+      yaml.map do |role, privileges|
+        {
+          :name => role,
+          :ensure => :present,
+          :privileges => privileges,
+        }
+      end
+    else
+      []
     end
   end
 
