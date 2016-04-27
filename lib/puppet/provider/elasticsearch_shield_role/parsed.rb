@@ -11,7 +11,7 @@ Puppet::Type.type(:elasticsearch_shield_role).provide(
   :parsed,
   :parent => Puppet::Provider::ParsedFile,
   :default_target => roles,
-  :filetype => :flat,
+  :filetype => :flat
 ) do
   desc "Provider for Shield file (esusers) user resources."
 
