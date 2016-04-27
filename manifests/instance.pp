@@ -340,8 +340,8 @@ define elasticsearch::instance(
     file { "${instance_configdir}/shield":
       ensure  => 'directory',
       mode    => '0644',
-      source  => "${elasticsearch::configdir}/shield",
-      recurse => remote,
+      source  => "${elasticsearch::params::homedir}/shield",
+      recurse => 'remote',
       before  => Elasticsearch::Service[$name],
     }
 

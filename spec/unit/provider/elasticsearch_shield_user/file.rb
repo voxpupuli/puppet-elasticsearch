@@ -13,7 +13,7 @@ describe Puppet::Type.type(:elasticsearch_shield_user).provider(:file) do
 
       context 'without users' do
         before do
-          described_class.expects(:esusers).with('list').returns(
+          described_class.expects(:esusers_with_path).with('list').returns(
             'No users found'
           )
         end
@@ -25,7 +25,7 @@ describe Puppet::Type.type(:elasticsearch_shield_user).provider(:file) do
 
       context 'with one user' do
         before do
-          described_class.expects(:esusers).with('list').returns(
+          described_class.expects(:esusers_with_path).with('list').returns(
             'elastic        : admin*,power_user'
           )
         end
@@ -44,7 +44,7 @@ describe Puppet::Type.type(:elasticsearch_shield_user).provider(:file) do
 
       context 'with multiple users' do
         before do
-          described_class.expects(:esusers).with('list').returns(
+          described_class.expects(:esusers_with_path).with('list').returns(
             <<EOL
 elastic        : admin*
 logstash       : user

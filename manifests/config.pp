@@ -101,7 +101,7 @@ class elasticsearch::config {
     }
 
     # Resources for shield management
-    file { "${elasticsearch::configdir}/shield":
+    file { "${elasticsearch::params::homedir}/shield":
       ensure => 'directory',
       mode   => '0644',
       owner  => 'root',
