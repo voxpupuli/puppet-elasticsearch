@@ -7,11 +7,11 @@ describe "elasticsearch shield" do
 class { 'elasticsearch' :
   java_install => true,
   manage_repo  => true,
-  repo_version => '1.7',
+  repo_version => '#{test_settings['repo_version']}',
 }
 
-elasticsearch::plugin { 'elasticsearch/license/latest' :  }
-elasticsearch::plugin { 'elasticsearch/shield/latest' :  }
+elasticsearch::plugin { 'elasticsearch/license/1.0.0' :  }
+elasticsearch::plugin { 'elasticsearch/shield/1.0.2' : }
 EOF
   end
 
