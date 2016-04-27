@@ -225,6 +225,29 @@ Elasticsearch::Plugin { instances => %s, }
     end
   end
 
+  # TODO Do cleanup (absent plus file rm -r)
+
+  describe 'module removal' do
+
+    describe 'manifest' do
+
+      let :removal_manifest do
+        %Q{
+class { 'elasticsearch' : ensure => absent, }
+
+Elasticsearch::Instance { ensure => absent, }
+elasticsearch::instance { %s : }
+        } % @tls[:clients].each_with_index.map do |_, i|
+          "es-%02d" % (i+1)
+        end.to_s
+      end
+
+      it 'should apply cleanly' do
+        apply_manifest removal_manifest, :catch_failures => true
+      end
+    end
+  end
+
 
   # Boilerplate for shield setup
   before :all do
