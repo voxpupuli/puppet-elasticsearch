@@ -5,16 +5,22 @@ Puppet::Type.type(:elasticsearch_shield_user).provide(:file) do
 
   os = Facter.value('osfamily')
   if os == 'OpenBSD'
-    commands :esusers => '/usr/local/elasticsearch/bin/shield/esusers'
-    commands :es => '/usr/local/elasticsearch/bin/elasticsearch'
+    @homedir = '/usr/local/elasticsearch'
   else
-    commands :esusers => '/usr/share/elasticsearch/bin/shield/esusers'
-    commands :es => '/usr/share/elasticsearch/bin/elasticsearch'
+    @homedir = '/usr/share/elasticsearch'
+  end
+
+  commands :esusers => "#{@homedir}/bin/shield/esusers"
+  commands :es => "#{@homedir}/bin/elasticsearch"
+
+  def self.esusers_with_path args
+    args = [args] unless args.is_a? Array
+    esusers(["--path.conf=#{@homedir}"] + args)
   end
 
   def self.users
     begin
-      output = esusers('list')
+      output = esusers_with_path('list')
     rescue Puppet::ExecutionFailure => e
       debug("#users had an error: #{e.inspect}")
       return nil
@@ -67,7 +73,7 @@ Puppet::Type.type(:elasticsearch_shield_user).provide(:file) do
   def flush
     case @property_flush[:ensure]
     when :absent
-      esusers(['userdel', resource[:name]])
+      self.class.esusers_with_path(['userdel', resource[:name]])
 
     else
       arguments = []
@@ -90,7 +96,7 @@ Puppet::Type.type(:elasticsearch_shield_user).provide(:file) do
         end
       end
 
-      esusers arguments
+      self.class.esusers_with_path(arguments)
     end
 
     @property_hash = self.class.users.detect { |u| u[:name] == resource[:name] }

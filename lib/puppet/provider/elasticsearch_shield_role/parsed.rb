@@ -1,5 +1,11 @@
 require 'puppet/provider/parsedfile'
-roles = '/etc/elasticsearch/shield/roles.yml'
+
+case Facter.value('osfamily')
+when 'OpenBSD'
+  roles = '/usr/local/elasticsearch/shield/roles.yml'
+else
+  roles = '/usr/share/elasticsearch/shield/roles.yml'
+end
 
 Puppet::Type.type(:elasticsearch_shield_role).provide(
   :parsed,
