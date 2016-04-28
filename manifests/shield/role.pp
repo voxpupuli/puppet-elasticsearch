@@ -5,7 +5,9 @@
 # === Parameters
 #
 # [*privileges*]
-#   A hash of permissions defined for the role.
+#   A hash of permissions defined for the role. Valid privilege settings can
+#   be found in the Shield documentation:
+#   https://www.elastic.co/guide/en/shield/current/index.html
 #   Value type is hash
 #   Default value: {}
 #

@@ -73,8 +73,41 @@
 # [*logdir*]
 #   Log directory for this instance.
 #
+# [*ssl*]
+#   Whether to manage TLS certificates for Shield. Requires the ca_certificate,
+#   certificate, private_key and keystore_password parameters to be set.
+#   Value type is boolean
+#   Default value: false
+#
+# [*ca_certificate*]
+#   Path to the trusted CA certificate to add to this node's java keystore.
+#   Value type is string
+#   Default value: undef
+#
+# [*certificate*]
+#   Path to the certificate for this node signed by the CA listed in
+#   ca_certificate.
+#   Value type is string
+#   Default value: undef
+#
+# [*private_key*]
+#   Path to the key associated with this node's certificate.
+#   Value type is string
+#   Default value: undef
+#
+# [*keystore_password*]
+#   Password to encrypt this node's Java keystore.
+#   Value type is string
+#   Default value: undef
+#
+# [*keystore_path*]
+#   Custom path to the java keystore file. This parameter is optional.
+#   Value type is string
+#   Default value: undef
+#
 # === Authors
 #
+# * Tyler Langlois <mailto:tyler@elastic.co>
 # * Richard Pijnenburg <mailto:richard.pijnenburg@elasticsearch.com>
 #
 define elasticsearch::instance(
@@ -96,7 +129,6 @@ define elasticsearch::instance(
   $ca_certificate       = undef,
   $certificate          = undef,
   $private_key          = undef,
-  $private_key_password = undef,
   $keystore_password    = undef,
   $keystore_path        = undef,
 ) {
