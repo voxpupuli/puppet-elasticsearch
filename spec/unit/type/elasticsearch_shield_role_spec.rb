@@ -50,14 +50,20 @@ describe Puppet::Type.type(:elasticsearch_shield_role) do
         it 'should reject long role names' do
           expect { described_class.new(
             :name => 'a'*31,
-          ) }.to raise_error(Puppet::Error, /in length/)
+          ) }.to raise_error(
+            Puppet::ResourceError,
+            /valid values/i
+          )
         end
 
         it 'should reject invalid role characters' do
           ['@foobar', '0foobar'].each do |role|
             expect { described_class.new(
               :name => role,
-            ) }.to raise_error(Puppet::Error, /must begin with/)
+          ) }.to raise_error(
+            Puppet::ResourceError,
+            /valid values/i
+          )
           end
         end
       end
