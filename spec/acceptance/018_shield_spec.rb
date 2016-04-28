@@ -225,8 +225,6 @@ Elasticsearch::Plugin { instances => %s, }
     end
   end
 
-  # TODO Do cleanup (absent plus file rm -r)
-
   describe 'module removal' do
 
     describe 'manifest' do
