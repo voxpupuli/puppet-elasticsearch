@@ -37,8 +37,8 @@
 # * Tyler Langlois <mailto:tyler@elastic.co>
 #
 define elasticsearch::shield::user (
+  $password,
   $ensure   = 'present',
-  $password = undef,
   $provider = 'file',
   $roles    = [],
 ) {
