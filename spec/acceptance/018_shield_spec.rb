@@ -11,7 +11,7 @@ class { 'elasticsearch' :
 }
 
 elasticsearch::plugin { 'elasticsearch/license/latest' :  }
-elasticsearch::plugin { 'elasticsearch/shield/1.1.1' : }
+elasticsearch::plugin { 'elasticsearch/shield/latest' : }
 EOF
   end
 
