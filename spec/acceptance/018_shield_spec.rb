@@ -29,6 +29,10 @@ elasticsearch::shield::user { '#{@user}':
   password => '#{@user_password}',
   roles    => ['admin'],
 }
+elasticsearch::shield::user { '#{@user}pwchange':
+  password => '#{@user_password}',
+  roles    => ['admin'],
+}
 EOF
       end
 
@@ -57,6 +61,40 @@ EOF
           'elastic user cluster health request',
           default,
           "-s -I -XGET -u #{@user}:#{@user_password} "\
+          "http://localhost:9200/_cluster/health " \
+            "| grep '200 OK'", 0)
+      end
+    end
+  end
+
+  describe 'changing passwords' do
+    describe 'password change manifest' do
+
+      let :passwd_manifest do
+        base_manifest + <<EOF
+elasticsearch::instance { ['es-01'] :  }
+
+Elasticsearch::Plugin { instances => ['es-01'],  }
+
+notify { 'change password' : } ~>
+elasticsearch::shield::user { '#{@user}pwchange':
+  password => '#{@user_password[0..5]}',
+  roles    => ['admin'],
+}
+EOF
+      end
+
+      it 'should apply cleanly' do
+        apply_manifest passwd_manifest, :catch_failures => true
+      end
+    end
+
+    describe "secured REST endpoint" do
+      it 'authorizes changed passwords' do
+        curl_with_retries(
+          'elastic user cluster health request with new password',
+          default,
+          "-s -I -XGET -u #{@user}pwchange:#{@user_password[0..5]} "\
           "http://localhost:9200/_cluster/health " \
             "| grep '200 OK'", 0)
       end

@@ -374,6 +374,8 @@ define elasticsearch::instance(
       mode    => '0644',
       source  => "${elasticsearch::params::homedir}/shield",
       recurse => 'remote',
+      owner   => 'root',
+      group   => 'root',
       before  => Elasticsearch::Service[$name],
     }
 
