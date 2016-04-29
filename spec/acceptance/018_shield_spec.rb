@@ -133,7 +133,6 @@ elasticsearch::instance { 'es-01':
   ca_certificate       => '#{@tls[:ca][:cert][:path]}',
   certificate          => '#{@tls[:clients].first[:cert][:path]}',
   private_key          => '#{@tls[:clients].first[:key][:path]}',
-  private_key_password => '#{@keystore_password}',
   keystore_password    => '#{@keystore_password}',
 }
 
@@ -187,7 +186,6 @@ elasticsearch::instance { 'es-%02d':
   ca_certificate       => '#{@tls[:ca][:cert][:path]}',
   certificate          => '#{cert[:cert][:path]}',
   private_key          => '#{cert[:key][:path]}',
-  private_key_password => '#{@keystore_password}',
   keystore_password    => '#{@keystore_password}',
   config => {
     'discovery.zen.minimum_master_nodes' => %s,
