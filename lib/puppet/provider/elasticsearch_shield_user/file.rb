@@ -15,7 +15,7 @@ Puppet::Type.type(:elasticsearch_shield_user).provide(:file) do
 
   def self.esusers_with_path args
     args = [args] unless args.is_a? Array
-    esusers(["--path.conf=#{@homedir}"] + args)
+    esusers(["--default.path.conf=#{@homedir}"] + args)
   end
 
   def self.users
