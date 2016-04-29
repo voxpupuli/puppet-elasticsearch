@@ -113,4 +113,12 @@ Puppet::Type.type(:elasticsearch_shield_user).provide(:file) do
   def destroy
     @property_flush[:ensure] = :absent
   end
+
+  def passwd
+    self.class.esusers_with_path([
+      'passwd',
+      resource[:name],
+      '-p', resource[:password]
+    ])
+  end
 end

@@ -33,4 +33,12 @@ Puppet::Type.newtype(:elasticsearch_shield_user) do
       is.sort == should.sort
     end
   end
+
+  def refresh
+    if @parameters[:ensure]
+      provider.passwd
+    else
+      debug 'skipping password set'
+    end
+  end
 end
