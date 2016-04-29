@@ -10,8 +10,8 @@ class { 'elasticsearch' :
   repo_version => '#{test_settings['repo_version']}',
 }
 
-elasticsearch::plugin { 'elasticsearch/license/1.0.0' :  }
-elasticsearch::plugin { 'elasticsearch/shield/1.0.2' : }
+elasticsearch::plugin { 'elasticsearch/license/latest' :  }
+elasticsearch::plugin { 'elasticsearch/shield/1.1.1' : }
 EOF
   end
 
