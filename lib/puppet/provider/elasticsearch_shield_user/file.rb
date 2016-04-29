@@ -29,7 +29,7 @@ Puppet::Type.type(:elasticsearch_shield_user).provide(:file) do
     debug("Raw `esusers list` output: #{output}")
     output.split("\n").select { |u|
       # Keep only expected "user : role1,role2" formatted lines
-      u[/^\S+\s+:\s+\S+$/]
+      u[/^[^:]+:\s+\S+$/]
     }.map { |u|
       # Break into ["user ", " role1,role2"]
       u.split(':')
