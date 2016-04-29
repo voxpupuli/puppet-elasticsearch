@@ -18,9 +18,9 @@
 #
 # [*provider*]
 #   Shield realm to use to manage users. For Shield versions
-#   < 2.3.0, only the file realm (esusers) is supported.
+#   < 2.3.0, only the esusers realm is supported.
 #   Value type is string
-#   Default value: file
+#   Default value: esusers
 #
 # [*roles*]
 #   A list of roles to which the user should belong.
@@ -39,7 +39,7 @@
 define elasticsearch::shield::user (
   $password,
   $ensure   = 'present',
-  $provider = 'file',
+  $provider = 'esusers',
   $roles    = [],
 ) {
   validate_string($ensure, $password, $provider)

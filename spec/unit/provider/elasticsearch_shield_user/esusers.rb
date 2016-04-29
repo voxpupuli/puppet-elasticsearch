@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Puppet::Type.type(:elasticsearch_shield_user).provider(:file) do
+describe Puppet::Type.type(:elasticsearch_shield_user).provider(:esusers) do
 
   on_supported_os.each do |os, facts|
 
@@ -37,7 +37,7 @@ describe Puppet::Type.type(:elasticsearch_shield_user).provider(:file) do
             :ensure => :present,
             :name => 'elastic',
             :roles => ['admin', 'power_user'],
-            :provider => :file,
+            :provider => :esusers,
           })
         end
       end

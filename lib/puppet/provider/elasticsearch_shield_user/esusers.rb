@@ -1,4 +1,4 @@
-Puppet::Type.type(:elasticsearch_shield_user).provide(:file) do
+Puppet::Type.type(:elasticsearch_shield_user).provide(:esusers) do
   desc "Provider for Shield file (esusers) user resources."
 
   mk_resource_methods
@@ -41,7 +41,7 @@ Puppet::Type.type(:elasticsearch_shield_user).provide(:file) do
       {
         :name => username,
         :ensure => :present,
-        :provider => :file,
+        :provider => :esusers,
         :roles => roles.split(',')
       }
     end
