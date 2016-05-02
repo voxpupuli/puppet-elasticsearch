@@ -261,12 +261,21 @@ There are 2 different ways of installing the software
 ####Repository
 
 This option allows you to use an existing repository for package installation.
-The `repo_version` corresponds with the major version of Elasticsearch.
+The `repo_version` corresponds with the `major.minor` version of Elasticsearch for versions before 2.x.
 
 ```puppet
 class { 'elasticsearch':
   manage_repo  => true,
   repo_version => '1.4',
+}
+```
+
+For 2.x versions of Elasticsearch, use `repo_version => '2.x'`.
+
+```puppet
+class { 'elasticsearch':
+  manage_repo  => true,
+  repo_version => '2.x',
 }
 ```
 
