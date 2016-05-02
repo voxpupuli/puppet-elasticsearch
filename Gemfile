@@ -7,6 +7,7 @@ gem 'beaker'
 gem 'beaker-rspec'
 gem 'metadata-json-lint'
 gem 'rspec-puppet'
+gem 'specinfra', '>= 2.55'
 
 gem 'pry'
 gem 'docker-api', '~> 1.0'
