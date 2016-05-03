@@ -57,7 +57,7 @@ describe 'elasticsearch::instance', :type => 'define' do
 
       context "Service" do
 
-          it { should contain_elasticsearch__service('es-01').with(:init_template => "elasticsearch/etc/init.d/elasticsearch.#{initscript}.erb", :init_defaults => {"CONF_DIR"=>"/etc/elasticsearch/es-01", "CONF_FILE"=>"/etc/elasticsearch/es-01/elasticsearch.yml", "LOG_DIR"=>"/var/log/elasticsearch/es-01", "ES_HOME"=>"/usr/share/elasticsearch"}) }
+          it { should contain_elasticsearch__service('es-01').with(:init_template => "elasticsearch/etc/init.d/elasticsearch.#{initscript}.erb", :init_defaults => {"CONF_DIR"=>"/etc/elasticsearch/es-01", "LOG_DIR"=>"/var/log/elasticsearch/es-01", "ES_HOME"=>"/usr/share/elasticsearch"}) }
 
       end
 
