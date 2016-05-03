@@ -15,4 +15,12 @@ Puppet::Type.newtype(:elasticsearch_shield_role) do
   newproperty(:privileges) do
     desc 'Security privileges of the given role.'
   end
+
+  newproperty(:mapping, :array_matching => :all) do
+    desc 'Mappings from roles to groups for external realms.'
+
+    def insync? is
+      is.sort == should.sort
+    end
+  end
 end
