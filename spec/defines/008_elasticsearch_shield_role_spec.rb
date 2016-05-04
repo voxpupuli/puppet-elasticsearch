@@ -17,7 +17,12 @@ describe 'elasticsearch::shield::role' do
       {
         :privileges => {
           'cluster' => '*'
-        }
+        },
+        :mappings => [
+          "cn=users,dc=example,dc=com",
+          "cn=admins,dc=example,dc=com",
+          "cn=John Doe,cn=other users,dc=example,dc=com"
+        ]
       }
     end
 
