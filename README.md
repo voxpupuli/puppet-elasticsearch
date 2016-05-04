@@ -413,6 +413,17 @@ resources { 'elasticsearch_shield_role':
 }
 ```
 
+##### Mappings
+
+Associating mappings with a role is done by passing an array of strings to the `mappings` parameter of the `elasticsearch::shield::role` type.
+Note that if you'd like to keep the file purged of mappings not under Puppet's control, you should use the following `resources` declaration because mappings are a separate low-level type:
+
+```puppet
+resources { 'elasticsearch_shield_role_mapping':
+  purge => true,
+}
+```
+
 #### Users
 
 Users can be managed using the `elasticsearch::shield::user` type.

@@ -11,9 +11,14 @@
 #   Value type is hash
 #   Default value: {}
 #
+# [*mappings*]
+#   A list of optional mappings defined for this role.
+#   Value type is array
+#   Default value: []
+#
 # === Examples
 #
-# # Creates and manages the role 'power_user'
+# # Creates and manages the role 'power_user' mapped to an LDAP group.
 # elasticsearch::shield::role { 'power_user':
 #   privileges => {
 #     'cluster' => 'monitor',
@@ -21,6 +26,9 @@
 #       '*' => 'all',
 #     },
 #   },
+#   mappings => [
+#     "cn=users,dc=example,dc=com",
+#   ],
 # }
 #
 # === Authors
@@ -30,13 +38,28 @@
 define elasticsearch::shield::role (
   $ensure     = 'present',
   $privileges = {},
+  $mappings   = [],
 ) {
   validate_string($ensure)
   validate_hash($privileges)
+  validate_array($mappings)
   validate_slength($name, 30, 1)
 
+  if empty($privileges) or $ensure == 'absent' {
+    $_role_ensure = 'absent'
+  }
+
+  if empty($mappings) or $ensure == 'absent' {
+    $_mapping_ensure = 'absent'
+  }
+
   elasticsearch_shield_role { $name :
-    ensure     => $ensure,
+    ensure     => $_role_ensure,
     privileges => $privileges,
+  }
+
+  elasticsearch_shield_role_mapping { $name :
+    ensure   => $_mapping_ensure,
+    mappings => $mappings,
   }
 }
