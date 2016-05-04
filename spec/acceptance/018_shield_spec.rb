@@ -111,11 +111,12 @@ elasticsearch::instance { ['es-01'] :  }
 
 Elasticsearch::Plugin { instances => ['es-01'],  }
 
+
 elasticsearch::shield::role { '#{@role}':
   privileges => {
-    'indices' => {
-      '#{@role}' => 'create_index'
-    }
+    'cluster' => [
+      'cluster:monitor/health',
+    ]
   }
 }
 
@@ -142,8 +143,8 @@ EOF
         curl_with_retries(
           'unauthorized elastic user creating an index',
           default,
-          "-s -I -u #{@user}:#{@user_password} "\
-          "-XPUT http://localhost:9200/#{SecureRandom.hex} " \
+          "-s -I -XGET -u #{@user}:#{@user_password} "\
+          "http://localhost:9200/_cluster/stats " \
             "| grep '403 Forbidden'", 0)
       end
 
@@ -151,8 +152,8 @@ EOF
         curl_with_retries(
           'authorized elastic user creating an index',
           default,
-          "-s -I -u #{@user}:#{@user_password} "\
-          "-XPUT http://localhost:9200/#{@role} " \
+          "-s -I -XGET -u #{@user}:#{@user_password} "\
+          "http://localhost:9200/_cluster/health " \
             "| grep '200 OK'", 0)
       end
     end
