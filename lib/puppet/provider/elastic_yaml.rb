@@ -35,7 +35,10 @@ class Puppet::Provider::ElasticYaml < Puppet::Provider::ParsedFile
     false
   end
 
+  # This is ugly, but it's overridden in ParsedFile with abstract functionality
+  # we don't need for our simple provider class.
+  # This has been observed to break in Puppet version 3/4 switches.
   def self.valid_attr?(klass, attr_name)
-    klass.parameters.include? attr_name
+    klass.is_a? Class ? klass.parameters.include?(attr_name) : true
   end
 end
