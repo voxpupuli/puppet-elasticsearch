@@ -47,10 +47,14 @@ define elasticsearch::shield::role (
 
   if empty($privileges) or $ensure == 'absent' {
     $_role_ensure = 'absent'
+  } else {
+    $_role_ensure = $ensure
   }
 
   if empty($mappings) or $ensure == 'absent' {
     $_mapping_ensure = 'absent'
+  } else {
+    $_mapping_ensure = $ensure
   }
 
   elasticsearch_shield_role { $name :
