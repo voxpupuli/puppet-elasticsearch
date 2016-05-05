@@ -1,4 +1,5 @@
 require 'puppet/provider/parsedfile'
+require 'puppet/util/package'
 
 class Puppet::Provider::ElasticYaml < Puppet::Provider::ParsedFile
 
@@ -22,13 +23,20 @@ class Puppet::Provider::ElasticYaml < Puppet::Provider::ParsedFile
   end
 
   def self.to_file records
-    records.map do |record|
+    yaml = records.map do |record|
       # Convert top-level symbols to strings
       Hash[record.map { |k, v| [k.to_s, v] }]
     end.inject({}) do |hash, record|
       # Flatten array of hashes into single hash
       hash.merge({ record['name'] => record.delete(@metadata.to_s) })
-    end.to_yaml.gsub(/^\s{2}/, '') << "\n"
+    end.to_yaml
+
+    # Puppet < 4 uses ZAML, which prepends spaces in to_yaml ಠ_ಠ
+    unless Puppet::Util::Package.versioncmp(Puppet.version, '4') >= 0
+      yaml.gsub!(/^\s{2}/, '')
+    end
+
+    yaml << "\n"
   end
 
   def self.skip_record? record
