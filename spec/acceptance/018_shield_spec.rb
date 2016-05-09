@@ -41,9 +41,11 @@ EOF
       end
 
       it 'should be idempotent' do
-        expect(apply_manifest(
-          single_manifest, :catch_failures => true
-        ).exit_code).to be_zero
+        apply_manifest(
+          single_manifest,
+          :catch_failures => true,
+          :catch_changes => true
+        )
       end
     end
 
@@ -132,9 +134,11 @@ EOF
       end
 
       it 'should be idempotent' do
-        expect(apply_manifest(
-          single_manifest, :catch_failures => true
-        ).exit_code).to be_zero
+        apply_manifest(
+          single_manifest,
+          :catch_failures => true,
+          :catch_changes => true
+        )
       end
     end
 
@@ -189,9 +193,11 @@ EOF
         end
 
         it 'should be idempotent' do
-          expect(apply_manifest(
-            single_manifest, :catch_failures => true
-          ).exit_code).to be_zero
+          apply_manifest(
+            single_manifest,
+            :catch_failures => true,
+            :catch_changes => true
+          )
         end
       end
 
@@ -242,9 +248,11 @@ Elasticsearch::Plugin { instances => %s, }
         end
 
         it 'should be idempotent' do
-          expect(apply_manifest(
-            multi_manifest, :catch_failures => true
-          ).exit_code).to be_zero
+          apply_manifest(
+            multi_manifest,
+            :catch_failures => true,
+            :catch_changes => true
+          )
         end
       end
 
