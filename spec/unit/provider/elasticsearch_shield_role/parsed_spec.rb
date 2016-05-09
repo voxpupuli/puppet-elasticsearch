@@ -20,11 +20,11 @@ describe Puppet::Type.type(:elasticsearch_shield_role).provider(:parsed) do
       context 'with one role' do
         it 'should return one resource' do
           expect(described_class.parse(%q{
-admin:
-  cluster: all
-  indices:
-    '*': all
-                 })[0]).to eq({
+            admin:
+              cluster: all
+              indices:
+                '*': all
+          })[0]).to eq({
             :ensure => :present,
             :name => 'admin',
             :privileges => {
@@ -40,18 +40,18 @@ admin:
       context 'with multiple roles' do
         it 'should return three resources' do
           expect(described_class.parse(%q{
-admin:
-  cluster: all
-  indices:
-    '*': all
-user:
-  indices:
-      '*': read
-power_user:
-  cluster: monitor
-  indices:
-    '*': all
-                 }).length).to eq(3)
+            admin:
+              cluster: all
+              indices:
+                '*': all
+            user:
+              indices:
+                  '*': read
+            power_user:
+              cluster: monitor
+              indices:
+                '*': all
+          }).length).to eq(3)
         end
       end
     end # of describe instances

@@ -44,12 +44,13 @@ describe Puppet::Type.type(:elasticsearch_shield_user).provider(:esusers) do
 
       context 'with multiple users' do
         before do
-          described_class.expects(:esusers_with_path).with('list').returns(
-            <<EOL
-elastic        : admin*
-logstash       : user
-kibana         : kibana
-EOL
+          described_class.expects(
+            :esusers_with_path
+          ).with('list').returns(<<-EOL
+            elastic        : admin*
+            logstash       : user
+            kibana         : kibana
+          EOL
           )
         end
 
