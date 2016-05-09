@@ -43,7 +43,6 @@ describe "elasticsearch shield" do
       it 'should be idempotent' do
         apply_manifest(
           single_manifest,
-          :catch_failures => true,
           :catch_changes => true
         )
       end
@@ -136,7 +135,6 @@ describe "elasticsearch shield" do
       it 'should be idempotent' do
         apply_manifest(
           single_manifest,
-          :catch_failures => true,
           :catch_changes => true
         )
       end
@@ -195,7 +193,6 @@ describe "elasticsearch shield" do
         it 'should be idempotent' do
           apply_manifest(
             single_manifest,
-            :catch_failures => true,
             :catch_changes => true
           )
         end
@@ -250,7 +247,6 @@ describe "elasticsearch shield" do
         it 'should be idempotent' do
           apply_manifest(
             multi_manifest,
-            :catch_failures => true,
             :catch_changes => true
           )
         end
