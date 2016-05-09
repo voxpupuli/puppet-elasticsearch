@@ -4,15 +4,15 @@ describe "elasticsearch shield" do
 
   # Template manifest
   let :base_manifest do <<-EOF
-class { 'elasticsearch' :
-  java_install => true,
-  manage_repo  => true,
-  repo_version => '#{test_settings['repo_version']}',
-}
+    class { 'elasticsearch' :
+      java_install => true,
+      manage_repo  => true,
+      repo_version => '#{test_settings['repo_version']}',
+    }
 
-elasticsearch::plugin { 'elasticsearch/license/latest' :  }
-elasticsearch::plugin { 'elasticsearch/shield/latest' : }
-EOF
+    elasticsearch::plugin { 'elasticsearch/license/latest' :  }
+    elasticsearch::plugin { 'elasticsearch/shield/latest' : }
+    EOF
   end
 
   describe 'user authentication' do
@@ -20,20 +20,20 @@ EOF
     describe 'single instance manifest' do
 
       let :single_manifest do
-        base_manifest + <<EOF
-elasticsearch::instance { ['es-01'] :  }
+        base_manifest + <<-EOF
+          elasticsearch::instance { ['es-01'] :  }
 
-Elasticsearch::Plugin { instances => ['es-01'],  }
+          Elasticsearch::Plugin { instances => ['es-01'],  }
 
-elasticsearch::shield::user { '#{@user}':
-  password => '#{@user_password}',
-  roles    => ['admin'],
-}
-elasticsearch::shield::user { '#{@user}pwchange':
-  password => '#{@user_password}',
-  roles    => ['admin'],
-}
-EOF
+          elasticsearch::shield::user { '#{@user}':
+            password => '#{@user_password}',
+            roles    => ['admin'],
+          }
+          elasticsearch::shield::user { '#{@user}pwchange':
+            password => '#{@user_password}',
+            roles    => ['admin'],
+          }
+        EOF
       end
 
       it 'should apply cleanly' do
@@ -73,17 +73,17 @@ EOF
     describe 'password change manifest' do
 
       let :passwd_manifest do
-        base_manifest + <<EOF
-elasticsearch::instance { ['es-01'] :  }
+        base_manifest + <<-EOF
+          elasticsearch::instance { ['es-01'] :  }
 
-Elasticsearch::Plugin { instances => ['es-01'],  }
+          Elasticsearch::Plugin { instances => ['es-01'],  }
 
-notify { 'change password' : } ~>
-elasticsearch::shield::user { '#{@user}pwchange':
-  password => '#{@user_password[0..5]}',
-  roles    => ['admin'],
-}
-EOF
+          notify { 'change password' : } ~>
+          elasticsearch::shield::user { '#{@user}pwchange':
+            password => '#{@user_password[0..5]}',
+            roles    => ['admin'],
+          }
+        EOF
       end
 
       it 'should apply cleanly' do
@@ -108,25 +108,25 @@ EOF
     describe 'single instance manifest' do
 
       let :single_manifest do
-        base_manifest + <<EOF
-elasticsearch::instance { ['es-01'] :  }
+        base_manifest + <<-EOF
+          elasticsearch::instance { ['es-01'] :  }
 
-Elasticsearch::Plugin { instances => ['es-01'],  }
+          Elasticsearch::Plugin { instances => ['es-01'],  }
 
 
-elasticsearch::shield::role { '#{@role}':
-  privileges => {
-    'cluster' => [
-      'cluster:monitor/health',
-    ]
-  }
-}
+          elasticsearch::shield::role { '#{@role}':
+            privileges => {
+              'cluster' => [
+                'cluster:monitor/health',
+              ]
+            }
+          }
 
-elasticsearch::shield::user { '#{@user}':
-  password => '#{@user_password}',
-  roles    => ['#{@role}'],
-}
-EOF
+          elasticsearch::shield::user { '#{@user}':
+            password => '#{@user_password}',
+            roles    => ['#{@role}'],
+          }
+        EOF
       end
 
       it 'should apply cleanly' do
@@ -170,22 +170,22 @@ EOF
       describe 'manifest' do
 
         let :single_manifest do
-          base_manifest + <<EOF
-elasticsearch::instance { 'es-01':
-  ssl                  => true,
-  ca_certificate       => '#{@tls[:ca][:cert][:path]}',
-  certificate          => '#{@tls[:clients].first[:cert][:path]}',
-  private_key          => '#{@tls[:clients].first[:key][:path]}',
-  keystore_password    => '#{@keystore_password}',
-}
+          base_manifest + <<-EOF
+            elasticsearch::instance { 'es-01':
+              ssl                  => true,
+              ca_certificate       => '#{@tls[:ca][:cert][:path]}',
+              certificate          => '#{@tls[:clients].first[:cert][:path]}',
+              private_key          => '#{@tls[:clients].first[:key][:path]}',
+              keystore_password    => '#{@keystore_password}',
+            }
 
-Elasticsearch::Plugin { instances => ['es-01'],  }
+            Elasticsearch::Plugin { instances => ['es-01'],  }
 
-elasticsearch::shield::user { '#{@user}':
-  password => '#{@user_password}',
-  roles => ['admin'],
-}
-EOF
+            elasticsearch::shield::user { '#{@user}':
+              password => '#{@user_password}',
+              roles => ['admin'],
+            }
+          EOF
         end
 
         it 'should apply cleanly' do
@@ -220,26 +220,26 @@ EOF
 
         let :multi_manifest do
           base_manifest + %Q{
-elasticsearch::shield::user { '#{@user}':
-  password => '#{@user_password}',
-  roles => ['admin'],
-}
+            elasticsearch::shield::user { '#{@user}':
+              password => '#{@user_password}',
+              roles => ['admin'],
+            }
           } + @tls[:clients].each_with_index.map do |cert, i|
             %Q{
-elasticsearch::instance { 'es-%02d':
-  ssl                  => true,
-  ca_certificate       => '#{@tls[:ca][:cert][:path]}',
-  certificate          => '#{cert[:cert][:path]}',
-  private_key          => '#{cert[:key][:path]}',
-  keystore_password    => '#{@keystore_password}',
-  config => {
-    'discovery.zen.minimum_master_nodes' => %s,
-    'shield.ssl.hostname_verification' => false,
-  }
-}
+              elasticsearch::instance { 'es-%02d':
+                ssl                  => true,
+                ca_certificate       => '#{@tls[:ca][:cert][:path]}',
+                certificate          => '#{cert[:cert][:path]}',
+                private_key          => '#{cert[:key][:path]}',
+                keystore_password    => '#{@keystore_password}',
+                config => {
+                  'discovery.zen.minimum_master_nodes' => %s,
+                  'shield.ssl.hostname_verification' => false,
+                }
+              }
             } % [i+1, i+1, @tls[:clients].length]
           end.join("\n") + %Q{
-Elasticsearch::Plugin { instances => %s, }
+            Elasticsearch::Plugin { instances => %s, }
           } % @tls[:clients].each_with_index.map { |_, i| "es-%02d" % (i+1)}.to_s
         end
 
@@ -276,10 +276,10 @@ Elasticsearch::Plugin { instances => %s, }
 
       let :removal_manifest do
         %Q{
-class { 'elasticsearch' : ensure => absent, }
+          class { 'elasticsearch' : ensure => absent, }
 
-Elasticsearch::Instance { ensure => absent, }
-elasticsearch::instance { %s : }
+          Elasticsearch::Instance { ensure => absent, }
+          elasticsearch::instance { %s : }
         } % @tls[:clients].each_with_index.map do |_, i|
           "es-%02d" % (i+1)
         end.to_s
