@@ -20,9 +20,9 @@ describe Puppet::Type.type(:elasticsearch_shield_role_mapping).provider(:parsed)
       context 'with one role' do
         it 'should return one resource' do
           expect(described_class.parse(%q{
-admin:
-  - "cn=users,dc=example,dc=com"
-                 })[0]).to eq({
+            admin:
+              - "cn=users,dc=example,dc=com"
+          })[0]).to eq({
             :ensure => :present,
             :name => 'admin',
             :mappings => [
@@ -35,15 +35,15 @@ admin:
       context 'with multiple roles' do
         it 'should return three resources' do
           expect(described_class.parse(%q{
-admin:
-  - "cn=users,dc=example,dc=com"
-user:
-  - "cn=users,dc=example,dc=com"
-  - "cn=admins,dc=example,dc=com"
-  - "cn=John Doe,cn=other users,dc=example,dc=com"
-power_user:
-  - "cn=admins,dc=example,dc=com"
-                 }).length).to eq(3)
+            admin:
+              - "cn=users,dc=example,dc=com"
+            user:
+              - "cn=users,dc=example,dc=com"
+              - "cn=admins,dc=example,dc=com"
+              - "cn=John Doe,cn=other users,dc=example,dc=com"
+            power_user:
+              - "cn=admins,dc=example,dc=com"
+          }).length).to eq(3)
         end
       end
     end # of describe instances
