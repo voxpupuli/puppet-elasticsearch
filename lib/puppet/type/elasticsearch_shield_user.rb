@@ -1,12 +1,16 @@
 Puppet::Type.newtype(:elasticsearch_shield_user) do
   desc "Type to model Elasticsearch shield users."
 
+  feature :manages_passwords,
+    'The provider can control the password hash without a need
+    to explicitly refresh.'
+
   ensurable do
     defaultvalues
     defaultto :present
   end
 
-  newparam(:username, :namevar => true) do
+  newparam(:name, :namevar => true) do
     desc 'User name.'
   end
 
@@ -27,11 +31,13 @@ Puppet::Type.newtype(:elasticsearch_shield_user) do
     end
   end
 
-  newproperty(:roles, :array_matching => :all) do
-    desc 'Array of roles that the user should belong to.'
-    def insync? is
-      is.sort == should.sort
-    end
+  newproperty(
+    :hashed_password,
+    :required_features => :manages_passwords
+  ) do
+    desc 'Hashed password for user.'
+
+    newvalues(/^[$]2a[$].{56}$/)
   end
 
   def refresh

@@ -32,17 +32,12 @@ Puppet::Type.type(:elasticsearch_shield_user).provide(:esusers) do
       u[/^[^:]+:\s+\S+$/]
     }.map { |u|
       # Break into ["user ", " role1,role2"]
-      u.split(':')
+      u.split(':').first.strip
     }.map do |user|
-      user.map(&:strip!)
-      username, roles = user
-      roles.delete!('-')
-      roles.delete!('*')
       {
-        :name => username,
+        :name => user,
         :ensure => :present,
         :provider => :esusers,
-        :roles => roles.split(',')
       }
     end
   end
@@ -66,39 +61,20 @@ Puppet::Type.type(:elasticsearch_shield_user).provide(:esusers) do
     @property_flush = {}
   end
 
-  def roles=(value)
-    @property_flush[:roles] = value
-  end
-
   def flush
+    arguments = []
+
     case @property_flush[:ensure]
     when :absent
-      self.class.esusers_with_path(['userdel', resource[:name]])
-
+      arguments << 'userdel'
+      arguments << resource[:name]
     else
-      arguments = []
-
-      if @property_hash[:ensure] == :present
-        # User exists; modifying roles
-        arguments << 'roles' << resource[:name]
-        remove_roles = @property_hash[:roles] - @property_flush[:roles]
-        add_roles = @property_flush[:roles] - @property_hash[:roles]
-        [['a', add_roles], ['r', remove_roles]].each do |flag, roles|
-          arguments << "-#{flag}" << roles.join(',') unless roles.empty?
-        end
-      else
-        # User needs to be created /and/ modified
-        arguments << 'useradd'
-        arguments << resource[:name]
-        arguments << '-p' << resource[:password]
-        if resource[:roles]
-          arguments << '-r' << resource[:roles].join(',')
-        end
-      end
-
-      self.class.esusers_with_path(arguments)
+      arguments << 'useradd'
+      arguments << resource[:name]
+      arguments << '-p' << resource[:password]
     end
 
+    self.class.esusers_with_path(arguments)
     @property_hash = self.class.users.detect { |u| u[:name] == resource[:name] }
   end
 

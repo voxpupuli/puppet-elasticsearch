@@ -12,15 +12,12 @@
 #   This variable is optional
 #
 # [*password*]
-#   Plaintext password for the given user.
+#   Password for the given user. A plaintext password will be managed
+#   with the esusers utility and requires a refresh to update, while
+#   a hashed password from the esusers utility will be managed manually
+#   in the uses file.
 #   Value type is string
 #   Default value: undef
-#
-# [*provider*]
-#   Shield realm to use to manage users. For Shield versions
-#   < 2.3.0, only the esusers realm is supported.
-#   Value type is string
-#   Default value: esusers
 #
 # [*roles*]
 #   A list of roles to which the user should belong.
@@ -29,8 +26,12 @@
 #
 # === Examples
 #
-# # Creates and manages the user using esusers.
-# elasticsearch::shield::user { 'bob': }
+# # Creates and manages a user with membership in the 'logstash'
+# # and 'kibana4' roles.
+# elasticsearch::shield::user { 'bob':
+#   password => 'foobar',
+#   roles    => ['logstash', 'kibana4'],
+# }
 #
 # === Authors
 #
@@ -39,16 +40,26 @@
 define elasticsearch::shield::user (
   $password,
   $ensure   = 'present',
-  $provider = 'esusers',
   $roles    = [],
 ) {
-  validate_string($ensure, $password, $provider)
+  validate_string($ensure, $password)
   validate_array($roles)
 
-  elasticsearch_shield_user { $name:
-    ensure   => $ensure,
-    password => $password,
-    provider => $provider,
-    roles    => $roles,
+  if $password =~ /^\$2a\$/ {
+    elasticsearch_shield_user { $name:
+      ensure          => $ensure,
+      hashed_password => $password,
+    }
+  } else {
+    elasticsearch_shield_user { $name:
+      ensure   => $ensure,
+      password => $password,
+      provider => 'esusers',
+    }
+  }
+
+  elasticsearch_shield_user_roles { $name:
+    ensure => $ensure,
+    roles  => $roles,
   }
 }

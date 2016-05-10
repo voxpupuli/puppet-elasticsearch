@@ -30,7 +30,7 @@ describe "elasticsearch shield" do
             roles    => ['admin'],
           }
           elasticsearch::shield::user { '#{@user}pwchange':
-            password => '#{@user_password}',
+            password => '#{@hashed_password}',
             roles    => ['admin'],
           }
         EOF
@@ -59,9 +59,18 @@ describe "elasticsearch shield" do
 
       it 'permits authorized access' do
         curl_with_retries(
-          'elastic user cluster health request',
+          "#{@user} user cluster health request",
           default,
           "-s -I -XGET -u #{@user}:#{@user_password} "\
+          "http://localhost:9200/_cluster/health " \
+            "| grep '200 OK'", 0)
+      end
+
+      it 'permits access using pre-hashed passwords' do
+        curl_with_retries(
+          "#{@user}pwchange user cluster health request",
+          default,
+          "-s -I -XGET -u #{@user}pwchange:#{@hashed_plaintext} "\
           "http://localhost:9200/_cluster/health " \
             "| grep '200 OK'", 0)
       end
@@ -294,6 +303,9 @@ describe "elasticsearch shield" do
     # Authentication instance variables
     @user = 'elastic'
     @user_password = SecureRandom.hex
+    # esusers-hashed form of 'foobar'
+    @hashed_password = '$2a$10$DddrTs0PS3qNknUTq0vpa.g.0JpU.jHDdlKp1xox1W5ZHX.w8Cc8C'
+    @hashed_plaintext = 'foobar'
     @keystore_password = SecureRandom.hex
     @role = [*('a'..'z')].sample(8).join
 

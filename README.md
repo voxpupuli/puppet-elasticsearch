@@ -436,6 +436,15 @@ elasticsearch::shield::user { 'myuser':
 }
 ```
 
+The `password` parameter will also accept password hashes generated from the `esusers` utility and ensure the password is kept in-sync with the Shield `users` file for all Elasticsearch instances.
+
+```puppet
+elasticsearch::shield::user { 'myuser':
+  password => '$2a$10$IZMnq6DF4DtQ9c4sVovgDubCbdeH62XncmcyD1sZ4WClzFuAdqspy',
+  roles    => ['myrole'],
+}
+```
+
 **Note**: When using the `esusers` provider (the default for plaintext passwords), Puppet has no way to determine whether the given password is in-sync with the password hashed by Shield.
 In order to work around this, the `elasticsearch::shield::user` resource has been designed to accept refresh events in order to update password values.
 This is not ideal, but allows you to instruct the resource to change the password when needed.
