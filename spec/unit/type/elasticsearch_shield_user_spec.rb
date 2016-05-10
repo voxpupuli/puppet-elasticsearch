@@ -9,21 +9,21 @@ describe Puppet::Type.type(:elasticsearch_shield_user) do
     let(:facts) do facts end
 
     describe 'when validating attributes' do
-      [:username, :password].each do |param|
+      [:name, :password].each do |param|
         it "should have a #{param} parameter" do
           expect(described_class.attrtype(param)).to eq(:param)
         end
       end
 
-      [:ensure, :roles].each do |prop|
+      [:ensure].each do |prop|
         it "should have a #{prop} property" do
           expect(described_class.attrtype(prop)).to eq(:property)
         end
       end
 
       describe 'namevar validation' do
-        it 'should have :username as its namevar' do
-          expect(described_class.key_attributes).to eq([:username])
+        it 'should have :name as its namevar' do
+          expect(described_class.key_attributes).to eq([:name])
         end
       end
     end # of describe when validating attributes
