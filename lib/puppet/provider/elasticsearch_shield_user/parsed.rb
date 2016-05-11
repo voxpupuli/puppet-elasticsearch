@@ -10,7 +10,7 @@ end
 Puppet::Type.type(:elasticsearch_shield_user).provide(
   :parsed,
   :parent => Puppet::Provider::ParsedFile,
-  :default_target => users,
+  :default_target => users
 ) do
   desc "Provider for Shield esusers using plain files."
 
