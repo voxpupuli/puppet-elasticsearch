@@ -39,9 +39,11 @@ class elasticsearch::repo {
         location    => "http://packages.elastic.co/elasticsearch/${elasticsearch::repo_version}/debian",
         release     => 'stable',
         repos       => 'main',
-        key         => $::elasticsearch::repo_key_id,
-        key_source  => $::elasticsearch::repo_key_source,
-        include_src => false,
+        key         => {
+          'id'      => $::elasticsearch::repo_key_id,
+          'source'  => $::elasticsearch::repo_key_source,
+        },
+        include     => { 'src' => false },
       }
     }
     'RedHat', 'Linux': {
