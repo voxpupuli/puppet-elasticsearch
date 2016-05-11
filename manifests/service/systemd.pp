@@ -163,6 +163,18 @@ define elasticsearch::service::systemd(
         $memlock = undef
       }
 
+      # Systemd automatic restart feature
+      if ($new_init_defaults != undef and is_hash($new_init_defaults) and has_key($new_init_defaults, 'SYSTEMD_RESTART')) {
+        $systemd_restart = $new_init_defaults['SYSTEMD_RESTART']
+      }else{
+        $systemd_restart = undef
+      }
+      if ($new_init_defaults != undef and is_hash($new_init_defaults) and has_key($new_init_defaults, 'SYSTEMD_RESTART_SEC')) {
+        $systemd_restart_sec = $new_init_defaults['SYSTEMD_RESTART_SEC']
+      }else{
+        $systemd_restart_sec = undef
+      }
+
       file { "${elasticsearch::params::systemd_service_path}/elasticsearch-${name}.service":
         ensure  => $ensure,
         content => template($init_template),

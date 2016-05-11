@@ -19,6 +19,8 @@ LimitMEMLOCK=<%= @memlock %>
 <% end %>
 # Shutdown delay in seconds, before process is tried to be killed with KILL (if configured)
 TimeoutStopSec=20
+<% if @systemd_restart %>Restart=<%= @systemd_restart %><% end %>
+<% if @systemd_restart_sec %>RestartSec=<%= @systemd_restart_sec %><% end %>
 
 [Install]
 WantedBy=multi-user.target
