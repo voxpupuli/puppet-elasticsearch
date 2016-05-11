@@ -416,7 +416,28 @@ resources { 'elasticsearch_shield_role':
 ##### Mappings
 
 Associating mappings with a role is done by passing an array of strings to the `mappings` parameter of the `elasticsearch::shield::role` type.
-Note that if you'd like to keep the file purged of mappings not under Puppet's control, you should use the following `resources` declaration because mappings are a separate low-level type:
+For example, to define a role with mappings using Shield >= 2.3.x style role definitions:
+
+```puppet
+elasticsearch::shield::role { 'logstash':
+  mappings   => [
+    'cn=group,ou=devteam',
+  ],
+  privileges => {
+    'cluster' => 'manage_index_templates',
+    'indices' => {
+      'names'      => ['logstash-*'],
+      'privileges' => [
+        'write',
+        'delete',
+        'create_index',
+      ],
+    },
+  },
+}
+```
+
+Note that if you'd like to keep the mappings file purged of entries not under Puppet's control, you should use the following `resources` declaration because mappings are a separate low-level type:
 
 ```puppet
 resources { 'elasticsearch_shield_role_mapping':
