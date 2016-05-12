@@ -59,6 +59,16 @@
 
       if hash[key].is_a?(::Array) && target[key].is_a?(::Array)
         target[key] = target[key] + hash[key]
+        next
+      end
+
+      if not target[key].nil? and hash[key].is_a? ::Hash
+        # Key already exists, but it isn't a data structure, so we have to
+        # fully-qualify the new entry. This really only makes sense if the
+        # new value is hash.
+        hash[key].each do |nested_key, val|
+          target["#{key}.#{nested_key}"] = val
+        end
       else
         target[key] = hash[key]
       end
