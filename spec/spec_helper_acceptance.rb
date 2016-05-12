@@ -2,6 +2,8 @@ require 'beaker-rspec'
 require 'pry'
 require 'securerandom'
 require 'thread'
+require 'infrataster/rspec'
+require 'rspec/retry'
 require_relative 'spec_acceptance_integration'
 require_relative 'spec_helper_tls'
 
@@ -11,6 +13,13 @@ end
 
 RSpec.configure do |c|
   c.add_setting :test_settings, :default => {}
+
+  # rspec-retry
+  c.display_try_failure_messages = true
+  c.default_sleep_interval = 5
+  c.around :each, :http do |example|
+    example.run_with_retry retry: 3
+  end
 end
 
 files_dir = ENV['files_dir'] || './spec/fixtures/artifacts'
@@ -83,6 +92,15 @@ hosts.each do |host|
 
     RSpec.configuration.test_settings['snapshot_package'] = "file:#{snapshot_package[:dst]}"
 
+  end
+
+  Infrataster::Server.define(:docker) do |server|
+    server.address = host[:ip]
+    server.ssh = host[:ssh]
+  end
+  Infrataster::Server.define(:container) do |server|
+    server.address = '127.0.0.1' # this gets ignored anyway
+    server.from = :docker
   end
 end
 
