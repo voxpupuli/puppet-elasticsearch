@@ -20,6 +20,7 @@ gem 'puppet-lint'
 gem 'puppetlabs_spec_helper'
 gem 'puppet-syntax'
 gem 'rspec-puppet-facts'
+gem 'rspec-puppet-utils'
 gem 'webmock'
 
 # Extra Puppet-lint gems
