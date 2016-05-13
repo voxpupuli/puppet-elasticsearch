@@ -17,7 +17,7 @@ RSpec.configure do |c|
   # rspec-retry
   c.display_try_failure_messages = true
   c.default_sleep_interval = 5
-  c.around :each, :http do |example|
+  c.around :each, :with_retries do |example|
     example.run_with_retry retry: 3
   end
 end
@@ -96,10 +96,10 @@ hosts.each do |host|
 
   Infrataster::Server.define(:docker) do |server|
     server.address = host[:ip]
-    server.ssh = host[:ssh]
+    server.ssh = host[:ssh].tap { |s| s.delete :forward_agent }
   end
   Infrataster::Server.define(:container) do |server|
-    server.address = '127.0.0.1' # this gets ignored anyway
+    server.address = host[:vm_ip] # this gets ignored anyway
     server.from = :docker
   end
 end
