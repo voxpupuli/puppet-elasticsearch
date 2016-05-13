@@ -73,8 +73,41 @@
 # [*logdir*]
 #   Log directory for this instance.
 #
+# [*ssl*]
+#   Whether to manage TLS certificates for Shield. Requires the ca_certificate,
+#   certificate, private_key and keystore_password parameters to be set.
+#   Value type is boolean
+#   Default value: false
+#
+# [*ca_certificate*]
+#   Path to the trusted CA certificate to add to this node's java keystore.
+#   Value type is string
+#   Default value: undef
+#
+# [*certificate*]
+#   Path to the certificate for this node signed by the CA listed in
+#   ca_certificate.
+#   Value type is string
+#   Default value: undef
+#
+# [*private_key*]
+#   Path to the key associated with this node's certificate.
+#   Value type is string
+#   Default value: undef
+#
+# [*keystore_password*]
+#   Password to encrypt this node's Java keystore.
+#   Value type is string
+#   Default value: undef
+#
+# [*keystore_path*]
+#   Custom path to the java keystore file. This parameter is optional.
+#   Value type is string
+#   Default value: undef
+#
 # === Authors
 #
+# * Tyler Langlois <mailto:tyler@elastic.co>
 # * Richard Pijnenburg <mailto:richard.pijnenburg@elasticsearch.com>
 #
 define elasticsearch::instance(
@@ -91,7 +124,13 @@ define elasticsearch::instance(
   $service_flags      = undef,
   $init_defaults      = undef,
   $init_defaults_file = undef,
-  $init_template      = $elasticsearch::init_template
+  $init_template      = $elasticsearch::init_template,
+  $ssl                = false,
+  $ca_certificate     = undef,
+  $certificate        = undef,
+  $private_key        = undef,
+  $keystore_password  = undef,
+  $keystore_path      = undef,
 ) {
 
   require elasticsearch::params
@@ -230,6 +269,50 @@ define elasticsearch::instance(
       $instance_logdir_config = { 'path.logs' => $instance_logdir }
     }
 
+    validate_bool($ssl)
+    if $ssl {
+      validate_absolute_path($ca_certificate, $certificate, $private_key)
+      validate_string($keystore_password)
+
+      if ($keystore_path == undef) {
+        $_keystore_path = "${instance_configdir}/shield/${name}.ks"
+      } else {
+        validate_absolute_path($keystore_path)
+        $_keystore_path = $keystore_path
+      }
+
+      $tls_config = {
+        'shield' => {
+          'ssl' => {
+            'keystore' => {
+              'path' => $_keystore_path,
+              'password' => $keystore_password,
+            },
+          },
+          'transport' => { 'ssl' => true, },
+          'http' => { 'ssl' => true, },
+        },
+      }
+
+      # Trust CA Certificate
+      java_ks { "elasticsearch_instance_${name}_keystore_ca":
+        ensure       => 'latest',
+        certificate  => $ca_certificate,
+        target       => $_keystore_path,
+        password     => $keystore_password,
+        trustcacerts => true,
+      }
+
+      # Load node certificate and private key
+      java_ks { "elasticsearch_instance_${name}_keystore_node":
+        ensure      => 'latest',
+        certificate => $certificate,
+        private_key => $private_key,
+        target      => $_keystore_path,
+        password    => $keystore_password,
+      }
+    } else { $tls_config = {} }
+
     file { $instance_logdir:
       ensure  => 'directory',
       owner   => $elasticsearch::elasticsearch_user,
@@ -286,8 +369,18 @@ define elasticsearch::instance(
       target => "${elasticsearch::params::homedir}/scripts",
     }
 
+    file { "${instance_configdir}/shield":
+      ensure  => 'directory',
+      mode    => '0644',
+      source  => "${elasticsearch::params::homedir}/shield",
+      recurse => 'remote',
+      owner   => 'root',
+      group   => 'root',
+      before  => Elasticsearch::Service[$name],
+    }
+
     # build up new config
-    $instance_conf = merge($main_config, $instance_node_name, $instance_config, $instance_datadir_config, $instance_logdir_config)
+    $instance_conf = merge($main_config, $instance_node_name, $instance_config, $instance_datadir_config, $instance_logdir_config, $tls_config)
 
     # defaults file content
     # ensure user did not provide both init_defaults and init_defaults_file

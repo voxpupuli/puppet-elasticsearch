@@ -10,8 +10,9 @@ HOSTS:
     docker_cmd: ["/sbin/init"]
     docker_preserve_image: true
     docker_image_commands:
-      - apt-get install -yq libssl-dev
+      - apt-get install -yq libssl-dev net-tools
       - ln -sf /sbin/initctl.distrib /sbin/initctl
+      - locale-gen en_US en_US.UTF-8
+      - dpkg-reconfigure locales
 CONFIG:
-  log_level: debug
   type: foss

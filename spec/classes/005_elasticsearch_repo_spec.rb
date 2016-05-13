@@ -139,6 +139,23 @@ describe 'elasticsearch', :type => 'class' do
 
       end
 
+      context "Override repo proxy" do
+
+        let :params do
+          default_params.merge({
+              :repo_proxy => 'http://proxy.com:8080'
+          })
+        end
+
+        case facts[:osfamily]
+        when 'RedHat'
+          context 'has override repo proxy' do
+            it { is_expected.to contain_yumrepo('elasticsearch').with_proxy('http://proxy.com:8080') }
+          end
+        end
+
+      end
+
     end
   end
 end

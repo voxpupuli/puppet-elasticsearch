@@ -1,7 +1,11 @@
 require 'beaker-rspec'
 require 'pry'
 require 'securerandom'
+require 'thread'
+require 'infrataster/rspec'
+require 'rspec/retry'
 require_relative 'spec_acceptance_integration'
+require_relative 'spec_helper_tls'
 
 def test_settings
   RSpec.configuration.test_settings
@@ -9,6 +13,13 @@ end
 
 RSpec.configure do |c|
   c.add_setting :test_settings, :default => {}
+
+  # rspec-retry
+  c.display_try_failure_messages = true
+  c.default_sleep_interval = 5
+  c.around :each, :with_retries do |example|
+    example.run_with_retry retry: 3
+  end
 end
 
 files_dir = ENV['files_dir'] || './spec/fixtures/artifacts'
@@ -17,7 +28,9 @@ hosts.each do |host|
 
   # Install Puppet
   if host.is_pe?
+    pe_progress = Thread.new { while sleep 5 ; print '.' ; end }
     install_pe
+    pe_progress.exit
   else
     install_puppet_on host, :default_action => 'gem_install'
 
@@ -78,6 +91,15 @@ hosts.each do |host|
     RSpec.configuration.test_settings['snapshot_package'] = "file:#{snapshot_package[:dst]}"
 
   end
+
+  Infrataster::Server.define(:docker) do |server|
+    server.address = host[:ip]
+    server.ssh = host[:ssh].tap { |s| s.delete :forward_agent }
+  end
+  Infrataster::Server.define(:container) do |server|
+    server.address = host[:vm_ip] # this gets ignored anyway
+    server.from = :docker
+  end
 end
 
 RSpec.configure do |c|
@@ -97,7 +119,7 @@ RSpec.configure do |c|
 
       copy_hiera_data_to(host, 'spec/fixtures/hiera/hieradata/')
 
-      modules = ['stdlib', 'java', 'datacat']
+      modules = ['stdlib', 'java', 'datacat', 'java_ks']
 
       dist_module = {
         'Debian' => 'apt',
