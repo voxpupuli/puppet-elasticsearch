@@ -11,6 +11,6 @@ HOSTS:
     docker_preserve_image: true
     docker_image_commands:
       - yum install -y wget
+      - rm /etc/init/tty.conf
 CONFIG:
-  log_level: debug
   type: foss

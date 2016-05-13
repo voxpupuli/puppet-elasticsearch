@@ -4,7 +4,7 @@ Puppet::Type.type(:elasticsearch_plugin).provide(:plugin) do
   desc "A provider for the resource type `elasticsearch_plugin`,
         which handles plugin installation"
 
-  os = Facter['osfamily'].value
+  os = Facter.value('osfamily')
   if os == 'OpenBSD'
     commands :plugin => '/usr/local/elasticsearch/bin/plugin'
     commands :es => '/usr/local/elasticsearch/bin/elasticsearch'
@@ -12,6 +12,15 @@ Puppet::Type.type(:elasticsearch_plugin).provide(:plugin) do
   else
     commands :plugin => '/usr/share/elasticsearch/bin/plugin'
     commands :es => '/usr/share/elasticsearch/bin/elasticsearch'
+  end
+
+  def homedir
+    case Facter.value('osfamily')
+    when 'OpenBSD'
+      '/usr/local/elasticsearch'
+    else
+      '/usr/share/elasticsearch'
+    end
   end
 
   def exists?
@@ -87,6 +96,9 @@ Puppet::Type.type(:elasticsearch_plugin).provide(:plugin) do
     commands = []
     commands << @resource[:proxy_args].split(' ') if @resource[:proxy_args]
     commands << install_options if @resource[:install_options]
+    if install_options.nil? or not install_options.include? 'es.path.conf'
+      commands << "-Des.path.conf=#{homedir}"
+    end
     commands << 'install'
     commands << '--batch' if is22x?
     commands << install1x if is1x?
@@ -117,7 +129,7 @@ Puppet::Type.type(:elasticsearch_plugin).provide(:plugin) do
     es_save = ENV['ES_INCLUDE']
     java_save = ENV['JAVA_HOME']
 
-    os = Facter['osfamily'].value
+    os = Facter.value('osfamily')
     if os == 'OpenBSD'
       ENV['JAVA_HOME'] = javapathhelper('-h', 'elasticsearch').chomp
       ENV['ES_INCLUDE'] = '/etc/elasticsearch/elasticsearch.in.sh'
