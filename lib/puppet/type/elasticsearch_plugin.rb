@@ -1,7 +1,7 @@
 Puppet::Type.newtype(:elasticsearch_plugin) do
 
   @doc = "Plugin installation type"
-  
+
   ensurable do
     defaultvalues
     defaultto :present
