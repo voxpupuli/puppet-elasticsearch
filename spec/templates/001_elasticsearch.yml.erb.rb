@@ -74,4 +74,21 @@ describe 'elasticsearch.yml.erb' do
             - /mnt/sdb1
       }.config)
   end
+
+  it 'should qualify conflicting hash keys' do
+    harness.set(
+      '@data', {
+        'shield.http.ssl' => 'true',
+        'shield.http.ssl.client.auth' => 'optional'
+      }
+    )
+
+    expect(harness.run).to eq(%q{
+      shield: 
+        http: 
+          ssl: true
+          ssl.client: 
+            auth: optional
+      }.config)
+  end
 end
