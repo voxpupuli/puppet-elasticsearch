@@ -14,6 +14,15 @@ Puppet::Type.type(:elasticsearch_plugin).provide(:plugin) do
     commands :es => '/usr/share/elasticsearch/bin/elasticsearch'
   end
 
+  def homedir
+    case Facter.value('osfamily')
+    when 'OpenBSD'
+      '/usr/local/elasticsearch'
+    else
+      '/usr/share/elasticsearch'
+    end
+  end
+
   def exists?
     es_version
     if !File.exists?(pluginfile)
@@ -87,6 +96,9 @@ Puppet::Type.type(:elasticsearch_plugin).provide(:plugin) do
     commands = []
     commands << @resource[:proxy_args].split(' ') if @resource[:proxy_args]
     commands << install_options if @resource[:install_options]
+    if install_options.nil? or not install_options.include? 'es.path.conf'
+      commands << "-Des.path.conf=#{homedir}"
+    end
     commands << 'install'
     commands << '--batch' if is22x?
     commands << install1x if is1x?
