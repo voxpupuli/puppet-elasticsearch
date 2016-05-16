@@ -2,7 +2,7 @@ require 'spec_helper'
 
 class String
   def config
-    "### MANAGED BY PUPPET ###\n---#{unindent}"
+    "### MANAGED BY PUPPET ###\n--- #{unindent}"
   end
 
   def unindent
@@ -35,8 +35,8 @@ describe 'elasticsearch.yml.erb' do
           ping: 
             unicast: 
               hosts: 
-                   - host1
-                   - host2
+                - host1
+                - host2
       node: 
         name: test
       path: 
@@ -70,8 +70,8 @@ describe 'elasticsearch.yml.erb' do
     expect(harness.run).to eq(%q{
       data: 
         path: 
-            - /mnt/sda1
-            - /mnt/sdb1
+          - /mnt/sda1
+          - /mnt/sdb1
       }.config)
   end
 
@@ -86,9 +86,46 @@ describe 'elasticsearch.yml.erb' do
     expect(harness.run).to eq(%q{
       shield: 
         http: 
-          ssl: true
+          ssl: "true"
           ssl.client: 
             auth: optional
+      }.config)
+  end
+
+  it 'should render correct array of hashes' do
+    harness.set(
+      '@data', {
+        'node.name' => 'test',
+        'path' => { 'data' => '/mnt/test' },
+        'discovery.zen.ping.unicast.hosts' => [
+          'host1', 'host2'
+        ],
+        'data' => [
+          { 'key' => 'some value 0',
+            'other_key' => 'some other value 0' },
+          { 'key' => 'some value 1',
+            'other_key' => 'some other value 1' },
+        ]
+      }
+    )
+
+    expect(harness.run).to eq(%q{
+      data: 
+        - key: "some value 0"
+          other_key: "some other value 0"
+        - key: "some value 1"
+          other_key: "some other value 1"
+      discovery: 
+        zen: 
+          ping: 
+            unicast: 
+              hosts: 
+                - host1
+                - host2
+      node: 
+        name: test
+      path: 
+        data: /mnt/test
       }.config)
   end
 end
