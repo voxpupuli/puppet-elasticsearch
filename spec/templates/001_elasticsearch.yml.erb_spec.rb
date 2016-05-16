@@ -2,7 +2,7 @@ require 'spec_helper'
 
 class String
   def config
-    "### MANAGED BY PUPPET ###\n--- #{unindent}"
+    "### MANAGED BY PUPPET ###\n---#{unindent}"
   end
 
   def unindent
@@ -30,16 +30,16 @@ describe 'elasticsearch.yml.erb' do
     )
 
     expect(harness.run).to eq(%q{
-      discovery: 
-        zen: 
-          ping: 
-            unicast: 
-              hosts: 
+      discovery:
+        zen:
+          ping:
+            unicast:
+              hosts:
                 - host1
                 - host2
-      node: 
+      node:
         name: test
-      path: 
+      path:
         data: /mnt/test
       }.config)
   end
@@ -53,7 +53,7 @@ describe 'elasticsearch.yml.erb' do
     )
 
     expect(harness.run).to eq(%q{
-      node: 
+      node:
         name: test
         rack: r1
       }.config)
@@ -68,8 +68,8 @@ describe 'elasticsearch.yml.erb' do
     )
 
     expect(harness.run).to eq(%q{
-      data: 
-        path: 
+      data:
+        path:
           - /mnt/sda1
           - /mnt/sdb1
       }.config)
@@ -84,10 +84,10 @@ describe 'elasticsearch.yml.erb' do
     )
 
     expect(harness.run).to eq(%q{
-      shield: 
-        http: 
+      shield:
+        http:
           ssl: "true"
-          ssl.client: 
+          ssl.client:
             auth: optional
       }.config)
   end
@@ -110,21 +110,21 @@ describe 'elasticsearch.yml.erb' do
     )
 
     expect(harness.run).to eq(%q{
-      data: 
+      data:
         - key: "some value 0"
           other_key: "some other value 0"
         - key: "some value 1"
           other_key: "some other value 1"
-      discovery: 
-        zen: 
-          ping: 
-            unicast: 
-              hosts: 
+      discovery:
+        zen:
+          ping:
+            unicast:
+              hosts:
                 - host1
                 - host2
-      node: 
+      node:
         name: test
-      path: 
+      path:
         data: /mnt/test
       }.config)
   end
