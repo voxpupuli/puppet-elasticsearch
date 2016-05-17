@@ -1,4 +1,5 @@
 require 'spec_helper'
+require 'yaml'
 
 class String
   def config
@@ -8,6 +9,13 @@ class String
   def unindent
     gsub(/^#{scan(/^\s*/).min_by{|l|l.length}}/, "")
   end
+end
+
+# Puppet 4 YAML implementation doesn't indent array elements
+if Puppet.version >= '4.0.0'
+  indent = ''
+else
+  indent = '  '
 end
 
 describe 'elasticsearch.yml.erb' do
@@ -29,19 +37,22 @@ describe 'elasticsearch.yml.erb' do
       }
     )
 
-    expect(harness.run).to eq(%q{
+    expect(harness.run).to eq(%Q{
       discovery:
         zen:
           ping:
             unicast:
               hosts:
-                - host1
-                - host2
+              #{indent}- host1
+              #{indent}- host2
       node:
         name: test
       path:
         data: /mnt/test
       }.config)
+
+    # Check for a valid YAML
+    expect{ YAML.load(harness.run) }.to_not raise_error
   end
 
   it 'should merge hashes' do
@@ -57,6 +68,8 @@ describe 'elasticsearch.yml.erb' do
         name: test
         rack: r1
       }.config)
+
+    expect{ YAML.load(harness.run) }.to_not raise_error
   end
 
   it 'should concatenate arrays' do
@@ -67,18 +80,20 @@ describe 'elasticsearch.yml.erb' do
       }
     )
 
-    expect(harness.run).to eq(%q{
+    expect(harness.run).to eq(%Q{
       data:
         path:
-          - /mnt/sda1
-          - /mnt/sdb1
+        #{indent}- /mnt/sda1
+        #{indent}- /mnt/sdb1
       }.config)
+
+    expect{ YAML.load(harness.run) }.to_not raise_error
   end
 
   it 'should qualify conflicting hash keys' do
     harness.set(
       '@data', {
-        'shield.http.ssl' => 'true',
+        'shield.http.ssl' => true,
         'shield.http.ssl.client.auth' => 'optional'
       }
     )
@@ -86,10 +101,12 @@ describe 'elasticsearch.yml.erb' do
     expect(harness.run).to eq(%q{
       shield:
         http:
-          ssl: "true"
+          ssl: true
           ssl.client:
             auth: optional
       }.config)
+
+    expect{ YAML.load(harness.run) }.to_not raise_error
   end
 
   it 'should render correct array of hashes' do
@@ -101,31 +118,92 @@ describe 'elasticsearch.yml.erb' do
           'host1', 'host2'
         ],
         'data' => [
-          { 'key' => 'some value 0',
-            'other_key' => 'some other value 0' },
-          { 'key' => 'some value 1',
-            'other_key' => 'some other value 1' },
+          { 'key' => 'value0',
+            'other_key' => 'othervalue0' },
+          { 'key' => 'value1',
+            'other_key' => 'othervalue1' }
         ]
       }
     )
 
-    expect(harness.run).to eq(%q{
+    expect(harness.run).to eq(%Q{
       data:
-        - key: "some value 0"
-          other_key: "some other value 0"
-        - key: "some value 1"
-          other_key: "some other value 1"
+      #{indent}- key: value0
+      #{indent}  other_key: othervalue0
+      #{indent}- key: value1
+      #{indent}  other_key: othervalue1
       discovery:
         zen:
           ping:
             unicast:
               hosts:
-                - host1
-                - host2
+              #{indent}- host1
+              #{indent}- host2
       node:
         name: test
       path:
         data: /mnt/test
       }.config)
+
+    expect{ YAML.load(harness.run) }.to_not raise_error
+  end
+
+  it 'should handle value with spaces' do
+    harness.set(
+      '@data', {
+        'key' => 'value with spaces'
+      }
+    )
+
+    # Handle different YAML implementations in Puppet 3 and 4
+    if Puppet.version >= '4.0.0'
+      expect(harness.run).to eq(%q{
+        key: value with spaces
+        }.config)
+    else
+      expect(harness.run).to eq(%q{
+        key: "value with spaces"
+        }.config)
+    end
+
+    expect{ YAML.load(harness.run) }.to_not raise_error
+  end
+
+  it 'should respect boolean value data type' do
+    harness.set(
+      '@data', {
+        'cloud' => { 'node' =>
+          { 'auto_attributes' => true } },
+        'shield.http.ssl' => 'true',
+        'shield.http.ssl.client.auth' => 'optional'
+      }
+    )
+
+    # Handle different YAML implementations in Puppet 3 and 4
+    if Puppet.version >= '4.0.0'
+      expect(harness.run).to eq(%q{
+        cloud:
+          node:
+            auto_attributes: true
+        shield:
+          http:
+            ssl: 'true'
+            ssl.client:
+              auth: optional
+        }.config)
+    else
+      expect(harness.run).to eq(%q{
+        cloud:
+          node:
+            auto_attributes: true
+        shield:
+          http:
+            ssl: "true"
+            ssl.client:
+              auth: optional
+        }.config)
+    end
+
+    expect{ YAML.load(harness.run) }.to_not raise_error
   end
 end
