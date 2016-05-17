@@ -26,6 +26,17 @@ describe 'elasticsearch::shield::role' do
       }
     end
 
+    it { should contain_elasticsearch__shield__role('elastic_role') }
     it { should contain_elasticsearch_shield_role('elastic_role') }
+    it do
+      should contain_elasticsearch_shield_role_mapping('elastic_role').with(
+        'ensure' => 'present',
+        'mappings' => [
+          "cn=users,dc=example,dc=com",
+          "cn=admins,dc=example,dc=com",
+          "cn=John Doe,cn=other users,dc=example,dc=com"
+        ]
+      )
+    end
   end
 end
