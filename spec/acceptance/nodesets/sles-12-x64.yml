@@ -10,8 +10,7 @@ HOSTS:
     docker_cmd: ["/sbin/init"]
     docker_preserve_image: true
     docker_image_commands:
-      - gem uninstall puppet hiera
-      - zypper install -y augeas augeas-lenses
+      - zypper install --force-resolution -y augeas augeas-lenses which
       - mkdir -p /etc/puppetlabs/code /etc/puppet/modules
       - ln -sf /etc/puppet/modules /etc/puppetlabs/code/modules
       - ln -s /usr/lib/systemd/system/sshd.service /etc/systemd/system/multi-user.target.wants/sshd.service
