@@ -35,6 +35,8 @@ env:
   - DISTRO=sles-12-x64
   - DISTRO=oracle-6-x64
   - DISTRO=oracle-7-x64
+matrix:
+  fast_finish: true
 install:
 - bundle install --path .vendor
 - bundle exec rake spec_prep
