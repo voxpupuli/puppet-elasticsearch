@@ -42,7 +42,7 @@ PuppetLint.configuration.log_format = "%{path}:%{linenumber}:%{check}:%{KIND}:%{
 
 
 RSpec::Core::RakeTask.new(:spec_verbose) do |t|
-  t.pattern = 'spec/{classes,defines,unit,functions}/**/*_spec.rb'
+  t.pattern = 'spec/{classes,defines,unit,functions,templates}/**/*_spec.rb'
   t.rspec_opts = [
     '--format documentation',
     '--require "ci/reporter/rspec"',

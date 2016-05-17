@@ -282,16 +282,10 @@ define elasticsearch::instance(
       }
 
       $tls_config = {
-        'shield' => {
-          'ssl' => {
-            'keystore' => {
-              'path' => $_keystore_path,
-              'password' => $keystore_password,
-            },
-          },
-          'transport' => { 'ssl' => true, },
-          'http' => { 'ssl' => true, },
-        },
+        'shield.ssl.keystore.path'     => $_keystore_path,
+        'shield.ssl.keystore.password' => $keystore_password,
+        'shield.transport.ssl'         => true,
+        'shield.http.ssl'              => true,
       }
 
       # Trust CA Certificate
