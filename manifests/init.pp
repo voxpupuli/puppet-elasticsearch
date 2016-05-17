@@ -257,7 +257,7 @@ class elasticsearch(
   $plugindir             = $elasticsearch::params::plugindir,
   $plugintool            = $elasticsearch::params::plugintool,
   $java_install          = false,
-  $java_package          = $elasticsearch::params::java_package,
+  $java_package          = undef,
   $manage_repo           = false,
   $repo_version          = undef,
   $repo_key_id           = 'D88E42B4',
