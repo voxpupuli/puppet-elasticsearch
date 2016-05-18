@@ -98,7 +98,7 @@ namespace :artifacts do
         distro = $1
         version = $2
         arch = "amd64"
-      when /(sles)-(\d)/
+      when /(sles)-(\d+)/
         distro = $1
         version = $2
         arch = "x86_64"
