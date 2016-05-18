@@ -455,6 +455,8 @@ class elasticsearch(
     -> Class['elasticsearch::package']
     -> Class['elasticsearch::config']
     -> Elasticsearch::Plugin <| |>
+    -> Elasticsearch::Shield::Role <| |>
+    -> Elasticsearch::Shield::User <| |>
     -> Elasticsearch::Instance <| |>
     -> Elasticsearch::Template <| |>
 

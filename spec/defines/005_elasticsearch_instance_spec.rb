@@ -128,7 +128,9 @@ describe 'elasticsearch::instance', :type => 'define' do
 
       it { should contain_file('/etc/elasticsearch/es-01/logging.yml') }
       it { should contain_file('/usr/share/elasticsearch/scripts') }
+      it { should contain_file('/usr/share/elasticsearch/shield') }
       it { should contain_file('/etc/elasticsearch/es-01/scripts').with(:target => '/usr/share/elasticsearch/scripts') }
+      it { should contain_file('/etc/elasticsearch/es-01/shield') }
     end
 
     context "Set in main class" do
@@ -143,7 +145,9 @@ describe 'elasticsearch::instance', :type => 'define' do
 
       it { should contain_file('/etc/elasticsearch-config/es-01/logging.yml') }
       it { should contain_file('/usr/share/elasticsearch/scripts') }
+      it { should contain_file('/usr/share/elasticsearch/shield') }
       it { should contain_file('/etc/elasticsearch-config/es-01/scripts').with(:target => '/usr/share/elasticsearch/scripts') }
+      it { should contain_file('/etc/elasticsearch-config/es-01/shield') }
     end
 
     context "set in instance" do
@@ -160,7 +164,9 @@ describe 'elasticsearch::instance', :type => 'define' do
 
       it { should contain_file('/etc/elasticsearch-config/es-01/logging.yml') }
       it { should contain_file('/usr/share/elasticsearch/scripts') }
+      it { should contain_file('/usr/share/elasticsearch/shield') }
       it { should contain_file('/etc/elasticsearch-config/es-01/scripts').with(:target => '/usr/share/elasticsearch/scripts') }
+      it { should contain_file('/etc/elasticsearch-config/es-01/shield') }
     end
 
   end

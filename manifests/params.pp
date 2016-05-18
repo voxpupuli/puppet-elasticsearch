@@ -274,5 +274,4 @@ class elasticsearch::params {
             for \"${::operatingsystem}\"")
     }
   }
-
 }
