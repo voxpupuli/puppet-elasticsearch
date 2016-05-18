@@ -18,7 +18,7 @@ RSpec.configure do |c|
   c.display_try_failure_messages = true
   c.default_sleep_interval = 5
   c.around :each, :with_retries do |example|
-    example.run_with_retry retry: 3
+    example.run_with_retry retry: 4
   end
 end
 
