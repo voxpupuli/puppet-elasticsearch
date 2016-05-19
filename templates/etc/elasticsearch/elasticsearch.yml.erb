@@ -76,17 +76,6 @@
     # Transform it into yaml
     @yml_string += sorted_hash.to_yaml
 
-    # Puppet < 4 uses ZAML, which has some deviations from Puppet 4 YAML implementation
-    unless Puppet::Util::Package.versioncmp(Puppet.version, '4') >= 0
-      @yml_string.gsub!(/^\s{2}/, '')
-      # Remove space character after colon
-      @yml_string.gsub!(/:\s$/, ':')
-      # Remove space character after ---
-      @yml_string.gsub!(/---\s$/, '---')
-      # Add new line at the end of yaml file
-      @yml_string += "\n"
-    end
-
   end
 
 -%>
