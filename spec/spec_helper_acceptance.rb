@@ -18,7 +18,7 @@ RSpec.configure do |c|
   c.display_try_failure_messages = true
   c.default_sleep_interval = 5
   c.around :each, :with_retries do |example|
-    example.run_with_retry retry: 3
+    example.run_with_retry retry: 4
   end
 end
 
@@ -35,8 +35,9 @@ hosts.each do |host|
     install_puppet_on host, :default_action => 'gem_install'
 
     if fact('osfamily') == 'Suse'
-      install_package host, 'augeas-devel libxml2-devel'
-      install_package host, '-t pattern devel_ruby'
+      install_package host, '--force-resolution augeas-devel libxml2-devel'
+      ruby_dev = fact('operatingsystem') == 'SLES' ? 'ruby-devel' : '-t pattern devel_ruby'
+      install_package host, ruby_dev
       on host, "gem install ruby-augeas --no-ri --no-rdoc"
     end
 
@@ -75,10 +76,7 @@ hosts.each do |host|
             package_name = 'elasticsearch-1.3.1.deb'
         end
       when 'Suse'
-        case fact('operatingsystem')
-          when 'OpenSuSE'
-            package_name = 'elasticsearch-1.3.1.noarch.rpm'
-        end
+        package_name = 'elasticsearch-1.3.1.noarch.rpm'
     end
 
     snapshot_package = {
