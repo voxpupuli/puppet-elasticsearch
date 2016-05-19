@@ -159,7 +159,7 @@ class elasticsearch::package {
   # Package removal
   } else {
 
-    if ($::operatingsystem == 'OpenSuSE') {
+    if ($::osfamily == 'Suse') {
       Package {
         provider  => 'rpm',
       }
