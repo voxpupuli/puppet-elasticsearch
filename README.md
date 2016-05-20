@@ -425,19 +425,21 @@ elasticsearch::shield::role { 'logstash':
   ],
   privileges => {
     'cluster' => 'manage_index_templates',
-    'indices' => {
+    'indices' => [{
       'names'      => ['logstash-*'],
       'privileges' => [
         'write',
         'delete',
         'create_index',
       ],
-    },
+    }],
   },
 }
 ```
 
-Note that if you'd like to keep the mappings file purged of entries not under Puppet's control, you should use the following `resources` declaration because mappings are a separate low-level type:
+**Note**: Observe the brackets around `indices` in the preceding role definition; which is an array of hashes per the format in Shield 2.3.x. Follow the documentation to determine the correct formatting for your version of Shield.
+
+If you'd like to keep the mappings file purged of entries not under Puppet's control, you should use the following `resources` declaration because mappings are a separate low-level type:
 
 ```puppet
 resources { 'elasticsearch_shield_role_mapping':
