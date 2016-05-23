@@ -138,7 +138,7 @@ class elasticsearch::params {
       # main application
       $package = [ 'elasticsearch' ]
     }
-    'OpenSuSE': {
+    'OpenSuSE', 'SLES': {
       $package = [ 'elasticsearch' ]
     }
     'Gentoo': {
@@ -241,10 +241,28 @@ class elasticsearch::params {
       $defaults_location     = '/etc/sysconfig'
       $init_template         = 'elasticsearch.systemd.erb'
       $pid_dir               = '/var/run/elasticsearch'
-      if $::operatingsystem == 'OpenSuSE' and versioncmp($::operatingsystemmajrelease, '12') <= 0 {
+      if versioncmp($::operatingsystemmajrelease, '12') <= 0 {
         $systemd_service_path = '/lib/systemd/system'
       } else {
         $systemd_service_path = '/usr/lib/systemd/system'
+      }
+    }
+    'SLES': {
+      $service_name       = 'elasticsearch'
+      $service_hasrestart = true
+      $service_hasstatus  = true
+      $service_pattern    = $service_name
+      $defaults_location  = '/etc/sysconfig'
+
+      if versioncmp($::operatingsystemmajrelease, '12') >= 0 {
+        $init_template        = 'elasticsearch.systemd.erb'
+        $service_providers    = 'systemd'
+        $systemd_service_path = '/usr/lib/systemd/system'
+        $pid_dir              = '/var/run/elasticsearch'
+      } else {
+        $init_template     = 'elasticsearch.SLES.erb'
+        $service_providers = [ 'init' ]
+        $pid_dir           = false
       }
     }
     'Gentoo': {

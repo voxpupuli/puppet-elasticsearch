@@ -50,7 +50,7 @@ This module has been tested against all versions of ES 1.x and 2.x
 When using the repository management you will need the following dependency modules:
 
 * Debian/Ubuntu: [Puppetlabs/apt](http://forge.puppetlabs.com/puppetlabs/apt)
-* OpenSuSE: [Darin/zypprepo](https://forge.puppetlabs.com/darin/zypprepo)
+* OpenSuSE/SLES: [Darin/zypprepo](https://forge.puppetlabs.com/darin/zypprepo)
 
 ##Usage
 
@@ -425,19 +425,21 @@ elasticsearch::shield::role { 'logstash':
   ],
   privileges => {
     'cluster' => 'manage_index_templates',
-    'indices' => {
+    'indices' => [{
       'names'      => ['logstash-*'],
       'privileges' => [
         'write',
         'delete',
         'create_index',
       ],
-    },
+    }],
   },
 }
 ```
 
-Note that if you'd like to keep the mappings file purged of entries not under Puppet's control, you should use the following `resources` declaration because mappings are a separate low-level type:
+**Note**: Observe the brackets around `indices` in the preceding role definition; which is an array of hashes per the format in Shield 2.3.x. Follow the documentation to determine the correct formatting for your version of Shield.
+
+If you'd like to keep the mappings file purged of entries not under Puppet's control, you should use the following `resources` declaration because mappings are a separate low-level type:
 
 ```puppet
 resources { 'elasticsearch_shield_role_mapping':
@@ -666,6 +668,7 @@ The module has been tested on:
 * CentOS 6/7
 * Ubuntu 12.04, 14.04
 * OpenSuSE 13.x
+* SLES 12
 
 Other distro's that have been reported to work:
 

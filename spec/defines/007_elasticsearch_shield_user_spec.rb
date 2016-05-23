@@ -17,6 +17,13 @@ describe 'elasticsearch::shield::user' do
       }
     end
 
+    it { should contain_elasticsearch__shield__user('elastic') }
     it { should contain_elasticsearch_shield_user('elastic') }
+    it do
+      should contain_elasticsearch_shield_user_roles('elastic').with(
+        'ensure' => 'present',
+        'roles'  => ['monitor', 'user']
+      )
+    end
   end
 end
