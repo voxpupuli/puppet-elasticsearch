@@ -1,26 +1,6 @@
 <%-
-
-  # Function to make a structured and sorted yaml representation out of a hash
-  def recursive_hash_to_yml_string(hash, depth=0)
-    spacer = ""
-    depth.times { spacer += "  "}
-    hash.keys.sort.each do |sorted_key|
-      @yml_string += spacer + sorted_key + ": "
-      if hash[sorted_key].is_a?(::Array)
-         keyspacer = ""
-         sorted_key.length.times { keyspacer += " " }
-         @yml_string += "\n"
-         hash[sorted_key].each do |item|
-           @yml_string += spacer + keyspacer + "- " + item +"\n"
-         end
-      elsif hash[sorted_key].is_a?(::Hash)
-        @yml_string += "\n"
-        recursive_hash_to_yml_string(hash[sorted_key], depth+1)
-      else
-        @yml_string += "#{hash[sorted_key].to_s}\n"
-      end
-    end
-  end
+  $LOAD_PATH.unshift(File.join(File.dirname(__FILE__),"..","..","..","lib"))
+  require 'puppet/provider/elastic_yaml'
 
   # Function to transform shorted write up of the keys into full hash representation
   def transform(hash)
@@ -83,8 +63,6 @@
 
   if !@data.empty?
 
-    @yml_string += "---\n"
-
     ## Transform shorted keys into full write up
     transformed_config = transform(@data)
 
@@ -94,8 +72,13 @@
       tmphash = tmphash.deep_merge_with_array_values_concatenated(subhash)
     end
 
-    # Transform it into yaml
-    recursive_hash_to_yml_string(tmphash)
+    # Sort Hash and transform it into yaml
+    @yml_string += tmphash.extend(Puppet_X::Elastic::Hash).to_yaml
+
+    # Puppet < 4 uses ZAML, which has some deviations from Puppet 4 YAML implementation
+    unless Puppet::Util::Package.versioncmp(Puppet.version, '4') >= 0
+      @yml_string.gsub!(/^\s{2}/, '')
+    end
 
   end
 
