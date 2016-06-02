@@ -1,3 +1,30 @@
+## 0.11.0 ( May 23, 2016 )
+
+### Summary
+Shield support, SLES support, and overhauled testing setup.
+
+#### Features
+* Support for shield
+  * TLS Certificate management
+  * Users (role and password management for file-based realms)
+  * Roles (file-based with mapping support)
+* Support (repository proxies)[https://github.com/elastic/puppet-elasticsearch/pull/615]
+* Support for (SSL auth on API calls)[https://github.com/elastic/puppet-elasticsearch/pull/577]
+
+#### Bugfixes
+* (Fix Facter calls)[https://github.com/elastic/puppet-elasticsearch/pull/590] in custom providers
+
+#### Changes
+
+#### Testing changes
+* Overhaul testing methodology, see CONTRIBUTING for updates
+* Add SLES 12, Oracle 6, and PE 2016.1.1 to testing matrix
+* Enforce strict variable checking
+
+#### Known bugs
+* This is the first release with Shield support, some untested edge cases may exist
+
+
 ##0.10.3 ( Feb 08, 2016 )
 
 ###Summary
