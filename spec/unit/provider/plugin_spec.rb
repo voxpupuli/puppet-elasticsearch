@@ -30,26 +30,42 @@ describe provider_class do
 
     describe 'install' do
       it 'installs plugin' do
-        provider.expects(:plugin).with(['install', [ resource_name] ])
+        provider.expects(:plugin).with([
+          '-Des.path.conf=/usr/share/elasticsearch',
+          'install',
+          [ resource_name]
+        ])
         provider.create
       end
 
 
       it 'with url' do
         resource[:url] = 'http://url/to/my/plugin.zip'
-        provider.expects(:plugin).with(['install', [ shortname, '--url', 'http://url/to/my/plugin.zip' ] ])
+        provider.expects(:plugin).with([
+          '-Des.path.conf=/usr/share/elasticsearch',
+          'install',
+          [ shortname, '--url', 'http://url/to/my/plugin.zip' ]
+        ])
         provider.create
       end
 
       it 'with local file' do
         resource[:source] = '/tmp/plugin.zip'
-        provider.expects(:plugin).with(['install', [ shortname, '--url', 'file:///tmp/plugin.zip' ] ])
+        provider.expects(:plugin).with([
+          '-Des.path.conf=/usr/share/elasticsearch',
+          'install',
+          [ shortname, '--url', 'file:///tmp/plugin.zip' ]
+        ])
         provider.create
       end
 
       it 'with proxy' do
         resource[:proxy_args] = '-dproxyport=3128 -dproxyhost=localhost'
-        provider.expects(:plugin).with([['-dproxyport=3128', '-dproxyhost=localhost'], 'install', [resource_name] ])
+        provider.expects(:plugin).with([
+          ['-dproxyport=3128', '-dproxyhost=localhost'],
+          '-Des.path.conf=/usr/share/elasticsearch',
+          'install', [resource_name]
+        ])
         provider.create
       end
 
@@ -76,25 +92,42 @@ describe provider_class do
 
     describe 'install' do
       it 'installs plugin' do
-        provider.expects(:plugin).with(['install', [ resource_name] ])
+        provider.expects(:plugin).with([
+          '-Des.path.conf=/usr/share/elasticsearch',
+          'install',
+          [ resource_name]
+        ])
         provider.create
       end
 
       it 'with url' do
         resource[:url] = 'http://url/to/my/plugin.zip'
-        provider.expects(:plugin).with(['install', [ 'http://url/to/my/plugin.zip' ] ])
+        provider.expects(:plugin).with([
+          '-Des.path.conf=/usr/share/elasticsearch',
+          'install',
+          [ 'http://url/to/my/plugin.zip' ]
+        ])
         provider.create
       end
 
       it 'with local file' do
         resource[:source] = '/tmp/plugin.zip'
-        provider.expects(:plugin).with(['install', [ 'file:///tmp/plugin.zip' ] ])
+        provider.expects(:plugin).with([
+          '-Des.path.conf=/usr/share/elasticsearch',
+          'install',
+          [ 'file:///tmp/plugin.zip' ]
+        ])
         provider.create
       end
 
       it 'with proxy' do
         resource[:proxy_args] = '-dproxyport=3128 -dproxyhost=localhost'
-        provider.expects(:plugin).with([['-dproxyport=3128', '-dproxyhost=localhost'], 'install', [resource_name] ])
+        provider.expects(:plugin).with([
+          ['-dproxyport=3128', '-dproxyhost=localhost'],
+          '-Des.path.conf=/usr/share/elasticsearch',
+          'install',
+          [resource_name]
+        ])
         provider.create
       end
     end
