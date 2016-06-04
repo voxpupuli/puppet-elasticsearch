@@ -5,12 +5,12 @@ HOSTS:
       - database
       - dashboard
     platform: el-6-x86_64
-    image: centos:6
+    image: centos:6.7
     hypervisor: docker
     docker_cmd: ["/sbin/init"]
     docker_preserve_image: true
     docker_image_commands:
-      - yum install -y wget
+      - yum install -y wget tar which
+      - rm /etc/init/tty.conf
 CONFIG:
-  log_level: debug
   type: foss

@@ -113,6 +113,8 @@ class elasticsearch::package {
               "http_proxy=${elasticsearch::proxy_url}",
               "https_proxy=${elasticsearch::proxy_url}",
             ]
+          } else {
+            $exec_environment = []
           }
 
           exec { 'download_package_elasticsearch':
@@ -157,7 +159,7 @@ class elasticsearch::package {
   # Package removal
   } else {
 
-    if ($::operatingsystem == 'OpenSuSE') {
+    if ($::osfamily == 'Suse') {
       Package {
         provider  => 'rpm',
       }
