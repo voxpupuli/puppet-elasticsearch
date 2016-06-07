@@ -41,7 +41,7 @@ describe "elasticsearch class:" do
       it { should contain 'master: true' }
       it { should contain 'data: false' }
       it { should contain "cluster:\n  name: #{test_settings['cluster_name']}" }
-      it { should contain 'rack: 46' }
+      its(:content) { should match /rack: \W*46\W*/ }
       it { should contain "index: \n  routing: \n    allocation: \n      exclude: \n             - tag2\n             - tag3\n      include: tag1" }
     end
 

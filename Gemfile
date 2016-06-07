@@ -7,6 +7,8 @@ gem 'beaker'
 gem 'beaker-rspec'
 gem 'metadata-json-lint'
 gem 'rspec-puppet'
+gem 'specinfra', '>= 2.55'
+gem 'infrataster'
 
 gem 'pry'
 gem 'docker-api', '~> 1.0'
@@ -19,6 +21,8 @@ gem 'puppet-lint'
 gem 'puppetlabs_spec_helper'
 gem 'puppet-syntax'
 gem 'rspec-puppet-facts'
+gem 'rspec-puppet-utils'
+gem 'rspec-retry'
 gem 'webmock'
 
 # Extra Puppet-lint gems

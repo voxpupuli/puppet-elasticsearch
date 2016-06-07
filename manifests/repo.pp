@@ -51,11 +51,19 @@ class elasticsearch::repo {
         gpgcheck => 1,
         gpgkey   => $::elasticsearch::repo_key_source,
         enabled  => 1,
+        proxy    => $::elasticsearch::repo_proxy,
       }
     }
     'Suse': {
+      if $::operatingsystem == 'SLES' and versioncmp($::operatingsystemmajrelease, '11') <= 0 {
+        # Older versions of SLES do not ship with rpmkeys
+        $_import_cmd = "rpm --import ${::elasticsearch::repo_key_source}"
+      } else {
+        $_import_cmd = "rpmkeys --import ${::elasticsearch::repo_key_source}"
+      }
+
       exec { 'elasticsearch_suse_import_gpg':
-        command => "rpmkeys --import ${::elasticsearch::repo_key_source}",
+        command => $_import_cmd,
         unless  => "test $(rpm -qa gpg-pubkey | grep -i '${::elasticsearch::repo_key_id}' | wc -l) -eq 1 ",
         notify  => [ Zypprepo['elasticsearch'] ],
       }
