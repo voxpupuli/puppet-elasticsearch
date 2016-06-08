@@ -316,6 +316,18 @@ describe 'elasticsearch', :type => 'class' do
         it { should contain_file('/var/run/elasticsearch').with(:owner => 'myesuser') } if facts[:osfamily] == 'RedHat'
       end
 
+      context "Installing in a different homedir" do
+
+        let (:params) {
+          default_params.merge({
+            :homedir => '/foo'
+                               })
+        }
+
+        it { should contain_file('/foo/elasticsearch').with(:ensure => 'directory') }
+        it { should contain_file('/foo/elasticsearch/data').with(:ensure => 'directory') }
+      end
+
     end
 
   end

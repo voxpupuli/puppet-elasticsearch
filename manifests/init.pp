@@ -120,6 +120,9 @@
 # [*config*]
 #   Elasticsearch configuration hash
 #
+# [*homedir*]
+#   Allows you to set the home directory of Elasticsearch; all software will be installed within
+#
 # [*datadir*]
 #   Allows you to set the data directory of Elasticsearch
 #
