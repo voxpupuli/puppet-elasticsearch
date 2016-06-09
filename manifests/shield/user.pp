@@ -49,17 +49,20 @@ define elasticsearch::shield::user (
     elasticsearch_shield_user { $name:
       ensure          => $ensure,
       hashed_password => $password,
+      home_dir        => $elasticsearch::params::homedir,
     }
   } else {
     elasticsearch_shield_user { $name:
       ensure   => $ensure,
       password => $password,
       provider => 'esusers',
+      home_dir => $elasticsearch::params::homedir,
     }
   }
 
   elasticsearch_shield_user_roles { $name:
-    ensure => $ensure,
-    roles  => $roles,
+    ensure   => $ensure,
+    roles    => $roles,
+    home_dir => $elasticsearch::params::homedir,
   }
 }

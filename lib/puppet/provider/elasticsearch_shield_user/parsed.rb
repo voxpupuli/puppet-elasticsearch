@@ -1,11 +1,6 @@
 require 'puppet/provider/parsedfile'
 
-case Facter.value('osfamily')
-when 'OpenBSD'
-  users = '/usr/local/elasticsearch/shield/users'
-else
-  users = '/usr/share/elasticsearch/shield/users'
-end
+users = @parameters[:home_dir] + '/shield/users'
 
 Puppet::Type.type(:elasticsearch_shield_user).provide(
   :parsed,

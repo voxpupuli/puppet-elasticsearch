@@ -3,12 +3,7 @@ Puppet::Type.type(:elasticsearch_shield_user).provide(:esusers) do
 
   mk_resource_methods
 
-  os = Facter.value('osfamily')
-  if os == 'OpenBSD'
-    @homedir = '/usr/local/elasticsearch'
-  else
-    @homedir = '/usr/share/elasticsearch'
-  end
+  @homedir = @parameters[:home_dir]
 
   commands :esusers => "#{@homedir}/bin/shield/esusers"
   commands :es => "#{@homedir}/bin/elasticsearch"

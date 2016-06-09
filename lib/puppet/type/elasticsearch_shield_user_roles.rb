@@ -10,6 +10,13 @@ Puppet::Type.newtype(:elasticsearch_shield_user_roles) do
     desc 'User name.'
   end
 
+  newparam(:home_dir) do
+    desc 'Root-directory of installation.'
+
+    defaultto '/usr/share/elasticsearch'
+    newvalues(/^\/.*[^/]$/)
+  end
+
   newproperty(:roles, :array_matching => :all) do
     desc 'Array of roles that the user should belong to.'
     def insync? is
