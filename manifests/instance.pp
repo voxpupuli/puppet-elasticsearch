@@ -366,7 +366,7 @@ define elasticsearch::instance(
     file { "${instance_configdir}/shield":
       ensure  => 'directory',
       mode    => '0644',
-      source  => "${elasticsearch::params::homedir}/shield",
+      source  => "${elasticsearch::homedir}/shield",
       recurse => 'remote',
       owner   => 'root',
       group   => 'root',

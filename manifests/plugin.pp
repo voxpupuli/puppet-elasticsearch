@@ -143,7 +143,7 @@ define elasticsearch::plugin(
         plugin_dir      => $::elasticsearch::plugindir,
         install_options => $install_options,
         notify          => $notify_service,
-        home_dir        => $elasticsearch::params::homedir,
+        home_dir        => $elasticsearch::homedir,
       }
 
     }
