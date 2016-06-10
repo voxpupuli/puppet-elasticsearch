@@ -108,14 +108,17 @@ class elasticsearch::config {
       group  => 'root',
     }
 
+    if ($elasticsearch::service_providers == 'systemd') {
+      # Mask default unit (from package)
+      file { '/etc/systemd/system/elasticsearch.service':
+        ensure => link,
+        target => '/dev/null',
+      }
+    }
+
     # Removal of files that are provided with the package which we don't use
     file { '/etc/init.d/elasticsearch':
       ensure => 'absent',
-    }
-    if $elasticsearch::params::systemd_service_path {
-      file { "${elasticsearch::params::systemd_service_path}/elasticsearch.service":
-        ensure => 'absent',
-      }
     }
 
     $new_init_defaults = { 'CONF_DIR' => $elasticsearch::configdir }
