@@ -50,7 +50,6 @@ describe "elasticsearch class:" do
 
     describe file('/usr/share/elasticsearch') do
       it { should be_directory }
-      it { should be_owned_by 'esuser' }
     end
 
     describe file('/var/log/elasticsearch') do
@@ -60,7 +59,6 @@ describe "elasticsearch class:" do
 
     describe file('/etc/elasticsearch') do
       it { should be_directory }
-      it { should be_owned_by 'esuser' }
     end
 
 

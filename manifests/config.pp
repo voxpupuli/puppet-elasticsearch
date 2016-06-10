@@ -26,11 +26,6 @@ class elasticsearch::config {
 
   #### Configuration
 
-  File {
-    owner => $elasticsearch::elasticsearch_user,
-    group => $elasticsearch::elasticsearch_group,
-  }
-
   Exec {
     path => [ '/bin', '/usr/bin', '/usr/local/bin' ],
     cwd  => '/',
@@ -50,7 +45,7 @@ class elasticsearch::config {
 
     file { $elasticsearch::logdir:
       ensure  => 'directory',
-      group   => undef,
+      owner   => $elasticsearch::elasticsearch_user,
       mode    => '0644',
       recurse => true,
     }
@@ -60,7 +55,9 @@ class elasticsearch::config {
     }
 
     file { $elasticsearch::datadir:
-      ensure  => 'directory',
+      ensure => 'directory',
+      owner  => $elasticsearch::elasticsearch_user,
+      group  => $elasticsearch::elasticsearch_group,
     }
 
     file { "${elasticsearch::homedir}/lib":
@@ -71,7 +68,7 @@ class elasticsearch::config {
     if $elasticsearch::params::pid_dir {
       file { $elasticsearch::params::pid_dir:
         ensure  => 'directory',
-        group   => undef,
+        owner   => $elasticsearch::elasticsearch_user,
         recurse => true,
       }
 
