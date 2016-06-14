@@ -255,7 +255,7 @@ describe "elasticsearch plugin define:" do
       it 'Should run succesful' do
         pp = "class { 'elasticsearch': config => { 'node.name' => 'elasticsearch001', 'cluster.name' => '#{test_settings['cluster_name']}' }, manage_repo => true, repo_version => '#{test_settings['repo_version']}', java_install => true }
               elasticsearch::instance { 'es-01': config => { 'node.name' => 'elasticsearch001', 'http.port' => '#{test_settings['port_a']}' } }
-              elasticsearch::plugin{'HQ': url => 'https://github.com/royrusso/elasticsearch-HQ/archive/v2.0.3.zip', instances => 'es-01' }
+              elasticsearch::plugin{'hq': url => 'https://github.com/royrusso/elasticsearch-hq/archive/v2.0.3.zip', instances => 'es-01' }
         "
 
         # Run it twice and test for idempotency
