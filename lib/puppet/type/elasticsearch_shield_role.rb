@@ -16,7 +16,7 @@ Puppet::Type.newtype(:elasticsearch_shield_role) do
     desc 'Root-directory of installation.'
 
     defaultto '/usr/share/elasticsearch'
-    newvalues(/^\/.*[^/]$/)
+    newvalues(/^\/.*[^\/]$/)
   end
 
   newproperty(:privileges) do

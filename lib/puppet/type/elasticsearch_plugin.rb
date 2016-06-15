@@ -36,7 +36,7 @@ Puppet::Type.newtype(:elasticsearch_plugin) do
     desc 'Root-directory of installation'
 
     defaultto '/usr/share/elasticsearch'
-    newvalues(/^\/.*[^/]$/)
+    newvalues(/^\/.*[^\/]$/)
   end
 
 end

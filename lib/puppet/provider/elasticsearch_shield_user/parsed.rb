@@ -1,15 +1,12 @@
 require 'puppet/provider/parsedfile'
 
-users = @parameters[:home_dir] + '/shield/users'
-
 Puppet::Type.type(:elasticsearch_shield_user).provide(
   :parsed,
   :parent => Puppet::Provider::ParsedFile,
-  :default_target => users
 ) do
   desc "Provider for Shield esusers using plain files."
 
-  confine :exists => users
+  confine :exists => resource[:home_dir] + '/shield/users'
 
   has_feature :manages_passwords
 
@@ -27,5 +24,9 @@ Puppet::Type.type(:elasticsearch_shield_user).provide(
     else
       true
     end
+  end
+
+  def default_target
+    @default_target ||= resource[:home_dir] + '/shield/users'
   end
 end
