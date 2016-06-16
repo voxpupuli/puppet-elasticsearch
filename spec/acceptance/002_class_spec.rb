@@ -1,19 +1,34 @@
 require 'spec_helper_acceptance'
+require 'spec_helper_faraday'
 
-describe "elasticsearch class:" do
+describe 'elasticsearch class' do
 
-  describe "single instance" do
+  describe 'single instance' do
 
     it 'should run successfully' do
-      pp = "class { 'elasticsearch': config => { 'cluster.name' => '#{test_settings['cluster_name']}'}, manage_repo => true, repo_version => '#{test_settings['repo_version']}', java_install => true }
-            elasticsearch::instance { 'es-01': config => { 'node.name' => 'elasticsearch001', 'http.port' => '#{test_settings['port_a']}' } }
-           "
+
+      pp = <<-EOS
+        class { 'elasticsearch':
+          config => {
+            'cluster.name' => '#{test_settings['cluster_name']}'
+          },
+          manage_repo => true,
+          repo_version => '#{test_settings['repo_version']}',
+          java_install => true
+        }
+
+        elasticsearch::instance { 'es-01':
+          config => {
+            'node.name' => 'elasticsearch001',
+            'http.port' => '#{test_settings['port_a']}'
+          }
+        }
+      EOS
 
       # Run it twice and test for idempotency
       apply_manifest pp, :catch_failures => true
-      expect(apply_manifest(pp, :catch_failures => true).exit_code).to be_zero
+      apply_manifest pp, :catch_changes => true
     end
-
 
     describe service(test_settings['service_name_a']) do
       it { should be_enabled }
@@ -26,13 +41,22 @@ describe "elasticsearch class:" do
 
     describe file(test_settings['pid_file_a']) do
       it { should be_file }
-      its(:content) { should match /[0-9]+/ }
+      its(:content) { should match(/[0-9]+/) }
     end
 
-    describe "Elasticsearch serves requests on" do
-      it {
-        curl_with_retries("check ES on #{test_settings['port_a']}", default, "http://localhost:#{test_settings['port_a']}/?pretty=true", 0)
-      }
+    describe port(test_settings['port_a']) do
+      it 'open', :with_retries do should be_listening end
+    end
+
+    describe server :container do
+      describe http(
+        "http://localhost:#{test_settings['port_a']}",
+        :faraday_middleware => middleware
+      ) do
+        it 'serves requests', :with_retries do
+          expect(response.status).to eq(200)
+        end
+      end
     end
 
     describe file('/etc/elasticsearch/es-01/elasticsearch.yml') do
@@ -43,22 +67,40 @@ describe "elasticsearch class:" do
     describe file('/usr/share/elasticsearch/templates_import') do
       it { should be_directory }
     end
-
-
   end
 
-
-  describe "multiple instances" do
+  describe 'multiple instances' do
 
     it 'should run successfully' do
-      pp = "class { 'elasticsearch': config => { 'cluster.name' => '#{test_settings['cluster_name']}'}, manage_repo => true, repo_version => '#{test_settings['repo_version']}', java_install => true }
-            elasticsearch::instance { 'es-01': config => { 'node.name' => 'elasticsearch001', 'http.port' => '#{test_settings['port_a']}' } }
-            elasticsearch::instance { 'es-02': config => { 'node.name' => 'elasticsearch002', 'http.port' => '#{test_settings['port_b']}' } }
-           "
+
+      pp = <<-EOS
+        class { 'elasticsearch':
+          config => {
+            'cluster.name' => '#{test_settings['cluster_name']}'
+          },
+          manage_repo => true,
+          repo_version => '#{test_settings['repo_version']}',
+          java_install => true
+        }
+
+        elasticsearch::instance { 'es-01':
+          config => {
+            'node.name' => 'elasticsearch001',
+            'http.port' => '#{test_settings['port_a']}'
+          }
+        }
+
+        elasticsearch::instance { 'es-02':
+          config => {
+            'node.name' => 'elasticsearch002',
+            'http.port' => '#{test_settings['port_b']}'
+          }
+        }
+      EOS
 
       # Run it twice and test for idempotency
-      apply_manifest(pp, :catch_failures => true)
-      expect(apply_manifest(pp, :catch_failures => true).exit_code).to be_zero
+      apply_manifest pp, :catch_failures => true
+      apply_manifest pp, :catch_changes => true
     end
 
 
@@ -78,24 +120,43 @@ describe "elasticsearch class:" do
 
     describe file(test_settings['pid_file_a']) do
       it { should be_file }
-      its(:content) { should match /[0-9]+/ }
+      its(:content) { should match(/[0-9]+/) }
     end
 
     describe file(test_settings['pid_file_b']) do
       it { should be_file }
-      its(:content) { should match /[0-9]+/ }
+      its(:content) { should match(/[0-9]+/) }
     end
 
-    describe "make sure elasticsearch can serve requests #{test_settings['port_a']}" do
-      it {
-        curl_with_retries("check ES on #{test_settings['port_a']}", default, "http://localhost:#{test_settings['port_a']}/?pretty=true", 0)
-      }
+    describe port(test_settings['port_a']) do
+      it 'open', :with_retries do should be_listening end
+    end
+    describe port(test_settings['port_b']) do
+      it 'open', :with_retries do should be_listening end
     end
 
-    describe "make sure elasticsearch can serve requests #{test_settings['port_b']}" do
-      it {
-        curl_with_retries("check ES on #{test_settings['port_b']}", default, "http://localhost:#{test_settings['port_b']}/?pretty=true", 0)
-      }
+    describe server :container do
+      describe http(
+        "http://localhost:#{test_settings['port_a']}",
+        :faraday_middleware => middleware
+      ) do
+        describe 'instance a' do
+          it 'serves requests', :with_retries do
+            expect(response.status).to eq(200)
+          end
+        end
+      end
+
+      describe http(
+        "http://localhost:#{test_settings['port_b']}",
+        :faraday_middleware => middleware
+      ) do
+        describe 'instance b' do
+          it 'serves requests', :with_retries do
+            expect(response.status).to eq(200)
+          end
+        end
+      end
     end
 
     describe file('/etc/elasticsearch/es-01/elasticsearch.yml') do
@@ -110,16 +171,17 @@ describe "elasticsearch class:" do
 
   end
 
-
-  describe "module removal" do
+  describe 'module removal' do
 
     it 'should run successfully' do
-      pp = "class { 'elasticsearch': ensure => 'absent' }
-            elasticsearch::instance{ 'es-01': ensure => 'absent' }
-            elasticsearch::instance{ 'es-02': ensure => 'absent' }
-           "
 
-      apply_manifest(pp, :catch_failures => true)
+      pp = <<-EOS
+        class { 'elasticsearch': ensure => 'absent' }
+        elasticsearch::instance { 'es-01': ensure => 'absent' }
+        elasticsearch::instance { 'es-02': ensure => 'absent' }
+      EOS
+
+      apply_manifest pp, :catch_failures => true
     end
 
     describe file('/etc/elasticsearch/es-01') do
@@ -143,7 +205,5 @@ describe "elasticsearch class:" do
       it { should_not be_enabled }
       it { should_not be_running }
     end
-
   end
-
 end
