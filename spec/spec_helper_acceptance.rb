@@ -20,6 +20,14 @@ RSpec.configure do |c|
   c.around :each, :with_retries do |example|
     example.run_with_retry retry: 4
   end
+
+  # Helper hook for module cleanup
+  c.after :context, :with_cleanup do
+    apply_manifest <<-EOS
+      class { 'elasticsearch': ensure => 'absent' }
+      elasticsearch::instance { 'es-01': ensure => 'absent' }
+    EOS
+  end
 end
 
 files_dir = ENV['files_dir'] || './spec/fixtures/artifacts'
