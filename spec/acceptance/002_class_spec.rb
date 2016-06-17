@@ -59,6 +59,14 @@ describe '::elasticsearch' do
       it { should be_directory }
     end
 
+    describe file('/usr/share/elasticsearch/scripts') do
+      it { should be_directory }
+    end
+
+    describe file('/etc/elasticsearch/es-01/scripts') do
+      it { should be_symlink }
+    end
+
     describe port(test_settings['port_a']) do
       it 'open', :with_retries do should be_listening end
     end
