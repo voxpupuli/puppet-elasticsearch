@@ -2,7 +2,7 @@ require 'spec_helper_acceptance'
 require 'spec_helper_faraday'
 require 'json'
 
-describe 'elasticsearch::template' do
+describe 'elasticsearch::template', :with_cleanup do
 
   before :all do
     shell "mkdir -p #{default['distmoduledir']}/another/files"
@@ -102,16 +102,5 @@ describe 'elasticsearch::template' do
     # The exit codes have changes since Puppet 3.2x
     # Since beaker expectations are based on the most recent puppet code All
     # runs on previous versions fails.
-  end
-
-  after :all do
-    apply_manifest <<-EOS
-      class { 'elasticsearch':
-        ensure => 'absent'
-      }
-      elasticsearch::instance { 'es-01':
-        ensure => 'absent'
-      }
-    EOS
   end
 end
