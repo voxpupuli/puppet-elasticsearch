@@ -1,12 +1,10 @@
 require 'spec_helper_acceptance'
 require 'spec_helper_faraday'
+require 'json'
 
-describe 'elasticsearch class' do
-
+describe '::elasticsearch' do
   describe 'single instance' do
-
-    it 'should run successfully' do
-
+    describe 'manifest' do
       pp = <<-EOS
         class { 'elasticsearch':
           config => {
@@ -25,9 +23,12 @@ describe 'elasticsearch class' do
         }
       EOS
 
-      # Run it twice and test for idempotency
-      apply_manifest pp, :catch_failures => true
-      apply_manifest pp, :catch_changes => true
+      it 'applies cleanly ' do
+        apply_manifest pp, :catch_failures => true
+      end
+      it 'is idempotent' do
+        apply_manifest pp , :catch_changes  => true
+      end
     end
 
     describe service(test_settings['service_name_a']) do
@@ -44,28 +45,42 @@ describe 'elasticsearch class' do
       its(:content) { should match(/[0-9]+/) }
     end
 
+    describe file('/etc/elasticsearch/es-01/elasticsearch.yml') do
+      it { should be_file }
+      it { should contain 'name: elasticsearch001' }
+      it { should contain "/usr/share/elasticsearch/data/es-01" }
+    end
+
+    describe file('/usr/share/elasticsearch/templates_import') do
+      it { should be_directory }
+    end
+
+    describe file('/usr/share/elasticsearch/data/es-01') do
+      it { should be_directory }
+    end
+
     describe port(test_settings['port_a']) do
       it 'open', :with_retries do should be_listening end
     end
 
     describe server :container do
       describe http(
-        "http://localhost:#{test_settings['port_a']}",
+        "http://localhost:#{test_settings['port_a']}/_nodes/_local",
         :faraday_middleware => middleware
       ) do
         it 'serves requests', :with_retries do
           expect(response.status).to eq(200)
         end
+
+        it 'uses the default data path' do
+          json = JSON.parse(response.body)['nodes'].values.first
+          expect(
+            json['settings']['path']
+          ).to include(
+              'data' => '/usr/share/elasticsearch/data/es-01'
+          )
+        end
       end
-    end
-
-    describe file('/etc/elasticsearch/es-01/elasticsearch.yml') do
-      it { should be_file }
-      it { should contain 'name: elasticsearch001' }
-    end
-
-    describe file('/usr/share/elasticsearch/templates_import') do
-      it { should be_directory }
     end
   end
 
