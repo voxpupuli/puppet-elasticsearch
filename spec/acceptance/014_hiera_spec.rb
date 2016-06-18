@@ -159,6 +159,8 @@ describe 'hiera' do
 
     apply_manifest <<-EOS
       class { 'elasticsearch': ensure => 'absent' }
+      elasticsearch::instance { 'es-01': ensure => 'absent' }
+      elasticsearch::instance { 'es-02': ensure => 'absent' }
     EOS
   end
 end
