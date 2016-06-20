@@ -79,12 +79,12 @@ describe 'elasticsearch', :type => 'class' do
 
         # Base files
         if test_pid == true
+          it { should contain_file('/etc/systemd/system/elasticsearch.service').with(:ensure => 'link', :target => '/dev/null') }
           it { should contain_file('/usr/lib/tmpfiles.d/elasticsearch.conf') }
         end
 
         # file removal from package
         it { should contain_file('/etc/init.d/elasticsearch').with(:ensure => 'absent') }
-        it { should contain_file("#{systemd_service_path}/elasticsearch.service").with(:ensure => 'absent') if defined? systemd_service_path }
         it { should contain_file('/etc/elasticsearch/elasticsearch.yml').with(:ensure => 'absent') }
         it { should contain_file('/etc/elasticsearch/logging.yml').with(:ensure => 'absent') }
       end
