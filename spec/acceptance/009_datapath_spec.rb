@@ -24,7 +24,7 @@ describe 'elasticsearch::datadir' do
         }
       EOS
 
-      it 'applies cleanly ' do
+      it 'applies cleanly' do
         apply_manifest pp, :catch_failures => true
       end
       it 'is idempotent' do
