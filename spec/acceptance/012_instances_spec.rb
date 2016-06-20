@@ -164,11 +164,9 @@ describe 'elasticsearch::instance' do
     end
 
     describe server :container do
-      describe http(
-        "http://localhost:#{test_settings['port_a']}",
-        :faraday_middleware => middleware
-      ) do
-        it "serves requests on #{test_settings['port_a']}" do
+      describe http "http://localhost:#{test_settings['port_a']}" do
+        it "serves requests on #{test_settings['port_a']}",
+           :with_generous_retries do
           expect(response.status).to eq(200)
         end
       end
