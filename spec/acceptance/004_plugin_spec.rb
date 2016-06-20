@@ -265,7 +265,7 @@ describe "elasticsearch plugin define:" do
       end
 
       it 'make sure elasticsearch reports it as existing' do
-        curl_with_retries('validated plugin as installed', default, "http://localhost:#{test_settings['port_a']}/_nodes/?plugin | grep HQ", 0)
+        curl_with_retries('validated plugin as installed', default, "http://localhost:#{test_settings['port_a']}/_nodes/?plugin | grep hq", 0)
       end
 
   end
