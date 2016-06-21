@@ -51,7 +51,7 @@ class elasticsearch::params {
   # package download timeout
   $package_dl_timeout = 600 # 300 seconds is default of puppet
 
-  if( $::is_pe == true ) {
+  if getvar('::is_pe') {
     $repo_key_id = 'D88E42B4'
   } else {
     $repo_key_id = '46095ACC8548582C1A2699A9D27D666CD88E42B4'
