@@ -333,7 +333,7 @@ describe "elasticsearch shield" do
             :ssl => {:verify => false}
           }
         ) do
-          it 'clusters over TLS', :with_retries do
+          it 'clusters over TLS', :with_generous_retries do
             expect(
               JSON.parse(response.body)['nodes'].size
             ).to eq(2)
