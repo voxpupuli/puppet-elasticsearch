@@ -1,144 +1,91 @@
 require 'spec_helper_acceptance'
 
-describe "elasticsearch class:" do
+describe 'elasticsearch::restart_on_change', :with_cleanup do
+  describe 'initial setup' do
+    describe 'manifest' do
+      pp = <<-EOS
+        class { 'elasticsearch':
+          config => {
+            'cluster.name' => '#{test_settings['cluster_name']}'
+          },
+          manage_repo => true,
+          repo_version => '#{test_settings['repo_version']}',
+          java_install => true,
+          restart_on_change => false
+        }
 
-  describe "Setup" do
+        elasticsearch::instance { 'es-01':
+          config => {
+            'node.name' => 'elasticsearch001',
+            'http.port' => '#{test_settings['port_a']}'
+          }
+        }
 
-    it 'should run successfully' do
-      pp = "class { 'elasticsearch': config => { 'cluster.name' => '#{test_settings['cluster_name']}'}, manage_repo => true, repo_version => '#{test_settings['repo_version']}', java_install => true, restart_on_change => false }
-            elasticsearch::instance { 'es-01': config => { 'node.name' => 'elasticsearch001', 'http.port' => '#{test_settings['port_a']}' } }
-            elasticsearch::plugin{'lmenezes/elasticsearch-kopf': instances => 'es-01' }
-           "
+        elasticsearch::plugin { 'lmenezes/elasticsearch-kopf':
+          instances => 'es-01'
+        }
+      EOS
 
-      # Run it twice and test for idempotency
-      apply_manifest(pp, :catch_failures => true)
-      expect(apply_manifest(pp, :catch_failures => true).exit_code).to be_zero
+      it 'applies cleanly ' do
+        apply_manifest pp, :catch_failures => true
+      end
+      it 'is idempotent' do
+        apply_manifest pp , :catch_changes  => true
+      end
     end
-
-
-    describe service(test_settings['service_name_a']) do
-      it { should be_enabled }
-      it { should be_running }
-    end
-
-    describe package(test_settings['package_name']) do
-      it { should be_installed }
-    end
-
-    describe file(test_settings['pid_file_a']) do
-      it { should be_file }
-      its(:content) { should match /[0-9]+/ }
-    end
-
-    describe "Elasticsearch serves requests on" do
-      it {
-        curl_with_retries("check ES on #{test_settings['port_a']}", default, "http://localhost:#{test_settings['port_a']}/?pretty=true", 0)
-      }
-    end
-
-    describe "Returns correct node name" do
-      it {
-        curl_with_retries("check hostname on #{test_settings['port_a']}", default, "http://localhost:#{test_settings['port_a']}/?pretty=true | grep elasticsearch001", 0)
-      }
-    end
-
-    describe file('/etc/elasticsearch/es-01/elasticsearch.yml') do
-      it { should be_file }
-      it { should contain 'name: elasticsearch001' }
-    end
-
-    describe file('/usr/share/elasticsearch/templates_import') do
-      it { should be_directory }
-    end
-
-
   end
 
-  describe "Change config" do
+  describe 'config change' do
+    describe 'manifest' do
+      pp = <<-EOS
+        class { 'elasticsearch':
+          config => {
+            'cluster.name' => '#{test_settings['cluster_name']}'
+          },
+          manage_repo => true,
+          repo_version => '#{test_settings['repo_version']}',
+          java_install => true,
+          restart_on_change => false
+        }
 
-    it 'should run successfully' do
-      pp = "class { 'elasticsearch': config => { 'cluster.name' => '#{test_settings['cluster_name']}'}, manage_repo => true, repo_version => '#{test_settings['repo_version']}', java_install => true, restart_on_change => false }
-            elasticsearch::instance { 'es-01': config => { 'node.name' => 'elasticsearch002', 'http.port' => '#{test_settings['port_a']}' } }
-            elasticsearch::plugin{'lmenezes/elasticsearch-kopf': instances => 'es-01' }
-           "
+        elasticsearch::instance { 'es-01':
+          config => {
+            'node.name' => 'elasticsearch002',
+            'http.port' => '#{test_settings['port_a']}'
+          }
+        }
 
-      # Run it twice and test for idempotency
-      apply_manifest(pp, :catch_failures => true)
-      expect(apply_manifest(pp, :catch_failures => true).exit_code).to be_zero
+        elasticsearch::plugin { 'lmenezes/elasticsearch-kopf':
+          instances => 'es-01'
+        }
+      EOS
+
+      it 'applies cleanly ' do
+        apply_manifest pp, :catch_failures => true
+      end
+      it 'is idempotent' do
+        apply_manifest pp , :catch_changes  => true
+      end
     end
-
-
-    describe service(test_settings['service_name_a']) do
-      it { should be_enabled }
-      it { should be_running }
-    end
-
-    describe package(test_settings['package_name']) do
-      it { should be_installed }
-    end
-
-    describe file(test_settings['pid_file_a']) do
-      it { should be_file }
-      its(:content) { should match /[0-9]+/ }
-    end
-
-    describe "Elasticsearch serves requests on" do
-      it {
-        curl_with_retries("check ES on #{test_settings['port_a']}", default, "http://localhost:#{test_settings['port_a']}/?pretty=true", 0)
-      }
-    end
-
-    describe "Returns correct node name" do
-      it {
-        curl_with_retries("check hostname on #{test_settings['port_a']}", default, "http://localhost:#{test_settings['port_a']}/?pretty=true | grep elasticsearch001", 0)
-      }
-    end
-
 
     describe file('/etc/elasticsearch/es-01/elasticsearch.yml') do
       it { should be_file }
       it { should contain 'name: elasticsearch002' }
     end
 
-    describe file('/usr/share/elasticsearch/templates_import') do
-      it { should be_directory }
+    describe port(test_settings['port_a']) do
+      it 'open', :with_retries do should be_listening end
     end
 
-
+    describe server :container do
+      describe http(
+        "http://localhost:#{test_settings['port_a']}/_nodes/_local"
+      ) do
+        it 'returns the correct node name', :with_retries do
+          json = JSON.parse(response.body)['nodes'].values.first
+          expect(json['name']).to eq('elasticsearch001')
+        end
+      end
+    end
   end
-
-  describe "module removal" do
-
-    it 'should run successfully' do
-      pp = "class { 'elasticsearch': ensure => 'absent' }
-            elasticsearch::instance{ 'es-01': ensure => 'absent' }
-           "
-
-      apply_manifest(pp, :catch_failures => true)
-    end
-
-    describe file('/etc/elasticsearch/es-01') do
-      it { should_not be_directory }
-    end
-
-    describe file('/etc/elasticsearch/es-02') do
-      it { should_not be_directory }
-    end
-
-    describe file('/etc/elasticsearch/es-03') do
-      it { should_not be_directory }
-    end
-
-    describe service(test_settings['service_name_a']) do
-      it { should_not be_enabled }
-      it { should_not be_running }
-    end
-
-    describe service(test_settings['service_name_b']) do
-      it { should_not be_enabled }
-      it { should_not be_running }
-    end
-
-  end
-
 end
