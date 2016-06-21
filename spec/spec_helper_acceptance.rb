@@ -116,8 +116,9 @@ end
 
 RSpec.configure do |c|
 
+  # Uncomment for verbose test descriptions.
   # Readable test descriptions
-  c.formatter = :documentation
+  # c.formatter = :documentation
 
   # Configure all nodes in nodeset
   c.before :suite do
