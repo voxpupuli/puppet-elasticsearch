@@ -6,6 +6,7 @@ cache:
   directories:
   - spec/fixtures/artifacts
   - spec/fixtures/modules
+  - .vendor
 language: ruby
 env:
   global:
