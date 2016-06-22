@@ -31,6 +31,13 @@ RSpec.configure do |c|
     apply_manifest <<-EOS
       class { 'elasticsearch': ensure => 'absent' }
       elasticsearch::instance { 'es-01': ensure => 'absent' }
+
+      file { '/usr/share/elasticsearch/plugin':
+        ensure => 'absent',
+        force => true,
+        recurse => true,
+        require => Class['elasticsearch'],
+      }
     EOS
   end
 end
