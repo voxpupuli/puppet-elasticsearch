@@ -52,6 +52,10 @@ class elasticsearch::repo {
         gpgkey   => $::elasticsearch::repo_key_source,
         enabled  => 1,
         proxy    => $::elasticsearch::repo_proxy,
+      } ~>
+      exec { 'elasticsearch_yumrepo_yum_clean_expire-cache':
+        command     => 'yum clean expire-cache',
+        refreshonly => true,
       }
     }
     'Suse': {
