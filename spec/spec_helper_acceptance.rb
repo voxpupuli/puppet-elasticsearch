@@ -29,12 +29,15 @@ RSpec.configure do |c|
   # Helper hook for module cleanup
   c.after :context, :with_cleanup do
     apply_manifest <<-EOS
-      class { 'elasticsearch': ensure => 'absent' }
+      class { 'elasticsearch':
+        ensure      => 'absent',
+        manage_repo => true,
+      }
       elasticsearch::instance { 'es-01': ensure => 'absent' }
 
       file { '/usr/share/elasticsearch/plugin':
-        ensure => 'absent',
-        force => true,
+        ensure  => 'absent',
+        force   => true,
         recurse => true,
         require => Class['elasticsearch'],
       }
