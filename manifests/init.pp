@@ -329,7 +329,7 @@ class elasticsearch(
 
   validate_bool($manage_repo)
 
-  if ($manage_repo == true) {
+  if ($manage_repo == true and $ensure == 'present') {
     if $repo_version == undef {
       fail('Please fill in a repository version at $repo_version')
     } else {

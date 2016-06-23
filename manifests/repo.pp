@@ -26,8 +26,8 @@
 class elasticsearch::repo {
 
   Exec {
-    path      => [ '/bin', '/usr/bin', '/usr/local/bin' ],
-    cwd       => '/',
+    path => [ '/bin', '/usr/bin', '/usr/local/bin' ],
+    cwd  => '/',
   }
 
   case $::osfamily {
@@ -36,6 +36,7 @@ class elasticsearch::repo {
       Class['apt::update'] -> Package[$elasticsearch::package_name]
 
       apt::source { 'elasticsearch':
+        ensure      => $elasticsearch::ensure,
         location    => "http://packages.elastic.co/elasticsearch/${elasticsearch::repo_version}/debian",
         release     => 'stable',
         repos       => 'main',
@@ -46,6 +47,7 @@ class elasticsearch::repo {
     }
     'RedHat', 'Linux': {
       yumrepo { 'elasticsearch':
+        ensure   => $elasticsearch::ensure,
         descr    => 'elasticsearch repo',
         baseurl  => "http://packages.elastic.co/elasticsearch/${elasticsearch::repo_version}/centos",
         gpgcheck => 1,
@@ -53,9 +55,10 @@ class elasticsearch::repo {
         enabled  => 1,
         proxy    => $::elasticsearch::repo_proxy,
       } ~>
-      exec { 'elasticsearch_yumrepo_yum_clean_expire-cache':
-        command     => 'yum clean expire-cache',
+      exec { 'elasticsearch_yumrepo_yum_clean':
+        command     => 'yum clean metadata expire-cache --disablerepo="*" --enablerepo="elasticsearch"',
         refreshonly => true,
+        returns     => [0, 1],
       }
     }
     'Suse': {
@@ -73,6 +76,7 @@ class elasticsearch::repo {
       }
 
       zypprepo { 'elasticsearch':
+        ensure      => $elasticsearch::ensure,
         baseurl     => "http://packages.elastic.co/elasticsearch/${elasticsearch::repo_version}/centos",
         enabled     => 1,
         autorefresh => 1,
@@ -93,30 +97,43 @@ class elasticsearch::repo {
 
   # Package pinning
 
-    case $::osfamily {
-      'Debian': {
-        include ::apt
+  case $::osfamily {
+    'Debian': {
+      include ::apt
 
-        if ($elasticsearch::package_pin == true and $elasticsearch::version != false) {
-          apt::pin { $elasticsearch::package_name:
-            ensure   => 'present',
-            packages => $elasticsearch::package_name,
-            version  => $elasticsearch::version,
-            priority => 1000,
-          }
+      if ($elasticsearch::ensure == 'absent') {
+        apt::pin { $elasticsearch::package_name:
+          ensure => $elasticsearch::ensure,
         }
-
-      }
-      'RedHat', 'Linux': {
-
-        if ($elasticsearch::package_pin == true and $elasticsearch::version != false) {
-          yum::versionlock { "0:elasticsearch-${elasticsearch::pkg_version}.noarch":
-            ensure => 'present',
-          }
+      } elsif ($elasticsearch::package_pin == true and $elasticsearch::version != false) {
+        apt::pin { $elasticsearch::package_name:
+          ensure   => $elasticsearch::ensure,
+          packages => $elasticsearch::package_name,
+          version  => $elasticsearch::version,
+          priority => 1000,
         }
       }
-      default: {
-        warning("Unable to pin package for OSfamily \"${::osfamily}\".")
-      }
+
     }
+    'RedHat', 'Linux': {
+
+      if ($elasticsearch::ensure == 'absent') {
+        $_versionlock = '/etc/yum/pluginconf.d/versionlock.list'
+        exec { 'elasticsearch_purge_versionlock.list':
+          command => "sed -i '/0:elasticsearch-/d' ${_versionlock}",
+          onlyif  => "test -f ${_versionlock}",
+          before  => Yumrepo['elasticsearch'],
+        }
+      } elsif ($elasticsearch::package_pin == true and $elasticsearch::version != false) {
+        yum::versionlock { "0:elasticsearch-${elasticsearch::pkg_version}.noarch":
+          ensure => $elasticsearch::ensure,
+          before => Yumrepo['elasticsearch'],
+        }
+      }
+
+    }
+    default: {
+      warning("Unable to pin package for OSfamily \"${::osfamily}\".")
+    }
+  }
 }
