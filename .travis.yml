@@ -6,6 +6,7 @@ cache:
   directories:
   - spec/fixtures/artifacts
   - spec/fixtures/modules
+  - .vendor
 language: ruby
 env:
   global:
@@ -37,6 +38,8 @@ env:
   - DISTRO=oracle-6-x64
   - DISTRO=oracle-7-x64
 matrix:
+  allow_failures:
+  - env: DISTRO=sles-12-x64 PE=true
   fast_finish: true
 install:
 - bundle install --path .vendor
