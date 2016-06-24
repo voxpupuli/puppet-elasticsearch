@@ -50,7 +50,7 @@ describe 'elasticsearch 2x' do
         describe http(
           "http://localhost:#{test_settings['port_a']}/_cluster/stats",
         ) do
-          it 'reports the plugin as installed', :with_retries do
+          it 'returns cloud-aws with version 2.0.0', :with_retries do
             json = JSON.parse(response.body)
             plugins = json['nodes']['plugins'].map do |h|
               {
@@ -62,6 +62,16 @@ describe 'elasticsearch 2x' do
               name: 'cloud-aws',
               version: '2.0.0'
             })
+          end
+        end
+      end
+
+      describe server :container do
+        describe http "http://localhost:#{test_settings['port_a']}" do
+          it 'returns ES version 2.0.0', :with_retries do
+            expect(
+              JSON.parse(response.body)['version']['number']
+            ).to eq('2.0.0')
           end
         end
       end
@@ -115,7 +125,7 @@ describe 'elasticsearch 2x' do
         describe http(
           "http://localhost:#{test_settings['port_a']}/_cluster/stats",
         ) do
-          it 'reports the plugin as upgraded', :with_retries do
+          it 'reports cloud-aws as upgraded', :with_retries do
             json = JSON.parse(response.body)
             plugins = json['nodes']['plugins'].map do |h|
               {
@@ -127,6 +137,16 @@ describe 'elasticsearch 2x' do
               name: 'cloud-aws',
               version: '2.0.1'
             })
+          end
+        end
+      end
+
+      describe server :container do
+        describe http "http://localhost:#{test_settings['port_a']}" do
+          it 'reports ES as upgraded', :with_retries do
+            expect(
+              JSON.parse(response.body)['version']['number']
+            ).to eq('2.0.1')
           end
         end
       end
