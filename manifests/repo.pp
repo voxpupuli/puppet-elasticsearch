@@ -76,7 +76,6 @@ class elasticsearch::repo {
       }
 
       zypprepo { 'elasticsearch':
-        ensure      => $elasticsearch::ensure,
         baseurl     => "http://packages.elastic.co/elasticsearch/${elasticsearch::repo_version}/centos",
         enabled     => 1,
         autorefresh => 1,
