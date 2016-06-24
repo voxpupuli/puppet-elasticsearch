@@ -10,6 +10,10 @@ describe "elasticsearch shield" do
       java_install => true,
       manage_repo  => true,
       repo_version => '#{test_settings['repo_version']}',
+      config => {
+        'cluster.name' => '#{test_settings['cluster_name']}',
+        'http.port' => #{test_settings['port_a']},
+      },
     }
 
     elasticsearch::plugin { 'elasticsearch/license/latest' :  }
@@ -50,13 +54,13 @@ describe "elasticsearch shield" do
       end
     end
 
-    describe port(9200) do
+    describe port(test_settings['port_a']) do
       it 'open', :with_retries do should be_listening end
     end
 
     describe server :container do
       describe http(
-        'http://localhost:9200/_cluster/health',
+        "http://localhost:#{test_settings['port_a']}/_cluster/health",
         :faraday_middleware => middleware
       ) do
         it 'denies unauthorized access', :with_retries do
@@ -65,7 +69,7 @@ describe "elasticsearch shield" do
       end
 
       describe http(
-        'http://localhost:9200/_cluster/health',
+        "http://localhost:#{test_settings['port_a']}/_cluster/health",
         {
           :faraday_middleware => middleware,
           :basic_auth => [
@@ -80,7 +84,7 @@ describe "elasticsearch shield" do
       end
 
       describe http(
-        'http://localhost:9200/_cluster/health',
+        "http://localhost:#{test_settings['port_a']}/_cluster/health",
         {
           :faraday_middleware => middleware,
           :basic_auth => [
@@ -119,13 +123,13 @@ describe "elasticsearch shield" do
       end
     end
 
-    describe port(9200) do
+    describe port(test_settings['port_a']) do
       it 'open', :with_retries do should be_listening end
     end
 
     describe server :container do
       describe http(
-        'http://localhost:9200/_cluster/health',
+        "http://localhost:#{test_settings['port_a']}/_cluster/health",
         {
           :faraday_middleware => middleware,
           :basic_auth => [
@@ -179,13 +183,13 @@ describe "elasticsearch shield" do
       end
     end
 
-    describe port(9200) do
+    describe port(test_settings['port_a']) do
       it 'open', :with_retries do should be_listening end
     end
 
     describe server :container do
       describe http(
-        'http://localhost:9200/_cluster/stats',
+        "http://localhost:#{test_settings['port_a']}/_cluster/stats",
         {
           :faraday_middleware => middleware,
           :basic_auth => [
@@ -200,7 +204,7 @@ describe "elasticsearch shield" do
       end
 
       describe http(
-        'http://localhost:9200/_cluster/health',
+        "http://localhost:#{test_settings['port_a']}/_cluster/health",
         {
           :faraday_middleware => middleware,
           :basic_auth => [
@@ -253,13 +257,13 @@ describe "elasticsearch shield" do
         end
       end
 
-      describe port(9200) do
+      describe port(test_settings['port_a']) do
         it 'open', :with_retries do should be_listening end
       end
 
       describe server :container do
         describe http(
-          'https://localhost:9200/_cluster/health',
+          "https://localhost:#{test_settings['port_a']}/_cluster/health",
           {
             :faraday_middleware => middleware,
             :basic_auth => [
@@ -297,9 +301,10 @@ describe "elasticsearch shield" do
                 config => {
                   'discovery.zen.minimum_master_nodes' => %s,
                   'shield.ssl.hostname_verification' => false,
+                  'http.port' => '92%02d',
                 }
               }
-            } % [i+1, i+1, @tls[:clients].length]
+            } % [i+1, @tls[:clients].length, i]
           end.join("\n") + %Q{
             Elasticsearch::Plugin { instances => %s, }
           } % @tls[:clients].each_with_index.map { |_, i| "es-%02d" % (i+1)}.to_s
@@ -317,13 +322,17 @@ describe "elasticsearch shield" do
         end
       end
 
-      describe port(9200) do
+      describe port(test_settings['port_a']) do
+        it 'open', :with_retries do should be_listening end
+      end
+
+      describe port(test_settings['port_b']) do
         it 'open', :with_retries do should be_listening end
       end
 
       describe server :container do
         describe http(
-          'https://localhost:9200/_nodes',
+          "https://localhost:#{test_settings['port_a']}/_nodes",
           {
             :faraday_middleware => middleware,
             :basic_auth => [
