@@ -41,10 +41,6 @@ matrix:
   allow_failures:
   - env: DISTRO=sles-12-x64 PE=true
   fast_finish: true
-install:
-- bundle install --path .vendor
-- bundle exec rake spec_prep
-- bundle exec rake artifacts:prep
 script:
 - make test-$TEST_SUITE
 notifications:
