@@ -11,6 +11,7 @@ language: ruby
 env:
   global:
   - TEST_SUITE=acceptance
+  - BUNDLE_PATH=.vendor
   matrix:
   - TEST_SUITE=intake
   - TEST_SUITE=integration
