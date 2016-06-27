@@ -50,9 +50,6 @@
 #   Specify all the instances related
 #   value type is string or array
 #
-# [*install_options*]
-#   Pass options to the plugin installer
-#
 # === Examples
 #
 # # From official repository
@@ -77,8 +74,7 @@ define elasticsearch::plugin(
   $url             = undef,
   $source          = undef,
   $proxy_host      = undef,
-  $proxy_port      = undef,
-  $install_options = undef
+  $proxy_port      = undef
 ) {
 
   include elasticsearch
@@ -136,13 +132,12 @@ define elasticsearch::plugin(
     'installed', 'present': {
 
       elasticsearch_plugin { $name:
-        ensure          => 'present',
-        source          => $file_source,
-        url             => $url,
-        proxy_args      => $proxy,
-        plugin_dir      => $::elasticsearch::plugindir,
-        install_options => $install_options,
-        notify          => $notify_service,
+        ensure     => 'present',
+        source     => $file_source,
+        url        => $url,
+        proxy_args => $proxy,
+        plugin_dir => $::elasticsearch::plugindir,
+        notify     => $notify_service,
       }
 
     }

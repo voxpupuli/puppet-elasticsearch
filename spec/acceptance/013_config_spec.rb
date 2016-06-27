@@ -6,7 +6,7 @@ describe "elasticsearch class:" do
 
     it 'should run successfully' do
       pp = "class { 'elasticsearch': config => { 'cluster.name' => 'foobar' }, manage_repo => true, repo_version => '#{test_settings['repo_version']}', java_install => true }
-            elasticsearch::instance { 'es-01': config => { 'node.name' => 'elasticsearch001', 'http.port' => '#{test_settings['port_a']}', 'node.master' => true, 'node.data' => false, 'index' => { 'routing' => { 'allocation' => { 'include' => 'tag1', 'exclude' => [ 'tag2', 'tag3' ] } } }, 'node' => { 'rack' => 46 }, 'boostrap.mlockall' => true, 'cluster.name' => '#{test_settings['cluster_name']}' } }
+            elasticsearch::instance { 'es-01': config => { 'node.name' => 'elasticsearch001', 'http.port' => '#{test_settings['port_a']}', 'node.master' => true, 'node.data' => false, 'index' => { 'routing' => { 'allocation' => { 'include' => 'tag1', 'exclude' => [ 'tag2', 'tag3' ] } } }, 'node' => { 'rack' => 46 }, 'bootstrap.mlockall' => true, 'cluster.name' => '#{test_settings['cluster_name']}' } }
            "
 
       # Run it twice and test for idempotency
