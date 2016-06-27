@@ -53,10 +53,8 @@ describe 'elasticsearch::datadir' do
         it 'uses a custom data path' do
           json = JSON.parse(response.body)['nodes'].values.first
           expect(
-            json['settings']['path']
-          ).to include(
-              'data' => '/var/lib/elasticsearch-data/es-01'
-          )
+            json['settings']['path']['data']
+          ).to eq('/var/lib/elasticsearch-data/es-01')
         end
       end
     end
@@ -112,10 +110,8 @@ describe 'elasticsearch::datadir' do
         it 'uses the default data path' do
           json = JSON.parse(response.body)['nodes'].values.first
           expect(
-            json['settings']['path']
-          ).to include(
-              'data' => test_settings['datadir_1']
-          )
+            json['settings']['path']['data']
+          ).to eq(test_settings['datadir_1'])
         end
       end
     end
