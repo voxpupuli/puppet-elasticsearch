@@ -17,8 +17,31 @@ RSpec.configure do |c|
   # rspec-retry
   c.display_try_failure_messages = true
   c.default_sleep_interval = 5
+  # General-case retry keyword for unstable tests
   c.around :each, :with_retries do |example|
     example.run_with_retry retry: 4
+  end
+  # More forgiving retry config for really flaky tests
+  c.around :each, :with_generous_retries do |example|
+    example.run_with_retry retry: 10
+  end
+
+  # Helper hook for module cleanup
+  c.after :context, :with_cleanup do
+    apply_manifest <<-EOS
+      class { 'elasticsearch':
+        ensure      => 'absent',
+        manage_repo => true,
+      }
+      elasticsearch::instance { 'es-01': ensure => 'absent' }
+
+      file { '/usr/share/elasticsearch/plugin':
+        ensure  => 'absent',
+        force   => true,
+        recurse => true,
+        require => Class['elasticsearch'],
+      }
+    EOS
   end
 end
 
@@ -36,8 +59,7 @@ hosts.each do |host|
 
     if fact('osfamily') == 'Suse'
       install_package host, '--force-resolution augeas-devel libxml2-devel'
-      ruby_dev = fact('operatingsystem') == 'SLES' ? 'ruby-devel' : 'ruby20-devel'
-      install_package host, ruby_dev
+      install_package host, 'ruby-devel' if fact('operatingsystem') == 'SLES'
       on host, "gem install ruby-augeas --no-ri --no-rdoc"
     end
 
@@ -104,8 +126,9 @@ end
 
 RSpec.configure do |c|
 
+  # Uncomment for verbose test descriptions.
   # Readable test descriptions
-  c.formatter = :documentation
+  # c.formatter = :documentation
 
   # Configure all nodes in nodeset
   c.before :suite do
