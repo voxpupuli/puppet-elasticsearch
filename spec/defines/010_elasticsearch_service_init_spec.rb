@@ -62,11 +62,23 @@ describe 'elasticsearch::service::init', :type => 'define' do
     context "Set via hash" do
       let :params do {
         :ensure => 'present',
-	:status => 'enabled',
-	:init_defaults => {'ES_HOME' => '/usr/share/elasticsearch' }
+        :status => 'enabled',
+        :init_defaults => {'ES_HOME' => '/usr/share/elasticsearch' }
       } end
 
-      it { should contain_augeas('defaults_es-01').with(:incl => '/etc/sysconfig/elasticsearch-es-01', :changes => "set ES_GROUP 'elasticsearch'\nset ES_HOME '/usr/share/elasticsearch'\nset ES_USER 'elasticsearch'\nset MAX_OPEN_FILES '65535'\n", :notify => 'Service[elasticsearch-instance-es-01]', :before => 'Service[elasticsearch-instance-es-01]') }
+      it 'writes the defaults file' do
+        should contain_augeas('defaults_es-01').with(
+          :incl => '/etc/sysconfig/elasticsearch-es-01',
+          :changes => [
+            "set ES_GROUP 'elasticsearch'",
+            "set ES_HOME '/usr/share/elasticsearch'",
+            "set ES_USER 'elasticsearch'",
+            "set MAX_OPEN_FILES '65535'",
+          ].join("\n") << "\n",
+          :notify => 'Service[elasticsearch-instance-es-01]',
+          :before => 'Service[elasticsearch-instance-es-01]'
+        )
+      end
     end
 
     context "No restart when 'restart_on_change' is false" do

@@ -1,90 +1,35 @@
 require 'spec_helper_acceptance'
+require 'spec_helper_faraday'
+require 'json'
 
-describe "Data dir settings" do
+describe 'elasticsearch::datadir' do
+  describe 'single data dir from class', :with_cleanup do
+    describe 'manifest' do
+      pp = <<-EOS
+        class { 'elasticsearch':
+          config => {
+            'cluster.name' => '#{test_settings['cluster_name']}'
+          },
+          manage_repo => true,
+          repo_version => '#{test_settings['repo_version']}',
+          java_install => true,
+          datadir => '/var/lib/elasticsearch-data'
+        }
 
-  describe "Default data dir" do
+        elasticsearch::instance { 'es-01':
+          config => {
+            'node.name' => 'elasticsearch001',
+            'http.port' => '#{test_settings['port_a']}'
+          }
+        }
+      EOS
 
-    it 'should run successfully' do
-      pp = "class { 'elasticsearch': config => { 'cluster.name' => '#{test_settings['cluster_name']}'}, manage_repo => true, repo_version => '#{test_settings['repo_version']}', java_install => true }
-            elasticsearch::instance { 'es-01': config => { 'node.name' => 'elasticsearch001', 'http.port' => '#{test_settings['port_a']}' } }
-           "
-
-      # Run it twice and test for idempotency
-      apply_manifest(pp, :catch_failures => true)
-      expect(apply_manifest(pp, :catch_failures => true).exit_code).to be_zero
-    end
-
-
-    describe service(test_settings['service_name_a']) do
-      it { should be_enabled }
-      it { should be_running }
-    end
-
-    describe package(test_settings['package_name']) do
-      it { should be_installed }
-    end
-
-    describe file(test_settings['pid_file_a']) do
-      it { should be_file }
-      its(:content) { should match /[0-9]+/ }
-    end
-
-    describe "Elasticsearch serves requests on" do
-      it {
-        curl_with_retries("check ES on #{test_settings['port_a']}", default, "http://localhost:#{test_settings['port_a']}/?pretty=true", 0)
-      }
-    end
-
-    describe file('/etc/elasticsearch/es-01/elasticsearch.yml') do
-      it { should be_file }
-      it { should contain "/usr/share/elasticsearch/data/es-01" }
-    end
-
-     describe "Elasticsearch config has the data path" do
-      it {
-        curl_with_retries("check data path on #{test_settings['port_a']}", default, "http://localhost:#{test_settings['port_a']}/_nodes?pretty=true | grep /usr/share/elasticsearch/data/es-01", 0)
-      }
-
-    end
-
-    describe file('/usr/share/elasticsearch/data/es-01') do
-      it { should be_directory }
-    end
-
-  end
-
-
-  describe "Single data dir from main class" do
-
-    it 'should run successfully' do
-      pp = "class { 'elasticsearch': config => { 'cluster.name' => '#{test_settings['cluster_name']}'}, manage_repo => true, repo_version => '#{test_settings['repo_version']}', java_install => true, datadir => '/var/lib/elasticsearch-data' }
-            elasticsearch::instance { 'es-01': config => { 'node.name' => 'elasticsearch001', 'http.port' => '#{test_settings['port_a']}' } }
-           "
-
-      # Run it twice and test for idempotency
-      apply_manifest(pp, :catch_failures => true)
-      expect(apply_manifest(pp, :catch_failures => true).exit_code).to be_zero
-    end
-
-
-    describe service(test_settings['service_name_a']) do
-      it { should be_enabled }
-      it { should be_running }
-    end
-
-    describe package(test_settings['package_name']) do
-      it { should be_installed }
-    end
-
-    describe file(test_settings['pid_file_a']) do
-      it { should be_file }
-      its(:content) { should match /[0-9]+/ }
-    end
-
-    describe "Elasticsearch serves requests on" do
-      it {
-        curl_with_retries("check ES on #{test_settings['port_a']}", default, "http://localhost:#{test_settings['port_a']}/?pretty=true", 0)
-      }
+      it 'applies cleanly' do
+        apply_manifest pp, :catch_failures => true
+      end
+      it 'is idempotent' do
+        apply_manifest pp , :catch_changes  => true
+      end
     end
 
     describe file('/etc/elasticsearch/es-01/elasticsearch.yml') do
@@ -92,71 +37,56 @@ describe "Data dir settings" do
       it { should contain '/var/lib/elasticsearch-data/es-01' }
     end
 
-     describe "Elasticsearch config has the data path" do
-      it {
-        curl_with_retries("check data path on #{test_settings['port_a']}", default, "http://localhost:#{test_settings['port_a']}/_nodes?pretty=true | grep /var/lib/elasticsearch-data/es-01", 0)
-      }
-
-    end
-
     describe file('/var/lib/elasticsearch-data/es-01') do
       it { should be_directory }
     end
 
+    describe port(test_settings['port_a']) do
+      it 'open', :with_retries do should be_listening end
+    end
+
+    describe server :container do
+      describe http(
+        "http://localhost:#{test_settings['port_a']}/_nodes/_local",
+        :faraday_middleware => middleware
+      ) do
+        it 'uses a custom data path' do
+          json = JSON.parse(response.body)['nodes'].values.first
+          expect(
+            json['settings']['path']['data']
+          ).to eq('/var/lib/elasticsearch-data/es-01')
+        end
+      end
+    end
   end
 
-  describe "module removal" do
+  describe 'single data dir from instance', :with_cleanup do
+    describe 'manifest' do
+      pp = <<-EOS
+        class { 'elasticsearch':
+            config => {
+            'cluster.name' => '#{test_settings['cluster_name']}'
+            },
+          manage_repo => true,
+          repo_version => '#{test_settings['repo_version']}',
+          java_install => true
+        }
 
-    it 'should run successfully' do
-      pp = "class { 'elasticsearch': ensure => 'absent' }
-            elasticsearch::instance{ 'es-01': ensure => 'absent' }
-           "
+        elasticsearch::instance { 'es-01':
+          config => {
+            'node.name' => 'elasticsearch001',
+            'http.port' => '#{test_settings['port_a']}'
+          },
+          datadir => '#{test_settings['datadir_1']}'
+        }
+      EOS
 
-      apply_manifest(pp, :catch_failures => true)
-    end
-
-    describe file('/etc/elasticsearch/es-01') do
-      it { should_not be_directory }
-    end
-
-    describe service(test_settings['service_name_a']) do
-      it { should_not be_enabled }
-      it { should_not be_running }
-    end
-
-  end
-
-  describe "Single data dir from instance config" do
-
-    it 'should run successfully' do
-      pp = "class { 'elasticsearch': config => { 'cluster.name' => '#{test_settings['cluster_name']}'}, manage_repo => true, repo_version => '#{test_settings['repo_version']}', java_install => true }
-            elasticsearch::instance { 'es-01': config => { 'node.name' => 'elasticsearch001', 'http.port' => '#{test_settings['port_a']}'}, datadir => '#{test_settings['datadir_1']}' }
-           "
-
-      # Run it twice and test for idempotency
-      apply_manifest(pp, :catch_failures => true)
-      expect(apply_manifest(pp, :catch_failures => true).exit_code).to be_zero
-    end
-
-
-    describe service(test_settings['service_name_a']) do
-      it { should be_enabled }
-      it { should be_running }
-    end
-
-    describe package(test_settings['package_name']) do
-      it { should be_installed }
-    end
-
-    describe file(test_settings['pid_file_a']) do
-      it { should be_file }
-      its(:content) { should match /[0-9]+/ }
-    end
-
-    describe "Elasticsearch serves requests on" do
-      it {
-        curl_with_retries("check ES on #{test_settings['port_a']}", default, "http://localhost:#{test_settings['port_a']}/?pretty=true", 0)
-      }
+      it 'applies cleanly ' do
+        apply_manifest pp, :catch_failures => true
+      end
+      it 'is idempotent' do
+        apply_manifest pp , :catch_changes  => true
+      end
     end
 
     describe file('/etc/elasticsearch/es-01/elasticsearch.yml') do
@@ -164,70 +94,59 @@ describe "Data dir settings" do
       it { should contain "#{test_settings['datadir_1']}" }
     end
 
-     describe "Elasticsearch config has the data path" do
-      it {
-        curl_with_retries("check data path on #{test_settings['port_a']}", default, "http://localhost:#{test_settings['port_a']}/_nodes?pretty=true | grep #{test_settings['datadir_1']}", 0)
-      }
-    end
-
     describe file(test_settings['datadir_1']) do
       it { should be_directory }
     end
 
+    describe port(test_settings['port_a']) do
+      it 'open', :with_retries do should be_listening end
+    end
+
+    describe server :container do
+      describe http(
+        "http://localhost:#{test_settings['port_a']}/_nodes/_local",
+        :faraday_middleware => middleware
+      ) do
+        it 'uses the default data path' do
+          json = JSON.parse(response.body)['nodes'].values.first
+          expect(
+            json['settings']['path']['data']
+          ).to eq(test_settings['datadir_1'])
+        end
+      end
+    end
   end
 
-  describe "module removal" do
+  describe 'multiple data dirs from class', :with_cleanup do
+    describe 'manifest' do
+      pp = <<-EOS
+        class { 'elasticsearch':
+          config => {
+            'cluster.name' => '#{test_settings['cluster_name']}'
+          },
+          manage_repo => true,
+          repo_version => '#{test_settings['repo_version']}',
+          java_install => true,
+          datadir => [
+            '/var/lib/elasticsearch/01',
+            '/var/lib/elasticsearch/02'
+          ]
+        }
 
-    it 'should run successfully' do
-      pp = "class { 'elasticsearch': ensure => 'absent' }
-            elasticsearch::instance{ 'es-01': ensure => 'absent' }
-           "
+        elasticsearch::instance { 'es-01':
+          config => {
+            'node.name' => 'elasticsearch001',
+            'http.port' => '#{test_settings['port_a']}'
+          }
+        }
+      EOS
 
-      apply_manifest(pp, :catch_failures => true)
-    end
-
-    describe file('/etc/elasticsearch/es-01') do
-      it { should_not be_directory }
-    end
-
-    describe service(test_settings['service_name_a']) do
-      it { should_not be_enabled }
-      it { should_not be_running }
-    end
-
-  end
-
-  describe "multiple data dir's from main class" do
-
-    it 'should run successfully' do
-      pp = "class { 'elasticsearch': config => { 'cluster.name' => '#{test_settings['cluster_name']}'}, manage_repo => true, repo_version => '#{test_settings['repo_version']}', java_install => true, datadir => [ '/var/lib/elasticsearch/01', '/var/lib/elasticsearch/02'] }
-            elasticsearch::instance { 'es-01': config => { 'node.name' => 'elasticsearch001', 'http.port' => '#{test_settings['port_a']}' } }
-           "
-
-      # Run it twice and test for idempotency
-      apply_manifest(pp, :catch_failures => true)
-      expect(apply_manifest(pp, :catch_failures => true).exit_code).to be_zero
-    end
-
-
-    describe service(test_settings['service_name_a']) do
-      it { should be_enabled }
-      it { should be_running }
-    end
-
-    describe package(test_settings['package_name']) do
-      it { should be_installed }
-    end
-
-    describe file(test_settings['pid_file_a']) do
-      it { should be_file }
-      its(:content) { should match /[0-9]+/ }
-    end
-
-    describe "Elasticsearch serves requests on" do
-      it {
-        curl_with_retries("check ES on #{test_settings['port_a']}", default, "http://localhost:#{test_settings['port_a']}/?pretty=true", 0)
-      }
+      it 'applies cleanly ' do
+        apply_manifest pp, :catch_failures => true
+      end
+      it 'is idempotent' do
+        apply_manifest pp , :catch_changes  => true
+      end
     end
 
     describe file('/etc/elasticsearch/es-01/elasticsearch.yml') do
@@ -236,126 +155,99 @@ describe "Data dir settings" do
       it { should contain '/var/lib/elasticsearch/02/es-01' }
     end
 
-     describe "Elasticsearch config has the data path" do
-      it {
-        curl_with_retries("check data path on #{test_settings['port_a']}", default, "http://localhost:#{test_settings['port_a']}/_nodes?pretty=true | grep /var/lib/elasticsearch/01/es-01", 0)
-      }
-      it {
-        curl_with_retries("check data path on #{test_settings['port_a']}", default, "http://localhost:#{test_settings['port_a']}/_nodes?pretty=true | grep /var/lib/elasticsearch/02/es-01", 0)
-      }
-
+    describe file '/var/lib/elasticsearch/01/es-01' do
+      it { should be_directory }
     end
-
-    describe file('/var/lib/elasticsearch/01/es-01') do
+    describe file '/var/lib/elasticsearch/02/es-01' do
       it { should be_directory }
     end
 
-    describe file('/var/lib/elasticsearch/02/es-01') do
-      it { should be_directory }
+    describe port(test_settings['port_a']) do
+      it 'open', :with_retries do should be_listening end
     end
 
+    describe server :container do
+      describe http(
+        "http://localhost:#{test_settings['port_a']}/_nodes/_local",
+        :faraday_middleware => middleware
+      ) do
+        it 'uses custom data paths' do
+          json = JSON.parse(response.body)['nodes'].values.first
+          expect(
+            json['settings']['path']['data']
+          ).to contain_exactly(
+            '/var/lib/elasticsearch/01/es-01',
+            '/var/lib/elasticsearch/02/es-01'
+          )
+        end
+      end
+    end
   end
 
-  describe "module removal" do
+  describe 'multiple data dirs from instance', :with_cleanup do
+    describe 'manifest' do
+      pp = <<-EOS
+        class { 'elasticsearch':
+          config => {
+            'cluster.name' => '#{test_settings['cluster_name']}'
+          },
+          manage_repo => true,
+          repo_version => '#{test_settings['repo_version']}',
+          java_install => true
+        }
 
-    it 'should run successfully' do
-      pp = "class { 'elasticsearch': ensure => 'absent' }
-            elasticsearch::instance{ 'es-01': ensure => 'absent' }
-           "
+        elasticsearch::instance { 'es-01':
+          config => {
+            'node.name' => 'elasticsearch001',
+            'http.port' => '#{test_settings['port_a']}'
+          },
+          datadir => [
+            '#{test_settings['datadir_1']}',
+            '#{test_settings['datadir_2']}'
+          ]
+        }
+      EOS
 
-      apply_manifest(pp, :catch_failures => true)
-    end
-
-    describe file('/etc/elasticsearch/es-01') do
-      it { should_not be_directory }
-    end
-
-    describe service(test_settings['service_name_a']) do
-      it { should_not be_enabled }
-      it { should_not be_running }
-    end
-
-  end
-
-
-  describe "multiple data dir's from instance config" do
-
-    it 'should run successfully' do
-      pp = "class { 'elasticsearch': config => { 'cluster.name' => '#{test_settings['cluster_name']}'}, manage_repo => true, repo_version => '#{test_settings['repo_version']}', java_install => true }
-            elasticsearch::instance { 'es-01': config => { 'node.name' => 'elasticsearch001', 'http.port' => '#{test_settings['port_a']}' }, datadir => [ '#{test_settings['datadir_1']}', '#{test_settings['datadir_2']}'] }
-           "
-
-      # Run it twice and test for idempotency
-      apply_manifest(pp, :catch_failures => true)
-      expect(apply_manifest(pp, :catch_failures => true).exit_code).to be_zero
-    end
-
-
-    describe service(test_settings['service_name_a']) do
-      it { should be_enabled }
-      it { should be_running }
-    end
-
-    describe package(test_settings['package_name']) do
-      it { should be_installed }
-    end
-
-    describe file(test_settings['pid_file_a']) do
-      it { should be_file }
-      its(:content) { should match /[0-9]+/ }
-    end
-
-    describe "Elasticsearch serves requests on" do
-      it {
-        curl_with_retries("check ES on #{test_settings['port_a']}", default, "http://localhost:#{test_settings['port_a']}/?pretty=true", 0)
-      }
+      it 'applies cleanly ' do
+        apply_manifest pp, :catch_failures => true
+      end
+      it 'is idempotent' do
+        apply_manifest pp , :catch_changes  => true
+      end
     end
 
     describe file('/etc/elasticsearch/es-01/elasticsearch.yml') do
       it { should be_file }
-      it { should contain "#{test_settings['datadir_1']}" }
-      it { should contain "#{test_settings['datadir_2']}" }
+      it { should contain test_settings['datadir_1'] }
+      it { should contain test_settings['datadir_2'] }
     end
 
-     describe "Elasticsearch config has the data path" do
-      it {
-        curl_with_retries("check data path on #{test_settings['port_a']}", default, "http://localhost:#{test_settings['port_a']}/_nodes?pretty=true | grep #{test_settings['datadir_1']}", 0)
-      }
-      it {
-        curl_with_retries("check data path on #{test_settings['port_a']}", default, "http://localhost:#{test_settings['port_a']}/_nodes?pretty=true | grep #{test_settings['datadir_2']}", 0)
-      }
-
+    describe file test_settings['datadir_1'] do
+      it { should be_directory }
     end
-
-    describe file(test_settings['datadir_1']) do
+    describe file test_settings['datadir_2'] do
       it { should be_directory }
     end
 
-    describe file(test_settings['datadir_2']) do
-      it { should be_directory }
+    describe port(test_settings['port_a']) do
+      it 'open', :with_retries do should be_listening end
     end
 
+    describe server :container do
+      describe http(
+        "http://localhost:#{test_settings['port_a']}/_nodes/_local",
+        :faraday_middleware => middleware
+      ) do
+        it 'uses custom data paths' do
+          json = JSON.parse(response.body)['nodes'].values.first
+          expect(
+            json['settings']['path']['data']
+          ).to contain_exactly(
+            test_settings['datadir_1'],
+            test_settings['datadir_2']
+          )
+        end
+      end
+    end
   end
-
-  describe "module removal" do
-
-    it 'should run successfully' do
-      pp = "class { 'elasticsearch': ensure => 'absent' }
-            elasticsearch::instance{ 'es-01': ensure => 'absent' }
-           "
-
-      apply_manifest(pp, :catch_failures => true)
-    end
-
-    describe file('/etc/elasticsearch/es-01') do
-      it { should_not be_directory }
-    end
-
-    describe service(test_settings['service_name_a']) do
-      it { should_not be_enabled }
-      it { should_not be_running }
-    end
-
-  end
-
 end
