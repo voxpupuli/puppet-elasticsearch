@@ -1,3 +1,24 @@
+## x.x.x ( Month Day, Year )
+
+### Summary
+Rewritten yaml generator, code cleanup, and various bugfixes.
+
+#### Features
+
+#### Bugfixes
+* Special yaml cases such as arrays of hashes and strings like "::" are properly supported.
+* Previous Debian SysV init scripts mistakenly set the `DATA_DIR` environment variable to a non-default value.
+
+#### Changes
+* The `install_options` parameter on the `elasticsearch::plugin` type has been removed. This was an undocumented parameter that often caused problems for users.
+* The `elasticsearch.service` systemd unit is no longer removed but masked by default, effectively hiding it from systemd but retaining the upstream vendor unit on disk for package management consistency.
+
+#### Testing changes
+* The acceptance test suite has been dramatically slimmed to cut down on testing time and reduce false positives.
+
+#### Known bugs
+
+
 ## 0.11.0 ( May 23, 2016 )
 
 ### Summary
