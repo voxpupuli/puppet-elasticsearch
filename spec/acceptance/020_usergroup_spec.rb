@@ -1,45 +1,50 @@
 require 'spec_helper_acceptance'
 
-describe "elasticsearch class:" do
+describe 'elasticsearch::elasticsearch_user' do
+  describe 'changing service user', :with_cleanup do
+    describe 'manifest' do
+      before :all do
+        shell 'rm -rf /usr/share/elasticsearch'
+      end
 
-  describe "Run as a different user" do
+      pp = <<-EOS
+        user { 'esuser':
+          ensure => 'present',
+          groups => ['esgroup', 'esuser']
+        }
+        group { 'esuser': ensure => 'present' }
+        group { 'esgroup': ensure => 'present' }
 
-    it 'should run successfully' do
+        class { 'elasticsearch':
+          config => {
+            'cluster.name' => '#{test_settings['cluster_name']}'
+          },
+          manage_repo => true,
+          repo_version => '#{test_settings['repo_version']}',
+          java_install => true,
+          elasticsearch_user => 'esuser',
+          elasticsearch_group => 'esgroup'
+        }
 
-      write_hiera_config('')
-      shell("rm -rf /usr/share/elasticsearch")
-      pp = "user { 'esuser': ensure => 'present', groups => ['esgroup', 'esuser'] }
-            group { 'esuser': ensure => 'present' }
-            group { 'esgroup': ensure => 'present' }
-            class { 'elasticsearch': config => { 'cluster.name' => '#{test_settings['cluster_name']}'}, manage_repo => true, repo_version => '#{test_settings['repo_version']}', java_install => true, elasticsearch_user => 'esuser', elasticsearch_group => 'esgroup' }
-            elasticsearch::instance { 'es-01': config => { 'node.name' => 'elasticsearch001', 'http.port' => '#{test_settings['port_a']}' } }
-           "
+        elasticsearch::instance { 'es-01':
+          config => {
+            'node.name' => 'elasticsearch001',
+            'http.port' => '#{test_settings['port_a']}'
+          }
+        }
+      EOS
 
-      # Run it twice and test for idempotency
-      apply_manifest(pp, :catch_failures => true)
-      expect(apply_manifest(pp, :catch_failures => true).exit_code).to be_zero
+      it 'applies cleanly ' do
+        apply_manifest pp, :catch_failures => true
+      end
+      it 'is idempotent' do
+        apply_manifest pp , :catch_changes  => true
+      end
     end
-
 
     describe service(test_settings['service_name_a']) do
       it { should be_enabled }
       it { should be_running }
-    end
-
-    describe package(test_settings['package_name']) do
-      it { should be_installed }
-    end
-
-    describe file(test_settings['pid_file_a']) do
-      it { should be_file }
-      it { should be_owned_by 'esuser' }
-      its(:content) { should match /[0-9]+/ }
-    end
-
-    describe "make sure elasticsearch can serve requests #{test_settings['port_a']}" do
-      it {
-        curl_with_retries("check ES on #{test_settings['port_a']}", default, "http://localhost:#{test_settings['port_a']}/?pretty=true", 0)
-      }
     end
 
     describe file('/etc/elasticsearch/es-01/elasticsearch.yml') do
@@ -63,30 +68,24 @@ describe "elasticsearch class:" do
       it { should be_owned_by 'esuser' }
     end
 
+    describe port(test_settings['port_a']) do
+      it 'open', :with_retries do should be_listening end
+    end
 
+    describe server :container do
+      describe http(
+        "http://localhost:#{test_settings['port_a']}",
+      ) do
+        describe 'instance a' do
+          it 'serves requests', :with_retries do
+            expect(response.status).to eq(200)
+          end
+        end
+      end
+    end
   end
 
-
-  describe "Cleanup" do
-
-    it 'should run successfully' do
-      pp = "class { 'elasticsearch': ensure => 'absent' }
-            elasticsearch::instance{ 'es-01': ensure => 'absent' } ->
-            file { '/usr/share/elasticsearch': ensure => 'absent', force => true }
-           "
-
-      apply_manifest(pp, :catch_failures => true)
-    end
-
-    describe file('/etc/elasticsearch/es-01') do
-      it { should_not be_directory }
-    end
-
-    describe service(test_settings['service_name_a']) do
-      it { should_not be_enabled }
-      it { should_not be_running }
-    end
-
+  after :all do
+    shell 'rm -rf /usr/share/elasticsearch'
   end
-
 end
