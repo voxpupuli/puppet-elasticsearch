@@ -38,11 +38,6 @@ class elasticsearch::config {
 
   if ( $elasticsearch::ensure == 'present' ) {
 
-    $notify_service = $elasticsearch::restart_on_change ? {
-      true  => Class['elasticsearch::service'],
-      false => undef,
-    }
-
     file { $elasticsearch::configdir:
       ensure => directory,
       mode   => '0644',
