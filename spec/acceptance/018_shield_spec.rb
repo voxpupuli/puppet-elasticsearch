@@ -14,6 +14,7 @@ describe "elasticsearch shield" do
         'cluster.name' => '#{test_settings['cluster_name']}',
         'http.port' => #{test_settings['port_a']},
       },
+      restart_on_change => true,
     }
 
     elasticsearch::plugin { 'elasticsearch/license/latest' :  }

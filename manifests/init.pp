@@ -51,12 +51,49 @@
 #
 # [*restart_on_change*]
 #   Boolean that determines if the application should be automatically restarted
-#   whenever the configuration changes. Disabling automatic restarts on config
-#   changes may be desired in an environment where you need to ensure restarts
-#   occur in a controlled/rolling manner rather than during a Puppet run.
+#   whenever the configuration, package, or plugins change. Enabling this
+#   setting will cause Elasticsearch to restart whenever there is cause to
+#   re-read configuration files, load new plugins, or start the service using an
+#   updated/changed executable. This may be undesireable in highly available
+#   environments.
 #
-#   Defaults to <tt>true</tt>, which will restart the application on any config
-#   change. Setting to <tt>false</tt> disables the automatic restart.
+#   If all other restart_* parameters are left unset, the value of
+#   restart_on_change is used for all other restart_*_change defaults.
+#
+#   Defaults to <tt>false</tt>, which disables automatic restarts. Setting to
+#   <tt>true</tt> will restart the application on any config, plugin, or
+#   package change.
+#
+# [*restart_config_change*]
+#   Boolean that determines if the application should be automatically restarted
+#   whenever the configuration changes. This includes the Elasticsearch
+#   configuration file, any service files, and defaults files.
+#   Disabling automatic restarts on config changes may be desired in an
+#   environment where you need to ensure restarts occur in a controlled/rolling
+#   manner rather than during a Puppet run.
+#
+#   Defaults to <tt>undef</tt>, in which case the default value of
+#   restart_on_change will be used (defaults to false).
+#
+# [*restart_package_change*]
+#   Boolean that determines if the application should be automatically restarted
+#   whenever the package (or package version) for Elasticsearch changes.
+#   Disabling automatic restarts on package changes may be desired in an
+#   environment where you need to ensure restarts occur in a controlled/rolling
+#   manner rather than during a Puppet run.
+#
+#   Defaults to <tt>undef</tt>, in which case the default value of
+#   restart_on_change will be used (defaults to false).
+#
+# [*restart_plugin_change*]
+#   Boolean that determines if the application should be automatically restarted
+#   whenever plugins are installed or removed.
+#   Disabling automatic restarts on plugin changes may be desired in an
+#   environment where you need to ensure restarts occur in a controlled/rolling
+#   manner rather than during a Puppet run.
+#
+#   Defaults to <tt>undef</tt>, in which case the default value of
+#   restart_on_change will be used (defaults to false).
 #
 # [*configdir*]
 #   Path to directory containing the elasticsearch configuration.
@@ -230,52 +267,55 @@
 # * Richard Pijnenburg <mailto:richard.pijnenburg@elasticsearch.com>
 #
 class elasticsearch(
-  $ensure                = $elasticsearch::params::ensure,
-  $status                = $elasticsearch::params::status,
-  $restart_on_change     = $elasticsearch::params::restart_on_change,
-  $autoupgrade           = $elasticsearch::params::autoupgrade,
-  $version               = false,
-  $package_provider      = 'package',
-  $package_url           = undef,
-  $package_dir           = $elasticsearch::params::package_dir,
-  $package_name          = $elasticsearch::params::package,
-  $package_pin           = true,
-  $purge_package_dir     = $elasticsearch::params::purge_package_dir,
-  $package_dl_timeout    = $elasticsearch::params::package_dl_timeout,
-  $proxy_url             = undef,
-  $elasticsearch_user    = $elasticsearch::params::elasticsearch_user,
-  $elasticsearch_group   = $elasticsearch::params::elasticsearch_group,
-  $configdir             = $elasticsearch::params::configdir,
-  $purge_configdir       = $elasticsearch::params::purge_configdir,
-  $service_provider      = 'init',
-  $init_defaults         = undef,
-  $init_defaults_file    = undef,
-  $init_template         = "${module_name}/etc/init.d/${elasticsearch::params::init_template}",
-  $config                = undef,
-  $datadir               = $elasticsearch::params::datadir,
-  $logdir                = $elasticsearch::params::logdir,
-  $plugindir             = $elasticsearch::params::plugindir,
-  $plugintool            = $elasticsearch::params::plugintool,
-  $java_install          = false,
-  $java_package          = undef,
-  $manage_repo           = false,
-  $repo_version          = undef,
-  $repo_key_id           = 'D88E42B4',
-  $repo_key_source       = 'http://packages.elastic.co/GPG-KEY-elasticsearch',
-  $repo_proxy            = undef,
-  $logging_file          = undef,
-  $logging_config        = undef,
-  $logging_template      = undef,
-  $default_logging_level = $elasticsearch::params::default_logging_level,
-  $repo_stage            = false,
-  $instances             = undef,
-  $instances_hiera_merge = false,
-  $plugins               = undef,
-  $plugins_hiera_merge   = false,
-  $use_ssl               = false,
-  $validate_ssl          = true,
-  $ssl_user              = undef,
-  $ssl_password          = undef
+  $ensure                 = $elasticsearch::params::ensure,
+  $status                 = $elasticsearch::params::status,
+  $restart_on_change      = $elasticsearch::params::restart_on_change,
+  $restart_config_change  = undef,
+  $restart_package_change = undef,
+  $restart_plugin_change  = undef,
+  $autoupgrade            = $elasticsearch::params::autoupgrade,
+  $version                = false,
+  $package_provider       = 'package',
+  $package_url            = undef,
+  $package_dir            = $elasticsearch::params::package_dir,
+  $package_name           = $elasticsearch::params::package,
+  $package_pin            = true,
+  $purge_package_dir      = $elasticsearch::params::purge_package_dir,
+  $package_dl_timeout     = $elasticsearch::params::package_dl_timeout,
+  $proxy_url              = undef,
+  $elasticsearch_user     = $elasticsearch::params::elasticsearch_user,
+  $elasticsearch_group    = $elasticsearch::params::elasticsearch_group,
+  $configdir              = $elasticsearch::params::configdir,
+  $purge_configdir        = $elasticsearch::params::purge_configdir,
+  $service_provider       = 'init',
+  $init_defaults          = undef,
+  $init_defaults_file     = undef,
+  $init_template          = "${module_name}/etc/init.d/${elasticsearch::params::init_template}",
+  $config                 = undef,
+  $datadir                = $elasticsearch::params::datadir,
+  $logdir                 = $elasticsearch::params::logdir,
+  $plugindir              = $elasticsearch::params::plugindir,
+  $plugintool             = $elasticsearch::params::plugintool,
+  $java_install           = false,
+  $java_package           = undef,
+  $manage_repo            = false,
+  $repo_version           = undef,
+  $repo_key_id            = 'D88E42B4',
+  $repo_key_source        = 'http://packages.elastic.co/GPG-KEY-elasticsearch',
+  $repo_proxy             = undef,
+  $logging_file           = undef,
+  $logging_config         = undef,
+  $logging_template       = undef,
+  $default_logging_level  = $elasticsearch::params::default_logging_level,
+  $repo_stage             = false,
+  $instances              = undef,
+  $instances_hiera_merge  = false,
+  $plugins                = undef,
+  $plugins_hiera_merge    = false,
+  $use_ssl                = false,
+  $validate_ssl           = true,
+  $ssl_user               = undef,
+  $ssl_password           = undef
 ) inherits elasticsearch::params {
 
   anchor {'elasticsearch::begin': }
@@ -298,6 +338,27 @@ class elasticsearch(
 
   # restart on change
   validate_bool($restart_on_change)
+
+  if $restart_config_change == undef {
+    $_restart_config_change = $restart_on_change
+  } else {
+    validate_bool($restart_config_change)
+    $_restart_config_change = $restart_config_change
+  }
+
+  if $restart_package_change == undef {
+    $_restart_package_change = $restart_on_change
+  } else {
+    validate_bool($restart_package_change)
+    $_restart_package_change = $restart_package_change
+  }
+
+  if $restart_plugin_change == undef {
+    $_restart_plugin_change = $restart_on_change
+  } else {
+    validate_bool($restart_plugin_change)
+    $_restart_plugin_change = $restart_plugin_change
+  }
 
   # purge conf dir
   validate_bool($purge_configdir)
