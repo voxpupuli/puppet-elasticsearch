@@ -5,7 +5,7 @@ fixtures:
       ref: 4.11.0
     java:
       repo: puppetlabs/java
-      ref: 1.4.3
+      ref: 1.6.0
     datacat:
       repo: richardc/datacat
       ref: 0.6.2
