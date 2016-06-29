@@ -1,6 +1,6 @@
 module Puppet_X
   module Elastic
-    module Hash
+    module SortedHash
 
       # Upon extension, modify the hash appropriately to render
       # sorted yaml dependent upon whichever way is supported for
@@ -15,11 +15,11 @@ module Puppet_X
           base.clear
           tmp.each do |key, val|
             if val.is_a? base.class
-              val.extend Puppet_X::Elastic::Hash
+              val.extend Puppet_X::Elastic::SortedHash
             elsif val.is_a? Array
               val.map do |elem|
                 if elem.is_a? base.class
-                  elem.extend(Puppet_X::Elastic::Hash)
+                  elem.extend(Puppet_X::Elastic::SortedHash)
                 else
                   elem
                 end
@@ -40,11 +40,11 @@ module Puppet_X
           # problems with .class/.is_a?
           base.merge! base do |_, ov, nv|
             if ov.respond_to? :each_pair
-              ov.extend Puppet_X::Elastic::Hash
+              ov.extend Puppet_X::Elastic::SortedHash
             elsif ov.is_a? Array
               ov.map do |elem|
                 if elem.respond_to? :each_pair
-                  elem.extend Puppet_X::Elastic::Hash
+                  elem.extend Puppet_X::Elastic::SortedHash
                 else
                   elem
                 end
