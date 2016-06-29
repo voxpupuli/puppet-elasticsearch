@@ -5,12 +5,15 @@ HOSTS:
       - database
       - dashboard
     platform: sles-12-x86_64
-    image: dliappis/sles:12
+    image: dliappis/sles:12sp1
     hypervisor: docker
     docker_cmd: ["/sbin/init"]
     docker_preserve_image: true
     docker_image_commands:
-      - zypper install --force-resolution -y augeas augeas-lenses which
+      - rm /etc/zypp/repos.d/devel_languages_python.repo
+      - gem uninstall -x puppet hiera
+      - zypper clean -a
+      - zypper install --force-resolution -y augeas
       - ln -s /usr/lib/systemd/system/sshd.service /etc/systemd/system/multi-user.target.wants/sshd.service
 CONFIG:
   type: foss

@@ -129,4 +129,20 @@ describe 'elasticsearch.yml.erb' do
         data: /mnt/test
       }.config))
   end
+
+  it 'should quote IPv6 loopback addresses' do
+    harness.set(
+      '@data', {
+        'network' => { 'host' => ['::', '[::]'] }
+      }
+    )
+
+    expect( YAML.load(harness.run) ).to eq( YAML.load(%q{
+      network:
+        host:
+        - "::"
+        - "[::]"
+      }.config))
+  end
+
 end
