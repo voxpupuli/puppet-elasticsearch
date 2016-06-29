@@ -8,6 +8,7 @@ Rewritten yaml generator, code cleanup, and various bugfixes.
 #### Bugfixes
 * Special yaml cases such as arrays of hashes and strings like "::" are properly supported.
 * Previous Debian SysV init scripts mistakenly set the `DATA_DIR` environment variable to a non-default value.
+* Some plugins failed installation due to capitalization munging, the elasticsearch_plugin provider no longer forces downcasing.
 
 #### Changes
 * The `install_options` parameter on the `elasticsearch::plugin` type has been removed. This was an undocumented parameter that often caused problems for users.
