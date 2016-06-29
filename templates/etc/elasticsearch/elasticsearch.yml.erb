@@ -73,7 +73,7 @@
     end
 
     # Sort Hash and transform it into yaml
-    @yml_string += tmphash.extend(Puppet_X::Elastic::Hash).to_yaml
+    @yml_string += tmphash.extend(Puppet_X::Elastic::SortedHash).to_yaml
 
     # Puppet < 4 uses ZAML, which has some deviations from Puppet 4 YAML implementation
     unless Puppet::Util::Package.versioncmp(Puppet.version, '4') >= 0
