@@ -4,6 +4,7 @@
 Rewritten yaml generator, code cleanup, and various bugfixes.
 
 #### Features
+* The additional parameters restart_config_change, restart_package_change, and restart_plugin_change have been added for more granular control over service restarts.
 
 #### Bugfixes
 * Special yaml cases such as arrays of hashes and strings like "::" are properly supported.
@@ -12,6 +13,7 @@ Rewritten yaml generator, code cleanup, and various bugfixes.
 #### Changes
 * The `install_options` parameter on the `elasticsearch::plugin` type has been removed. This was an undocumented parameter that often caused problems for users.
 * The `elasticsearch.service` systemd unit is no longer removed but masked by default, effectively hiding it from systemd but retaining the upstream vendor unit on disk for package management consistency.
+* `restart_on_change` now defaults to false to reduce unexpected cluster downtime (can be set to true if desired).
 
 #### Testing changes
 * The acceptance test suite has been dramatically slimmed to cut down on testing time and reduce false positives.
