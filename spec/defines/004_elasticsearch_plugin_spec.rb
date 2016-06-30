@@ -71,5 +71,5 @@ describe 'elasticsearch::plugin', :type => 'define' do
       it { should contain_elasticsearch_plugin('head').with(:ensure => 'present', :source => '/opt/elasticsearch/swdl/plugin.zip') }
 
   end
-  
+
 end
