@@ -270,9 +270,9 @@ class elasticsearch(
   $ensure                 = $elasticsearch::params::ensure,
   $status                 = $elasticsearch::params::status,
   $restart_on_change      = $elasticsearch::params::restart_on_change,
-  $restart_config_change  = undef,
-  $restart_package_change = undef,
-  $restart_plugin_change  = undef,
+  $restart_config_change  = $elasticsearch::restart_on_change,
+  $restart_package_change = $elasticsearch::restart_on_change,
+  $restart_plugin_change  = $elasticsearch::restart_on_change,
   $autoupgrade            = $elasticsearch::params::autoupgrade,
   $version                = false,
   $package_provider       = 'package',
@@ -337,28 +337,12 @@ class elasticsearch(
   }
 
   # restart on change
-  validate_bool($restart_on_change)
-
-  if $restart_config_change == undef {
-    $_restart_config_change = $restart_on_change
-  } else {
-    validate_bool($restart_config_change)
-    $_restart_config_change = $restart_config_change
-  }
-
-  if $restart_package_change == undef {
-    $_restart_package_change = $restart_on_change
-  } else {
-    validate_bool($restart_package_change)
-    $_restart_package_change = $restart_package_change
-  }
-
-  if $restart_plugin_change == undef {
-    $_restart_plugin_change = $restart_on_change
-  } else {
-    validate_bool($restart_plugin_change)
-    $_restart_plugin_change = $restart_plugin_change
-  }
+  validate_bool(
+    $restart_on_change,
+    $restart_config_change,
+    $restart_package_change,
+    $restart_plugin_change
+  )
 
   # purge conf dir
   validate_bool($purge_configdir)

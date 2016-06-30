@@ -150,7 +150,7 @@ define elasticsearch::instance(
     fail("\"${ensure}\" is not a valid ensure parameter value")
   }
 
-  $notify_service = $elasticsearch::_restart_config_change ? {
+  $notify_service = $elasticsearch::restart_config_change ? {
     true  => Elasticsearch::Service[$name],
     false => undef,
   }

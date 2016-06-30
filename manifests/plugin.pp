@@ -79,7 +79,7 @@ define elasticsearch::plugin(
 
   include elasticsearch
 
-  $notify_service = $elasticsearch::_restart_plugin_change ? {
+  $notify_service = $elasticsearch::restart_plugin_change ? {
     false   => undef,
     default => Elasticsearch::Service[$instances],
   }

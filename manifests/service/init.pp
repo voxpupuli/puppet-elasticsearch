@@ -107,7 +107,7 @@ define elasticsearch::service::init(
 
   }
 
-  $notify_service = $elasticsearch::_restart_config_change ? {
+  $notify_service = $elasticsearch::restart_config_change ? {
     true  => Service["elasticsearch-instance-${name}"],
     false => undef,
   }
