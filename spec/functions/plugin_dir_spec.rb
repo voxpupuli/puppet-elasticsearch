@@ -27,7 +27,7 @@ describe "the plugin_dir function" do
     { 'name' => 'com.sksamuel.elasticsearch/elasticsearch-river-redis/1.1.0', 'dir' => 'river-redis' },
     { 'name' => 'com.github.lbroudoux.elasticsearch/amazon-s3-river/1.4.0', 'dir' => 'amazon-s3-river' },
     { 'name' => 'elasticsearch/elasticsearch-lang-groovy/2.0.0', 'dir' => 'lang-groovy' },
-    { 'name' => 'royrusso/elasticsearch-HQ', 'dir' => 'HQ' },
+    { 'name' => 'royrusso/elasticsearch-hq', 'dir' => 'hq' },
     { 'name' => 'polyfractal/elasticsearch-inquisitor', 'dir' => 'inquisitor' },
     { 'name' => 'mycustomplugin', 'dir' => 'mycustomplugin' },
   ]
