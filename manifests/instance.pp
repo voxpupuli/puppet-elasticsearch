@@ -169,17 +169,11 @@ define elasticsearch::instance(
       $instance_config = {}
     } else {
       validate_hash($config)
-      $instance_config = $config
+      $instance_config = deep_implode($config)
     }
 
     if(has_key($instance_config, 'node.name')) {
       $instance_node_name = {}
-    } elsif(has_key($instance_config,'node')) {
-      if(has_key($instance_config['node'], 'name')) {
-        $instance_node_name = {}
-      } else {
-        $instance_node_name = { 'node.name' => "${::hostname}-${name}" }
-      }
     } else {
       $instance_node_name = { 'node.name' => "${::hostname}-${name}" }
     }
@@ -205,17 +199,17 @@ define elasticsearch::instance(
     } else {
 
       if(is_hash($elasticsearch::logging_config)) {
-        $main_logging_config = $elasticsearch::logging_config
+        $main_logging_config = deep_implode($elasticsearch::logging_config)
       } else {
         $main_logging_config = { }
       }
 
       if(is_hash($logging_config)) {
-        $instance_logging_config = $logging_config
+        $instance_logging_config = deep_implode($logging_config)
       } else {
         $instance_logging_config = { }
       }
-      $logging_hash = merge($elasticsearch::params::logging_defaults, $main_logging_config, $instance_logging_config)
+      $logging_hash = concat_merge($elasticsearch::params::logging_defaults, $main_logging_config, $instance_logging_config)
       if ($logging_template != undef ) {
         $logging_content = template($logging_template)
       } elsif ($elasticsearch::logging_template != undef) {
@@ -227,22 +221,12 @@ define elasticsearch::instance(
     }
 
     if ($elasticsearch::config != undef) {
-      $main_config = $elasticsearch::config
+      $main_config = deep_implode($elasticsearch::config)
     } else {
       $main_config = { }
     }
 
-    if(has_key($instance_config, 'path.data')) {
-      $instance_datadir_config = { 'path.data' => $instance_datadir }
-    } elsif(has_key($instance_config, 'path')) {
-      if(has_key($instance_config['path'], 'data')) {
-        $instance_datadir_config = { 'path' => { 'data' => $instance_datadir } }
-      } else {
-        $instance_datadir_config = { 'path.data' => $instance_datadir }
-      }
-    } else {
-      $instance_datadir_config = { 'path.data' => $instance_datadir }
-    }
+    $instance_datadir_config = { 'path.data' => $instance_datadir }
 
     if(is_array($instance_datadir)) {
       $dirs = join($instance_datadir, ' ')
@@ -257,17 +241,7 @@ define elasticsearch::instance(
       $instance_logdir = $logdir
     }
 
-    if(has_key($instance_config, 'path.logs')) {
-      $instance_logdir_config = { 'path.logs' => $instance_logdir }
-    } elsif(has_key($instance_config, 'path')) {
-      if(has_key($instance_config['path'], 'logs')) {
-        $instance_logdir_config = { 'path' => { 'logs' => $instance_logdir } }
-      } else {
-        $instance_logdir_config = { 'path.logs' => $instance_logdir }
-      }
-    } else {
-      $instance_logdir_config = { 'path.logs' => $instance_logdir }
-    }
+    $instance_logdir_config = { 'path.logs' => $instance_logdir }
 
     validate_bool($ssl)
     if $ssl {
@@ -374,7 +348,7 @@ define elasticsearch::instance(
     }
 
     # build up new config
-    $instance_conf = merge($main_config, $instance_node_name, $instance_config, $instance_datadir_config, $instance_logdir_config, $tls_config)
+    $instance_conf = concat_merge($main_config, $instance_node_name, $instance_config, $instance_datadir_config, $instance_logdir_config, $tls_config)
 
     # defaults file content
     # ensure user did not provide both init_defaults and init_defaults_file
