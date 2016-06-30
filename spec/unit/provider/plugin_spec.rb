@@ -71,6 +71,14 @@ describe provider_class do
 
     end
 
+    describe 'plugin_name' do
+      let(:resource_name) { 'appbaseio/dejaVu' }
+
+      it 'maintains mixed-case names' do
+        expect(provider.pluginfile).to include('dejaVu')
+      end
+    end
+
     describe 'removal' do
       it 'destroys' do
         provider.expects(:plugin).with(['remove', resource_name])
@@ -129,6 +137,14 @@ describe provider_class do
           [resource_name]
         ])
         provider.create
+      end
+    end
+
+    describe 'plugin_name' do
+      let(:resource_name) { 'appbaseio/dejaVu' }
+
+      it 'maintains mixed-case names' do
+        expect(provider.pluginfile).to include('dejaVu')
       end
     end
 
