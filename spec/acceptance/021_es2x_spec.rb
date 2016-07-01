@@ -14,7 +14,8 @@ describe 'elasticsearch 2x' do
             manage_repo => true,
             repo_version => '#{test_settings['repo_version2x']}',
             java_install => true,
-            version => '2.0.0'
+            version => '2.0.0',
+            restart_on_change => true,
           }
 
           elasticsearch::instance { 'es-01':
@@ -89,7 +90,8 @@ describe 'elasticsearch 2x' do
             manage_repo => true,
             repo_version => '#{test_settings['repo_version2x']}',
             java_install => true,
-            version => '2.0.1'
+            version => '2.0.1',
+            restart_on_change => true,
           }
 
           elasticsearch::instance { 'es-01':

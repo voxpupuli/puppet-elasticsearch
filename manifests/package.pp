@@ -37,7 +37,9 @@ class elasticsearch::package {
   # set params: in operation
   if $elasticsearch::ensure == 'present' {
 
-    Package[$elasticsearch::package_name] ~> Elasticsearch::Service <| |>
+    if $elasticsearch::restart_package_change {
+      Package[$elasticsearch::package_name] ~> Elasticsearch::Service <| |>
+    }
     Package[$elasticsearch::package_name] ~> Exec['remove_plugin_dir']
 
     # Create directory to place the package file

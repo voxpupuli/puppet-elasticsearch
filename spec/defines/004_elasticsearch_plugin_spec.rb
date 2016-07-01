@@ -72,4 +72,77 @@ describe 'elasticsearch::plugin', :type => 'define' do
 
   end
 
+  describe 'service restarts' do
+
+    let(:title) { 'head' }
+    let :params do {
+      :ensure     => 'present',
+      :instances  => 'es-01',
+      :module_dir => 'head',
+    } end
+
+    context 'restart_on_change set to false (default)' do
+      let(:pre_condition) { %q{
+        class { "elasticsearch": }
+
+        elasticsearch::instance { 'es-01': }
+      }}
+
+      it { should_not contain_elasticsearch_plugin(
+        'head'
+      ).that_notifies(
+        'Elasticsearch::Service[es-01]'
+      )}
+    end
+
+    context 'restart_on_change set to true' do
+      let(:pre_condition) { %q{
+        class { "elasticsearch":
+          restart_on_change => true,
+        }
+
+        elasticsearch::instance { 'es-01': }
+      }}
+
+      it { should contain_elasticsearch_plugin(
+        'head'
+      ).that_notifies(
+        'Elasticsearch::Service[es-01]'
+      )}
+    end
+
+    context 'restart_plugin_change set to false (default)' do
+      let(:pre_condition) { %q{
+        class { "elasticsearch":
+          restart_plugin_change => false,
+        }
+
+        elasticsearch::instance { 'es-01': }
+      }}
+
+      it { should_not contain_elasticsearch_plugin(
+        'head'
+      ).that_notifies(
+        'Elasticsearch::Service[es-01]'
+      )}
+    end
+
+    context 'restart_plugin_change set to true' do
+      let(:pre_condition) { %q{
+        class { "elasticsearch":
+          restart_plugin_change => true,
+        }
+
+        elasticsearch::instance { 'es-01': }
+      }}
+
+      it { should contain_elasticsearch_plugin(
+        'head'
+      ).that_notifies(
+        'Elasticsearch::Service[es-01]'
+      )}
+    end
+
+  end
+
 end
