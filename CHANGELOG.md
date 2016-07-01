@@ -4,6 +4,7 @@
 Rewritten yaml generator, code cleanup, and various bugfixes. Configuration file yaml no longer nested.
 
 #### Features
+* The additional parameters restart_config_change, restart_package_change, and restart_plugin_change have been added for more granular control over service restarts.
 
 #### Bugfixes
 * Special yaml cases such as arrays of hashes and strings like "::" are properly supported.
@@ -13,6 +14,7 @@ Rewritten yaml generator, code cleanup, and various bugfixes. Configuration file
 #### Changes
 * The `install_options` parameter on the `elasticsearch::plugin` type has been removed. This was an undocumented parameter that often caused problems for users.
 * The `elasticsearch.service` systemd unit is no longer removed but masked by default, effectively hiding it from systemd but retaining the upstream vendor unit on disk for package management consistency.
+* `restart_on_change` now defaults to false to reduce unexpected cluster downtime (can be set to true if desired).
 * All configuration hashes are now flattened into dot-notated yaml in the elasticsearch configuration file. This should be fairly transparent in terms of behavior, though the config file formatting will change.
 
 #### Testing changes
