@@ -15,7 +15,8 @@ shared_examples 'plugin behavior' do |version, user, plugin, offline, config|
             },
             manage_repo => true,
             #{config}
-            java_install => true
+            java_install => true,
+            restart_on_change => true,
           }
 
           elasticsearch::instance { 'es-01':
@@ -118,7 +119,8 @@ shared_examples 'plugin behavior' do |version, user, plugin, offline, config|
             #{config}
             java_install => true,
             elasticsearch_user => '#{user}',
-            elasticsearch_group => '#{user}'
+            elasticsearch_group => '#{user}',
+            restart_on_change => true,
           }
 
           elasticsearch::instance { 'es-01':
@@ -183,7 +185,8 @@ shared_examples 'plugin behavior' do |version, user, plugin, offline, config|
               #{config}
               java_install => true,
               elasticsearch_user => '#{user}',
-              elasticsearch_group => '#{user}'
+              elasticsearch_group => '#{user}',
+              restart_on_change => true,
             }
 
             elasticsearch::instance { 'es-01':
@@ -238,7 +241,8 @@ shared_examples 'plugin behavior' do |version, user, plugin, offline, config|
             #{config}
             java_install => true,
             elasticsearch_user => '#{user}',
-            elasticsearch_group => '#{user}'
+            elasticsearch_group => '#{user}',
+            restart_on_change => true,
           }
 
           elasticsearch::instance { 'es-01':
@@ -289,7 +293,8 @@ shared_examples 'plugin behavior' do |version, user, plugin, offline, config|
             },
             manage_repo => true,
             #{config}
-            java_install => true
+            java_install => true,
+            restart_on_change => true,
           }
 
           elasticsearch::instance { 'es-01':
