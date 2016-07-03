@@ -372,7 +372,10 @@ class elasticsearch(
   # java install validation
   validate_bool($java_install)
 
-  validate_bool($manage_repo)
+  validate_bool(
+    $manage_repo,
+    $package_pin
+  )
 
   if ($manage_repo == true and $ensure == 'present') {
     if $repo_version == undef {
@@ -464,6 +467,12 @@ class elasticsearch(
     -> Class['elasticsearch::package']
   }
 
+  if $package_pin {
+    class { 'elasticsearch::package::pin':
+      before => Class['elasticsearch::package'],
+    }
+  }
+
   if ($manage_repo == true) {
 
     if ($repo_stage == false) {
@@ -489,6 +498,12 @@ class elasticsearch(
         stage => $repo_stage,
       }
     }
+
+    if defined(Class['elasticsearch::package::pin']) {
+      Class['elasticsearch::package::pin']
+      -> Class['elasticsearch::repo']
+    }
+
   }
 
   #### Manage relationships
