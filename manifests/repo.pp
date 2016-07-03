@@ -94,45 +94,4 @@ class elasticsearch::repo {
     }
   }
 
-  # Package pinning
-
-  case $::osfamily {
-    'Debian': {
-      include ::apt
-
-      if ($elasticsearch::ensure == 'absent') {
-        apt::pin { $elasticsearch::package_name:
-          ensure => $elasticsearch::ensure,
-        }
-      } elsif ($elasticsearch::package_pin == true and $elasticsearch::version != false) {
-        apt::pin { $elasticsearch::package_name:
-          ensure   => $elasticsearch::ensure,
-          packages => $elasticsearch::package_name,
-          version  => $elasticsearch::version,
-          priority => 1000,
-        }
-      }
-
-    }
-    'RedHat', 'Linux': {
-
-      if ($elasticsearch::ensure == 'absent') {
-        $_versionlock = '/etc/yum/pluginconf.d/versionlock.list'
-        exec { 'elasticsearch_purge_versionlock.list':
-          command => "sed -i '/0:elasticsearch-/d' ${_versionlock}",
-          onlyif  => "test -f ${_versionlock}",
-          before  => Yumrepo['elasticsearch'],
-        }
-      } elsif ($elasticsearch::package_pin == true and $elasticsearch::version != false) {
-        yum::versionlock { "0:elasticsearch-${elasticsearch::pkg_version}.noarch":
-          ensure => $elasticsearch::ensure,
-          before => Yumrepo['elasticsearch'],
-        }
-      }
-
-    }
-    default: {
-      warning("Unable to pin package for OSfamily \"${::osfamily}\".")
-    }
-  }
 }

@@ -109,6 +109,12 @@ describe 'elasticsearch', :type => 'class' do
             }
 
             it { should contain_package('elasticsearch').with(:ensure => "1.0#{version_add}") }
+            case facts[:osfamily]
+            when 'RedHat'
+              it { should contain_yum__versionlock(
+                "0:elasticsearch-1.0#{version_add}.noarch"
+              ) }
+            end
           end
 
           if facts[:osfamily] == 'RedHat'
@@ -121,6 +127,9 @@ describe 'elasticsearch', :type => 'class' do
               }
 
               it { should contain_package('elasticsearch').with(:ensure => "1.1-2") }
+              it { should contain_yum__versionlock(
+                '0:elasticsearch-1.1-2.noarch'
+              ) }
             end
           end
 
@@ -258,6 +267,10 @@ describe 'elasticsearch', :type => 'class' do
         case facts[:osfamily]
         when 'Suse'
           it { should contain_package('elasticsearch').with(:ensure => 'absent') }
+        when 'RedHat'
+          it { should contain_exec(
+            'elasticsearch_purge_versionlock.list'
+          ) }
         else
           it { should contain_package('elasticsearch').with(:ensure => 'purged') }
         end
@@ -299,6 +312,40 @@ describe 'elasticsearch', :type => 'class' do
         }
         it { expect { should raise_error(Puppet::Error, 'Please fill in a repository version at $repo_version') } }
       end
+
+      context 'package pinning' do
+
+        let :params do
+          default_params.merge({
+            :package_pin => true,
+            :version => '1.6.0'
+          })
+        end
+
+        it { should contain_class(
+          'elasticsearch::package::pin'
+        ).that_comes_before(
+          'Class[elasticsearch::package]'
+        ) }
+
+        case facts[:osfamily]
+        when 'Debian'
+          context 'is supported' do
+            it { should contain_apt__pin('elasticsearch').with(:packages => ['elasticsearch'], :version => '1.6.0') }
+          end
+        when 'RedHat'
+          context 'is supported' do
+            it { should contain_yum__versionlock(
+              '0:elasticsearch-1.6.0-1.noarch'
+            ) }
+          end
+        else
+          context 'is not supported' do
+            pending("unable to test for warnings yet. https://github.com/rodjek/rspec-puppet/issues/108")
+          end
+        end
+      end
+
 
       context "Running a a different user" do
 
