@@ -200,7 +200,10 @@ This will install and/or replace the template in Elasticsearch:
 
 ```puppet
 elasticsearch::template { 'templatename':
-  file => 'puppet:///path/to/template.json'
+  file => 'puppet:///path/to/template.json',
+  # Defaults:
+  # host => 'localhost',
+  # port => 9200,
 }
 ```
 
