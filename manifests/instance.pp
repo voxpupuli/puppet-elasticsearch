@@ -209,7 +209,7 @@ define elasticsearch::instance(
       } else {
         $instance_logging_config = { }
       }
-      $logging_hash = concat_merge($elasticsearch::params::logging_defaults, $main_logging_config, $instance_logging_config)
+      $logging_hash = merge($elasticsearch::params::logging_defaults, $main_logging_config, $instance_logging_config)
       if ($logging_template != undef ) {
         $logging_content = template($logging_template)
       } elsif ($elasticsearch::logging_template != undef) {
@@ -348,7 +348,7 @@ define elasticsearch::instance(
     }
 
     # build up new config
-    $instance_conf = concat_merge($main_config, $instance_node_name, $instance_config, $instance_datadir_config, $instance_logdir_config, $tls_config)
+    $instance_conf = merge($main_config, $instance_node_name, $instance_config, $instance_datadir_config, $instance_logdir_config, $tls_config)
 
     # defaults file content
     # ensure user did not provide both init_defaults and init_defaults_file
