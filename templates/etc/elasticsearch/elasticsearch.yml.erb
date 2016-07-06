@@ -1,86 +1,21 @@
+### MANAGED BY PUPPET ###
 <%-
   $LOAD_PATH.unshift(File.join(File.dirname(__FILE__),"..","..","..","lib"))
-  require 'puppet/provider/elastic_yaml'
+  require 'puppet_x/elastic/hash'
 
-  # Function to transform shorted write up of the keys into full hash representation
-  def transform(hash)
-  return_vals = []
-
-  hash.each do |key,val|
-    if m = /^([^.]+)\.(.*)$/.match(key)
-      temp = { m[1] => { m[2] => val } }
-      transform(temp).each do |stuff|
-        return_vals << stuff
-      end
-    else
-      if val.is_a?(::Hash)
-        transform(val).each do |stuff|
-          return_vals << { key => stuff }
-        end
-      else
-        return_vals << { key => val }
-      end
-    end
-  end
-
-  return_vals
-  end
-
-  # Function to deep merge hashes with same keys
-  class ::Hash
-    def deep_merge_with_array_values_concatenated(hash)
-    target = dup
-
-    hash.keys.each do |key|
-      if hash[key].is_a? ::Hash and self[key].is_a? ::Hash
-        target[key] = target[key].deep_merge_with_array_values_concatenated(hash[key])
-        next
-      end
-
-      if hash[key].is_a?(::Array) && target[key].is_a?(::Array)
-        target[key] = target[key] + hash[key]
-        next
-      end
-
-      if not target[key].nil? and hash[key].is_a? ::Hash
-        # Key already exists, but it isn't a data structure, so we have to
-        # fully-qualify the new entry. This really only makes sense if the
-        # new value is hash.
-        hash[key].each do |nested_key, val|
-          target["#{key}.#{nested_key}"] = val
-        end
-      else
-        target[key] = hash[key]
-      end
-    end
-
-    target
-    end
-  end
-
-  # initial string
-  @yml_string = "### MANAGED BY PUPPET ###\n"
+  @yml_string = ''
 
   if !@data.empty?
 
-    ## Transform shorted keys into full write up
-    transformed_config = transform(@data)
-
-    # Merge it back into a hash
-    tmphash = { }
-    transformed_config.each do |subhash|
-      tmphash = tmphash.deep_merge_with_array_values_concatenated(subhash)
-    end
-
     # Sort Hash and transform it into yaml
-    @yml_string += tmphash.extend(Puppet_X::Elastic::Hash).to_yaml
+    @yml_string += @data.extend(Puppet_X::Elastic::SortedHash).to_yaml
 
-    # Puppet < 4 uses ZAML, which has some deviations from Puppet 4 YAML implementation
+    # Puppet < 4 uses ZAML, which has some deviations from Puppet 4 YAML
+    # implementation
     unless Puppet::Util::Package.versioncmp(Puppet.version, '4') >= 0
       @yml_string.gsub!(/^\s{2}/, '')
     end
 
   end
-
 -%>
 <%= @yml_string %>
