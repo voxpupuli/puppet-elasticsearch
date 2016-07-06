@@ -1,7 +1,7 @@
 ## x.x.x ( Month Day, Year )
 
 ### Summary
-Rewritten yaml generator, code cleanup, and various bugfixes.
+Rewritten yaml generator, code cleanup, and various bugfixes. Configuration file yaml no longer nested.
 
 #### Features
 * The additional parameters restart_config_change, restart_package_change, and restart_plugin_change have been added for more granular control over service restarts.
@@ -16,6 +16,7 @@ Rewritten yaml generator, code cleanup, and various bugfixes.
 * The `elasticsearch.service` systemd unit is no longer removed but masked by default, effectively hiding it from systemd but retaining the upstream vendor unit on disk for package management consistency.
 * `restart_on_change` now defaults to false to reduce unexpected cluster downtime (can be set to true if desired).
 * Package pinning is now contained within a separate class, so users can opt to manage package repositories manually and still use this module's pinning feature.
+* All configuration hashes are now flattened into dot-notated yaml in the elasticsearch configuration file. This should be fairly transparent in terms of behavior, though the config file formatting will change.
 
 #### Testing changes
 * The acceptance test suite has been dramatically slimmed to cut down on testing time and reduce false positives.

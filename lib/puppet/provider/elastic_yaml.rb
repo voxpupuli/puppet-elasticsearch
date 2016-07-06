@@ -31,7 +31,7 @@ class Puppet::Provider::ElasticYaml < Puppet::Provider::ParsedFile
     end.inject({}) do |hash, record|
       # Flatten array of hashes into single hash
       hash.merge({ record['name'] => record.delete(@metadata.to_s) })
-    end.extend(Puppet_X::Elastic::Hash).to_yaml
+    end.extend(Puppet_X::Elastic::SortedHash).to_yaml
 
     # Puppet < 4 uses ZAML, which prepends spaces in to_yaml ಠ_ಠ
     unless Puppet::Util::Package.versioncmp(Puppet.version, '4') >= 0

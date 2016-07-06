@@ -367,6 +367,10 @@ class elasticsearch(
     if ($config != undef) {
       validate_hash($config)
     }
+
+    if ($logging_config != undef) {
+      validate_hash($logging_config)
+    }
   }
 
   # java install validation
