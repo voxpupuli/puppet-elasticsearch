@@ -55,9 +55,13 @@ Puppet::Type.newtype(:elasticsearch_template) do
     desc 'Port to use for Elasticsearch HTTP API operations.'
     defaultto 9200
 
-    validate do |value|
-      unless value.is_a? Fixnum and (0 < value and value < 65536)
-        raise Puppet::Error, "invalid port number #{value}"
+    munge do |value|
+      if value.is_a? String
+        value.to_i
+      elsif value.is_a? Fixnum
+        value
+      else
+        raise Puppet::Error, "unknown '#{value}' timeout type '#{value.class}'"
       end
     end
   end
