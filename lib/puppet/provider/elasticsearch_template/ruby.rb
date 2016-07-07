@@ -9,17 +9,48 @@ Puppet::Type.type(:elasticsearch_template).provide(:ruby) do
 
   mk_resource_methods
 
-  def self.templates scheme='http', host='localhost', port=9200
-    uri = URI("#{scheme}://#{host}:#{port}/_template")
+  def self.rest http, \
+                req, \
+                ssl_verify=true, \
+                timeout=10, \
+                username=nil, \
+                password=nil
+
+    if username and password
+      req.basic_auth username, password
+    elsif username or password
+      Puppet.warning(
+        'username and password must both be defined, skipping basic auth'
+      )
+    end
+
+    http.read_timeout = timeout
+    http.open_timeout = timeout
+    http.verify_mode = OpenSSL::SSL::VERIFY_NONE if not ssl_verify
+
+    http.request req
+  end
+
+  def self.templates ssl=false, \
+                     ssl_verify=true, \
+                     host='localhost', \
+                     port=9200, \
+                     timeout=10, \
+                     username=nil, \
+                     password=nil
+
+    uri = URI("http#{ssl ? 's' : ''}://#{host}:#{port}/_template")
     http = Net::HTTP.new uri.host, uri.port
-    response = http.request_get(uri.request_uri)
-    if response.code == 200
+    req = Net::HTTP::Get.new uri.request_uri
+
+    response = rest http, req, ssl_verify, timeout, username, password
+    if response.code.to_i == 200
       JSON.parse(response.body).map do |name, template|
         {
           :name => name,
           :ensure => :present,
-          :provider => :ruby,
-          :content => template
+          :content => template,
+          :provider => :ruby
         }
       end
     else
@@ -31,8 +62,29 @@ Puppet::Type.type(:elasticsearch_template).provide(:ruby) do
     templates.map { |resource| new resource }
   end
 
+  # Unlike a typical #prefetch, which just ties discovered #instances to the
+  # correct resources, we need to quantify all the ways the resources in the
+  # catalog know about Elasticsearch API access and use those settings to
+  # fetch any templates we can before associating resources and providers.
   def self.prefetch(resources)
-    instances.each do |prov|
+    # Get all relevant API access methods from the resources we know about
+    resources.map do |_, resource|
+      p = resource.parameters
+      [
+        (p.has_key?(:ssl) and p[:ssl].value),
+        p[:ssl_verify].value,
+        p[:host].value,
+        p[:port].value,
+        p[:timeout].value,
+        (p.has_key?(:username) ? p[:username].value : nil),
+        (p.has_key?(:password) ? p[:password].value : nil)
+      ]
+    # Deduplicate identical settings, and fetch templates
+    end.uniq.map do |api|
+      templates(*api)
+    # Flatten and deduplicate the array, instantiate providers, and do the
+    # typical association dance
+    end.flatten.uniq.map{|resource| new resource}.each do |prov|
       if resource = resources[prov.name]
         resource.provider = prov
       end
@@ -53,9 +105,6 @@ Puppet::Type.type(:elasticsearch_template).provide(:ruby) do
       resource[:name]
     ])
     http = Net::HTTP.new uri.host, uri.port
-    http.read_timeout = resource[:timeout]
-    http.open_timeout = resource[:timeout]
-    http.verify_mode = OpenSSL::SSL::VERIFY_NONE if not resource.ssl_verify?
 
     case @property_flush[:ensure]
     when :absent
@@ -65,24 +114,30 @@ Puppet::Type.type(:elasticsearch_template).provide(:ruby) do
       req.body = JSON.generate(resource[:content])
     end
 
-    if resource[:username] and resource[:password]
-      req.basic_auth resource[:username], resource[:password]
-    elsif resource[:username] or resource[:password]
-      Puppet.warning (
-        'username and password must both be defined, skipping basic auth'
-      )
-    end
+    response = self.class.rest(
+      http,
+      req,
+      resource[:ssl_verify],
+      resource[:timeout],
+      resource[:username],
+      resource[:password]
+    )
 
-    response = http.request req
-
-    unless response.code.to_s == '200'
+    unless response.code.to_i == 200
       raise(
-        Puppet::Error,
-        "Elasticsearch API responded with HTTP #{response.code}"
+        Puppet::Error, "Elasticsearch API responded with HTTP #{response.code} while attempting to flush resource #{resource}."
       )
     end
 
-    @property_hash = self.class.templates.detect do |t|
+    @property_hash = self.class.templates(
+      resource.ssl?,
+      resource[:ssl_verify],
+      resource[:host],
+      resource[:port],
+      resource[:timeout],
+      resource[:username],
+      resource[:password]
+    ).detect do |t|
       t[:name] == resource[:name]
     end
   end
