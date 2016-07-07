@@ -31,7 +31,7 @@ Puppet::Type.type(:elasticsearch_template).provide(:ruby) do
     http.request req
   end
 
-  def self.templates ssl=false, \
+  def self.templates protocol='http', \
                      ssl_verify=true, \
                      host='localhost', \
                      port=9200, \
@@ -39,7 +39,7 @@ Puppet::Type.type(:elasticsearch_template).provide(:ruby) do
                      username=nil, \
                      password=nil
 
-    uri = URI("http#{ssl ? 's' : ''}://#{host}:#{port}/_template")
+    uri = URI("#{protocol}://#{host}:#{port}/_template")
     http = Net::HTTP.new uri.host, uri.port
     req = Net::HTTP::Get.new uri.request_uri
 
@@ -71,7 +71,7 @@ Puppet::Type.type(:elasticsearch_template).provide(:ruby) do
     resources.map do |_, resource|
       p = resource.parameters
       [
-        (p.has_key?(:ssl) and p[:ssl].value),
+        p[:protocol].value,
         p[:ssl_verify].value,
         p[:host].value,
         p[:port].value,
@@ -98,8 +98,8 @@ Puppet::Type.type(:elasticsearch_template).provide(:ruby) do
 
   def flush
     uri = URI(
-      "http%s://%s:%d/_template/%s" % [
-      (resource.ssl? ? 's' : ''),
+      "%s://%s:%d/_template/%s" % [
+      resource[:protocol],
       resource[:host],
       resource[:port],
       resource[:name]
@@ -130,7 +130,7 @@ Puppet::Type.type(:elasticsearch_template).provide(:ruby) do
     end
 
     @property_hash = self.class.templates(
-      resource.ssl?,
+      resource[:protocol],
       resource[:ssl_verify],
       resource[:host],
       resource[:port],
