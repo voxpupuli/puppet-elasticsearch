@@ -64,6 +64,16 @@ Puppet::Type.newtype(:elasticsearch_template) do
         raise Puppet::Error, "unknown '#{value}' timeout type '#{value.class}'"
       end
     end
+
+    validate do |value|
+      if value.to_s =~ /^([0-9]+)$/
+        unless (0 < $1.to_i) and ($1.to_i < 65535)
+          raise Puppet::Error, "invalid port value '#{value}'"
+        end
+      else
+        raise Puppet::Error, "invalid port value '#{value}'"
+      end
+    end
   end
 
   newparam(:protocol) do
