@@ -103,10 +103,18 @@ define elasticsearch::template (
     }
   }
 
+  if is_hash($content) {
+    $_content = $content
+  } elsif is_string($content) {
+    $_content = parsejson($content)
+  } else {
+    fail('"content" must be a hash or JSON string')
+  }
+
   require elasticsearch
 
   elasticsearch_template { $name:
-    content    => $content,
+    content    => $_content,
     protocol   => $api_protocol,
     host       => $api_host,
     port       => $api_port,
