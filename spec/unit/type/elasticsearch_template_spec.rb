@@ -10,7 +10,7 @@ describe Puppet::Type.type(:elasticsearch_template) do
       :name,
       :password,
       :port,
-      :ssl,
+      :protocol,
       :ssl_verify,
       :timeout,
       :username
@@ -96,24 +96,22 @@ describe Puppet::Type.type(:elasticsearch_template) do
       end
     end
 
-    [:ssl, :ssl_verify].each do |param|
-      describe param.to_s do
-        [-1, 0, {}, [], 'foo'].each do |value|
-          it "should reject invalid #{param} value #{value}" do
-            expect { described_class.new(
-              :name => resource_name,
-              param => value
-            ) }.to raise_error(Puppet::Error, /invalid value/i)
-          end
+    describe 'ssl_verify' do
+      [-1, 0, {}, [], 'foo'].each do |value|
+        it "should reject invalid ssl_verify value #{value}" do
+          expect { described_class.new(
+            :name => resource_name,
+            :ssl_verify => value
+          ) }.to raise_error(Puppet::Error, /invalid value/i)
         end
+      end
 
-        [true, false, 'true', 'false', 'yes', 'no'].each do |value|
-          it "should accept #{param} value #{value}" do
-            expect { described_class.new(
-              :name => resource_name,
-              param => value
-            ) }.not_to raise_error
-          end
+      [true, false, 'true', 'false', 'yes', 'no'].each do |value|
+        it "should accept ssl_verify value #{value}" do
+          expect { described_class.new(
+            :name => resource_name,
+            :ssl_verify => value
+          ) }.not_to raise_error
         end
       end
     end

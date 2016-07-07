@@ -66,9 +66,9 @@ Puppet::Type.newtype(:elasticsearch_template) do
     end
   end
 
-  newparam(:ssl, :boolean => true, :parent => Puppet::Parameter::Boolean) do
-    desc 'Whether to communicate with the Elasticsearch API over TLS/SSL.'
-    defaultto false
+  newparam(:protocol) do
+    desc 'Protocol to communicate over to Elasticsearch.'
+    defaultto 'http'
   end
 
   newparam(
