@@ -226,20 +226,32 @@
 #   package upgrades.
 #   Defaults to: true
 #
-# [*use_ssl*]
-#   Enable auth on api calls.
-#   Defaults to: false
+# [*api_protocol*]
+#   Default protocol to use when accessing Elasticsearch APIs.
+#   Defaults to: http
 #
-# [*validate_ssl*]
-#   Enable ssl validation on api calls.
+# [*api_host*]
+#   Default host to use when accessing Elasticsearch APIs.
+#   Defaults to: localhost
+#
+# [*api_port*]
+#   Default port to use when accessing Elasticsearch APIs.
+#   Defaults to: 9200
+#
+# [*api_timeout*]
+#   Default timeout (in seconds) to use when accessing Elasticsearch APIs.
+#   Defaults to: 10
+#
+# [*validate_tls*]
+#   Enable TLS/SSL validation on API calls.
 #   Defaults to: true
 #
-# [*ssl_user*]
-#   Defines the username for authentication.
+# [*basic_auth_username*]
+#   Defines the default REST basic auth username for API authentication.
 #   Defaults to: undef
 #
-# [*ssl_password*]
-#   Defines the password for authentication.
+# [*basic_auth_password*]
+#   Defines the default REST basic auth password for API authentication.
 #   Defaults to: undef
 #
 # The default values for the parameters are set in elasticsearch::params. Have
@@ -312,10 +324,13 @@ class elasticsearch(
   $instances_hiera_merge  = false,
   $plugins                = undef,
   $plugins_hiera_merge    = false,
-  $use_ssl                = false,
-  $validate_ssl           = true,
-  $ssl_user               = undef,
-  $ssl_password           = undef
+  $api_protocol           = 'http',
+  $api_host               = 'localhost',
+  $api_port               = 9200,
+  $api_timeout            = 10,
+  $validate_tls           = true,
+  $basic_auth_username    = undef,
+  $basic_auth_password    = undef,
 ) inherits elasticsearch::params {
 
   anchor {'elasticsearch::begin': }
@@ -404,21 +419,16 @@ class elasticsearch(
     }
   }
 
-  # Setup SSL authentication args for use in any type that hits an api
-  if $use_ssl {
-    validate_string($ssl_user)
-    validate_string($ssl_password)
-    $protocol = 'https'
-    if $validate_ssl {
-      $ssl_args = "-u ${ssl_user}:${ssl_password}"
-    } else {
-      $ssl_args = "-k -u ${ssl_user}:${ssl_password}"
-    }
-  } else {
-    $protocol = 'http'
-    # lint:ignore:empty_string_assignment
-    $ssl_args = ''
-    # lint:endignore
+  # Various parameters governing API access to Elasticsearch
+  validate_string($api_protocol, $api_host)
+  validate_bool($validate_tls)
+  if $basic_auth_username { validate_string($basic_auth_username) }
+  if $basic_auth_password { validate_string($basic_auth_password) }
+  if ! is_integer($api_timeout) {
+    fail("'${api_timeout}' is not an integer")
+  }
+  if ! is_integer($api_port) {
+    fail("'${api_port}' is not an integer")
   }
 
   #### Manage actions
