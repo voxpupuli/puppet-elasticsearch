@@ -53,6 +53,8 @@ Puppet::Type.type(:elasticsearch_template).provide(:ruby) do
       resource[:name]
     ])
     http = Net::HTTP.new uri.host, uri.port
+    http.read_timeout = resource[:timeout]
+    http.open_timeout = resource[:timeout]
     http.verify_mode = OpenSSL::SSL::VERIFY_NONE if not resource.ssl_verify?
 
     case @property_flush[:ensure]
