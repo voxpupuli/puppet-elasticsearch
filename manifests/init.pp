@@ -160,6 +160,9 @@
 # [*datadir*]
 #   Allows you to set the data directory of Elasticsearch
 #
+# [*logdir*]
+#   Use different directory for logging
+#
 # [*java_install*]
 #  Install java which is required for Elasticsearch.
 #  Defaults to: false
@@ -238,9 +241,6 @@
 # [*ssl_password*]
 #   Defines the password for authentication.
 #   Defaults to: undef
-#
-# [*logdir*]
-#   Use different directory for logging
 #
 # The default values for the parameters are set in elasticsearch::params. Have
 # a look at the corresponding <tt>params.pp</tt> manifest file if you need more
