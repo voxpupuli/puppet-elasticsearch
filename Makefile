@@ -29,7 +29,7 @@ clean-logs:
 
 .PHONY: release
 release: clean-logs
-	puppet module build
+	bundle exec puppet module build
 
 .PHONY: test-intake
 test-intake: test-docs test-rspec
