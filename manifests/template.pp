@@ -139,6 +139,7 @@ define elasticsearch::template (
   require elasticsearch
 
   elasticsearch_template { $name:
+    ensure     => $ensure,
     content    => $_content,
     source     => $_source,
     protocol   => $api_protocol,
