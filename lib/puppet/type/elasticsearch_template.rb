@@ -92,7 +92,7 @@ Puppet::Type.newtype(:elasticsearch_template) do
   end
 
   newparam(
-    :ssl_verify,
+    :validate_tls,
     :boolean => true,
     :parent => Puppet::Parameter::Boolean
   ) do
