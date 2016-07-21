@@ -125,7 +125,7 @@ Puppet::Type.type(:elasticsearch_template).provide(:ruby) do
 
     unless response.code.to_i == 200
       raise(
-        Puppet::Error, "Elasticsearch API responded with HTTP #{response.code} while attempting to flush resource #{resource}."
+        Puppet::Error, "Elasticsearch API responded with HTTP #{response.code}"
       )
     end
 
