@@ -40,6 +40,7 @@
 #   Protocol that should be used to connect to the Elasticsearch API.
 #   Value type is string
 #   Default value inherited from elasticsearch::api_protocol: http
+#   This variable is optional
 #
 # [*api_host*]
 #   Host name or IP address of the ES instance to connect to
@@ -57,24 +58,28 @@
 #   Timeout period (in seconds) for the Elasticsearch API.
 #   Value type is int
 #   Default value inherited from elasticsearch::api_timeout: 10
+#   This variable is optional
 #
 # [*validate_tls*]
 #   Determines whether the validity of SSL/TLS certificates received from the
 #   Elasticsearch API should be verified or ignored.
 #   Value type is boolean
 #   Default value inherited from elasticsearch::validate_tls: true
+#   This variable is optional
 #
 # [*basic_auth_username*]
 #   HTTP basic auth username to use when communicating over the Elasticsearch
 #   API.
 #   Value type is String
 #   Default value inherited from elasticsearch::basic_auth_username: undef
+#   This variable is optional
 #
 # [*basic_auth_password*]
 #   HTTP basic auth password to use when communicating over the Elasticsearch
 #   API.
 #   Value type is String
-#   Default value inherited from elasticsearch::basic_auth_password undef
+#   Default value inherited from elasticsearch::basic_auth_password: undef
+#   This variable is optional
 #
 # === Authors
 #
@@ -103,10 +108,10 @@ define elasticsearch::template (
   validate_bool($validate_tls)
 
   if ! ($ensure in ['present', 'absent']) {
-    fail("'${ensure}' is not a valid ensure parameter value")
+    fail("'${ensure}' is not a valid 'ensure' parameter value")
   }
-  if ! is_integer($api_port)    { fail("'${api_port}' is not an integer") }
-  if ! is_integer($api_timeout) { fail("'${api_timeout}' is not an integer") }
+  if ! is_integer($api_port)    { fail('"api_port" is not an integer') }
+  if ! is_integer($api_timeout) { fail('"api_timeout" is not an integer') }
 
   if ($file != undef) {
     warning('"file" parameter is deprecated; use $source instead')
