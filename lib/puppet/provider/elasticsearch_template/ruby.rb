@@ -11,7 +11,7 @@ Puppet::Type.type(:elasticsearch_template).provide(:ruby) do
 
   def self.rest http, \
                 req, \
-                ssl_verify=true, \
+                validate_tls=true, \
                 timeout=10, \
                 username=nil, \
                 password=nil
@@ -26,13 +26,13 @@ Puppet::Type.type(:elasticsearch_template).provide(:ruby) do
 
     http.read_timeout = timeout
     http.open_timeout = timeout
-    http.verify_mode = OpenSSL::SSL::VERIFY_NONE if not ssl_verify
+    http.verify_mode = OpenSSL::SSL::VERIFY_NONE if not validate_tls
 
     http.request req
   end
 
   def self.templates protocol='http', \
-                     ssl_verify=true, \
+                     validate_tls=true, \
                      host='localhost', \
                      port=9200, \
                      timeout=10, \
@@ -43,7 +43,7 @@ Puppet::Type.type(:elasticsearch_template).provide(:ruby) do
     http = Net::HTTP.new uri.host, uri.port
     req = Net::HTTP::Get.new uri.request_uri
 
-    response = rest http, req, ssl_verify, timeout, username, password
+    response = rest http, req, validate_tls, timeout, username, password
     if response.code.to_i == 200
       JSON.parse(response.body).map do |name, template|
         {
@@ -72,7 +72,7 @@ Puppet::Type.type(:elasticsearch_template).provide(:ruby) do
       p = resource.parameters
       [
         p[:protocol].value,
-        p[:ssl_verify].value,
+        p[:validate_tls].value,
         p[:host].value,
         p[:port].value,
         p[:timeout].value,
@@ -117,7 +117,7 @@ Puppet::Type.type(:elasticsearch_template).provide(:ruby) do
     response = self.class.rest(
       http,
       req,
-      resource[:ssl_verify],
+      resource[:validate_tls],
       resource[:timeout],
       resource[:username],
       resource[:password]
@@ -131,7 +131,7 @@ Puppet::Type.type(:elasticsearch_template).provide(:ruby) do
 
     @property_hash = self.class.templates(
       resource[:protocol],
-      resource[:ssl_verify],
+      resource[:validate_tls],
       resource[:host],
       resource[:port],
       resource[:timeout],

@@ -139,15 +139,15 @@ define elasticsearch::template (
   require elasticsearch
 
   elasticsearch_template { $name:
-    ensure     => $ensure,
-    content    => $_content,
-    source     => $_source,
-    protocol   => $api_protocol,
-    host       => $api_host,
-    port       => $api_port,
-    timeout    => $api_timeout,
-    username   => $api_basic_auth_username,
-    password   => $api_basic_auth_password,
-    ssl_verify => $validate_tls,
+    ensure       => $ensure,
+    content      => $_content,
+    source       => $_source,
+    protocol     => $api_protocol,
+    host         => $api_host,
+    port         => $api_port,
+    timeout      => $api_timeout,
+    username     => $api_basic_auth_username,
+    password     => $api_basic_auth_password,
+    validate_tls => $validate_tls,
   }
 }
