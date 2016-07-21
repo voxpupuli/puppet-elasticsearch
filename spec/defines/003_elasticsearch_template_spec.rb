@@ -12,66 +12,34 @@ describe 'elasticsearch::template', :type => 'define' do
   } end
 
   let(:title) { 'foo' }
-  let(:pre_condition) { 'class {"elasticsearch": config => { "node" => {"name" => "test" }}}'}
+  let(:pre_condition) { <<-EOS
+    class { 'elasticsearch': }
+  EOS
+  }
 
-  context "Add a template" do
+  describe 'template from file' do
 
     let :params do {
       :ensure => 'present',
-      :file   => 'puppet:///path/to/foo.json',
+      :source => 'puppet:///path/to/foo.json',
     } end
 
-    it { should contain_elasticsearch__template('foo') }
-    it { should contain_file('/usr/share/elasticsearch/templates_import/elasticsearch-template-foo.json').with(:source => 'puppet:///path/to/foo.json', :notify => "Exec[delete_template_foo]") }
-    it { should contain_exec('insert_template_foo').with(:command => "curl  -sL -w \"%{http_code}\\n\" -XPUT http://localhost:9200/_template/foo -d @/usr/share/elasticsearch/templates_import/elasticsearch-template-foo.json -o /dev/null | egrep \"(200|201)\" > /dev/null", :unless => 'test $(curl  -s \'http://localhost:9200/_template/foo?pretty=true\' | wc -l) -gt 1') }
+    it { should contain_elasticsearch_template('foo').with(
+      :ensure => 'present',
+      :source => 'puppet:///path/to/foo.json',
+    ) }
   end
 
-  context "Delete a template" do
+  describe 'template deletion' do
 
     let :params do {
+      :ensure => 'absent',
+      :source => 'puppet:///path/to/foo.json',
+    } end
+
+    it { should contain_elasticsearch_template('foo').with(
       :ensure => 'absent'
-    } end
-
-    it { should contain_elasticsearch__template('foo') }
-    it { should_not contain_file('/usr/share/elasticsearch/templates_import/elasticsearch-template-foo.json').with(:source => 'puppet:///path/to/foo.json') }
-    it { should_not contain_exec('insert_template_foo') }
-    it { should contain_exec('delete_template_foo').with(:command => 'curl  -s -XDELETE http://localhost:9200/_template/foo', :notify => nil, :onlyif => 'test $(curl  -s \'http://localhost:9200/_template/foo?pretty=true\' | wc -l) -gt 1' ) }
-  end
-
-  context "Add template with alternative host and port" do
-
-    let :params do {
-      :file => 'puppet:///path/to/foo.json',
-      :host => 'otherhost',
-      :port => 9201
-    } end
-
-    it { should contain_elasticsearch__template('foo') }
-    it { should contain_file('/usr/share/elasticsearch/templates_import/elasticsearch-template-foo.json').with(:source => 'puppet:///path/to/foo.json') }
-    it { should contain_exec('insert_template_foo').with(:command => "curl  -sL -w \"%{http_code}\\n\" -XPUT http://otherhost:9201/_template/foo -d @/usr/share/elasticsearch/templates_import/elasticsearch-template-foo.json -o /dev/null | egrep \"(200|201)\" > /dev/null", :unless => 'test $(curl  -s \'http://otherhost:9201/_template/foo?pretty=true\' | wc -l) -gt 1') }
-  end
-
-  context "Add template using content" do
-
-    let :params do {
-      :content => '{"template":"*","settings":{"number_of_replicas":0}}'
-    } end
-
-    it { should contain_elasticsearch__template('foo') }
-    it { should contain_file('/usr/share/elasticsearch/templates_import/elasticsearch-template-foo.json').with(:content => '{"template":"*","settings":{"number_of_replicas":0}}') }
-  end
-
-  context "Add template using ssl" do
-
-    let :params do {
-      :file     => 'puppet:///path/to/foo.json',
-      :protocol => 'https',
-      :ssl_args => '-u test_user:test_password',
-    } end
-
-    it { should contain_elasticsearch__template('foo') }
-    it { should contain_file('/usr/share/elasticsearch/templates_import/elasticsearch-template-foo.json').with(:source => 'puppet:///path/to/foo.json') }
-    it { should contain_exec('insert_template_foo').with(:command => "curl -u test_user:test_password -sL -w \"%{http_code}\\n\" -XPUT https://localhost:9200/_template/foo -d @/usr/share/elasticsearch/templates_import/elasticsearch-template-foo.json -o /dev/null | egrep \"(200|201)\" > /dev/null", :unless => 'test $(curl -u test_user:test_password -s \'https://localhost:9200/_template/foo?pretty=true\' | wc -l) -gt 1') }
+    ) }
   end
 
 end
