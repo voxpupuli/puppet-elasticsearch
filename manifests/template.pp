@@ -67,18 +67,18 @@
 #   Default value inherited from elasticsearch::validate_tls: true
 #   This variable is optional
 #
-# [*basic_auth_username*]
+# [*api_basic_auth_username*]
 #   HTTP basic auth username to use when communicating over the Elasticsearch
 #   API.
 #   Value type is String
-#   Default value inherited from elasticsearch::basic_auth_username: undef
+#   Default value inherited from elasticsearch::api_basic_auth_username: undef
 #   This variable is optional
 #
-# [*basic_auth_password*]
+# [*api_basic_auth_password*]
 #   HTTP basic auth password to use when communicating over the Elasticsearch
 #   API.
 #   Value type is String
-#   Default value inherited from elasticsearch::basic_auth_password: undef
+#   Default value inherited from elasticsearch::api_basic_auth_password: undef
 #   This variable is optional
 #
 # === Authors
@@ -87,23 +87,23 @@
 # * Tyler Langlois <mailto:tyler@elastic.co>
 #
 define elasticsearch::template (
-  $ensure              = 'present',
-  $file                = undef,
-  $source              = undef,
-  $content             = undef,
-  $api_protocol        = $elasticsearch::api_protocol,
-  $api_host            = $elasticsearch::api_host,
-  $api_port            = $elasticsearch::api_port,
-  $api_timeout         = $elasticsearch::api_timeout,
-  $validate_tls        = $elasticsearch::validate_tls,
-  $basic_auth_username = $elasticsearch::basic_auth_username,
-  $basic_auth_password = $elasticsearch::basic_auth_password,
+  $ensure                  = 'present',
+  $file                    = undef,
+  $source                  = undef,
+  $content                 = undef,
+  $api_protocol            = $elasticsearch::api_protocol,
+  $api_host                = $elasticsearch::api_host,
+  $api_port                = $elasticsearch::api_port,
+  $api_timeout             = $elasticsearch::api_timeout,
+  $api_basic_auth_username = $elasticsearch::api_basic_auth_username,
+  $api_basic_auth_password = $elasticsearch::api_basic_auth_password,
+  $validate_tls            = $elasticsearch::validate_tls,
 ) {
   validate_string(
     $api_protocol,
     $api_host,
-    $basic_auth_username,
-    $basic_auth_password
+    $api_basic_auth_username,
+    $api_basic_auth_password
   )
   validate_bool($validate_tls)
 
@@ -146,8 +146,8 @@ define elasticsearch::template (
     host       => $api_host,
     port       => $api_port,
     timeout    => $api_timeout,
+    username   => $api_basic_auth_username,
+    password   => $api_basic_auth_password,
     ssl_verify => $validate_tls,
-    username   => $basic_auth_username,
-    password   => $basic_auth_password,
   }
 }

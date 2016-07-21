@@ -246,11 +246,11 @@
 #   Enable TLS/SSL validation on API calls.
 #   Defaults to: true
 #
-# [*basic_auth_username*]
+# [*api_basic_auth_username*]
 #   Defines the default REST basic auth username for API authentication.
 #   Defaults to: undef
 #
-# [*basic_auth_password*]
+# [*api_basic_auth_password*]
 #   Defines the default REST basic auth password for API authentication.
 #   Defaults to: undef
 #
@@ -279,58 +279,58 @@
 # * Richard Pijnenburg <mailto:richard.pijnenburg@elasticsearch.com>
 #
 class elasticsearch(
-  $ensure                 = $elasticsearch::params::ensure,
-  $status                 = $elasticsearch::params::status,
-  $restart_on_change      = $elasticsearch::params::restart_on_change,
-  $restart_config_change  = $elasticsearch::restart_on_change,
-  $restart_package_change = $elasticsearch::restart_on_change,
-  $restart_plugin_change  = $elasticsearch::restart_on_change,
-  $autoupgrade            = $elasticsearch::params::autoupgrade,
-  $version                = false,
-  $package_provider       = 'package',
-  $package_url            = undef,
-  $package_dir            = $elasticsearch::params::package_dir,
-  $package_name           = $elasticsearch::params::package,
-  $package_pin            = true,
-  $purge_package_dir      = $elasticsearch::params::purge_package_dir,
-  $package_dl_timeout     = $elasticsearch::params::package_dl_timeout,
-  $proxy_url              = undef,
-  $elasticsearch_user     = $elasticsearch::params::elasticsearch_user,
-  $elasticsearch_group    = $elasticsearch::params::elasticsearch_group,
-  $configdir              = $elasticsearch::params::configdir,
-  $purge_configdir        = $elasticsearch::params::purge_configdir,
-  $service_provider       = 'init',
-  $init_defaults          = undef,
-  $init_defaults_file     = undef,
-  $init_template          = "${module_name}/etc/init.d/${elasticsearch::params::init_template}",
-  $config                 = undef,
-  $datadir                = $elasticsearch::params::datadir,
-  $logdir                 = $elasticsearch::params::logdir,
-  $plugindir              = $elasticsearch::params::plugindir,
-  $plugintool             = $elasticsearch::params::plugintool,
-  $java_install           = false,
-  $java_package           = undef,
-  $manage_repo            = false,
-  $repo_version           = undef,
-  $repo_key_id            = 'D88E42B4',
-  $repo_key_source        = 'http://packages.elastic.co/GPG-KEY-elasticsearch',
-  $repo_proxy             = undef,
-  $logging_file           = undef,
-  $logging_config         = undef,
-  $logging_template       = undef,
-  $default_logging_level  = $elasticsearch::params::default_logging_level,
-  $repo_stage             = false,
-  $instances              = undef,
-  $instances_hiera_merge  = false,
-  $plugins                = undef,
-  $plugins_hiera_merge    = false,
-  $api_protocol           = 'http',
-  $api_host               = 'localhost',
-  $api_port               = 9200,
-  $api_timeout            = 10,
-  $validate_tls           = true,
-  $basic_auth_username    = undef,
-  $basic_auth_password    = undef,
+  $ensure                  = $elasticsearch::params::ensure,
+  $status                  = $elasticsearch::params::status,
+  $restart_on_change       = $elasticsearch::params::restart_on_change,
+  $restart_config_change   = $elasticsearch::restart_on_change,
+  $restart_package_change  = $elasticsearch::restart_on_change,
+  $restart_plugin_change   = $elasticsearch::restart_on_change,
+  $autoupgrade             = $elasticsearch::params::autoupgrade,
+  $version                 = false,
+  $package_provider        = 'package',
+  $package_url             = undef,
+  $package_dir             = $elasticsearch::params::package_dir,
+  $package_name            = $elasticsearch::params::package,
+  $package_pin             = true,
+  $purge_package_dir       = $elasticsearch::params::purge_package_dir,
+  $package_dl_timeout      = $elasticsearch::params::package_dl_timeout,
+  $proxy_url               = undef,
+  $elasticsearch_user      = $elasticsearch::params::elasticsearch_user,
+  $elasticsearch_group     = $elasticsearch::params::elasticsearch_group,
+  $configdir               = $elasticsearch::params::configdir,
+  $purge_configdir         = $elasticsearch::params::purge_configdir,
+  $service_provider        = 'init',
+  $init_defaults           = undef,
+  $init_defaults_file      = undef,
+  $init_template           = "${module_name}/etc/init.d/${elasticsearch::params::init_template}",
+  $config                  = undef,
+  $datadir                 = $elasticsearch::params::datadir,
+  $logdir                  = $elasticsearch::params::logdir,
+  $plugindir               = $elasticsearch::params::plugindir,
+  $plugintool              = $elasticsearch::params::plugintool,
+  $java_install            = false,
+  $java_package            = undef,
+  $manage_repo             = false,
+  $repo_version            = undef,
+  $repo_key_id             = 'D88E42B4',
+  $repo_key_source         = 'http://packages.elastic.co/GPG-KEY-elasticsearch',
+  $repo_proxy              = undef,
+  $logging_file            = undef,
+  $logging_config          = undef,
+  $logging_template        = undef,
+  $default_logging_level   = $elasticsearch::params::default_logging_level,
+  $repo_stage              = false,
+  $instances               = undef,
+  $instances_hiera_merge   = false,
+  $plugins                 = undef,
+  $plugins_hiera_merge     = false,
+  $api_protocol            = 'http',
+  $api_host                = 'localhost',
+  $api_port                = 9200,
+  $api_timeout             = 10,
+  $api_basic_auth_username = undef,
+  $api_basic_auth_password = undef,
+  $validate_tls            = true,
 ) inherits elasticsearch::params {
 
   anchor {'elasticsearch::begin': }
@@ -422,8 +422,8 @@ class elasticsearch(
   # Various parameters governing API access to Elasticsearch
   validate_string($api_protocol, $api_host)
   validate_bool($validate_tls)
-  if $basic_auth_username { validate_string($basic_auth_username) }
-  if $basic_auth_password { validate_string($basic_auth_password) }
+  if $api_basic_auth_username { validate_string($api_basic_auth_username) }
+  if $api_basic_auth_password { validate_string($api_basic_auth_password) }
   if ! is_integer($api_timeout) {
     fail("'${api_timeout}' is not an integer")
   }
