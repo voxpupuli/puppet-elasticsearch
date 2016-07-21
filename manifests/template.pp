@@ -3,6 +3,10 @@
 #  This define allows you to insert, update or delete Elasticsearch index
 #  templates.
 #
+#  Template content should be defined through either the `content` parameter
+#  (when passing a hash or json string) or the `source` parameter (when passing
+#  the puppet file URI to a template json file).
+#
 # === Parameters
 #
 # [*ensure*]
@@ -12,7 +16,15 @@
 #   Default value: present
 #
 # [*file*]
-#   File path of the template (json file)
+#   File path of the template (json file). This parameter is deprecated;
+#   use `source` instead.
+#   Value type is string
+#   Default value: undef
+#   This variable is deprecated
+#
+# [*source*]
+#   Source path for the template file. Can be any value similar to `source`
+#   values for `file` resources.
 #   Value type is string
 #   Default value: undef
 #   This variable is optional
@@ -72,6 +84,7 @@
 define elasticsearch::template (
   $ensure              = 'present',
   $file                = undef,
+  $source              = undef,
   $content             = undef,
   $api_protocol        = $elasticsearch::api_protocol,
   $api_host            = $elasticsearch::api_host,
@@ -95,26 +108,34 @@ define elasticsearch::template (
   if ! is_integer($api_port)    { fail("'${api_port}' is not an integer") }
   if ! is_integer($api_timeout) { fail("'${api_timeout}' is not an integer") }
 
-  if ($ensure == 'present') {
-    if $file == undef and $content == undef {
-      fail('one of "file" or "content" required.')
-    } elsif $file != undef and $content != undef {
-      fail('"file" and "content" cannot be simultaneously defined.')
-    }
+  if ($file != undef) {
+    warning('"file" parameter is deprecated; use $source instead')
+    $_source = $file
+  } else {
+    $_source = $source
   }
+
+  if $_source != undef { validate_string($_source) }
 
   if is_hash($content) {
     $_content = $content
-  } elsif is_string($content) {
+  } elsif $content != undef and is_string($content) {
     $_content = parsejson($content)
-  } else {
+  } elsif $content != undef {
     fail('"content" must be a hash or JSON string')
+  }
+
+  if $_source == undef and $_content == undef {
+    fail('one of "file" or "content" required.')
+  } elsif $_source != undef and $_content != undef {
+    fail('"file" and "content" cannot be simultaneously defined.')
   }
 
   require elasticsearch
 
   elasticsearch_template { $name:
     content    => $_content,
+    source     => $_source,
     protocol   => $api_protocol,
     host       => $api_host,
     port       => $api_port,

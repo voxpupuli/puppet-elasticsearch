@@ -1,3 +1,5 @@
+require 'puppet/file_serving/content'
+require 'puppet/file_serving/metadata'
 require 'puppet/parameter/boolean'
 
 Puppet::Type.newtype(:elasticsearch_template) do
@@ -37,6 +39,14 @@ Puppet::Type.newtype(:elasticsearch_template) do
       end
 
       deep_to_i.call value
+    end
+  end
+
+  newparam(:source) do
+    desc 'Puppet source to file containing template contents.'
+
+    validate do |value|
+      raise Puppet::Error, 'string expected' unless value.is_a? String
     end
   end
 
@@ -118,4 +128,31 @@ Puppet::Type.newtype(:elasticsearch_template) do
   newparam(:password) do
     desc 'Optional HTTP basic authentication plaintext password for Elasticsearch.'
   end
-end
+
+  validate do
+
+    # Ensure that at least one source of template content has been provided
+    if self[:ensure] == :present
+      if self[:content].nil? and self[:source].nil?
+        fail Puppet::ParseError, '"content" or "source" required'
+      elsif !self[:content].nil? and !self[:source].nil?
+        fail(Puppet::ParseError,
+             "'content' and 'source' cannot be simultanously defined")
+      end
+    end
+
+    # If a source was passed, retrieve the source content from Puppet's
+    # FileServing indirection and set the content property
+    if !self[:source].nil?
+      unless Puppet::FileServing::Metadata.indirection.find(self[:source])
+        fail "Could not retrieve source %s" % self[:source]
+      end
+      tmp = Puppet::FileServing::Content.indirection.find(
+        self[:source],
+        :environment => self.catalog.environment_instance,
+      )
+      fail "Could not find any content at %s" % self[:source] unless tmp
+      self[:content] = PSON::load(tmp.content)
+    end
+  end
+end # of newtype

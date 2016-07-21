@@ -6,6 +6,7 @@ describe Puppet::Type.type(:elasticsearch_template) do
 
   describe 'when validating attributes' do
     [
+      :source,
       :host,
       :name,
       :password,
@@ -57,7 +58,8 @@ describe Puppet::Type.type(:elasticsearch_template) do
       it 'should support present as a value for ensure' do
         expect { described_class.new(
           :name => resource_name,
-          :ensure => :present
+          :ensure => :present,
+          :content => {}
         ) }.to_not raise_error
       end
 
@@ -71,7 +73,8 @@ describe Puppet::Type.type(:elasticsearch_template) do
       it 'should not support other values' do
         expect { described_class.new(
           :name => resource_name,
-          :ensure => :foo
+          :ensure => :foo,
+          :content => {}
         ) }.to raise_error(Puppet::Error, /Invalid value/)
       end
     end
@@ -80,6 +83,7 @@ describe Puppet::Type.type(:elasticsearch_template) do
       it 'should accept IP addresses' do
         expect { described_class.new(
           :name => resource_name,
+          :content => {},
           :host => '127.0.0.1'
         ) }.not_to raise_error
       end
@@ -90,6 +94,7 @@ describe Puppet::Type.type(:elasticsearch_template) do
         it "should reject invalid port value #{value}" do
           expect { described_class.new(
             :name => resource_name,
+            :content => {},
             :port => value
           ) }.to raise_error(Puppet::Error, /invalid port/i)
         end
@@ -101,6 +106,7 @@ describe Puppet::Type.type(:elasticsearch_template) do
         it "should reject invalid ssl_verify value #{value}" do
           expect { described_class.new(
             :name => resource_name,
+            :content => {},
             :ssl_verify => value
           ) }.to raise_error(Puppet::Error, /invalid value/i)
         end
@@ -110,6 +116,7 @@ describe Puppet::Type.type(:elasticsearch_template) do
         it "should accept ssl_verify value #{value}" do
           expect { described_class.new(
             :name => resource_name,
+            :content => {},
             :ssl_verify => value
           ) }.not_to raise_error
         end
@@ -120,6 +127,7 @@ describe Puppet::Type.type(:elasticsearch_template) do
       it 'should reject string values' do
         expect { described_class.new(
           :name => resource_name,
+          :content => {},
           :timeout => 'foo'
         ) }.to raise_error(Puppet::Error, /must be a/)
       end
@@ -127,6 +135,7 @@ describe Puppet::Type.type(:elasticsearch_template) do
       it 'should reject negative integers' do
         expect { described_class.new(
           :name => resource_name,
+          :content => {},
           :timeout => -10
         ) }.to raise_error(Puppet::Error, /must be a/)
       end
@@ -134,6 +143,7 @@ describe Puppet::Type.type(:elasticsearch_template) do
       it 'should accept integers' do
         expect { described_class.new(
           :name => resource_name,
+          :content => {},
           :timeout => 10
         ) }.to_not raise_error
       end
@@ -141,6 +151,7 @@ describe Puppet::Type.type(:elasticsearch_template) do
       it 'should accept quoted integers' do
         expect { described_class.new(
           :name => resource_name,
+          :content => {},
           :timeout => '10'
         ) }.to_not raise_error
       end
