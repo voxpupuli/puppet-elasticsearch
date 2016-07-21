@@ -1,5 +1,4 @@
 require 'spec_helper'
-require 'pry'
 
 describe Puppet::Type.type(:elasticsearch_template) do
 
