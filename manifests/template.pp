@@ -130,7 +130,7 @@ define elasticsearch::template (
     fail('"content" must be a hash or JSON string')
   }
 
-  if $_source == undef and $_content == undef {
+  if $ensure == 'present' and $_source == undef and $_content == undef {
     fail('one of "file" or "content" required.')
   } elsif $_source != undef and $_content != undef {
     fail('"file" and "content" cannot be simultaneously defined.')

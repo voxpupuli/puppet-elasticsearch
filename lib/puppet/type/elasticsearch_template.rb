@@ -147,10 +147,16 @@ Puppet::Type.newtype(:elasticsearch_template) do
       unless Puppet::FileServing::Metadata.indirection.find(self[:source])
         fail "Could not retrieve source %s" % self[:source]
       end
-      tmp = Puppet::FileServing::Content.indirection.find(
-        self[:source],
-        :environment => self.catalog.environment_instance,
-      )
+
+      unless self.catalog.nil?
+        tmp = Puppet::FileServing::Content.indirection.find(
+          self[:source],
+          :environment => self.catalog.environment_instance,
+        )
+      else
+        tmp = Puppet::FileServing::Content.indirection.find(self[:source])
+      end
+
       fail "Could not find any content at %s" % self[:source] unless tmp
       self[:content] = PSON::load(tmp.content)
     end
