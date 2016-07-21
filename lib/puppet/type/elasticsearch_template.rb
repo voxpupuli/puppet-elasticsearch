@@ -137,7 +137,7 @@ Puppet::Type.newtype(:elasticsearch_template) do
         fail Puppet::ParseError, '"content" or "source" required'
       elsif !self[:content].nil? and !self[:source].nil?
         fail(Puppet::ParseError,
-             "'content' and 'source' cannot be simultanously defined")
+             "'content' and 'source' cannot be simultaneously defined")
       end
     end
 
