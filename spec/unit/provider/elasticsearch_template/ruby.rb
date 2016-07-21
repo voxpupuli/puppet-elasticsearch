@@ -4,26 +4,22 @@ require 'webmock/rspec'
 describe Puppet::Type.type(:elasticsearch_template).provider(:ruby) do
 
   describe 'instances' do
-    it 'should have an instance method' do
-      expect(described_class).to respond_to :instances
+    context 'with no templates' do
+      before :all do
+        stub_request(:get, 'http://localhost:9200/_template').
+          to_return(
+            :status => 200,
+            :body => '{}'
+        )
+      end
+
+      it 'returns an empty list' do
+        expect(described_class.instances).to eq([])
+      end
     end
   end
 
-  context 'with no templates' do
-    before :all do
-      stub_request(:get, 'http://localhost:9200/_template').
-        to_return(
-          :status => 200,
-          :body => '{}'
-      )
-    end
-
-    it 'returns an empty list' do
-      expect(described_class.instances).to eq([])
-    end
-  end
-
-  describe 'single templates' do
+  describe 'multiple templates' do
     before :all do
       stub_request(:get, 'http://localhost:9200/_template').
         to_return(
@@ -33,14 +29,14 @@ describe Puppet::Type.type(:elasticsearch_template).provider(:ruby) do
               "foobar1": {
                 "aliases": {},
                 "mappings": {},
-                "order": 5,
+                "order": 1,
                 "settings": {},
                 "template": "foobar1-*"
               },
               "foobar2": {
                 "aliases": {},
                 "mappings": {},
-                "order": 1,
+                "order": 2,
                 "settings": {},
                 "template": "foobar2-*"
               }
@@ -61,7 +57,7 @@ describe Puppet::Type.type(:elasticsearch_template).provider(:ruby) do
           'mappings' => {},
           'settings' => {},
           'template' => 'foobar1-*',
-          'order' => 5,
+          'order' => 1,
         }
       },{
         :name => 'foobar2',
@@ -72,7 +68,49 @@ describe Puppet::Type.type(:elasticsearch_template).provider(:ruby) do
           'mappings' => {},
           'settings' => {},
           'template' => 'foobar2-*',
-          'order' => 1,
+          'order' => 2,
+        }
+      })
+    end
+  end
+
+  describe 'basic authentication' do
+    before :all do
+      stub_request(:get, 'http://localhost:9200/_template').
+        with(:basic_auth => ['elastic', 'password']).
+        to_return(
+          :status => 200,
+          :body => <<-EOS
+            {
+              "foobar3": {
+                "aliases": {},
+                "mappings": {},
+                "order": 3,
+                "settings": {},
+                "template": "foobar3-*"
+              }
+            }
+          EOS
+      )
+    end
+
+    it 'authenticates' do
+      expect(described_class.templates(
+        'http', true, 'localhost', '9200', 10, 'elastic', 'password'
+      ).map { |provider|
+        described_class.new(
+          provider
+        ).instance_variable_get(:@property_hash)
+      }).to contain_exactly({
+        :name => 'foobar3',
+        :ensure => :present,
+        :provider => :ruby,
+        :content => {
+          'aliases' => {},
+          'mappings' => {},
+          'settings' => {},
+          'template' => 'foobar3-*',
+          'order' => 3,
         }
       })
     end

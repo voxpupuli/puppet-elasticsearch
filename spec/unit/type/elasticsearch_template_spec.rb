@@ -1,20 +1,21 @@
 require 'spec_helper'
+require 'pry'
 
 describe Puppet::Type.type(:elasticsearch_template) do
 
   let(:resource_name) { 'test_template' }
 
-  describe 'when validating attributes' do
+  describe 'attribute validation' do
     [
+      :name,
       :source,
       :host,
-      :name,
-      :password,
       :port,
       :protocol,
-      :ssl_verify,
+      :validate_tls,
       :timeout,
-      :username
+      :username,
+      :password
     ].each do |param|
       it "should have a #{param} parameter" do
         expect(described_class.attrtype(param)).to eq(:param)
@@ -32,9 +33,7 @@ describe Puppet::Type.type(:elasticsearch_template) do
         expect(described_class.key_attributes).to eq([:name])
       end
     end
-  end # of describe when validating attributes
 
-  describe 'when validating values' do
     describe 'content' do
       it 'should reject non-hash values' do
         expect { described_class.new(
@@ -51,6 +50,15 @@ describe Puppet::Type.type(:elasticsearch_template) do
           :name => resource_name,
           :content => {}
         ) }.not_to raise_error
+      end
+
+      it 'should deeply parse PSON-like values' do
+        expect(described_class.new(
+          :name => resource_name,
+          :content => {'key'=>{'value'=>'0'}}
+        )[:content]).to eq(
+          'key'=>{'value'=>0}
+        )
       end
     end
 
@@ -101,23 +109,23 @@ describe Puppet::Type.type(:elasticsearch_template) do
       end
     end
 
-    describe 'ssl_verify' do
+    describe 'validate_tls' do
       [-1, 0, {}, [], 'foo'].each do |value|
         it "should reject invalid ssl_verify value #{value}" do
           expect { described_class.new(
             :name => resource_name,
             :content => {},
-            :ssl_verify => value
+            :validate_tls => value
           ) }.to raise_error(Puppet::Error, /invalid value/i)
         end
       end
 
       [true, false, 'true', 'false', 'yes', 'no'].each do |value|
-        it "should accept ssl_verify value #{value}" do
+        it "should accept validate_tls value #{value}" do
           expect { described_class.new(
             :name => resource_name,
             :content => {},
-            :ssl_verify => value
+            :validate_tls => value
           ) }.not_to raise_error
         end
       end
@@ -154,6 +162,44 @@ describe Puppet::Type.type(:elasticsearch_template) do
           :content => {},
           :timeout => '10'
         ) }.to_not raise_error
+      end
+    end
+
+    describe 'content and source validation' do
+      it 'should require either "content" or "source"' do
+        expect { described_class.new(
+          :name => resource_name,
+        ) }.to raise_error(Puppet::Error, /content.*or.*source.*required/)
+      end
+
+      it 'should fail with both defined' do
+        expect { described_class.new(
+          :name => resource_name,
+          :content => {},
+          :source => 'puppet:///example.json'
+        ) }.to raise_error(Puppet::Error, /simultaneous/)
+      end
+
+      it 'should parse source paths into the content property' do
+        file_stub = 'foo'
+        [
+          Puppet::FileServing::Metadata,
+          Puppet::FileServing::Content
+        ].each do |klass|
+          allow(klass).to receive(:indirection)
+            .and_return(Object)
+        end
+        allow(Object).to receive(:find)
+          .and_return(file_stub)
+        allow(file_stub).to receive(:content)
+          .and_return('{"template":"foobar-*", "order": 1}')
+        expect(described_class.new(
+          :name => resource_name,
+          :source => '/example.json'
+        )[:content]).to eq(
+          'template' => 'foobar-*',
+          'order' => 1
+        )
       end
     end
   end # of describing when validing values
