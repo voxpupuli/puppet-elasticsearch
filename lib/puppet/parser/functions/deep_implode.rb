@@ -1,3 +1,7 @@
+$LOAD_PATH.unshift(File.join(File.dirname(__FILE__),"..","..",".."))
+
+require 'puppet_x/elastic/deep_implode'
+
 module Puppet::Parser::Functions
   newfunction(
     :deep_implode,
@@ -34,26 +38,6 @@ module Puppet::Parser::Functions
 
     return {} if arg.empty?
 
-    implode = Proc.new do |path, ret, hash|
-      hash.sort_by{|k,v| k.length}.reverse.each do |key, value|
-        new_path = path + [key]
-        if value.is_a? Hash
-          implode.call(new_path, ret, value)
-        else
-          new_key = new_path.join('.')
-          if value.is_a? Array \
-              and ret.has_key? new_key \
-              and ret[new_key].is_a? Array
-              ret[new_key] += value
-          else
-            ret[new_key] ||= value
-          end
-        end
-      end
-    end
-
-    result = Hash.new
-    implode.call([], result, arg)
-    result
+    Puppet_X::Elastic::deep_implode arg
   end
 end
