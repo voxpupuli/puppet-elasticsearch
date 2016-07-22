@@ -52,6 +52,12 @@ RSpec::Core::RakeTask.new(:spec_verbose) do |t|
 end
 task :spec_verbose => :spec_prep
 
+RSpec::Core::RakeTask.new(:spec_unit) do |t|
+  t.pattern = 'spec/{classes,defines,unit,functions,templates}/**/*_spec.rb'
+  t.rspec_opts = ['--color']
+end
+task :spec_unit => :spec_prep
+
 task :beaker => [:spec_prep, 'artifacts:prep']
 
 desc 'Run integration tests'
