@@ -138,6 +138,10 @@ define elasticsearch::template (
 
   require elasticsearch
 
+  es_instance_conn_validator { "${name}-template":
+    server => $api_host,
+    port   => $api_port,
+  } ->
   elasticsearch_template { $name:
     ensure       => $ensure,
     content      => $_content,
