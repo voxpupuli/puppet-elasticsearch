@@ -21,11 +21,12 @@ Puppet::Type.newtype(:elasticsearch_template) do
       raise Puppet::Error, 'hash expected' unless value.is_a? Hash
     end
 
-    # This ugly hack is required due to the fact Puppet passes in the
-    # puppet-native hash with stringified numerics, which causes the
-    # decoded JSON from the Elasticsearch API to be seen as out-of-sync
-    # when the parsed template hash is compared against the puppet hash.
     munge do |value|
+
+      # This ugly hack is required due to the fact Puppet passes in the
+      # puppet-native hash with stringified numerics, which causes the
+      # decoded JSON from the Elasticsearch API to be seen as out-of-sync
+      # when the parsed template hash is compared against the puppet hash.
       deep_to_i = Proc.new do |obj|
         if obj.is_a? String and obj =~ /^[0-9]+$/
           obj.to_i
