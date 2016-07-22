@@ -17,9 +17,9 @@ Puppet::Type.type(:elasticsearch_shield_user_roles).provide(
   confine :exists => users_roles
 
   def self.parse text
-    text.split("\n").select do |line|
+    text.split("\n").map{|l|l.strip}.select do |line|
       # Strip comments
-      not line.start_with? '#'
+      not line.start_with? '#' and not line.empty?
     end.map do |line|
       # Turn array of roles into array of users that have the role
       role, users = line.split(':')
@@ -33,7 +33,7 @@ Puppet::Type.type(:elasticsearch_shield_user_roles).provide(
       # Map those hashes into what the provider expects
       {
         :name => user,
-        :roles => roles,
+        :roles => roles
       }
     end.to_a
   end
