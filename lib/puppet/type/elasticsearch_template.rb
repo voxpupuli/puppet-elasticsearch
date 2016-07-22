@@ -1,6 +1,10 @@
+$LOAD_PATH.unshift(File.join(File.dirname(__FILE__),"..","..",".."))
+
 require 'puppet/file_serving/content'
 require 'puppet/file_serving/metadata'
 require 'puppet/parameter/boolean'
+
+require 'puppet_x/elastic/deep_implode'
 
 Puppet::Type.newtype(:elasticsearch_template) do
   desc 'Manages Elasticsearch index templates.'
@@ -39,7 +43,16 @@ Puppet::Type.newtype(:elasticsearch_template) do
         end
       end
 
-      deep_to_i.call value
+      # The Elasticsearch API will return the default order (0) and alias
+      # mappings (an empty hash) for each template, so we need to set
+      # defaults here to keep the `in` and `should` states consistent if
+      # the user hasn't provided any.
+      {'order'=>0,'aliases'=>{}}.merge deep_to_i.call(value)
+    end
+
+    def insync?(is)
+      Puppet_X::Elastic::deep_implode(is) == \
+        Puppet_X::Elastic::deep_implode(should)
     end
   end
 
