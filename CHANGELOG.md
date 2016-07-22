@@ -1,7 +1,9 @@
-## x.x.x ( Month Day, Year )
+## 0.12.0 (July 20, 2016)
+
+IMPORTANT! A bug was fixed that mistakenly added /var/lib to the list of DATA_DIR paths on Debian-based systems.  This release removes that environment variable, which could potentially change path.data directories for instances of Elasticsearch.  Take proper precautions when upgrading to avoid unexpected downtime or data loss (test module upgrades, et cetera).
 
 ### Summary
-Rewritten yaml generator, code cleanup, and various bugfixes. Configuration file yaml no longer nested.
+Rewritten yaml generator, code cleanup, and various bugfixes. Configuration file yaml no longer nested. Service no longer restarts by default, and exposes more granular restart options.
 
 #### Features
 * The additional parameters restart_config_change, restart_package_change, and restart_plugin_change have been added for more granular control over service restarts.
@@ -20,9 +22,6 @@ Rewritten yaml generator, code cleanup, and various bugfixes. Configuration file
 
 #### Testing changes
 * The acceptance test suite has been dramatically slimmed to cut down on testing time and reduce false positives.
-
-#### Known bugs
-
 
 ## 0.11.0 ( May 23, 2016 )
 
