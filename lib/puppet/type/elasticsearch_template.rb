@@ -165,7 +165,7 @@ Puppet::Type.newtype(:elasticsearch_template) do
       unless self.catalog.nil?
         tmp = Puppet::FileServing::Content.indirection.find(
           self[:source],
-          :environment => self.catalog.environment_instance,
+          :environment => self.catalog.environment_instance
         )
       else
         tmp = Puppet::FileServing::Content.indirection.find(self[:source])
