@@ -55,7 +55,7 @@ describe Puppet::Type.type(:elasticsearch_template) do
         expect(described_class.new(
           :name => resource_name,
           :content => {'key'=>{'value'=>'0'}}
-        )[:content]).to eq(
+        )[:content]).to include(
           'key'=>{'value'=>0}
         )
       end
@@ -195,7 +195,7 @@ describe Puppet::Type.type(:elasticsearch_template) do
         expect(described_class.new(
           :name => resource_name,
           :source => '/example.json'
-        )[:content]).to eq(
+        )[:content]).to include(
           'template' => 'foobar-*',
           'order' => 1
         )
