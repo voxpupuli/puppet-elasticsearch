@@ -122,12 +122,10 @@ define elasticsearch::template (
 
   if $_source != undef { validate_string($_source) }
 
-  if is_hash($content) {
-    $_content = $content
-  } elsif $content != undef and is_string($content) {
+  if $content != undef and is_string($content) {
     $_content = parsejson($content)
-  } elsif $content != undef {
-    fail('"content" must be a hash or JSON string')
+  } else {
+    $_content = $content
   }
 
   if $ensure == 'present' and $_source == undef and $_content == undef {
