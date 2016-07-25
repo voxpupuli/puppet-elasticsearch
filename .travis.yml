@@ -40,7 +40,7 @@ env:
   - DISTRO=oracle-7-x64
 matrix:
   allow_failures:
-  - env: DISTRO=sles-12-x64 PE=true
+  - env: DISTRO=sles-12-x64
   fast_finish: true
 script:
 - make test-$TEST_SUITE
