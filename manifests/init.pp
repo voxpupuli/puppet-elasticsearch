@@ -157,6 +157,10 @@
 # [*config*]
 #   Elasticsearch configuration hash
 #
+# [*config_hiera_merge*]
+#   Enable Hiera merging for the config hash
+#   Defaults to: false
+#
 # [*datadir*]
 #   Allows you to set the data directory of Elasticsearch
 #
@@ -292,6 +296,7 @@ class elasticsearch(
   $init_defaults_file     = undef,
   $init_template          = "${module_name}/etc/init.d/${elasticsearch::params::init_template}",
   $config                 = undef,
+  $config_hiera_merge     = false,
   $datadir                = $elasticsearch::params::datadir,
   $logdir                 = $elasticsearch::params::logdir,
   $plugindir              = $elasticsearch::params::plugindir,
@@ -428,6 +433,15 @@ class elasticsearch(
 
   # configuration
   class { 'elasticsearch::config': }
+
+  # Hiera support for configuration hash
+  validate_bool($config_hiera_merge)
+
+  if $config_hiera_merge == true {
+    $x_config = hiera_hash('elasticsearch::config', $config)
+  } else {
+    $x_config = $config
+  }
 
   # Hiera support for instances
   validate_bool($instances_hiera_merge)

@@ -220,8 +220,8 @@ define elasticsearch::instance(
       $logging_source = undef
     }
 
-    if ($elasticsearch::config != undef) {
-      $main_config = deep_implode($elasticsearch::config)
+    if ($elasticsearch::x_config != undef) {
+      $main_config = deep_implode($elasticsearch::x_config)
     } else {
       $main_config = { }
     }
