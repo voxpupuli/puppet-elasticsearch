@@ -1,3 +1,19 @@
+## x.x.x (Month Day, Year)
+
+### Summary
+Rewritten elasticsearch::template using native type and provider.
+
+#### Features
+* In addition to better consistency, the `elasticsearch::template` type now also accepts various `api_*` parameters to control how access to the Elasticsearch API is configured (there are top-level parameters that are inherited and can be overwritten in `elasticsearch::api_*`).
+
+#### Bugfixes
+* Content of templates should now properly trigger new API PUT requests when the index template stored in Elasticsearch differs from the template defined in puppet.
+
+#### Changes
+* The `file` parameter on the `elasticsearch::template` defined type has been deprecated to be consistent with usage of the `source` parameter for other types.
+
+#### Testing changes
+
 ## 0.12.0 (July 20, 2016)
 
 IMPORTANT! A bug was fixed that mistakenly added /var/lib to the list of DATA_DIR paths on Debian-based systems.  This release removes that environment variable, which could potentially change path.data directories for instances of Elasticsearch.  Take proper precautions when upgrading to avoid unexpected downtime or data loss (test module upgrades, et cetera).
