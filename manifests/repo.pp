@@ -43,6 +43,7 @@ class elasticsearch::repo {
         key         => $::elasticsearch::repo_key_id,
         key_source  => $::elasticsearch::repo_key_source,
         include_src => false,
+        pin         => $elasticsearch::repo_priority,
       }
     }
     'RedHat', 'Linux': {
@@ -54,6 +55,7 @@ class elasticsearch::repo {
         gpgkey   => $::elasticsearch::repo_key_source,
         enabled  => 1,
         proxy    => $::elasticsearch::repo_proxy,
+        priority => $elasticsearch::repo_priority,
       } ~>
       exec { 'elasticsearch_yumrepo_yum_clean':
         command     => 'yum clean metadata expire-cache --disablerepo="*" --enablerepo="elasticsearch"',
