@@ -4,6 +4,7 @@
 
 #### Features
 * The `elasticsearch::config` parameter now supports deep hiera merging.
+* Added the `elasticsearch::repo_priority` parameter to support apt and yum repository priority configuration.
 
 #### Bugfixes
 
