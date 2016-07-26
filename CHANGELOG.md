@@ -1,3 +1,16 @@
+## x.x.x (Month Day, Year)
+
+### Summary
+
+#### Features
+* The `elasticsearch::config` parameter now supports deep hiera merging.
+
+#### Bugfixes
+
+#### Changes
+
+#### Testing changes
+
 ## 0.12.0 (July 20, 2016)
 
 IMPORTANT! A bug was fixed that mistakenly added /var/lib to the list of DATA_DIR paths on Debian-based systems.  This release removes that environment variable, which could potentially change path.data directories for instances of Elasticsearch.  Take proper precautions when upgrading to avoid unexpected downtime or data loss (test module upgrades, et cetera).
