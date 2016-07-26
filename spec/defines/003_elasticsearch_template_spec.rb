@@ -31,6 +31,9 @@ describe 'elasticsearch::template', :type => 'define' do
       :validate_tls => false
     } end
 
+    it { should contain_elasticsearch__template('foo') }
+    it { should contain_es_instance_conn_validator('foo-template')
+      .that_comes_before('Elasticsearch_template[foo]') }
     it { should contain_elasticsearch_template('foo').with(
       :ensure => 'present',
       :source => 'puppet:///path/to/foo.json',
