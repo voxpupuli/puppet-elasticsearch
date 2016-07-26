@@ -91,13 +91,13 @@ define elasticsearch::template (
   $file                    = undef,
   $source                  = undef,
   $content                 = undef,
-  $api_protocol            = $elasticsearch::api_protocol,
+  $api_protocol            = $elasticsearch::_api_protocol,
   $api_host                = $elasticsearch::api_host,
   $api_port                = $elasticsearch::api_port,
   $api_timeout             = $elasticsearch::api_timeout,
-  $api_basic_auth_username = $elasticsearch::api_basic_auth_username,
-  $api_basic_auth_password = $elasticsearch::api_basic_auth_password,
-  $validate_tls            = $elasticsearch::validate_tls,
+  $api_basic_auth_username = $elasticsearch::_api_basic_auth_username,
+  $api_basic_auth_password = $elasticsearch::_api_basic_auth_password,
+  $validate_tls            = $elasticsearch::_validate_tls,
 ) {
   validate_string(
     $api_protocol,
