@@ -177,6 +177,10 @@
 # [*repo_version*]
 #   Our repositories are versioned per major version (0.90, 1.0) select here which version you want
 #
+# [*repo_priority*]
+#   Repository priority. yum and apt supported.
+#   Default: undef
+#
 # [*repo_key_id*]
 #   String.  The apt GPG key id
 #   Default: D88E42B4
@@ -305,6 +309,7 @@ class elasticsearch(
   $java_package           = undef,
   $manage_repo            = false,
   $repo_version           = undef,
+  $repo_priority          = undef,
   $repo_key_id            = 'D88E42B4',
   $repo_key_source        = 'http://packages.elastic.co/GPG-KEY-elasticsearch',
   $repo_proxy             = undef,
