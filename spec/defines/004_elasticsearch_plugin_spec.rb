@@ -11,7 +11,16 @@ describe 'elasticsearch::plugin', :type => 'define' do
     :scenario => '',
     :common => ''
   } end
-  let(:pre_condition) { 'class {"elasticsearch": config => { "node" => {"name" => "test" }}}'}
+
+  let(:pre_condition) {%q{
+    class { "elasticsearch":
+      config => {
+        "node" => {
+          "name" => "test"
+        }
+      }
+    }
+  }}
 
   context 'with module_dir' do
 
@@ -140,6 +149,50 @@ describe 'elasticsearch::plugin', :type => 'define' do
         'head'
       ).that_notifies(
         'Elasticsearch::Service[es-01]'
+      )}
+    end
+
+  end
+
+  describe 'proxy arguments' do
+
+    let(:title) { 'head' }
+
+    context 'on define' do
+      let :params do {
+        :ensure     => 'present',
+        :instances  => 'es-01',
+        :proxy_host => 'es.local',
+        :proxy_port => '8080'
+      } end
+
+      it { should contain_elasticsearch_plugin(
+        'head'
+      ).with_proxy_args(
+        ['http', 'https'].map do |proto|
+          "-D#{proto}.proxyPort=8080 -D#{proto}.proxyHost=es.local"
+        end.join(' ')
+      )}
+    end
+
+    context 'on main class' do
+      let :params do {
+        :ensure    => 'present',
+        :instances => 'es-01'
+      } end
+
+      let(:pre_condition) { %q{
+        class { 'elasticsearch':
+          proxy_url => 'http://es.local:8080',
+        }
+      }}
+
+      it { should contain_elasticsearch_plugin(
+        'head'
+      ).with_proxy_args(
+        ['http', 'https'].map do |proto|
+          "-D#{proto}.proxyPort=8080 -D#{proto}.proxyHost=es.local"
+        end.join(' ')
       )}
     end
 
