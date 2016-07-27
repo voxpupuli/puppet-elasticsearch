@@ -103,10 +103,6 @@
 #   Path to directory containing the elasticsearch plugins
 #   Use this setting if your packages deviate from the norm (/usr/share/elasticsearch/plugins)
 #
-# [*plugintool*]
-#   Path to directory containing the elasticsearch plugin installation script
-#   Use this setting if your packages deviate from the norm (/usr/share/elasticsearch/bin/plugin)
-#
 # [*package_url*]
 #   Url to the package to download.
 #   This can be a http,https or ftp resource for remote packages
@@ -340,7 +336,6 @@ class elasticsearch(
   $datadir                 = $elasticsearch::params::datadir,
   $logdir                  = $elasticsearch::params::logdir,
   $plugindir               = $elasticsearch::params::plugindir,
-  $plugintool              = $elasticsearch::params::plugintool,
   $java_install            = false,
   $java_package            = undef,
   $manage_repo             = false,
