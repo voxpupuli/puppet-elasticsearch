@@ -346,6 +346,31 @@ describe 'elasticsearch', :type => 'class' do
         end
       end
 
+      context 'repository priority pinning' do
+
+        let :params do
+          default_params.merge({
+            :manage_repo => true,
+            :repo_priority => 10,
+            :repo_version => '2.x'
+          })
+        end
+
+        case facts[:osfamily]
+        when 'Debian'
+          context 'is supported' do
+            it { should contain_apt__source('elasticsearch').with(
+              :pin => 10
+            ) }
+          end
+        when 'RedHat'
+          context 'is supported' do
+            it { should contain_yumrepo('elasticsearch').with(
+              :priority => 10
+            ) }
+          end
+        end
+      end
 
       context "Running a a different user" do
 
