@@ -90,7 +90,7 @@ define elasticsearch::plugin(
   # elasticsearch::proxy_url or use no proxy at all
   
   if ($proxy_host != undef and $proxy_port != undef) {
-    $proxy = "-DproxyPort=${proxy_port} -DproxyHost=${proxy_host}"
+    $proxy = "-Dhttp.proxyPort=${proxy_port} -Dhttp.proxyHost=${proxy_host} -Dhttps.proxyPort=${proxy_port} -Dhttps.proxyHost=${proxy_host}"
   }
   elsif ($elasticsearch::proxy_url != undef) {
     $proxy_host_from_url = regsubst($elasticsearch::proxy_url, '(http|https)://([^:]+)(|:\d+).+', '\2')
@@ -98,7 +98,7 @@ define elasticsearch::plugin(
     
     # validate parsed values before using them
     if (is_string($proxy_host_from_url) and is_integer($proxy_port_from_url)) {
-      $proxy = "-DproxyPort=${proxy_port_from_url} -DproxyHost=${proxy_host_from_url}"
+      $proxy = "-Dhttp.proxyPort=${proxy_port_from_url} -Dhttp.proxyHost=${proxy_host_from_url} -Dhttps.proxyPort=${proxy_port_from_url} -Dhttps.proxyHost=${proxy_host_from_url}"
     }
   }
   else {
