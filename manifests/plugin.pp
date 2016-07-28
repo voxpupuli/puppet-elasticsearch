@@ -9,10 +9,12 @@
 # === Parameters
 #
 # [*module_dir*]
-#   Directory name where the module will be installed
+#   Directory name where the module has been installed
+#   This is automatically generated based on the module name
+#   Specify a value here to override the auto generated value
 #   Value type is string
 #   Default value: None
-#   This variable is deprecated
+#   This variable is optional
 #
 # [*ensure*]
 #   Whether the plugin will be installed or removed.
@@ -84,10 +86,6 @@ define elasticsearch::plugin(
     default => Elasticsearch::Service[$instances],
   }
 
-  if ($module_dir != undef) {
-    warning("module_dir settings is deprecated for plugin ${name}. The directory is now auto detected.")
-  }
-
   # set proxy by override or parse and use proxy_url from
   # elasticsearch::proxy_url or use no proxy at all
   
@@ -132,12 +130,13 @@ define elasticsearch::plugin(
     'installed', 'present': {
 
       elasticsearch_plugin { $name:
-        ensure     => 'present',
-        source     => $file_source,
-        url        => $url,
-        proxy_args => $proxy,
-        plugin_dir => $::elasticsearch::plugindir,
-        notify     => $notify_service,
+        ensure      => 'present',
+        source      => $file_source,
+        url         => $url,
+        proxy_args  => $proxy,
+        plugin_dir  => $::elasticsearch::plugindir,
+        plugin_path => $module_dir,
+        notify      => $notify_service,
       }
 
     }

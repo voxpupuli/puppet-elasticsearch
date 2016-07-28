@@ -50,7 +50,11 @@ Puppet::Type.type(:elasticsearch_plugin).provide(:plugin) do
   end
 
   def pluginfile
-    File.join(@resource[:plugin_dir], plugin_name(@resource[:name]), '.name')
+    if @resource[:plugin_path]
+      File.join(@resource[:plugin_dir], @resource[:plugin_path], '.name')
+    else
+      File.join(@resource[:plugin_dir], plugin_name(@resource[:name]), '.name')
+    end
   end
 
   def writepluginfile

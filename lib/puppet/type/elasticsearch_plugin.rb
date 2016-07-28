@@ -24,8 +24,12 @@ Puppet::Type.newtype(:elasticsearch_plugin) do
   end
 
   newparam(:plugin_dir) do
-    desc 'Plugin directory'
+    desc 'Path to the Plugins directory'
     defaultto '/usr/share/elasticsearch/plugins'
+  end
+
+  newparam(:plugin_path) do
+    desc 'Override name of the directory created for the plugin'
   end
 
 end
