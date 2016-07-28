@@ -19,23 +19,24 @@ module EsFacts
     # only when the directory exists we need to process the stuff
     if File.directory?(dir_prefix)
 
-      Dir.foreach(dir_prefix) { |dir| 
+      Dir.foreach(dir_prefix) do |dir|
         next if dir == '.'
+
         if File.exists?("#{dir_prefix}/#{dir}/elasticsearch.yml")
           config_data = YAML.load_file("#{dir_prefix}/#{dir}/elasticsearch.yml")
-          unless config_data['http'].nil?
-            next if config_data['http']['enabled'] == 'false'
-            if config_data['http']['port'].nil?
-              port = "9200"
-            else
-              port = config_data['http']['port']
-            end
+
+          if not config_data['http.enabled'].nil? and \
+              config_data['http.enabled'] == 'false'
+            next
+          elsif not config_data['http.port'].nil?
+            port = config_data['http.port']
           else
-            port = "9200"
+            port = '9200'
           end
+
           ports << port
         end
-      }
+      end
 
       begin
         if ports.count > 0
