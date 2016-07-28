@@ -10,6 +10,7 @@ Rewritten elasticsearch::template using native type and provider.
 
 #### Bugfixes
 * Content of templates should now properly trigger new API PUT requests when the index template stored in Elasticsearch differs from the template defined in puppet.
+* Installing plugins with proxy parameters now works correctly due to changed Java property flags.
 
 #### Changes
 * The `file` parameter on the `elasticsearch::template` defined type has been deprecated to be consistent with usage of the `source` parameter for other types.
