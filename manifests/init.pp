@@ -164,6 +164,9 @@
 # [*datadir*]
 #   Allows you to set the data directory of Elasticsearch
 #
+# [*logdir*]
+#   Use different directory for logging
+#
 # [*java_install*]
 #  Install java which is required for Elasticsearch.
 #  Defaults to: false
@@ -232,23 +235,56 @@
 #   Defaults to: true
 #
 # [*use_ssl*]
-#   Enable auth on api calls.
+#   Enable auth on api calls. This parameter is deprecated in favor of setting
+#   the `api_protocol` parameter to "https".
 #   Defaults to: false
+#   This variable is deprecated
 #
 # [*validate_ssl*]
-#   Enable ssl validation on api calls.
+#   Enable ssl validation on api calls. This parameter is deprecated in favor
+#   of the `validate_tls` parameter.
 #   Defaults to: true
+#   This variable is deprecated
 #
 # [*ssl_user*]
-#   Defines the username for authentication.
+#   Defines the username for authentication. This parameter is deprecated in
+#   favor of the `api_basic_auth_username` parameter.
 #   Defaults to: undef
+#   This variable is deprecated
 #
 # [*ssl_password*]
-#   Defines the password for authentication.
+#   Defines the password for authentication. This parameter is deprecated in
+#   favor of the `api_basic_auth_password` parameter.
+#   Defaults to: undef
+#   This variable is deprecated
+#
+# [*api_protocol*]
+#   Default protocol to use when accessing Elasticsearch APIs.
+#   Defaults to: http
+#
+# [*api_host*]
+#   Default host to use when accessing Elasticsearch APIs.
+#   Defaults to: localhost
+#
+# [*api_port*]
+#   Default port to use when accessing Elasticsearch APIs.
+#   Defaults to: 9200
+#
+# [*api_timeout*]
+#   Default timeout (in seconds) to use when accessing Elasticsearch APIs.
+#   Defaults to: 10
+#
+# [*validate_tls*]
+#   Enable TLS/SSL validation on API calls.
+#   Defaults to: true
+#
+# [*api_basic_auth_username*]
+#   Defines the default REST basic auth username for API authentication.
 #   Defaults to: undef
 #
-# [*logdir*]
-#   Use different directory for logging
+# [*api_basic_auth_password*]
+#   Defines the default REST basic auth password for API authentication.
+#   Defaults to: undef
 #
 # The default values for the parameters are set in elasticsearch::params. Have
 # a look at the corresponding <tt>params.pp</tt> manifest file if you need more
@@ -275,57 +311,64 @@
 # * Richard Pijnenburg <mailto:richard.pijnenburg@elasticsearch.com>
 #
 class elasticsearch(
-  $ensure                 = $elasticsearch::params::ensure,
-  $status                 = $elasticsearch::params::status,
-  $restart_on_change      = $elasticsearch::params::restart_on_change,
-  $restart_config_change  = $elasticsearch::restart_on_change,
-  $restart_package_change = $elasticsearch::restart_on_change,
-  $restart_plugin_change  = $elasticsearch::restart_on_change,
-  $autoupgrade            = $elasticsearch::params::autoupgrade,
-  $version                = false,
-  $package_provider       = 'package',
-  $package_url            = undef,
-  $package_dir            = $elasticsearch::params::package_dir,
-  $package_name           = $elasticsearch::params::package,
-  $package_pin            = true,
-  $purge_package_dir      = $elasticsearch::params::purge_package_dir,
-  $package_dl_timeout     = $elasticsearch::params::package_dl_timeout,
-  $proxy_url              = undef,
-  $elasticsearch_user     = $elasticsearch::params::elasticsearch_user,
-  $elasticsearch_group    = $elasticsearch::params::elasticsearch_group,
-  $configdir              = $elasticsearch::params::configdir,
-  $purge_configdir        = $elasticsearch::params::purge_configdir,
-  $service_provider       = 'init',
-  $init_defaults          = undef,
-  $init_defaults_file     = undef,
-  $init_template          = "${module_name}/etc/init.d/${elasticsearch::params::init_template}",
-  $config                 = undef,
-  $config_hiera_merge     = false,
-  $datadir                = $elasticsearch::params::datadir,
-  $logdir                 = $elasticsearch::params::logdir,
-  $plugindir              = $elasticsearch::params::plugindir,
-  $plugintool             = $elasticsearch::params::plugintool,
-  $java_install           = false,
-  $java_package           = undef,
-  $manage_repo            = false,
-  $repo_version           = undef,
-  $repo_priority          = undef,
-  $repo_key_id            = 'D88E42B4',
-  $repo_key_source        = 'http://packages.elastic.co/GPG-KEY-elasticsearch',
-  $repo_proxy             = undef,
-  $logging_file           = undef,
-  $logging_config         = undef,
-  $logging_template       = undef,
-  $default_logging_level  = $elasticsearch::params::default_logging_level,
-  $repo_stage             = false,
-  $instances              = undef,
-  $instances_hiera_merge  = false,
-  $plugins                = undef,
-  $plugins_hiera_merge    = false,
-  $use_ssl                = false,
-  $validate_ssl           = true,
-  $ssl_user               = undef,
-  $ssl_password           = undef
+  $ensure                  = $elasticsearch::params::ensure,
+  $status                  = $elasticsearch::params::status,
+  $restart_on_change       = $elasticsearch::params::restart_on_change,
+  $restart_config_change   = $elasticsearch::restart_on_change,
+  $restart_package_change  = $elasticsearch::restart_on_change,
+  $restart_plugin_change   = $elasticsearch::restart_on_change,
+  $autoupgrade             = $elasticsearch::params::autoupgrade,
+  $version                 = false,
+  $package_provider        = 'package',
+  $package_url             = undef,
+  $package_dir             = $elasticsearch::params::package_dir,
+  $package_name            = $elasticsearch::params::package,
+  $package_pin             = true,
+  $purge_package_dir       = $elasticsearch::params::purge_package_dir,
+  $package_dl_timeout      = $elasticsearch::params::package_dl_timeout,
+  $proxy_url               = undef,
+  $elasticsearch_user      = $elasticsearch::params::elasticsearch_user,
+  $elasticsearch_group     = $elasticsearch::params::elasticsearch_group,
+  $configdir               = $elasticsearch::params::configdir,
+  $purge_configdir         = $elasticsearch::params::purge_configdir,
+  $service_provider        = 'init',
+  $init_defaults           = undef,
+  $init_defaults_file      = undef,
+  $init_template           = "${module_name}/etc/init.d/${elasticsearch::params::init_template}",
+  $config                  = undef,
+  $config_hiera_merge      = false,
+  $datadir                 = $elasticsearch::params::datadir,
+  $logdir                  = $elasticsearch::params::logdir,
+  $plugindir               = $elasticsearch::params::plugindir,
+  $plugintool              = $elasticsearch::params::plugintool,
+  $java_install            = false,
+  $java_package            = undef,
+  $manage_repo             = false,
+  $repo_version            = undef,
+  $repo_priority           = undef,
+  $repo_key_id             = 'D88E42B4',
+  $repo_key_source         = 'http://packages.elastic.co/GPG-KEY-elasticsearch',
+  $repo_proxy              = undef,
+  $logging_file            = undef,
+  $logging_config          = undef,
+  $logging_template        = undef,
+  $default_logging_level   = $elasticsearch::params::default_logging_level,
+  $repo_stage              = false,
+  $instances               = undef,
+  $instances_hiera_merge   = false,
+  $plugins                 = undef,
+  $plugins_hiera_merge     = false,
+  $use_ssl                 = undef,
+  $validate_ssl            = undef,
+  $ssl_user                = undef,
+  $ssl_password            = undef,
+  $api_protocol            = 'http',
+  $api_host                = 'localhost',
+  $api_port                = 9200,
+  $api_timeout             = 10,
+  $api_basic_auth_username = undef,
+  $api_basic_auth_password = undef,
+  $validate_tls            = true,
 ) inherits elasticsearch::params {
 
   anchor {'elasticsearch::begin': }
@@ -414,21 +457,50 @@ class elasticsearch(
     }
   }
 
-  # Setup SSL authentication args for use in any type that hits an api
-  if $use_ssl {
-    validate_string($ssl_user)
-    validate_string($ssl_password)
-    $protocol = 'https'
-    if $validate_ssl {
-      $ssl_args = "-u ${ssl_user}:${ssl_password}"
-    } else {
-      $ssl_args = "-k -u ${ssl_user}:${ssl_password}"
-    }
+  # Various parameters governing API access to Elasticsearch, handling
+  # deprecated params.
+  validate_string($api_protocol, $api_host)
+  if $use_ssl != undef {
+    validate_bool($use_ssl)
+    warning('"use_ssl" parameter is deprecated; set $api_protocol to "https" instead')
+    $_api_protocol = 'https'
   } else {
-    $protocol = 'http'
-    # lint:ignore:empty_string_assignment
-    $ssl_args = ''
-    # lint:endignore
+    $_api_protocol = $api_protocol
+  }
+
+  validate_bool($validate_tls)
+  if $validate_ssl != undef {
+    validate_bool($validate_ssl)
+    warning('"validate_ssl" parameter is deprecated; use $validate_tls instead')
+    $_validate_tls = $validate_ssl
+  } else {
+    $_validate_tls = $validate_tls
+  }
+
+  if $api_basic_auth_username { validate_string($api_basic_auth_username) }
+  if $ssl_user != undef {
+    validate_string($ssl_user)
+    warning('"ssl_user" parameter is deprecated; use $api_basic_auth_username instead')
+    $_api_basic_auth_username = $ssl_user
+  } else {
+    $_api_basic_auth_username = $api_basic_auth_username
+  }
+
+  if $api_basic_auth_password { validate_string($api_basic_auth_password) }
+  if $ssl_password != undef {
+    validate_string($ssl_password)
+    warning('"ssl_password" parameter is deprecated; use $api_basic_auth_password instead')
+    $_api_basic_auth_password = $ssl_password
+  } else {
+    $_api_basic_auth_password = $api_basic_auth_password
+  }
+
+  if ! is_integer($api_timeout) {
+    fail("'${api_timeout}' is not an integer")
+  }
+
+  if ! is_integer($api_port) {
+    fail("'${api_port}' is not an integer")
   }
 
   #### Manage actions
