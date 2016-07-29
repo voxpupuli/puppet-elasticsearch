@@ -15,7 +15,7 @@ shared_examples 'plugin provider' do |version, build|
         provider.expects(:plugin).with([
           '-Des.path.conf=/usr/share/elasticsearch',
           'install',
-          [ resource_name ]
+          resource_name
         ])
         provider.create
       end
@@ -32,7 +32,7 @@ shared_examples 'plugin provider' do |version, build|
               args
             end
           end
-        ])
+        ].flatten)
         provider.create
       end
 
@@ -48,18 +48,42 @@ shared_examples 'plugin provider' do |version, build|
               args
             end
           end
-        ])
+        ].flatten)
         provider.create
       end
 
-      it 'installs behind a proxy' do
-        resource[:proxy_args] = '-dproxyport=3128 -dproxyhost=localhost'
-        provider.expects(:plugin).with([
-          ['-dproxyport=3128', '-dproxyhost=localhost'],
-          '-Des.path.conf=/usr/share/elasticsearch',
-          'install', [resource_name]
-        ])
-        provider.create
+      describe 'proxying' do
+        it 'installs behind a proxy' do
+          resource[:proxy] = 'http://localhost:3128'
+          provider.expects(:plugin).with([
+            '-Dhttp.proxyHost=localhost',
+            '-Dhttp.proxyPort=3128',
+            '-Dhttps.proxyHost=localhost',
+            '-Dhttps.proxyPort=3128',
+            '-Des.path.conf=/usr/share/elasticsearch',
+            'install',
+            resource_name
+          ])
+          provider.create
+        end
+
+        it 'uses authentication credentials' do
+          resource[:proxy] = 'http://elastic:password@es.local:8080'
+          provider.expects(:plugin).with([
+            '-Dhttp.proxyHost=es.local',
+            '-Dhttp.proxyPort=8080',
+            '-Dhttp.proxyUser=elastic',
+            '-Dhttp.proxyPassword=password',
+            '-Dhttps.proxyHost=es.local',
+            '-Dhttps.proxyPort=8080',
+            '-Dhttps.proxyUser=elastic',
+            '-Dhttps.proxyPassword=password',
+            '-Des.path.conf=/usr/share/elasticsearch',
+            'install',
+            resource_name
+          ])
+          provider.create
+        end
       end
     end # of setup
 
