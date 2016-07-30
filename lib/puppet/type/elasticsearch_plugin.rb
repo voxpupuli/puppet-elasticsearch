@@ -19,7 +19,7 @@ Puppet::Type.newtype(:elasticsearch_plugin) do
     desc 'Source of the package. puppet:// or file:// resource'
   end
 
-  newparam(:proxy_args) do
+  newparam(:proxy) do
     desc 'Proxy Host'
   end
 
