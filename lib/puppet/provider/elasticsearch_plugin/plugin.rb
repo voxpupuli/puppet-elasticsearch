@@ -1,5 +1,7 @@
 $LOAD_PATH.unshift(File.join(File.dirname(__FILE__),"..","..",".."))
 
+require 'uri'
+
 Puppet::Type.type(:elasticsearch_plugin).provide(:plugin) do
   desc "A provider for the resource type `elasticsearch_plugin`,
         which handles plugin installation"
@@ -50,7 +52,11 @@ Puppet::Type.type(:elasticsearch_plugin).provide(:plugin) do
   end
 
   def pluginfile
-    File.join(@resource[:plugin_dir], plugin_name(@resource[:name]), '.name')
+    if @resource[:plugin_path]
+      File.join(@resource[:plugin_dir], @resource[:plugin_path], '.name')
+    else
+      File.join(@resource[:plugin_dir], plugin_name(@resource[:name]), '.name')
+    end
   end
 
   def writepluginfile
@@ -86,17 +92,31 @@ Puppet::Type.type(:elasticsearch_plugin).provide(:plugin) do
     commands
   end
 
+  def proxy_args url
+    parsed = URI(url)
+    ['http', 'https'].map do |schema|
+      [:host, :port, :user, :password].map do |param|
+        option = parsed.send(param)
+        if not option.nil?
+          "-D#{schema}.proxy#{param.to_s.capitalize}=#{option}"
+        end
+      end
+    end.flatten.compact
+  end
+
   def create
     es_version
     commands = []
-    commands << @resource[:proxy_args].split(' ') if @resource[:proxy_args]
+    if @resource[:proxy]
+      commands += proxy_args(@resource[:proxy])
+    end
     commands << "-Des.path.conf=#{homedir}"
     commands << 'install'
     commands << '--batch' if is22x?
-    commands << install1x if is1x?
-    commands << install2x if is2x?
+    commands += install1x if is1x?
+    commands += install2x if is2x?
     debug("Commands: #{commands.inspect}")
-    
+
     retry_count = 3
     retry_times = 0
     begin
@@ -161,15 +181,12 @@ Puppet::Type.type(:elasticsearch_plugin).provide(:plugin) do
   end
 
   def plugin_name(plugin_name)
-
     vendor, plugin, version = plugin_name.split('/')
 
     endname = vendor if plugin.nil? # If its a single name plugin like the ES 2.x official plugins
     endname = plugin.gsub(/(elasticsearch-|es-)/, '') unless plugin.nil?
 
-    return endname.downcase if is2x?
-    return endname
-
+    endname
   end
 
 end

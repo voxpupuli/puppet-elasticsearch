@@ -1,355 +1,157 @@
 require 'spec_helper_acceptance'
 
-describe "elasticsearch 2x:" do
+describe 'elasticsearch 2x' do
+  context 'upgrading', :upgrade => true do
+    describe '2.0.0 install' do
+      describe 'manifest' do
+        pp = <<-EOS
+          class { 'elasticsearch':
+            config => {
+              'node.name' => 'elasticsearch001',
+              'cluster.name' => '#{test_settings['cluster_name']}',
+              'network.host' => '0.0.0.0',
+            },
+            manage_repo => true,
+            repo_version => '#{test_settings['repo_version2x']}',
+            java_install => true,
+            version => '2.0.0',
+            restart_on_change => true,
+          }
 
-  shell("mkdir -p #{default['distmoduledir']}/another/files")
-  shell("cp /tmp/elasticsearch-kopf.zip #{default['distmoduledir']}/another/files/elasticsearch-kopf.zip")
-
-  describe "Install a plugin from official repository" do
-
-    it 'should run successfully' do
-      pp = "class { 'elasticsearch': config => { 'node.name' => 'elasticsearch001', 'cluster.name' => '#{test_settings['cluster_name']}' }, manage_repo => true, repo_version => '#{test_settings['repo_version2x']}', java_install => true, version => '2.0.0' }
-            elasticsearch::instance { 'es-01': config => { 'node.name' => 'elasticsearch001', 'http.port' => '#{test_settings['port_a']}' } }
-            elasticsearch::plugin{'lmenezes/elasticsearch-kopf': instances => 'es-01' }
-           "
-
-      # Run it twice and test for idempotency
-      apply_manifest(pp, :catch_failures => true)
-      expect(apply_manifest(pp, :catch_failures => true).exit_code).to be_zero
-    end
-
-    describe service(test_settings['service_name_a']) do
-      it { should be_enabled }
-      it { should be_running }
-    end
-
-    describe package(test_settings['package_name']) do
-      it { should be_installed }
-    end
-
-    describe file(test_settings['pid_file_a']) do
-      it { should be_file }
-      its(:content) { should match /[0-9]+/ }
-    end
-
-    it 'make sure the directory exists' do
-      shell('ls /usr/share/elasticsearch/plugins/kopf/', {:acceptable_exit_codes => 0})
-    end
-
-    it 'make sure elasticsearch reports it as existing' do
-      curl_with_retries('validated plugin as installed', default, "http://localhost:#{test_settings['port_a']}/_nodes/?plugin | grep kopf", 0)
-    end
-
-  end
-  describe "Install a plugin from custom git repo" do
-    it 'should run successfully' do
-    end
-
-    it 'make sure the directory exists' do
-    end
-
-    it 'make sure elasticsearch reports it as existing' do
-    end
-
-  end
-
-  if fact('puppetversion') =~ /3\.[2-9]\./
-
-    describe "Install a non existing plugin" do
-
-      it 'should run successfully' do
-        pp = "class { 'elasticsearch': config => { 'node.name' => 'elasticearch001', 'cluster.name' => '#{test_settings['cluster_name']}' }, manage_repo => true, repo_version => '#{test_settings['repo_version2x']}', java_install => true, version => '2.0.0' }
-              elasticsearch::instance { 'es-01': config => { 'node.name' => 'elasticsearch001', 'http.port' => '#{test_settings['port_a']}' } }
-              elasticsearch::plugin{'elasticsearch/non-existing': module_dir => 'non-existing', instances => 'es-01' }
-        "
-        #  Run it twice and test for idempotency
-        apply_manifest(pp, :expect_failures => true)
-      end
-
-    end
-
-  else
-    # The exit codes have changes since Puppet 3.2x
-    # Since beaker expectations are based on the most recent puppet code All runs on previous versions fails.
-  end
-
-  describe "module removal" do
-
-    it 'should run successfully' do
-      pp = "class { 'elasticsearch': ensure => 'absent' }
-            elasticsearch::instance{ 'es-01': ensure => 'absent' }
-           "
-
-      apply_manifest(pp, :catch_failures => true)
-    end
-
-    describe file('/etc/elasticsearch/es-01') do
-      it { should_not be_directory }
-    end
-
-    describe package(test_settings['package_name']) do
-      it { should_not be_installed }
-    end
-
-    describe service(test_settings['service_name_a']) do
-      it { should_not be_enabled }
-      it { should_not be_running }
-    end
-
-  end
-
-
-  describe "install plugin while running ES under user 'elasticsearch'" do
-
-    it 'should run successfully' do
-      pp = "class { 'elasticsearch': config => { 'node.name' => 'elasticsearch001', 'cluster.name' => '#{test_settings['cluster_name']}' }, manage_repo => true, repo_version => '#{test_settings['repo_version2x']}', java_install => true, elasticsearch_user => 'elasticsearch', elasticsearch_group => 'elasticsearch', version => '2.0.0' }
-            elasticsearch::instance { 'es-01': config => { 'node.name' => 'elasticsearch001', 'http.port' => '#{test_settings['port_a']}' } }
-            elasticsearch::plugin{'lmenezes/elasticsearch-kopf': module_dir => 'kopf', instances => 'es-01' }
-      "
-
-      # Run it twice and test for idempotency
-      apply_manifest(pp, :catch_failures => true)
-      expect(apply_manifest(pp, :catch_failures => true).exit_code).to be_zero
-    end
-
-    describe service(test_settings['service_name_a']) do
-      it { should be_enabled }
-      it { should be_running }
-    end
-
-    describe package(test_settings['package_name']) do
-      it { should be_installed }
-    end
-
-    describe file(test_settings['pid_file_a']) do
-      it { should be_file }
-      its(:content) { should match /[0-9]+/ }
-    end
-
-    it 'make sure the directory exists' do
-      shell('ls /usr/share/elasticsearch/plugins/kopf/', {:acceptable_exit_codes => 0})
-    end
-
-    it 'make sure elasticsearch reports it as existing' do
-      curl_with_retries('validated plugin as installed', default, "http://localhost:#{test_settings['port_a']}/_nodes/?plugin | grep kopf", 0)
-    end
-
-  end
-
-
-  describe "module removal" do
-
-    it 'should run successfully' do
-      pp = "class { 'elasticsearch': ensure => 'absent' }
-            elasticsearch::instance{ 'es-01': ensure => 'absent' }
-           "
-
-      apply_manifest(pp, :catch_failures => true)
-    end
-
-    describe file('/etc/elasticsearch/es-01') do
-      it { should_not be_directory }
-    end
-
-    describe package(test_settings['package_name']) do
-      it { should_not be_installed }
-    end
-
-    describe service(test_settings['service_name_a']) do
-      it { should_not be_enabled }
-      it { should_not be_running }
-    end
-
-  end
-
-  describe 'upgrading', :upgrade => true do
-
-    describe 'Setup 2.0.0' do
-      it 'should run successful' do
-        pp = "class { 'elasticsearch': config => { 'node.name' => 'elasticsearch001', 'cluster.name' => '#{test_settings['cluster_name']}' }, manage_repo => true, repo_version => '#{test_settings['repo_version2x']}', java_install => true, version => '2.0.0' }
-              elasticsearch::instance { 'es-01': config => { 'node.name' => 'elasticsearch001', 'http.port' => '#{test_settings['port_a']}' } }
-              elasticsearch::plugin{'cloud-aws': instances => 'es-01' }
-              elasticsearch::plugin{'marvel-agent': instances => 'es-01' }
-              elasticsearch::plugin{'license': instances => 'es-01' }
-        "
-
-        # Run it twice and test for idempotency
-        apply_manifest(pp, :catch_failures => true)
-        expect(apply_manifest(pp, :catch_failures => true).exit_code).to be_zero
-
-      end
-
-      it 'make sure the directory exists' do
-        shell('ls /usr/share/elasticsearch/plugins/cloud-aws/', {:acceptable_exit_codes => 0})
-      end
-
-      it 'make sure elasticsearch reports it as existing' do
-        curl_with_retries('validated plugin as installed', default, "http://localhost:#{test_settings['port_a']}/_nodes/?plugin | grep cloud-aws | grep 2.0.0", 0)
-      end
-
-    end
-
-    describe "Upgrade to 2.0.1" do
-      it 'Should run succesful' do
-        pp = "class { 'elasticsearch': config => { 'node.name' => 'elasticsearch001', 'cluster.name' => '#{test_settings['cluster_name']}' }, manage_repo => true, repo_version => '#{test_settings['repo_version2x']}', java_install => true, version => '2.0.1' }
-              elasticsearch::instance { 'es-01': config => { 'node.name' => 'elasticsearch001', 'http.port' => '#{test_settings['port_a']}' } }
-              elasticsearch::plugin{'cloud-aws': instances => 'es-01' }
-              elasticsearch::plugin{'marvel-agent': instances => 'es-01' }
-              elasticsearch::plugin{'license': instances => 'es-01' }
-        "
-
-        # Run it twice and test for idempotency
-        apply_manifest(pp, :catch_failures => true)
-        expect(apply_manifest(pp, :catch_failures => true).exit_code).to be_zero
-
-      end
-
-      it 'make sure the directory exists' do
-        shell('ls /usr/share/elasticsearch/plugins/cloud-aws/', {:acceptable_exit_codes => 0})
-      end
-
-      it 'make sure elasticsearch reports it as existing' do
-        curl_with_retries('validated plugin as installed', default, "http://localhost:#{test_settings['port_a']}/_nodes/?plugin | grep cloud-aws | grep 2.0.1", 0)
-      end
-    end
-
-  end
-
-  describe "offline install via puppet resource" do
-      it 'Should run succesful' do
-        pp = "class { 'elasticsearch': config => { 'node.name' => 'elasticsearch001', 'cluster.name' => '#{test_settings['cluster_name']}' }, manage_repo => true, repo_version => '#{test_settings['repo_version2x']}', java_install => true }
-              elasticsearch::instance { 'es-01': config => { 'node.name' => 'elasticsearch001', 'http.port' => '#{test_settings['port_a']}' } }
-              elasticsearch::plugin{'kopf': source => 'puppet:///modules/another/elasticsearch-kopf.zip', instances => 'es-01' }
-        "
-
-        # Run it twice and test for idempotency
-        apply_manifest(pp, :catch_failures => true)
-        expect(apply_manifest(pp, :catch_failures => true).exit_code).to be_zero
-
-      end
-
-      it 'make sure elasticsearch reports it as existing' do
-        curl_with_retries('validated plugin as installed', default, "http://localhost:#{test_settings['port_a']}/_nodes/?plugin | grep kopf", 0)
-      end
-
-  end
-
-  describe "module removal" do
-
-    it 'should run successfully' do
-      pp = "class { 'elasticsearch': ensure => 'absent' }
-            elasticsearch::instance{ 'es-01': ensure => 'absent' }
-            file { '/usr/share/elasticsearch/plugin':
-              ensure => 'absent',
-              force => true,
-              recurse => true,
+          elasticsearch::instance { 'es-01':
+            config => {
+              'node.name' => 'elasticsearch001',
+              'http.port' => '#{test_settings['port_a']}'
             }
-           "
+          }
 
-      apply_manifest(pp, :catch_failures => true)
-    end
+          Elasticsearch::Plugin { instances => 'es-01' }
+          elasticsearch::plugin { 'cloud-aws': }
+          elasticsearch::plugin { 'marvel-agent': }
+          elasticsearch::plugin { 'license': }
+        EOS
 
-    describe file('/etc/elasticsearch/es-01') do
-      it { should_not be_directory }
-    end
-
-    describe package(test_settings['package_name']) do
-      it { should_not be_installed }
-    end
-
-    describe service(test_settings['service_name_a']) do
-      it { should_not be_enabled }
-      it { should_not be_running }
-    end
-
-  end
-
-  describe "offline install via file url" do
-      it 'Should run succesful' do
-        pp = "class { 'elasticsearch': config => { 'node.name' => 'elasticsearch001', 'cluster.name' => '#{test_settings['cluster_name']}' }, manage_repo => true, repo_version => '#{test_settings['repo_version2x']}', java_install => true }
-              elasticsearch::instance { 'es-01': config => { 'node.name' => 'elasticsearch001', 'http.port' => '#{test_settings['port_a']}' } }
-              elasticsearch::plugin{'kopf': url => 'file:///tmp/elasticsearch-kopf.zip', instances => 'es-01' }
-        "
-
-        # Run it twice and test for idempotency
-        apply_manifest(pp, :catch_failures => true)
-        expect(apply_manifest(pp, :catch_failures => true).exit_code).to be_zero
-
+        it 'applies cleanly' do
+          apply_manifest pp, :catch_failures => true
+        end
+        it 'is idempotent' do
+          apply_manifest pp , :catch_changes  => true
+        end
       end
 
-      it 'make sure elasticsearch reports it as existing' do
-        curl_with_retries('validated plugin as installed', default, "http://localhost:#{test_settings['port_a']}/_nodes/?plugin | grep kopf", 0)
+      describe file('/usr/share/elasticsearch/plugins/cloud-aws') do
+        it { should be_directory }
       end
 
-  end
-
-  describe "module removal" do
-
-    it 'should run successfully' do
-      pp = "class { 'elasticsearch': ensure => 'absent' }
-            elasticsearch::instance{ 'es-01': ensure => 'absent' }
-           "
-
-      apply_manifest(pp, :catch_failures => true)
-    end
-
-    describe file('/etc/elasticsearch/es-01') do
-      it { should_not be_directory }
-    end
-
-    describe package(test_settings['package_name']) do
-      it { should_not be_installed }
-    end
-
-    describe service(test_settings['service_name_a']) do
-      it { should_not be_enabled }
-      it { should_not be_running }
-    end
-
-  end
-
-  describe "install via url" do
-      it 'Should run succesful' do
-        pp = "class { 'elasticsearch': config => { 'node.name' => 'elasticsearch001', 'cluster.name' => '#{test_settings['cluster_name']}' }, manage_repo => true, repo_version => '#{test_settings['repo_version2x']}', java_install => true }
-              elasticsearch::instance { 'es-01': config => { 'node.name' => 'elasticsearch001', 'http.port' => '#{test_settings['port_a']}' } }
-              elasticsearch::plugin{'HQ': url => 'https://github.com/royrusso/elasticsearch-HQ/archive/v2.0.3.zip', instances => 'es-01' }
-        "
-
-        # Run it twice and test for idempotency
-        apply_manifest(pp, :catch_failures => true)
-        expect(apply_manifest(pp, :catch_failures => true).exit_code).to be_zero
-
+      describe port(test_settings['port_a']) do
+        it 'open', :with_retries do should be_listening end
       end
 
-      it 'make sure elasticsearch reports it as existing' do
-        curl_with_retries('validated plugin as installed', default, "http://localhost:#{test_settings['port_a']}/_nodes/?plugin | grep hq", 0)
+      describe server :container do
+        describe http(
+          "http://localhost:#{test_settings['port_a']}/_cluster/stats",
+        ) do
+          it 'returns cloud-aws with version 2.0.0', :with_retries do
+            json = JSON.parse(response.body)
+            plugins = json['nodes']['plugins'].map do |h|
+              {
+                name: h['name'],
+                version: h['version']
+              }
+            end
+            expect(plugins).to include({
+              name: 'cloud-aws',
+              version: '2.0.0'
+            })
+          end
+        end
       end
 
+      describe server :container do
+        describe http "http://localhost:#{test_settings['port_a']}" do
+          it 'returns ES version 2.0.0', :with_retries do
+            expect(
+              JSON.parse(response.body)['version']['number']
+            ).to eq('2.0.0')
+          end
+        end
+      end
+    end
+
+    describe 'upgrading to 2.0.1' do
+      describe 'manifest' do
+        pp = <<-EOS
+          class { 'elasticsearch':
+            config => {
+              'node.name' => 'elasticsearch001',
+              'cluster.name' => '#{test_settings['cluster_name']}',
+              'network.host' => '0.0.0.0',
+            },
+            manage_repo => true,
+            repo_version => '#{test_settings['repo_version2x']}',
+            java_install => true,
+            version => '2.0.1',
+            restart_on_change => true,
+          }
+
+          elasticsearch::instance { 'es-01':
+            config => {
+              'node.name' => 'elasticsearch001',
+              'http.port' => '#{test_settings['port_a']}'
+            }
+          }
+
+          Elasticsearch::Plugin { instances => 'es-01' }
+          elasticsearch::plugin { 'cloud-aws': }
+          elasticsearch::plugin { 'marvel-agent': }
+          elasticsearch::plugin { 'license': }
+        EOS
+
+        it 'applies cleanly' do
+          apply_manifest pp, :catch_failures => true
+        end
+        it 'is idempotent' do
+          apply_manifest pp , :catch_changes  => true
+        end
+      end
+
+      describe file('/usr/share/elasticsearch/plugins/cloud-aws') do
+        it { should be_directory }
+      end
+
+      describe port(test_settings['port_a']) do
+        it 'open', :with_retries do should be_listening end
+      end
+
+      describe server :container do
+        describe http(
+          "http://localhost:#{test_settings['port_a']}/_cluster/stats",
+        ) do
+          it 'reports cloud-aws as upgraded', :with_retries do
+            json = JSON.parse(response.body)
+            plugins = json['nodes']['plugins'].map do |h|
+              {
+                name: h['name'],
+                version: h['version']
+              }
+            end
+            expect(plugins).to include({
+              name: 'cloud-aws',
+              version: '2.0.1'
+            })
+          end
+        end
+      end
+
+      describe server :container do
+        describe http "http://localhost:#{test_settings['port_a']}" do
+          it 'reports ES as upgraded', :with_retries do
+            expect(
+              JSON.parse(response.body)['version']['number']
+            ).to eq('2.0.1')
+          end
+        end
+      end
+    end
   end
-
-  describe "module removal" do
-
-    it 'should run successfully' do
-      pp = "class { 'elasticsearch': ensure => 'absent' }
-            elasticsearch::instance{ 'es-01': ensure => 'absent' }
-           "
-
-      apply_manifest(pp, :catch_failures => true)
-    end
-
-    describe file('/etc/elasticsearch/es-01') do
-      it { should_not be_directory }
-    end
-
-    describe package(test_settings['package_name']) do
-      it { should_not be_installed }
-    end
-
-    describe service(test_settings['service_name_a']) do
-      it { should_not be_enabled }
-      it { should_not be_running }
-    end
-
-  end
-
 end

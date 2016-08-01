@@ -41,7 +41,7 @@ class elasticsearch::params {
   $status = 'enabled'
 
   # restart on configuration change?
-  $restart_on_change = true
+  $restart_on_change = false
 
   # Purge configuration directory
   $purge_configdir = false
@@ -115,7 +115,6 @@ class elasticsearch::params {
       $installpath = '/opt/elasticsearch'
       $homedir     = '/usr/share/elasticsearch'
       $plugindir   = "${homedir}/plugins"
-      $plugintool  = "${homedir}/bin/plugin"
       $datadir     = '/usr/share/elasticsearch/data'
     }
     'OpenBSD': {
@@ -125,7 +124,6 @@ class elasticsearch::params {
       $installpath = undef
       $homedir     = '/usr/local/elasticsearch'
       $plugindir   = "${homedir}/plugins"
-      $plugintool  = "${homedir}/bin/plugin"
       $datadir     = '/var/elasticsearch/data'
     }
     default: {

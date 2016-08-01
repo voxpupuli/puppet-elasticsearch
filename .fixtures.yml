@@ -3,9 +3,9 @@ fixtures:
     stdlib:
       repo: puppetlabs/stdlib
       ref: 4.11.0
-    java:
-      repo: puppetlabs/java
-      ref: 1.4.3
+    # java:
+    #   repo: puppetlabs/java
+    #   ref: 1.6.0
     datacat:
       repo: richardc/datacat
       ref: 0.6.2
@@ -19,5 +19,9 @@ fixtures:
       repo: darin/zypprepo
       ref: 1.0.2
     java_ks: puppetlabs/java_ks
+  repositories:
+    java:
+      repo: git://github.com/tylerjl/puppetlabs-java
+      ref: f3312d7
   symlinks:
     elasticsearch: "#{source_dir}"

@@ -52,6 +52,12 @@ RSpec::Core::RakeTask.new(:spec_verbose) do |t|
 end
 task :spec_verbose => :spec_prep
 
+RSpec::Core::RakeTask.new(:spec_unit) do |t|
+  t.pattern = 'spec/{classes,defines,unit,functions,templates}/**/*_spec.rb'
+  t.rspec_opts = ['--color']
+end
+task :spec_unit => :spec_prep
+
 task :beaker => [:spec_prep, 'artifacts:prep']
 
 desc 'Run integration tests'
@@ -62,7 +68,7 @@ task 'beaker:integration' => [:spec_prep, 'artifacts:prep']
 
 desc 'Run acceptance tests'
 RSpec::Core::RakeTask.new('beaker:acceptance') do |c|
-  c.pattern = 'spec/acceptance/*_spec.rb'
+  c.pattern = 'spec/acceptance/0*_spec.rb'
 end
 task 'beaker:acceptance' => [:spec_prep, 'artifacts:prep']
 
