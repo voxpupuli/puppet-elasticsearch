@@ -150,7 +150,7 @@ define elasticsearch::instance(
     fail("\"${ensure}\" is not a valid ensure parameter value")
   }
 
-  $notify_service = $elasticsearch::restart_on_change ? {
+  $notify_service = $elasticsearch::restart_config_change ? {
     true  => Elasticsearch::Service[$name],
     false => undef,
   }
@@ -169,17 +169,11 @@ define elasticsearch::instance(
       $instance_config = {}
     } else {
       validate_hash($config)
-      $instance_config = $config
+      $instance_config = deep_implode($config)
     }
 
     if(has_key($instance_config, 'node.name')) {
       $instance_node_name = {}
-    } elsif(has_key($instance_config,'node')) {
-      if(has_key($instance_config['node'], 'name')) {
-        $instance_node_name = {}
-      } else {
-        $instance_node_name = { 'node.name' => "${::hostname}-${name}" }
-      }
     } else {
       $instance_node_name = { 'node.name' => "${::hostname}-${name}" }
     }
@@ -205,13 +199,13 @@ define elasticsearch::instance(
     } else {
 
       if(is_hash($elasticsearch::logging_config)) {
-        $main_logging_config = $elasticsearch::logging_config
+        $main_logging_config = deep_implode($elasticsearch::logging_config)
       } else {
         $main_logging_config = { }
       }
 
       if(is_hash($logging_config)) {
-        $instance_logging_config = $logging_config
+        $instance_logging_config = deep_implode($logging_config)
       } else {
         $instance_logging_config = { }
       }
@@ -226,23 +220,13 @@ define elasticsearch::instance(
       $logging_source = undef
     }
 
-    if ($elasticsearch::config != undef) {
-      $main_config = $elasticsearch::config
+    if ($elasticsearch::x_config != undef) {
+      $main_config = deep_implode($elasticsearch::x_config)
     } else {
       $main_config = { }
     }
 
-    if(has_key($instance_config, 'path.data')) {
-      $instance_datadir_config = { 'path.data' => $instance_datadir }
-    } elsif(has_key($instance_config, 'path')) {
-      if(has_key($instance_config['path'], 'data')) {
-        $instance_datadir_config = { 'path' => { 'data' => $instance_datadir } }
-      } else {
-        $instance_datadir_config = { 'path.data' => $instance_datadir }
-      }
-    } else {
-      $instance_datadir_config = { 'path.data' => $instance_datadir }
-    }
+    $instance_datadir_config = { 'path.data' => $instance_datadir }
 
     if(is_array($instance_datadir)) {
       $dirs = join($instance_datadir, ' ')
@@ -257,17 +241,7 @@ define elasticsearch::instance(
       $instance_logdir = $logdir
     }
 
-    if(has_key($instance_config, 'path.logs')) {
-      $instance_logdir_config = { 'path.logs' => $instance_logdir }
-    } elsif(has_key($instance_config, 'path')) {
-      if(has_key($instance_config['path'], 'logs')) {
-        $instance_logdir_config = { 'path' => { 'logs' => $instance_logdir } }
-      } else {
-        $instance_logdir_config = { 'path.logs' => $instance_logdir }
-      }
-    } else {
-      $instance_logdir_config = { 'path.logs' => $instance_logdir }
-    }
+    $instance_logdir_config = { 'path.logs' => $instance_logdir }
 
     validate_bool($ssl)
     if $ssl {

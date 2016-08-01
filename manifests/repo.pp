@@ -26,8 +26,8 @@
 class elasticsearch::repo {
 
   Exec {
-    path      => [ '/bin', '/usr/bin', '/usr/local/bin' ],
-    cwd       => '/',
+    path => [ '/bin', '/usr/bin', '/usr/local/bin' ],
+    cwd  => '/',
   }
 
   case $::osfamily {
@@ -36,22 +36,31 @@ class elasticsearch::repo {
       Class['apt::update'] -> Package[$elasticsearch::package_name]
 
       apt::source { 'elasticsearch':
+        ensure      => $elasticsearch::ensure,
         location    => "http://packages.elastic.co/elasticsearch/${elasticsearch::repo_version}/debian",
         release     => 'stable',
         repos       => 'main',
         key         => $::elasticsearch::repo_key_id,
         key_source  => $::elasticsearch::repo_key_source,
         include_src => false,
+        pin         => $elasticsearch::repo_priority,
       }
     }
     'RedHat', 'Linux': {
       yumrepo { 'elasticsearch':
+        ensure   => $elasticsearch::ensure,
         descr    => 'elasticsearch repo',
         baseurl  => "http://packages.elastic.co/elasticsearch/${elasticsearch::repo_version}/centos",
         gpgcheck => 1,
         gpgkey   => $::elasticsearch::repo_key_source,
         enabled  => 1,
         proxy    => $::elasticsearch::repo_proxy,
+        priority => $elasticsearch::repo_priority,
+      } ~>
+      exec { 'elasticsearch_yumrepo_yum_clean':
+        command     => 'yum clean metadata expire-cache --disablerepo="*" --enablerepo="elasticsearch"',
+        refreshonly => true,
+        returns     => [0, 1],
       }
     }
     'Suse': {
@@ -87,32 +96,4 @@ class elasticsearch::repo {
     }
   }
 
-  # Package pinning
-
-    case $::osfamily {
-      'Debian': {
-        include ::apt
-
-        if ($elasticsearch::package_pin == true and $elasticsearch::version != false) {
-          apt::pin { $elasticsearch::package_name:
-            ensure   => 'present',
-            packages => $elasticsearch::package_name,
-            version  => $elasticsearch::version,
-            priority => 1000,
-          }
-        }
-
-      }
-      'RedHat', 'Linux': {
-
-        if ($elasticsearch::package_pin == true and $elasticsearch::version != false) {
-          yum::versionlock { "0:elasticsearch-${elasticsearch::pkg_version}.noarch":
-            ensure => 'present',
-          }
-        }
-      }
-      default: {
-        warning("Unable to pin package for OSfamily \"${::osfamily}\".")
-      }
-    }
 }

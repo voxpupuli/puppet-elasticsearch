@@ -9,10 +9,12 @@
 # === Parameters
 #
 # [*module_dir*]
-#   Directory name where the module will be installed
+#   Directory name where the module has been installed
+#   This is automatically generated based on the module name
+#   Specify a value here to override the auto generated value
 #   Value type is string
 #   Default value: None
-#   This variable is deprecated
+#   This variable is optional
 #
 # [*ensure*]
 #   Whether the plugin will be installed or removed.
@@ -46,6 +48,18 @@
 #   Default value: None
 #   This variable is optional
 #
+# [*proxy_username*]
+#   Proxy auth username to use when installing the plugin
+#   Value type is string
+#   Default value: None
+#   This variable is optional
+#
+# [*proxy_password*]
+#   Proxy auth username to use when installing the plugin
+#   Value type is string
+#   Default value: None
+#   This variable is optional
+#
 # [*instances*]
 #   Specify all the instances related
 #   value type is string or array
@@ -69,42 +83,37 @@
 #
 define elasticsearch::plugin(
   $instances,
-  $module_dir      = undef,
-  $ensure          = 'present',
-  $url             = undef,
-  $source          = undef,
-  $proxy_host      = undef,
-  $proxy_port      = undef
+  $module_dir     = undef,
+  $ensure         = 'present',
+  $url            = undef,
+  $source         = undef,
+  $proxy_host     = undef,
+  $proxy_port     = undef,
+  $proxy_username = undef,
+  $proxy_password = undef,
 ) {
 
   include elasticsearch
 
-  $notify_service = $elasticsearch::restart_on_change ? {
+  $notify_service = $elasticsearch::restart_plugin_change ? {
     false   => undef,
     default => Elasticsearch::Service[$instances],
   }
 
-  if ($module_dir != undef) {
-    warning("module_dir settings is deprecated for plugin ${name}. The directory is now auto detected.")
-  }
-
   # set proxy by override or parse and use proxy_url from
   # elasticsearch::proxy_url or use no proxy at all
-  
+
   if ($proxy_host != undef and $proxy_port != undef) {
-    $proxy = "-DproxyPort=${proxy_port} -DproxyHost=${proxy_host}"
-  }
-  elsif ($elasticsearch::proxy_url != undef) {
-    $proxy_host_from_url = regsubst($elasticsearch::proxy_url, '(http|https)://([^:]+)(|:\d+).+', '\2')
-    $proxy_port_from_url = regsubst($elasticsearch::proxy_url, '(?:http|https)://[^:/]+(?::([0-9]+))?(?:/.*)?', '\1')
-    
-    # validate parsed values before using them
-    if (is_string($proxy_host_from_url) and is_integer($proxy_port_from_url)) {
-      $proxy = "-DproxyPort=${proxy_port_from_url} -DproxyHost=${proxy_host_from_url}"
+    if ($proxy_username != undef and $proxy_password != undef) {
+      $_proxy_auth = "${proxy_username}:${proxy_password}@"
+    } else {
+      $_proxy_auth = undef
     }
-  }
-  else {
-    $proxy = undef
+    $_proxy = "http://${_proxy_auth}${proxy_host}:${proxy_port}"
+  } elsif ($elasticsearch::proxy_url != undef) {
+    $_proxy = $elasticsearch::proxy_url
+  } else {
+    $_proxy = undef
   }
 
   if ($source != undef) {
@@ -132,12 +141,13 @@ define elasticsearch::plugin(
     'installed', 'present': {
 
       elasticsearch_plugin { $name:
-        ensure     => 'present',
-        source     => $file_source,
-        url        => $url,
-        proxy_args => $proxy,
-        plugin_dir => $::elasticsearch::plugindir,
-        notify     => $notify_service,
+        ensure      => 'present',
+        source      => $file_source,
+        url         => $url,
+        proxy       => $_proxy,
+        plugin_dir  => $::elasticsearch::plugindir,
+        plugin_path => $module_dir,
+        notify      => $notify_service,
       }
 
     }

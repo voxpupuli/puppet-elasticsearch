@@ -107,7 +107,7 @@ define elasticsearch::service::openbsd(
 
   }
 
-  $notify_service = $elasticsearch::restart_on_change ? {
+  $notify_service = $elasticsearch::restart_config_change ? {
     true  => Service["elasticsearch-instance-${name}"],
     false => undef,
   }
