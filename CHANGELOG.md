@@ -2,6 +2,8 @@
 
 ### Summary
 Rewritten elasticsearch::template using native type and provider.
+Fixed and added additional proxy parameters to elasticsearch::plugin instances.
+Exposed repo priority parameters for apt and yum repos.
 
 #### Features
 * In addition to better consistency, the `elasticsearch::template` type now also accepts various `api_*` parameters to control how access to the Elasticsearch API is configured (there are top-level parameters that are inherited and can be overwritten in `elasticsearch::api_*`).
