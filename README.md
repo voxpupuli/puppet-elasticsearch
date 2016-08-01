@@ -763,7 +763,7 @@ Testing on other platforms has been light and cannot be guaranteed.
 
 ## Development
 
-Please see the [CONTRIBUTING.md] file for instructions regarding development environments and testing.
+Please see the [CONTRIBUTING.md][CONTRIBUTING.md] file for instructions regarding development environments and testing.
 
 ## Support
 
