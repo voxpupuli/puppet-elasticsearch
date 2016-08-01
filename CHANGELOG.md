@@ -1,4 +1,4 @@
-## x.x.x (Month Day, Year)
+## 0.13.0 (August 1, 2016)
 
 ### Summary
 Rewritten elasticsearch::template using native type and provider.
