@@ -3,6 +3,7 @@
 ### Summary
 
 #### Features
+* Added `system_key` parameter to the `elasticsearch` class and `elasticsearch::instance` type for placing Shield system keys.
 
 #### Bugfixes
 
