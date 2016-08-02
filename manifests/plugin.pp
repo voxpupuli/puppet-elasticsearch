@@ -82,7 +82,7 @@
 # * Richard Pijnenburg <mailto:richard.pijnenburg@elasticsearch.com>
 #
 define elasticsearch::plugin(
-  $instances,
+  $instances      = undef,
   $module_dir     = undef,
   $ensure         = 'present',
   $url            = undef,
@@ -95,9 +95,22 @@ define elasticsearch::plugin(
 
   include elasticsearch
 
-  $notify_service = $elasticsearch::restart_plugin_change ? {
-    false   => undef,
-    default => Elasticsearch::Service[$instances],
+  case $ensure {
+    'installed', 'present': {
+      if empty($instances) {
+        fail('no $instances defined')
+      }
+
+      if $elasticsearch::restart_plugin_change {
+        Elasticsearch_plugin[$name] {
+          notify +> Elasticsearch::Instance[$instances],
+        }
+      }
+    }
+    'absent': { }
+    default: {
+      fail("'${ensure}' is not a valid ensure parameter value")
+    }
   }
 
   # set proxy by override or parse and use proxy_url from
@@ -137,27 +150,12 @@ define elasticsearch::plugin(
     validate_string($url)
   }
 
-  case $ensure {
-    'installed', 'present': {
-
-      elasticsearch_plugin { $name:
-        ensure      => 'present',
-        source      => $file_source,
-        url         => $url,
-        proxy       => $_proxy,
-        plugin_dir  => $::elasticsearch::plugindir,
-        plugin_path => $module_dir,
-        notify      => $notify_service,
-      }
-
-    }
-    'absent': {
-      elasticsearch_plugin { $name:
-        ensure => absent,
-      }
-    }
-    default: {
-      fail("${ensure} is not a valid ensure command.")
-    }
+  elasticsearch_plugin { $name:
+    ensure      => $ensure,
+    source      => $file_source,
+    url         => $url,
+    proxy       => $_proxy,
+    plugin_dir  => $::elasticsearch::plugindir,
+    plugin_path => $module_dir,
   }
 }

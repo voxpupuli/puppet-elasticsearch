@@ -2,7 +2,23 @@ require 'spec_helper'
 
 describe 'elasticsearch::shield::user' do
 
+  let :facts do {
+    :operatingsystem => 'CentOS',
+    :kernel => 'Linux',
+    :osfamily => 'RedHat',
+    :operatingsystemmajrelease => '7',
+    :scenario => '',
+    :common => ''
+  } end
+
   let(:title) { 'elastic' }
+
+  let(:pre_condition) {%q{
+    class { 'elasticsearch': }
+    elasticsearch::instance { 'es-01': }
+    elasticsearch::plugin { 'shield': instances => 'es-01' }
+    elasticsearch::template { 'foo': content => {"foo" => "bar"} }
+  }}
 
   context 'without a password' do
     it { should raise_error(Puppet::Error, /must pass password/i) }
@@ -17,7 +33,12 @@ describe 'elasticsearch::shield::user' do
       }
     end
 
-    it { should contain_elasticsearch__shield__user('elastic') }
+    it { should contain_elasticsearch__shield__user('elastic')
+      .that_comes_before([
+      'Elasticsearch::Template[foo]'
+    ]).that_requires([
+      'Elasticsearch::Plugin[shield]'
+    ])}
     it { should contain_elasticsearch_shield_user('elastic') }
     it do
       should contain_elasticsearch_shield_user_roles('elastic').with(
