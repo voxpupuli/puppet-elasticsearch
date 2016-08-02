@@ -74,7 +74,7 @@ class elasticsearch::repo {
       exec { 'elasticsearch_suse_import_gpg':
         command => $_import_cmd,
         unless  =>
-          "test $(rpm -qa gpg-pubkey | grep -i 'D88E42B4' | wc -l) -eq 1 ",
+          "test $(rpm -qa gpg-pubkey | grep -i 'D88E42B4' | wc -l) -eq 1",
         notify  => Zypprepo['elasticsearch'],
       }
 
