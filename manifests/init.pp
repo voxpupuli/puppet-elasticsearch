@@ -597,26 +597,60 @@ class elasticsearch(
   }
 
   #### Manage relationships
+  #
+  # Note that many of these overly verbose declarations work around
+  # https://tickets.puppetlabs.com/browse/PUP-1410
 
   if $ensure == 'present' {
 
-    # we need the software before configuring it
+    # Anchor, installation, and configuration
     Anchor['elasticsearch::begin']
     -> Class['elasticsearch::package']
     -> Class['elasticsearch::config']
+
+    # After initial setup, ensure plugins are setup before instance are started
+    # or users/roles are created
+    Class['elasticsearch::config']
     -> Elasticsearch::Plugin <| |>
-    -> Elasticsearch::Shield::Role <| |>
-    -> Elasticsearch::Shield::User <| |>
+    Elasticsearch::Plugin <| |>
     -> Elasticsearch::Instance <| |>
+    Elasticsearch::Plugin <| |>
+    -> Elasticsearch::Shield::Role <| |>
+    Elasticsearch::Plugin <| |>
+    -> Elasticsearch::Shield::User <| |>
+
+    # Ensure users and roles are created before templates are managed
+    Elasticsearch::Shield::Role <| |>
+    -> Elasticsearch::Template <| |>
+    Elasticsearch::Shield::User <| |>
+    -> Elasticsearch::Template <| |>
+
+    # Configure instances are main setup and config is done, and ensure
+    # they're setup before any templates are created
+    Class['elasticsearch::config']
+    -> Elasticsearch::Instance <| |>
+    Elasticsearch::Instance <| |>
     -> Elasticsearch::Template <| |>
 
   } else {
 
     # make sure all services are getting stopped before software removal
     Anchor['elasticsearch::begin']
-    -> Elasticsearch::Instance <| |>
     -> Class['elasticsearch::config']
     -> Class['elasticsearch::package']
+
+    Elasticsearch::Instance {
+      before  => Class['elasticsearch::config'],
+      require => Anchor['elasticsearch::begin'],
+    }
+
+    Elasticsearch::Plugin {
+      before  => Class['elasticsearch::config'],
+      require => Anchor['elasticsearch::begin'],
+    }
+
+    Elasticsearch::Instance <| |>
+    -> Elasticsearch::Plugin <| |>
 
   }
 
