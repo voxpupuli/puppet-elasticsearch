@@ -658,9 +658,7 @@ class elasticsearch(
   Elasticsearch::Plugin <| ensure == 'present' or ensure == 'installed' |>
   -> Elasticsearch::Shield::Role <| |>
 
-  # Remove plugins after managing instances or shield users/roles
-  Elasticsearch::Instance <| |>
-  -> Elasticsearch::Plugin <| ensure == 'absent' |>
+  # Remove plugins after managing shield users/roles
   Elasticsearch::Shield::User <| |>
   -> Elasticsearch::Plugin <| ensure == 'absent' |>
   Elasticsearch::Shield::Role <| |>
