@@ -5,6 +5,7 @@
 #### Features
 
 #### Bugfixes
+* Resources are now explicitly ordered to ensure behavior such as plugins being installed before instance start, users managed before templates changed, etc.
 
 #### Changes
 * Updated repository gpg fingerprint key to long form to silence module warnings.
