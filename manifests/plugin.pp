@@ -100,16 +100,16 @@ define elasticsearch::plugin(
       if empty($instances) {
         fail('no $instances defined')
       }
-
-      if $elasticsearch::restart_plugin_change {
-        Elasticsearch_plugin[$name] {
-          notify +> Elasticsearch::Instance[$instances],
-        }
-      }
     }
     'absent': { }
     default: {
       fail("'${ensure}' is not a valid ensure parameter value")
+    }
+  }
+
+  if ! empty($instances) and $elasticsearch::restart_plugin_change {
+    Elasticsearch_plugin[$name] {
+      notify +> Elasticsearch::Instance[$instances],
     }
   }
 
