@@ -235,40 +235,59 @@ describe 'elasticsearch::plugin', :type => 'define' do
   end
 
   describe 'collector ordering' do
-    context 'present' do
+    describe 'present' do
       let(:title) { 'head' }
       let(:pre_condition) {%q{
         class { 'elasticsearch': }
-        elasticsearch::instance { 'es-02': }
+        elasticsearch::instance { 'es-01': }
       }}
       let :params do {
-        :instances => 'es-02'
-      } end
-
-      it { should contain_elasticsearch_plugin(
-        'head'
-      ).that_comes_before(
-        'Elasticsearch::Instance[es-02]'
-      )}
-    end
-
-    context 'absent' do
-      let(:title) { 'head' }
-      let(:pre_condition) {%q{
-        class { 'elasticsearch': }
-        elasticsearch::instance { 'es-02':
-          ensure => 'absent',
-        }
-      }}
-      let :params do {
-        :ensure => 'absent',
+        :instances => 'es-01'
       } end
 
       it { should contain_elasticsearch__plugin(
         'head'
-      ).that_requires(
-        'Elasticsearch::Instance[es-02]'
+      ).that_comes_before(
+        'Elasticsearch::Instance[es-01]'
       )}
+    end
+
+    describe 'absent' do
+      describe 'on parent class' do
+        let(:title) { 'head' }
+        let(:pre_condition) {%q{
+          class { 'elasticsearch': ensure => absent }
+          elasticsearch::instance { 'es-01': }
+        }}
+        let :params do {
+          :ensure => 'absent',
+        } end
+
+        it { should contain_elasticsearch__plugin(
+          'head'
+        ).that_requires(
+          'Elasticsearch::Instance[es-01]'
+        )}
+      end
+
+      describe 'on instances and plugins' do
+        let(:title) { 'head' }
+        let(:pre_condition) {%q{
+          class { 'elasticsearch': }
+          elasticsearch::instance { 'es-01':
+            ensure => 'absent',
+          }
+        }}
+        let :params do {
+          :ensure => 'absent',
+        } end
+
+        it { should contain_elasticsearch__plugin(
+          'head'
+        ).that_requires(
+          'Elasticsearch::Instance[es-01]'
+        )}
+      end
     end
   end
 
