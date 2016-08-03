@@ -182,7 +182,7 @@
 #
 # [*repo_key_id*]
 #   String.  The apt GPG key id
-#   Default: D88E42B4
+#   Default: 46095ACC8548582C1A2699A9D27D666CD88E42B4
 #
 # [*repo_key_source*]
 #   String.  URL of the apt GPG key
@@ -347,7 +347,7 @@ class elasticsearch(
   $manage_repo             = false,
   $repo_version            = undef,
   $repo_priority           = undef,
-  $repo_key_id             = 'D88E42B4',
+  $repo_key_id             = '46095ACC8548582C1A2699A9D27D666CD88E42B4',
   $repo_key_source         = 'http://packages.elastic.co/GPG-KEY-elasticsearch',
   $repo_proxy              = undef,
   $logging_file            = undef,
