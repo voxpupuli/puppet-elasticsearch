@@ -15,9 +15,6 @@ describe 'elasticsearch::shield::user' do
 
   let(:pre_condition) {%q{
     class { 'elasticsearch': }
-    elasticsearch::instance { 'es-01': }
-    elasticsearch::plugin { 'shield': instances => 'es-01' }
-    elasticsearch::template { 'foo': content => {"foo" => "bar"} }
   }}
 
   context 'without a password' do
@@ -33,18 +30,88 @@ describe 'elasticsearch::shield::user' do
       }
     end
 
-    it { should contain_elasticsearch__shield__user('elastic')
-      .that_comes_before([
-      'Elasticsearch::Template[foo]'
-    ]).that_requires([
-      'Elasticsearch::Plugin[shield]'
-    ])}
+    it { should contain_elasticsearch__shield__user('elastic') }
     it { should contain_elasticsearch_shield_user('elastic') }
     it do
       should contain_elasticsearch_shield_user_roles('elastic').with(
         'ensure' => 'present',
         'roles'  => ['monitor', 'user']
       )
+    end
+  end
+
+  describe 'collector ordering' do
+    describe 'when present' do
+      let(:pre_condition) {%q{
+        class { 'elasticsearch': }
+        elasticsearch::instance { 'es-01': }
+        elasticsearch::plugin { 'shield': instances => 'es-01' }
+        elasticsearch::template { 'foo': content => {"foo" => "bar"} }
+        elasticsearch::shield::role { 'test_role':
+          privileges => {
+            'cluster' => 'monitor',
+            'indices' => {
+              '*' => 'all',
+            },
+          },
+        }
+      }}
+
+      let(:params) {{
+        :password => 'foobar',
+        :roles => ['monitor', 'user']
+      }}
+
+      it { should contain_elasticsearch__shield__role('test_role') }
+      it { should contain_elasticsearch_shield_role('test_role') }
+      it { should contain_elasticsearch_shield_role_mapping('test_role') }
+      it { should contain_elasticsearch__plugin('shield') }
+      it { should contain_elasticsearch_plugin('shield') }
+      it { should contain_elasticsearch__shield__user('elastic')
+        .that_comes_before([
+        'Elasticsearch::Template[foo]'
+      ]).that_requires([
+        'Elasticsearch::Plugin[shield]',
+        'Elasticsearch::Shield::Role[test_role]'
+      ])}
+    end
+
+    describe 'when absent' do
+      let(:pre_condition) {%q{
+        class { 'elasticsearch': }
+        elasticsearch::instance { 'es-01': }
+        elasticsearch::plugin { 'shield':
+          ensure => 'absent',
+          instances => 'es-01',
+        }
+        elasticsearch::template { 'foo': content => {"foo" => "bar"} }
+        elasticsearch::shield::role { 'test_role':
+          privileges => {
+            'cluster' => 'monitor',
+            'indices' => {
+              '*' => 'all',
+            },
+          },
+        }
+      }}
+
+      let(:params) {{
+        :password => 'foobar',
+        :roles => ['monitor', 'user']
+      }}
+
+      it { should contain_elasticsearch__shield__role('test_role') }
+      it { should contain_elasticsearch_shield_role('test_role') }
+      it { should contain_elasticsearch_shield_role_mapping('test_role') }
+      it { should contain_elasticsearch__plugin('shield') }
+      it { should contain_elasticsearch_plugin('shield') }
+      it { should contain_elasticsearch__shield__user('elastic')
+        .that_comes_before([
+        'Elasticsearch::Template[foo]',
+        'Elasticsearch::Plugin[shield]'
+      ]).that_requires([
+        'Elasticsearch::Shield::Role[test_role]'
+      ])}
     end
   end
 end
