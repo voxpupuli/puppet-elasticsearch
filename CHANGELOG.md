@@ -7,6 +7,7 @@
 #### Bugfixes
 
 #### Changes
+* Updated repository gpg fingerprint key to long form to silence module warnings.
 
 #### Testing changes
 
