@@ -5,6 +5,7 @@
 #### Features
 
 #### Bugfixes
+* Fixed issues that caused templates to be incorrectly detected as out-of-sync and thus always changed on each puppet run.
 
 #### Changes
 * Updated repository gpg fingerprint key to long form to silence module warnings.
