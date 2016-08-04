@@ -28,12 +28,33 @@ Puppet::Type.newtype(:elasticsearch_template) do
 
     munge do |value|
 
-      # The Elasticsearch API will return the default order (0) and alias
-      # mappings (an empty hash) for each template, so we need to set
-      # defaults here to keep the `in` and `should` states consistent if
-      # the user hasn't provided any.
-      {'order'=>0,'aliases'=>{},'mappings'=>{}}
-        .merge Puppet_X::Elastic::deep_to_i(value)
+      # The Elasticsearch API will return default empty values for
+      # order, aliases, and mappings if they aren't defined in the
+      # user mapping, so we need to set defaults here to keep the
+      # `in` and `should` states consistent if the user hasn't
+      # provided any.
+      #
+      # We use deep_to_i to ensure any numeric values are properly
+      # parsed, whether from user-defined resources or when reading
+      # from the API.
+      #
+      # We also need to fully qualify index settings, since users
+      # can define those with the index json key absent, but the API
+      # always fully qualifies them.
+      {'order'=>0,'aliases'=>{},'mappings'=>{}}.merge(
+        Puppet_X::Elastic::deep_to_i(
+          value.tap do |val|
+            if val.has_key? 'settings'
+              unless val['settings'].has_key? 'index'
+                val['settings']['index'] = {}
+              end
+              (val['settings'].keys - ['index']).each do |setting|
+                val['settings']['index'][setting] = \
+                  val['settings'].delete(setting)
+              end
+            end
+          end
+      ))
     end
 
     def insync?(is)
@@ -56,7 +77,7 @@ Puppet::Type.newtype(:elasticsearch_template) do
 
     validate do |value|
       unless value.is_a? String
-        raise Puppet::Error, 'invalid parameer, expected string'
+        raise Puppet::Error, 'invalid parameter, expected string'
       end
     end
   end
