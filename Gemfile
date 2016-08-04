@@ -4,6 +4,7 @@ puppetversion = ENV['PUPPET_VERSION'] || '~> 3.8.0'
 gem 'puppet', puppetversion, :require => false
 
 gem 'beaker'
+gem 'beaker-pe', '~> 0.7.0'
 gem 'beaker-rspec'
 gem 'metadata-json-lint'
 gem 'rspec-puppet'
