@@ -136,12 +136,13 @@ def fetch_archives archives
   archives.each do |url, fp|
     fp.replace "spec/fixtures/artifacts/#{fp}"
     if File.exists? fp
-      if system("tar -tzf #{fp} &>/dev/null")
-        puts "Already retrieved intact archive #{fp}..."
-        next
-      else
+      if fp.end_with? 'tar.gz' and \
+          not system("tar -tzf #{fp} &>/dev/null")
         puts "Archive #{fp} corrupt, re-fetching..."
         File.delete fp
+      else
+        puts "Already retrieved intact archive #{fp}..."
+        next
       end
     end
     get url, fp
