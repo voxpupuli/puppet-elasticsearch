@@ -282,6 +282,12 @@
 #   Defines the default REST basic auth password for API authentication.
 #   Defaults to: undef
 #
+# [*system_key*]
+#   Source for the Shield system key. Valid values are any that are
+#   supported for the file resource `source` parameter.
+#   Value type is string
+#   Default value: undef
+#
 # The default values for the parameters are set in elasticsearch::params. Have
 # a look at the corresponding <tt>params.pp</tt> manifest file if you need more
 # technical information about them.
@@ -364,6 +370,7 @@ class elasticsearch(
   $api_basic_auth_username = undef,
   $api_basic_auth_password = undef,
   $validate_tls            = true,
+  $system_key              = undef,
 ) inherits elasticsearch::params {
 
   anchor {'elasticsearch::begin': }
@@ -497,6 +504,8 @@ class elasticsearch(
   if ! is_integer($api_port) {
     fail("'${api_port}' is not an integer")
   }
+
+  if $system_key != undef { validate_string($system_key) }
 
   #### Manage actions
 

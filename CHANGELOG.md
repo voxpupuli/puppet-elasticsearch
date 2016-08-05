@@ -3,8 +3,10 @@
 ### Summary
 
 #### Features
+* Added `system_key` parameter to the `elasticsearch` class and `elasticsearch::instance` type for placing Shield system keys.
 
 #### Bugfixes
+* Fixed systemd elasticsearch.service unit masking to use systemctl rather than raw symlinking to avoid puppet file backup errors.
 * Fixed issues that caused templates to be incorrectly detected as out-of-sync and thus always changed on each puppet run.
 
 #### Changes
