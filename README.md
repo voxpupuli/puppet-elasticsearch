@@ -585,6 +585,25 @@ elasticsearch::instance { 'es-01':
 
 The module will set up a keystore file for the node to use and set the relevant options in `elasticsearch.yml` to enable TLS/SSL using the certificates and key provided.
 
+#### System Keys
+
+Shield system keys can be passed to the module, where they will be placed into individual instance configuration directories.
+This can be set at the `elasticsearch` class and inherited across all instances:
+
+```puppet
+class { 'elasticsearch':
+  system_key => 'puppet:///path/to/key',
+}
+```
+
+Or set on a per-instance basis:
+
+```puppet
+elasticsearch::instance { 'es-01':
+  system_key => '/local/path/to/key',
+}
+```
+
 ### Package version pinning
 
 The module supports pinning the package version to avoid accidental upgrades that are not done by Puppet.
