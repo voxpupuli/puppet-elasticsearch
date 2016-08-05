@@ -136,22 +136,31 @@ def fetch_archives archives
   archives.each do |url, fp|
     fp.replace "spec/fixtures/artifacts/#{fp}"
     if File.exists? fp
-      puts "Already retrieved #{fp}..."
-      next
-    end
-    puts "Fetching #{url}..."
-    found = false
-    until found
-      uri = URI::parse(url)
-      conn = Net::HTTP.new(uri.host, uri.port)
-      conn.use_ssl = true
-      res = conn.get(uri.path)
-      if res.header['location']
-        url = res.header['location']
+      if system("tar -tzf #{fp} &>/dev/null")
+        puts "Already retrieved intact archive #{fp}..."
+        next
       else
-        found = true
+        puts "Archive #{fp} corrupt, re-fetching..."
+        File.delete fp
       end
     end
-    File.open(fp, 'w+') { |fh| fh.write res.body }
+    get url, fp
   end
+end
+
+def get url, file_path
+  puts "Fetching #{url}..."
+  found = false
+  until found
+    uri = URI::parse(url)
+    conn = Net::HTTP.new(uri.host, uri.port)
+    conn.use_ssl = true
+    res = conn.get(uri.path)
+    if res.header['location']
+      url = res.header['location']
+    else
+      found = true
+    end
+  end
+  File.open(file_path, 'w+') { |fh| fh.write res.body }
 end
