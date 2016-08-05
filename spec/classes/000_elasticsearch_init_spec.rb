@@ -79,8 +79,10 @@ describe 'elasticsearch', :type => 'class' do
 
         # Base files
         if test_pid == true
-          it { should contain_file('/etc/systemd/system/elasticsearch.service').with(:ensure => 'link', :target => '/dev/null') }
-          it { should contain_file('/usr/lib/tmpfiles.d/elasticsearch.conf') }
+          it { should contain_exec('systemctl mask elasticsearch.service')}
+          it { should contain_file(
+            '/usr/lib/tmpfiles.d/elasticsearch.conf'
+          ) }
         end
 
         # file removal from package
