@@ -686,6 +686,12 @@ class elasticsearch(
   Elasticsearch::Shield::User <| |>
   -> Elasticsearch::Template <| |>
 
+  # Manage users/roles before instances (req'd to keep shield dir in sync)
+  Elasticsearch::Shield::Role <| |>
+  -> Elasticsearch::Instance <| |>
+  Elasticsearch::Shield::User <| |>
+  -> Elasticsearch::Instance <| |>
+
   # Ensure instances are started before managing templates
   Elasticsearch::Instance <| ensure == 'present' |>
   -> Elasticsearch::Template <| |>
