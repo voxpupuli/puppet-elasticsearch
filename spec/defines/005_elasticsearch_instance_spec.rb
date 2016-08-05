@@ -459,4 +459,32 @@ describe 'elasticsearch::instance', :type => 'define' do
     end
 
   end
+
+  describe 'system_key' do
+    context 'inherited' do
+      let(:pre_condition) {%q{
+        class { 'elasticsearch':
+          system_key => '/tmp/key'
+        }
+      }}
+
+      it { should contain_file(
+        '/etc/elasticsearch/es-01/shield/system_key'
+      ).with_source(
+        '/tmp/key'
+      ) }
+    end
+
+    context 'from instance' do
+      let :params do {
+        :system_key => 'puppet:///test/key'
+      } end
+
+      it { should contain_file(
+        '/etc/elasticsearch/es-01/shield/system_key'
+      ).with_source(
+        'puppet:///test/key'
+      ) }
+    end
+  end
 end
