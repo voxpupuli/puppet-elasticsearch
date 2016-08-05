@@ -105,6 +105,12 @@
 #   Value type is string
 #   Default value: undef
 #
+# [*system_key*]
+#   Source for the Shield system key. Valid values are any that are
+#   supported for the file resource `source` parameter.
+#   Value type is string
+#   Default value: undef
+#
 # === Authors
 #
 # * Tyler Langlois <mailto:tyler@elastic.co>
@@ -131,6 +137,7 @@ define elasticsearch::instance(
   $private_key        = undef,
   $keystore_password  = undef,
   $keystore_path      = undef,
+  $system_key         = $elasticsearch::system_key,
 ) {
 
   require elasticsearch::params
@@ -281,6 +288,10 @@ define elasticsearch::instance(
       }
     } else { $tls_config = {} }
 
+    if $system_key != undef {
+      validate_string($system_key)
+    }
+
     file { $instance_logdir:
       ensure  => 'directory',
       owner   => $elasticsearch::elasticsearch_user,
@@ -345,6 +356,16 @@ define elasticsearch::instance(
       owner   => 'root',
       group   => 'root',
       before  => Elasticsearch::Service[$name],
+    }
+
+    if $system_key != undef {
+      file { "${instance_configdir}/shield/system_key":
+        ensure  => 'file',
+        source  => $system_key,
+        mode    => '0400',
+        before  => Elasticsearch::Service[$name],
+        require => File["${instance_configdir}/shield"],
+      }
     }
 
     # build up new config

@@ -105,9 +105,8 @@ class elasticsearch::config {
 
     if ($elasticsearch::service_providers == 'systemd') {
       # Mask default unit (from package)
-      file { '/etc/systemd/system/elasticsearch.service':
-        ensure => link,
-        target => '/dev/null',
+      exec { 'systemctl mask elasticsearch.service':
+        unless => 'test `systemctl is-enabled elasticsearch.service` = masked',
       }
     }
 
