@@ -7,6 +7,8 @@
 
 #### Bugfixes
 * Fixed systemd elasticsearch.service unit masking to use systemctl rather than raw symlinking to avoid puppet file backup errors.
+* Fixed a couple of cases that broke compatability with older versions of puppet (elasticsearch_template types on puppet versions prior to 3.6 and yumrepo parameters on puppet versions prior to 3.5.1)
+* Fixed issues that caused templates to be incorrectly detected as out-of-sync and thus always changed on each puppet run.
 * Resources are now explicitly ordered to ensure behavior such as plugins being installed before instance start, users managed before templates changed, etc.
 
 #### Changes
