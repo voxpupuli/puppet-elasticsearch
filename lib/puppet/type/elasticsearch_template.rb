@@ -169,7 +169,8 @@ Puppet::Type.newtype(:elasticsearch_template) do
         fail "Could not retrieve source %s" % self[:source]
       end
 
-      unless self.catalog.nil?
+      if not self.catalog.nil? and \
+          self.catalog.respond_to?(:environment_instance)
         tmp = Puppet::FileServing::Content.indirection.find(
           self[:source],
           :environment => self.catalog.environment_instance
