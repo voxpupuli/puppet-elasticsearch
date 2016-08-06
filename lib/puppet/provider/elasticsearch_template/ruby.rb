@@ -1,6 +1,10 @@
+$LOAD_PATH.unshift(File.join(File.dirname(__FILE__),"..","..","..",".."))
+
 require 'json'
 require 'net/http'
 require 'openssl'
+
+require 'puppet_x/elastic/deep_to_i'
 
 Puppet::Type.type(:elasticsearch_template).provide(:ruby) do
   desc <<-ENDHEREDOC
@@ -44,12 +48,13 @@ Puppet::Type.type(:elasticsearch_template).provide(:ruby) do
     req = Net::HTTP::Get.new uri.request_uri
 
     response = rest http, req, validate_tls, timeout, username, password
+
     if response.code.to_i == 200
       JSON.parse(response.body).map do |name, template|
         {
           :name => name,
           :ensure => :present,
-          :content => template,
+          :content => Puppet_X::Elastic::deep_to_i(template),
           :provider => :ruby
         }
       end
