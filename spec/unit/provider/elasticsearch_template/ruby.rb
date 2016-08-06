@@ -36,7 +36,7 @@ describe Puppet::Type.type(:elasticsearch_template).provider(:ruby) do
               "foobar2": {
                 "aliases": {},
                 "mappings": {},
-                "order": 2,
+                "order": "2",
                 "settings": {},
                 "template": "foobar2-*"
               }
