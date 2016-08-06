@@ -47,8 +47,14 @@ class elasticsearch::repo {
       }
     }
     'RedHat', 'Linux': {
+      # Versions prior to 3.5.1 have issues with this param
+      # See: https://tickets.puppetlabs.com/browse/PUP-2163
+      if versioncmp($::puppetversion, '3.5.1') >= 0 {
+        Yumrepo['elasticsearch'] {
+          ensure => $elasticsearch::ensure,
+        }
+      }
       yumrepo { 'elasticsearch':
-        ensure   => $elasticsearch::ensure,
         descr    => 'elasticsearch repo',
         baseurl  => "http://packages.elastic.co/elasticsearch/${elasticsearch::repo_version}/centos",
         gpgcheck => 1,

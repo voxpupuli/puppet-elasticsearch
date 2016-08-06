@@ -7,6 +7,7 @@
 
 #### Bugfixes
 * Fixed systemd elasticsearch.service unit masking to use systemctl rather than raw symlinking to avoid puppet file backup errors.
+* Fixed a couple of cases that broke compatability with older versions of puppet (elasticsearch_template types on puppet versions prior to 3.6 and yumrepo parameters on puppet versions prior to 3.5.1)
 
 #### Changes
 * Updated repository gpg fingerprint key to long form to silence module warnings.
