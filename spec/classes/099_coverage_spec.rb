@@ -1,1 +1,1 @@
-at_exit { RSpec::Puppet::Coverage.report! }
+at_exit { RSpec::Puppet::Coverage.report! 100 }

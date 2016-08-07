@@ -234,4 +234,22 @@ describe 'elasticsearch::plugin', :type => 'define' do
 
   end
 
+  describe 'collector ordering' do
+    describe 'present' do
+      let(:title) { 'head' }
+      let(:pre_condition) {%q{
+        class { 'elasticsearch': }
+        elasticsearch::instance { 'es-01': }
+      }}
+      let :params do {
+        :instances => 'es-01'
+      } end
+
+      it { should contain_elasticsearch__plugin(
+        'head'
+      ).that_comes_before(
+        'Elasticsearch::Instance[es-01]'
+      )}
+    end
+  end
 end

@@ -606,27 +606,96 @@ class elasticsearch(
   }
 
   #### Manage relationships
+  #
+  # Note that many of these overly verbose declarations work around
+  # https://tickets.puppetlabs.com/browse/PUP-1410
+  # which means clean arrow order chaining won't work if someone, say,
+  # doesn't declare any plugins.
+  #
+  # forgive me for what you're about to see
 
   if $ensure == 'present' {
 
-    # we need the software before configuring it
+    # Anchor, installation, and configuration
     Anchor['elasticsearch::begin']
     -> Class['elasticsearch::package']
     -> Class['elasticsearch::config']
+
+    # Top-level ordering bindings for resources.
+    Class['elasticsearch::config']
     -> Elasticsearch::Plugin <| |>
-    -> Elasticsearch::Shield::Role <| |>
-    -> Elasticsearch::Shield::User <| |>
+    Class['elasticsearch::config']
     -> Elasticsearch::Instance <| |>
+    Class['elasticsearch::config']
+    -> Elasticsearch::Shield::User <| |>
+    Class['elasticsearch::config']
+    -> Elasticsearch::Shield::Role <| |>
+    Class['elasticsearch::config']
     -> Elasticsearch::Template <| |>
 
   } else {
 
-    # make sure all services are getting stopped before software removal
+    # Main anchor and included classes
     Anchor['elasticsearch::begin']
-    -> Elasticsearch::Instance <| |>
     -> Class['elasticsearch::config']
     -> Class['elasticsearch::package']
 
+    # Top-level ordering bindings for resources.
+    Anchor['elasticsearch::begin']
+    -> Elasticsearch::Plugin <| |>
+    -> Class['elasticsearch::config']
+    Anchor['elasticsearch::begin']
+    -> Elasticsearch::Instance <| |>
+    -> Class['elasticsearch::config']
+    Anchor['elasticsearch::begin']
+    -> Elasticsearch::Shield::User <| |>
+    -> Class['elasticsearch::config']
+    Anchor['elasticsearch::begin']
+    -> Elasticsearch::Shield::Role <| |>
+    -> Class['elasticsearch::config']
+    Anchor['elasticsearch::begin']
+    -> Elasticsearch::Template <| |>
+    -> Class['elasticsearch::config']
+
   }
 
+  # Install plugins before managing instances or shield users/roles
+  Elasticsearch::Plugin <| ensure == 'present' or ensure == 'installed' |>
+  -> Elasticsearch::Instance <| |>
+  Elasticsearch::Plugin <| ensure == 'present' or ensure == 'installed' |>
+  -> Elasticsearch::Shield::User <| |>
+  Elasticsearch::Plugin <| ensure == 'present' or ensure == 'installed' |>
+  -> Elasticsearch::Shield::Role <| |>
+
+  # Remove plugins after managing shield users/roles
+  Elasticsearch::Shield::User <| |>
+  -> Elasticsearch::Plugin <| ensure == 'absent' |>
+  Elasticsearch::Shield::Role <| |>
+  -> Elasticsearch::Plugin <| ensure == 'absent' |>
+
+  # Ensure roles are defined before managing users that reference roles
+  Elasticsearch::Shield::Role <| |>
+  -> Elasticsearch::Shield::User <| ensure == 'present' |>
+  # Ensure users are removed before referenced roles are managed
+  Elasticsearch::Shield::User <| ensure == 'absent' |>
+  -> Elasticsearch::Shield::Role <| |>
+
+  # Ensure users and roles are managed before calling out to templates
+  Elasticsearch::Shield::Role <| |>
+  -> Elasticsearch::Template <| |>
+  Elasticsearch::Shield::User <| |>
+  -> Elasticsearch::Template <| |>
+
+  # Manage users/roles before instances (req'd to keep shield dir in sync)
+  Elasticsearch::Shield::Role <| |>
+  -> Elasticsearch::Instance <| |>
+  Elasticsearch::Shield::User <| |>
+  -> Elasticsearch::Instance <| |>
+
+  # Ensure instances are started before managing templates
+  Elasticsearch::Instance <| ensure == 'present' |>
+  -> Elasticsearch::Template <| |>
+  # Ensure instances are stopped after managing templates
+  Elasticsearch::Template <| |>
+  -> Elasticsearch::Instance <| ensure == 'absent' |>
 }
