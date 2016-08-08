@@ -1,6 +1,10 @@
-## x.x.x (Month Day, Year)
+## 0.13.1 (August 8, 2016)
 
 ### Summary
+Lingering bugfixes from elasticsearch::template changes.
+More robust systemd mask handling.
+Updated some upstream module parameters for deprecation warnings.
+Support for the Shield `system_key` file.
 
 #### Features
 * Added `system_key` parameter to the `elasticsearch` class and `elasticsearch::instance` type for placing Shield system keys.
