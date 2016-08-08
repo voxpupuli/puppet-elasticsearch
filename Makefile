@@ -50,7 +50,7 @@ test-integration: .vendor
 
 .PHONY: test-docs
 test-docs: .vendor
-	bundle exec rake parse_doc
+	bundle exec rake spec_docs
 
 .PHONY: test-rspec
 test-rspec: .vendor
