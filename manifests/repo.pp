@@ -45,17 +45,25 @@ class elasticsearch::repo {
         include    => {
           src => false,
         },
+        pin         => $elasticsearch::repo_priority,
       }
     }
     'RedHat', 'Linux': {
+      # Versions prior to 3.5.1 have issues with this param
+      # See: https://tickets.puppetlabs.com/browse/PUP-2163
+      if versioncmp($::puppetversion, '3.5.1') >= 0 {
+        Yumrepo['elasticsearch'] {
+          ensure => $elasticsearch::ensure,
+        }
+      }
       yumrepo { 'elasticsearch':
-        ensure   => $elasticsearch::ensure,
         descr    => 'elasticsearch repo',
         baseurl  => "http://packages.elastic.co/elasticsearch/${elasticsearch::repo_version}/centos",
         gpgcheck => 1,
         gpgkey   => $::elasticsearch::repo_key_source,
         enabled  => 1,
         proxy    => $::elasticsearch::repo_proxy,
+        priority => $elasticsearch::repo_priority,
       } ~>
       exec { 'elasticsearch_yumrepo_yum_clean':
         command     => 'yum clean metadata expire-cache --disablerepo="*" --enablerepo="elasticsearch"',
@@ -73,8 +81,9 @@ class elasticsearch::repo {
 
       exec { 'elasticsearch_suse_import_gpg':
         command => $_import_cmd,
-        unless  => "test $(rpm -qa gpg-pubkey | grep -i '${::elasticsearch::repo_key_id}' | wc -l) -eq 1 ",
-        notify  => [ Zypprepo['elasticsearch'] ],
+        unless  =>
+          "test $(rpm -qa gpg-pubkey | grep -i 'D88E42B4' | wc -l) -eq 1",
+        notify  => Zypprepo['elasticsearch'],
       }
 
       zypprepo { 'elasticsearch':

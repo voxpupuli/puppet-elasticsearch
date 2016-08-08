@@ -1,7 +1,50 @@
-## x.x.x ( Month Day, Year )
+## x.x.x (Month Day, Year)
 
 ### Summary
-Rewritten yaml generator, code cleanup, and various bugfixes. Configuration file yaml no longer nested.
+
+#### Features
+* Added `system_key` parameter to the `elasticsearch` class and `elasticsearch::instance` type for placing Shield system keys.
+
+#### Bugfixes
+* Fixed systemd elasticsearch.service unit masking to use systemctl rather than raw symlinking to avoid puppet file backup errors.
+* Fixed a couple of cases that broke compatability with older versions of puppet (elasticsearch_template types on puppet versions prior to 3.6 and yumrepo parameters on puppet versions prior to 3.5.1)
+* Fixed issues that caused templates to be incorrectly detected as out-of-sync and thus always changed on each puppet run.
+* Resources are now explicitly ordered to ensure behavior such as plugins being installed before instance start, users managed before templates changed, etc.
+
+#### Changes
+* Updated repository gpg fingerprint key to long form to silence module warnings.
+
+#### Testing changes
+
+## 0.13.0 (August 1, 2016)
+
+### Summary
+Rewritten elasticsearch::template using native type and provider.
+Fixed and added additional proxy parameters to elasticsearch::plugin instances.
+Exposed repo priority parameters for apt and yum repos.
+
+#### Features
+* In addition to better consistency, the `elasticsearch::template` type now also accepts various `api_*` parameters to control how access to the Elasticsearch API is configured (there are top-level parameters that are inherited and can be overwritten in `elasticsearch::api_*`).
+* The `elasticsearch::config` parameter now supports deep hiera merging.
+* Added the `elasticsearch::repo_priority` parameter to support apt and yum repository priority configuration.
+* Added `proxy_username` and `proxy_password` parameters to `elasticsearch::plugin`.
+
+#### Bugfixes
+* Content of templates should now properly trigger new API PUT requests when the index template stored in Elasticsearch differs from the template defined in puppet.
+* Installing plugins with proxy parameters now works correctly due to changed Java property flags.
+* The `elasticsearch::plugin::module_dir` parameter has been re-implemented to aid in working around plugins with non-standard plugin directories.
+
+#### Changes
+* The `file` parameter on the `elasticsearch::template` defined type has been deprecated to be consistent with usage of the `source` parameter for other types.
+
+#### Testing changes
+
+## 0.12.0 (July 20, 2016)
+
+IMPORTANT! A bug was fixed that mistakenly added /var/lib to the list of DATA_DIR paths on Debian-based systems.  This release removes that environment variable, which could potentially change path.data directories for instances of Elasticsearch.  Take proper precautions when upgrading to avoid unexpected downtime or data loss (test module upgrades, et cetera).
+
+### Summary
+Rewritten yaml generator, code cleanup, and various bugfixes. Configuration file yaml no longer nested. Service no longer restarts by default, and exposes more granular restart options.
 
 #### Features
 * The additional parameters restart_config_change, restart_package_change, and restart_plugin_change have been added for more granular control over service restarts.
@@ -20,9 +63,6 @@ Rewritten yaml generator, code cleanup, and various bugfixes. Configuration file
 
 #### Testing changes
 * The acceptance test suite has been dramatically slimmed to cut down on testing time and reduce false positives.
-
-#### Known bugs
-
 
 ## 0.11.0 ( May 23, 2016 )
 

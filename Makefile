@@ -29,7 +29,7 @@ clean-logs:
 
 .PHONY: release
 release: clean-logs
-	puppet module build
+	bundle exec puppet module build
 
 .PHONY: test-intake
 test-intake: test-docs test-rspec
@@ -57,4 +57,4 @@ test-rspec: .vendor
 	bundle exec rake lint
 	bundle exec rake validate
 	STRICT_VARIABLES=$(STRICT_VARIABLES) \
-		bundle exec rake spec_verbose
+		bundle exec rake spec_unit

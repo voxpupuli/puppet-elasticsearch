@@ -11,7 +11,16 @@ describe 'elasticsearch::plugin', :type => 'define' do
     :scenario => '',
     :common => ''
   } end
-  let(:pre_condition) { 'class {"elasticsearch": config => { "node" => {"name" => "test" }}}'}
+
+  let(:pre_condition) {%q{
+    class { "elasticsearch":
+      config => {
+        "node" => {
+          "name" => "test"
+        }
+      }
+    }
+  }}
 
   context 'with module_dir' do
 
@@ -145,4 +154,102 @@ describe 'elasticsearch::plugin', :type => 'define' do
 
   end
 
+  describe 'proxy arguments' do
+
+    let(:title) { 'head' }
+
+    context 'unauthenticated' do
+      context 'on define' do
+        let :params do {
+          :ensure         => 'present',
+          :instances      => 'es-01',
+          :proxy_host     => 'es.local',
+          :proxy_port     => '8080'
+        } end
+
+        it { should contain_elasticsearch_plugin(
+          'head'
+        ).with_proxy(
+          'http://es.local:8080'
+        )}
+      end
+
+      context 'on main class' do
+        let :params do {
+          :ensure    => 'present',
+          :instances => 'es-01'
+        } end
+
+        let(:pre_condition) { %q{
+          class { 'elasticsearch':
+            proxy_url => 'https://es.local:8080',
+          }
+        }}
+
+        it { should contain_elasticsearch_plugin(
+          'head'
+        ).with_proxy(
+          'https://es.local:8080'
+        )}
+      end
+    end
+
+    context 'authenticated' do
+      context 'on define' do
+        let :params do {
+          :ensure         => 'present',
+          :instances      => 'es-01',
+          :proxy_host     => 'es.local',
+          :proxy_port     => '8080',
+          :proxy_username => 'elastic',
+          :proxy_password => 'password'
+        } end
+
+        it { should contain_elasticsearch_plugin(
+          'head'
+        ).with_proxy(
+          'http://elastic:password@es.local:8080'
+        )}
+      end
+
+      context 'on main class' do
+        let :params do {
+          :ensure    => 'present',
+          :instances => 'es-01'
+        } end
+
+        let(:pre_condition) { %q{
+          class { 'elasticsearch':
+            proxy_url => 'http://elastic:password@es.local:8080',
+          }
+        }}
+
+        it { should contain_elasticsearch_plugin(
+          'head'
+        ).with_proxy(
+          'http://elastic:password@es.local:8080'
+        )}
+      end
+    end
+
+  end
+
+  describe 'collector ordering' do
+    describe 'present' do
+      let(:title) { 'head' }
+      let(:pre_condition) {%q{
+        class { 'elasticsearch': }
+        elasticsearch::instance { 'es-01': }
+      }}
+      let :params do {
+        :instances => 'es-01'
+      } end
+
+      it { should contain_elasticsearch__plugin(
+        'head'
+      ).that_comes_before(
+        'Elasticsearch::Instance[es-01]'
+      )}
+    end
+  end
 end
