@@ -4,6 +4,7 @@ require 'net/http'
 require 'uri'
 require 'fileutils'
 require 'rspec/core/rake_task'
+require 'puppet-doc-lint/rake_task'
 
 module TempFixForRakeLastComment
   def last_comment
@@ -14,12 +15,8 @@ Rake::Application.send :include, TempFixForRakeLastComment
 
 exclude_paths = [
   "pkg/**/*",
-  "vendor/**/*",
   "spec/**/*",
 ]
-
-require 'puppet-doc-lint/rake_task'
-PuppetDocLint.configuration.ignore_paths = exclude_paths
 
 require 'puppet-lint/tasks/puppet-lint'
 require 'puppet-syntax/tasks/puppet-syntax'
@@ -40,6 +37,17 @@ end
 PuppetLint.configuration.ignore_paths = exclude_paths
 PuppetLint.configuration.log_format = "%{path}:%{linenumber}:%{check}:%{KIND}:%{message}"
 
+desc 'Run documentation tests'
+task :spec_docs do
+  results = PuppetDocLint::Runner.new.run(
+    FileList['**/*.pp'].exclude(*exclude_paths)
+  )
+
+  results.each { |result| result.result_report }
+  if results.map(&:percent_documented).any?{|n| n < 100}
+    abort 'Issues found!'
+  end
+end
 
 RSpec::Core::RakeTask.new(:spec_verbose) do |t|
   t.pattern = 'spec/{classes,defines,unit,functions,templates}/**/*_spec.rb'
