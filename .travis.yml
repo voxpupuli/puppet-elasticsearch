@@ -17,11 +17,9 @@ env:
   - TEST_SUITE=integration
   - DISTRO=centos-6-x64
   - DISTRO=centos-6-x64 PE=true
-  - DISTRO=centos-6-x64 PE=true PE_VER=3.7.2
   - DISTRO=centos-6-x64 PE=true PE_VER=2016.1.1
   - DISTRO=centos-7-x64
   - DISTRO=centos-7-x64 PE=true
-  - DISTRO=centos-7-x64 PE=true PE_VER=3.7.2
   - DISTRO=centos-7-x64 PE=true PE_VER=2016.1.1
   - DISTRO=debian-7-x64
   - DISTRO=debian-7-x64 PE=true
@@ -40,7 +38,7 @@ env:
   - DISTRO=oracle-7-x64
 matrix:
   allow_failures:
-  - env: DISTRO=sles-12-x64 PE=true
+  - env: DISTRO=sles-12-x64
   fast_finish: true
 script:
 - make test-$TEST_SUITE

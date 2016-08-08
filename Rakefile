@@ -52,6 +52,12 @@ RSpec::Core::RakeTask.new(:spec_verbose) do |t|
 end
 task :spec_verbose => :spec_prep
 
+RSpec::Core::RakeTask.new(:spec_unit) do |t|
+  t.pattern = 'spec/{classes,defines,unit,functions,templates}/**/*_spec.rb'
+  t.rspec_opts = ['--color']
+end
+task :spec_unit => :spec_prep
+
 task :beaker => [:spec_prep, 'artifacts:prep']
 
 desc 'Run integration tests'
@@ -130,22 +136,32 @@ def fetch_archives archives
   archives.each do |url, fp|
     fp.replace "spec/fixtures/artifacts/#{fp}"
     if File.exists? fp
-      puts "Already retrieved #{fp}..."
-      next
-    end
-    puts "Fetching #{url}..."
-    found = false
-    until found
-      uri = URI::parse(url)
-      conn = Net::HTTP.new(uri.host, uri.port)
-      conn.use_ssl = true
-      res = conn.get(uri.path)
-      if res.header['location']
-        url = res.header['location']
+      if fp.end_with? 'tar.gz' and \
+          not system("tar -tzf #{fp} &>/dev/null")
+        puts "Archive #{fp} corrupt, re-fetching..."
+        File.delete fp
       else
-        found = true
+        puts "Already retrieved intact archive #{fp}..."
+        next
       end
     end
-    File.open(fp, 'w+') { |fh| fh.write res.body }
+    get url, fp
   end
+end
+
+def get url, file_path
+  puts "Fetching #{url}..."
+  found = false
+  until found
+    uri = URI::parse(url)
+    conn = Net::HTTP.new(uri.host, uri.port)
+    conn.use_ssl = true
+    res = conn.get(uri.path)
+    if res.header['location']
+      url = res.header['location']
+    else
+      found = true
+    end
+  end
+  File.open(file_path, 'w+') { |fh| fh.write res.body }
 end

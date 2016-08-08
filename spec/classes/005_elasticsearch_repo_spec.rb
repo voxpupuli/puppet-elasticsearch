@@ -92,9 +92,11 @@ describe 'elasticsearch', :type => 'class' do
           end
         when 'Suse'
           context 'has override yum key' do
-            it { is_expected.to contain_exec('elasticsearch_suse_import_gpg').with({
-              :unless  => "test $(rpm -qa gpg-pubkey | grep -i '46095ACC8548582C1A2699A9D27D666CD88E42B4' | wc -l) -eq 1 ",
-            })}
+            it { is_expected.to contain_exec(
+              'elasticsearch_suse_import_gpg'
+            ).with_unless(
+              "test $(rpm -qa gpg-pubkey | grep -i 'D88E42B4' | wc -l) -eq 1"
+            )}
           end
         end
 

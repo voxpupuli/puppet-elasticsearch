@@ -109,7 +109,6 @@ class elasticsearch::params {
       $installpath = '/opt/elasticsearch'
       $homedir     = '/usr/share/elasticsearch'
       $plugindir   = "${homedir}/plugins"
-      $plugintool  = "${homedir}/bin/plugin"
       $datadir     = '/usr/share/elasticsearch/data'
     }
     'OpenBSD': {
@@ -119,7 +118,6 @@ class elasticsearch::params {
       $installpath = undef
       $homedir     = '/usr/local/elasticsearch'
       $plugindir   = "${homedir}/plugins"
-      $plugintool  = "${homedir}/bin/plugin"
       $datadir     = '/var/elasticsearch/data'
     }
     default: {

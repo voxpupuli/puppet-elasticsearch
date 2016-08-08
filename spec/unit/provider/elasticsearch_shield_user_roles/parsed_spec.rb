@@ -1,6 +1,7 @@
 require 'spec_helper'
 
-describe Puppet::Type.type(:elasticsearch_shield_user).provider(:esusers) do
+describe Puppet::Type.type(:elasticsearch_shield_user_roles)
+  .provider(:parsed) do
 
   describe 'instances' do
     it 'should have an instance method' do
@@ -9,7 +10,7 @@ describe Puppet::Type.type(:elasticsearch_shield_user).provider(:esusers) do
 
     context 'without roles' do
       it 'should return no resources' do
-        expect(described_class.parse("\n")).to eq(0)
+        expect(described_class.parse("\n")).to eq([])
       end
     end
 
@@ -19,10 +20,8 @@ describe Puppet::Type.type(:elasticsearch_shield_user).provider(:esusers) do
           admin:elastic
           power_user:elastic
         })[0]).to eq({
-          :ensure => :present,
           :name => 'elastic',
-          :roles => ['admin', 'power_user'],
-          :provider => :parsed,
+          :roles => ['admin', 'power_user']
         })
       end
     end
