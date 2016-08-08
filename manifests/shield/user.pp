@@ -39,8 +39,8 @@
 #
 define elasticsearch::shield::user (
   $password,
-  $ensure   = 'present',
-  $roles    = [],
+  $ensure = 'present',
+  $roles  = [],
 ) {
   validate_string($ensure, $password)
   validate_array($roles)

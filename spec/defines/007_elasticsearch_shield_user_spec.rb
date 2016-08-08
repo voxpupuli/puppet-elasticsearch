@@ -17,10 +17,6 @@ describe 'elasticsearch::shield::user' do
     class { 'elasticsearch': }
   }}
 
-  context 'without a password' do
-    it { should raise_error(Puppet::Error, /must pass password/i) }
-  end
-
   context 'with default parameters' do
 
     let(:params) do
