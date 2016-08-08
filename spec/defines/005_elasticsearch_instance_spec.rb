@@ -296,8 +296,10 @@ describe 'elasticsearch::instance', :type => 'define' do
   context 'logs directory' do
 
     context "default" do
-      it { should contain_file('/var/log/elasticsearch/es-01').with( :ensure => 'directory') }
-      it { should contain_file('/var/log/elasticsearch/').with( :ensure => 'directory') }
+      it { should contain_file('/var/log/elasticsearch/es-01')
+        .with( :ensure => 'directory') }
+      it { should contain_file('/var/log/elasticsearch')
+        .with( :ensure => 'directory') }
     end
 
     context "single from main config " do

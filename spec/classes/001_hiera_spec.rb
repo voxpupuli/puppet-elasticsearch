@@ -106,7 +106,8 @@ describe 'elasticsearch', :type => 'class' do
         })
       }
 
-      it { should_not contain_elasticsearch__instance }
+      it { should_not contain_elasticsearch__instance('es-01') }
+      it { should_not contain_elasticsearch__instance('es-02') }
 
     end
 
@@ -135,7 +136,9 @@ describe 'elasticsearch', :type => 'class' do
         })
       }
 
-      it { should_not contain_elasticsearch__plugin }
+      it { should_not contain_elasticsearch__plugin(
+        'mobz/elasticsearch-head/1.0.0'
+      ) }
 
     end
 
