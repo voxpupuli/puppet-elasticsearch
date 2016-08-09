@@ -14,8 +14,8 @@ end
 Rake::Application.send :include, TempFixForRakeLastComment
 
 exclude_paths = [
-  "pkg/**/*",
-  "spec/**/*",
+  'pkg/**/*',
+  'spec/**/*'
 ]
 
 require 'puppet-lint/tasks/puppet-lint'
