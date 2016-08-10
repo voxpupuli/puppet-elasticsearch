@@ -383,14 +383,24 @@ define elasticsearch::instance(
       $global_init_defaults = { }
     }
 
-    $instance_init_defaults_main = { 'CONF_DIR' => $instance_configdir, 'CONF_FILE' => "${instance_configdir}/elasticsearch.yml", 'LOG_DIR' => $instance_logdir, 'ES_HOME' => '/usr/share/elasticsearch' }
+    $instance_init_defaults_main = {
+      'CONF_DIR'  => $instance_configdir,
+      'CONF_FILE' => "${instance_configdir}/elasticsearch.yml",
+      'LOG_DIR'   => $instance_logdir,
+      'ES_HOME'   => '/usr/share/elasticsearch',
+      'DATA_DIR'  => $instance_datadir,
+    }
 
     if (is_hash($init_defaults)) {
       $instance_init_defaults = $init_defaults
     } else {
       $instance_init_defaults = { }
     }
-    $init_defaults_new = merge($global_init_defaults, $instance_init_defaults_main, $instance_init_defaults )
+    $init_defaults_new = merge(
+      $global_init_defaults,
+      $instance_init_defaults_main,
+      $instance_init_defaults
+    )
 
     $user = $elasticsearch::elasticsearch_user
     $group = $elasticsearch::elasticsearch_group

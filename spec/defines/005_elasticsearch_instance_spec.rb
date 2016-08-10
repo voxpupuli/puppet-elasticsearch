@@ -57,7 +57,8 @@ describe 'elasticsearch::instance', :type => 'define' do
           "CONF_DIR"  => "/etc/elasticsearch/es-01",
           "CONF_FILE" => "/etc/elasticsearch/es-01/elasticsearch.yml",
           "LOG_DIR"   => "/var/log/elasticsearch/es-01",
-          "ES_HOME"   => "/usr/share/elasticsearch"
+          "ES_HOME"   => "/usr/share/elasticsearch",
+          "DATA_DIR"  => "/usr/share/elasticsearch/data/es-01"
         }
       )}
 
