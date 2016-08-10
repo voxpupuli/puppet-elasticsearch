@@ -12,19 +12,13 @@ shared_examples 'plugin provider' do |version, build|
 
     describe 'setup' do
       it 'installs with default parameters' do
-        provider.expects(:plugin).with([
-          '-Des.path.conf=/usr/share/elasticsearch',
-          'install',
-          resource_name
-        ])
+        provider.expects(:plugin).with(['install', resource_name])
         provider.create
       end
 
       it 'installs via URLs' do
         resource[:url] = 'http://url/to/my/plugin.zip'
-        provider.expects(:plugin).with([
-          '-Des.path.conf=/usr/share/elasticsearch',
-          'install',
+        provider.expects(:plugin).with(['install'] +
           ['http://url/to/my/plugin.zip'].tap do |args|
             if version.start_with? '1'
               args.unshift(shortname, '--url')
@@ -32,15 +26,13 @@ shared_examples 'plugin provider' do |version, build|
               args
             end
           end
-        ].flatten)
+        )
         provider.create
       end
 
       it 'installs with a local file' do
         resource[:source] = '/tmp/plugin.zip'
-        provider.expects(:plugin).with([
-          '-Des.path.conf=/usr/share/elasticsearch',
-          'install',
+        provider.expects(:plugin).with(['install'] +
           ['file:///tmp/plugin.zip'].tap do |args|
             if version.start_with? '1'
               args.unshift(shortname, '--url')
@@ -48,28 +40,36 @@ shared_examples 'plugin provider' do |version, build|
               args
             end
           end
-        ].flatten)
+        )
         provider.create
+      end
+
+      it 'sets the path.conf Elasticsearch Java property' do
+        expect(provider.with_environment do
+          ENV['ES_JAVA_OPTS']
+        end).to eq('-Des.path.conf=/usr/share/elasticsearch')
       end
 
       describe 'proxying' do
         it 'installs behind a proxy' do
           resource[:proxy] = 'http://localhost:3128'
-          provider.expects(:plugin).with([
+          expect(provider.with_environment do
+            ENV['ES_JAVA_OPTS']
+          end).to eq([
+            '-Des.path.conf=/usr/share/elasticsearch',
             '-Dhttp.proxyHost=localhost',
             '-Dhttp.proxyPort=3128',
             '-Dhttps.proxyHost=localhost',
-            '-Dhttps.proxyPort=3128',
-            '-Des.path.conf=/usr/share/elasticsearch',
-            'install',
-            resource_name
-          ])
-          provider.create
+            '-Dhttps.proxyPort=3128'
+          ].join(' '))
         end
 
         it 'uses authentication credentials' do
           resource[:proxy] = 'http://elastic:password@es.local:8080'
-          provider.expects(:plugin).with([
+          expect(provider.with_environment do
+            ENV['ES_JAVA_OPTS']
+          end).to eq([
+            '-Des.path.conf=/usr/share/elasticsearch',
             '-Dhttp.proxyHost=es.local',
             '-Dhttp.proxyPort=8080',
             '-Dhttp.proxyUser=elastic',
@@ -77,12 +77,8 @@ shared_examples 'plugin provider' do |version, build|
             '-Dhttps.proxyHost=es.local',
             '-Dhttps.proxyPort=8080',
             '-Dhttps.proxyUser=elastic',
-            '-Dhttps.proxyPassword=password',
-            '-Des.path.conf=/usr/share/elasticsearch',
-            'install',
-            resource_name
-          ])
-          provider.create
+            '-Dhttps.proxyPassword=password'
+          ].join(' '))
         end
       end
     end # of setup
