@@ -10,6 +10,13 @@ module Puppet
       def initialize(instance_server, instance_port)
         @instance_server = instance_server
         @instance_port   = instance_port
+
+        # Avoid deprecation warnings in Puppet versions < 4
+        if Facter.value(:puppetversion).split('.').first.to_i < 4
+          @timeout = Puppet[:configtimeout]
+        else
+          @timeout = Puppet[:http_connect_timeout]
+        end
       end
 
       # Utility method; attempts to make an https connection to the Elasticsearch instance.
@@ -18,7 +25,7 @@ module Puppet
       #
       # @return true if the connection is successful, false otherwise.
       def attempt_connection
-        Timeout::timeout(Puppet[:configtimeout]) do
+        Timeout::timeout(@timeout) do
           begin
             TCPSocket.new(@instance_server, @instance_port).close
             true

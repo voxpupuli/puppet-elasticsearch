@@ -7,6 +7,8 @@
 #### Bugfixes
 
 #### Changes
+* Updated the elasticsearch_template type to return more helpful error output.
+* Updated the es_instance_conn_validator type to silence deprecation warnings in Puppet >= 4.
 
 #### Testing changes
 

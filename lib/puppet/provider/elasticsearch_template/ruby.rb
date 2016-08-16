@@ -128,10 +128,24 @@ Puppet::Type.type(:elasticsearch_template).provide(:ruby) do
       resource[:password]
     )
 
+    # Attempt to return useful error output
     unless response.code.to_i == 200
-      raise(
-        Puppet::Error, "Elasticsearch API responded with HTTP #{response.code}"
-      )
+      json = JSON.parse(response.body)
+
+      if json.has_key? 'error'
+        if json['error'].is_a? Hash and json['error'].has_key? 'root_cause'
+          # Newer versions have useful output
+          err_msg = json['error']['root_cause'].first['reason']
+        else
+          # Otherwise fallback to old-style error messages
+          err_msg = json['error']
+        end
+      else
+        # As a last resort, return the response error code
+        err_msg = "HTTP #{response.code}"
+      end
+
+      raise Puppet::Error, "Elasticsearch API responded with: #{err_msg}"
     end
 
     @property_hash = self.class.templates(
