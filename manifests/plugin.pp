@@ -100,8 +100,12 @@ define elasticsearch::plugin(
       if empty($instances) {
         fail('no $instances defined')
       }
+
+      $_file_ensure = 'directory'
     }
-    'absent': { }
+    'absent': {
+      $_file_ensure = $ensure
+    }
     default: {
       fail("'${ensure}' is not a valid ensure parameter value")
     }
@@ -150,6 +154,8 @@ define elasticsearch::plugin(
     validate_string($url)
   }
 
+  $_module_dir = es_plugin_name($module_dir, $name)
+
   elasticsearch_plugin { $name:
     ensure      => $ensure,
     source      => $file_source,
@@ -157,5 +163,10 @@ define elasticsearch::plugin(
     proxy       => $_proxy,
     plugin_dir  => $::elasticsearch::plugindir,
     plugin_path => $module_dir,
+  } ->
+  file { "${elasticsearch::plugindir}/${_module_dir}":
+    ensure  => $_file_ensure,
+    mode    => 'o+Xr',
+    recurse => true,
   }
 }
