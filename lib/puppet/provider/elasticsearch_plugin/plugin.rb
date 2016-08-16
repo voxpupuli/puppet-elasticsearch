@@ -1,6 +1,7 @@
 $LOAD_PATH.unshift(File.join(File.dirname(__FILE__),"..","..",".."))
 
 require 'uri'
+require 'puppet_x/elastic/plugin_name'
 
 Puppet::Type.type(:elasticsearch_plugin).provide(:plugin) do
   desc "A provider for the resource type `elasticsearch_plugin`,
@@ -53,9 +54,17 @@ Puppet::Type.type(:elasticsearch_plugin).provide(:plugin) do
 
   def pluginfile
     if @resource[:plugin_path]
-      File.join(@resource[:plugin_dir], @resource[:plugin_path], '.name')
+      File.join(
+        @resource[:plugin_dir],
+        @resource[:plugin_path],
+        '.name'
+      )
     else
-      File.join(@resource[:plugin_dir], plugin_name(@resource[:name]), '.name')
+      File.join(
+        @resource[:plugin_dir],
+        Puppet_X::Elastic::plugin_name(@resource[:name]),
+        '.name'
+      )
     end
   end
 
@@ -72,24 +81,38 @@ Puppet::Type.type(:elasticsearch_plugin).provide(:plugin) do
 
   def install1x
     if !@resource[:url].nil?
-      commands = [ plugin_name(@resource[:name]), '--url', @resource[:url] ]
+      [
+        Puppet_X::Elastic::plugin_name(@resource[:name]),
+        '--url',
+        @resource[:url]
+      ]
     elsif !@resource[:source].nil?
-      commands = [ plugin_name(@resource[:name]), '--url', "file://#{@resource[:source]}" ]
+      [
+        Puppet_X::Elastic::plugin_name(@resource[:name]),
+        '--url',
+        "file://#{@resource[:source]}"
+      ]
     else
-      commands = [ @resource[:name] ]
+      [
+        @resource[:name]
+      ]
     end
-    commands
   end
 
   def install2x
     if !@resource[:url].nil?
-      commands = [ @resource[:url] ]
+      [
+        @resource[:url]
+      ]
     elsif !@resource[:source].nil?
-      commands = [ "file://#{@resource[:source]}" ]
+      [
+        "file://#{@resource[:source]}"
+      ]
     else
-      commands = [ @resource[:name] ]
+      [
+        @resource[:name]
+      ]
     end
-    commands
   end
 
   def proxy_args url
@@ -178,17 +201,6 @@ Puppet::Type.type(:elasticsearch_plugin).provide(:plugin) do
     return @es_version if is2x? && version.nil?
     return version.scan(/\d+\.\d+\.\d+(?:\-\S+)?/).first unless version.nil?
     return false
-  end
-
-  def plugin_name(plugin_name)
-    vendor, plugin, _version = plugin_name.split('/')
-
-    if plugin.nil?
-      # Not delineated by slashes; single plugin name
-      vendor
-    else
-      plugin.gsub(/(elasticsearch-|es-)/, '')
-    end
   end
 
 end
