@@ -44,6 +44,16 @@ describe 'es_plugin_name' do
       .and_return('foo') }
   end
 
+  describe 'undef parameters' do
+    it { is_expected.to run
+      .with_params('', 'foo')
+      .and_return('foo') }
+
+    it { is_expected.to run
+      .with_params('')
+      .and_raise_error(Puppet::Error, /could not/) }
+  end
+
   it 'should not change the original values' do
     argument1 = 'foo'
     original1 = argument1.dup
