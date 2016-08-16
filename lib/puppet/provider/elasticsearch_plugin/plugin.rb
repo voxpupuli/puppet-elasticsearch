@@ -174,19 +174,21 @@ Puppet::Type.type(:elasticsearch_plugin).provide(:plugin) do
 
 
   def plugin_version(plugin_name)
-    vendor, plugin, version = plugin_name.split('/')
+    _vendor, _plugin, version = plugin_name.split('/')
     return @es_version if is2x? && version.nil?
     return version.scan(/\d+\.\d+\.\d+(?:\-\S+)?/).first unless version.nil?
     return false
   end
 
   def plugin_name(plugin_name)
-    vendor, plugin, version = plugin_name.split('/')
+    vendor, plugin, _version = plugin_name.split('/')
 
-    endname = vendor if plugin.nil? # If its a single name plugin like the ES 2.x official plugins
-    endname = plugin.gsub(/(elasticsearch-|es-)/, '') unless plugin.nil?
-
-    endname
+    if plugin.nil?
+      # Not delineated by slashes; single plugin name
+      vendor
+    else
+      plugin.gsub(/(elasticsearch-|es-)/, '')
+    end
   end
 
 end
