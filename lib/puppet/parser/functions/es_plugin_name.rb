@@ -24,7 +24,11 @@ module Puppet::Parser::Functions
 
     args.each do |arg|
       next unless arg.is_a? String
+      next if arg.empty?
       return Puppet_X::Elastic::plugin_name arg
     end
+
+    raise Puppet::Error,
+      'could not determine plugin name'
   end
 end
