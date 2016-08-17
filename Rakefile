@@ -15,6 +15,7 @@ Rake::Application.send :include, TempFixForRakeLastComment
 
 exclude_paths = [
   'pkg/**/*',
+  'vendor/**/*',
   'spec/**/*'
 ]
 
