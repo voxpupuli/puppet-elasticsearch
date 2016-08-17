@@ -175,12 +175,28 @@ class Puppet::Provider::ElasticPlugin < Puppet::Provider
 
   # Run a command wrapped in necessary env vars
   def with_environment(&block)
-    saved_vars = ENV['ES_JAVA_OPTS']
-    new_env = ["-Des.path.conf=#{homedir}"]
-    new_env += proxy_args(@resource[:proxy]) if @resource[:proxy]
-    ENV['ES_JAVA_OPTS'] = new_env.join(' ')
+    env_vars = {
+      'ES_JAVA_OPTS' => ["-Des.path.conf=#{homedir}"],
+    }
+    saved_vars = {}
+
+    if @resource[:proxy]
+      env_vars['ES_JAVA_OPTS'] += proxy_args(@resource[:proxy])
+    end
+
+    env_vars['ES_JAVA_OPTS'] = env_vars['ES_JAVA_OPTS'].join(' ')
+
+    env_vars.each do |env_var, value|
+      saved_vars[env_var] = ENV[env_var]
+      ENV[env_var] = value
+    end
+
     ret = block.call
-    ENV['ES_JAVA_OPTS'] = saved_vars
+
+    saved_vars.each do |env_var, value|
+      ENV[env_var] = value
+    end
+
     return ret
   end
 
