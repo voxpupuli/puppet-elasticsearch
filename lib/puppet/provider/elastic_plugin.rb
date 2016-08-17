@@ -92,9 +92,8 @@ class Puppet::Provider::ElasticPlugin < Puppet::Provider
     es_version
     commands = []
     commands << 'install'
-    commands << '--batch' if is22x?
-    commands += install1x if is1x?
-    commands += install2x if is2x?
+    commands << '--batch' if batch_capable?
+    commands += is1x? ? install1x : install2x
     debug("Commands: #{commands.inspect}")
 
     retry_count = 3
@@ -152,10 +151,9 @@ class Puppet::Provider::ElasticPlugin < Puppet::Provider
     (Puppet::Util::Package.versioncmp(@es_version, '2.0.0') >= 0) && (Puppet::Util::Package.versioncmp(@es_version, '3.0.0') < 0)
   end
 
-  def is22x?
-    (Puppet::Util::Package.versioncmp(@es_version, '2.2.0') >= 0) && (Puppet::Util::Package.versioncmp(@es_version, '3.0.0') < 0)
+  def batch_capable?
+    Puppet::Util::Package.versioncmp(@es_version, '2.2.0') >= 0
   end
-
 
   def plugin_version(plugin_name)
     vendor, plugin, version = plugin_name.split('/')
