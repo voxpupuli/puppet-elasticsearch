@@ -63,6 +63,9 @@ describe 'elasticsearch::shield::user' do
       it { should contain_elasticsearch_shield_role_mapping('test_role') }
       it { should contain_elasticsearch__plugin('shield') }
       it { should contain_elasticsearch_plugin('shield') }
+      it { should contain_file(
+        '/usr/share/elasticsearch/plugins/shield'
+      ) }
       it { should contain_elasticsearch__shield__user('elastic')
         .that_comes_before([
         'Elasticsearch::Template[foo]'
@@ -101,6 +104,9 @@ describe 'elasticsearch::shield::user' do
       it { should contain_elasticsearch_shield_role_mapping('test_role') }
       it { should contain_elasticsearch__plugin('shield') }
       it { should contain_elasticsearch_plugin('shield') }
+      it { should contain_file(
+        '/usr/share/elasticsearch/plugins/shield'
+      ) }
       it { should contain_elasticsearch__shield__user('elastic')
         .that_comes_before([
         'Elasticsearch::Template[foo]',
