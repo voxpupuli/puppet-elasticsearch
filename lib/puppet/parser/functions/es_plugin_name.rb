@@ -14,6 +14,9 @@ module Puppet::Parser::Functions
     For example, all the following return values are "plug":
 
         es_plugin_name('plug')
+        es_plugin_name('foo/plug')
+        es_plugin_name('foo/plug/1.0.0')
+        es_plugin_name('foo/elasticsearch-plug')
         es_plugin_name('foo/es-plug/1.3.2')
     ENDHEREDOC
 
