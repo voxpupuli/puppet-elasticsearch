@@ -22,13 +22,15 @@ module Puppet::Parser::Functions
         'wrong number of arguments, at least one value required'
     end
 
-    args.each do |arg|
-      next unless arg.is_a? String
-      next if arg.empty?
-      return Puppet_X::Elastic::plugin_name arg
-    end
+    ret = args.select do |arg|
+      arg.is_a? String and not arg.empty?
+    end.first
 
-    raise Puppet::Error,
-      'could not determine plugin name'
+    if ret
+      Puppet_X::Elastic::plugin_name ret
+    else
+      raise Puppet::Error,
+        'could not determine plugin name'
+    end
   end
 end
