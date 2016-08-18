@@ -388,7 +388,6 @@ define elasticsearch::instance(
       'CONF_FILE' => "${instance_configdir}/elasticsearch.yml",
       'LOG_DIR'   => $instance_logdir,
       'ES_HOME'   => '/usr/share/elasticsearch',
-      'DATA_DIR'  => $instance_datadir,
     }
 
     if (is_hash($init_defaults)) {
