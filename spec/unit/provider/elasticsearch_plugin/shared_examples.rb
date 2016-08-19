@@ -27,7 +27,7 @@ shared_examples 'plugin provider' do |version, build|
           ['http://url/to/my/plugin.zip'].tap do |args|
             build =~ (/^\S+\s+([^,]+),/)
             if $1.start_with? '1'
-              args.unshift(shortname, '--url')
+              args.unshift('kopf', '--url')
             end
 
             if Puppet::Util::Package.versioncmp($1, '2.2.0') >= 0
@@ -46,7 +46,7 @@ shared_examples 'plugin provider' do |version, build|
           ['file:///tmp/plugin.zip'].tap do |args|
             build =~ (/^\S+\s+([^,]+),/)
             if $1.start_with? '1'
-              args.unshift(shortname, '--url')
+              args.unshift('kopf', '--url')
             end
 
             if Puppet::Util::Package.versioncmp($1, '2.2.0') >= 0

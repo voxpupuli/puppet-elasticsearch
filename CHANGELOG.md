@@ -6,6 +6,7 @@
 * Plugin installation for the 5.x series of Elasticsearch is now properly supported.
 
 #### Bugfixes
+* Recursively enforce correct plugin directory mode to avoid Elasticsearch startup permissions errors.
 
 #### Changes
 * Updated the elasticsearch_template type to return more helpful error output.
