@@ -18,7 +18,6 @@ describe provider_class do
     provider.resource = resource
     provider
   end
-  let(:shortname) { provider.plugin_name(resource_name) }
   let(:klass) { provider_class }
 
   include_examples 'plugin provider',
