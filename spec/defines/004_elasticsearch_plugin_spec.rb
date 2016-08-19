@@ -32,8 +32,17 @@ describe 'elasticsearch::plugin', :type => 'define' do
         :instances  => 'es-01'
       } end
 
-      it { should contain_elasticsearch__plugin('mobz/elasticsearch-head/1.0.0') }
-      it { should contain_elasticsearch_plugin('mobz/elasticsearch-head/1.0.0') }
+      it { should contain_elasticsearch__plugin(
+        'mobz/elasticsearch-head/1.0.0'
+      ) }
+      it { should contain_elasticsearch_plugin(
+        'mobz/elasticsearch-head/1.0.0'
+      ) }
+      it { should contain_file(
+        '/usr/share/elasticsearch/plugins/head'
+      ).that_requires(
+        'Elasticsearch_plugin[mobz/elasticsearch-head/1.0.0]'
+      ) }
     end
 
     context "Remove a plugin" do
@@ -44,8 +53,19 @@ describe 'elasticsearch::plugin', :type => 'define' do
         :instances  => 'es-01'
       } end
 
-      it { should contain_elasticsearch__plugin('mobz/elasticsearch-head/1.0.0') }
-      it { should contain_elasticsearch_plugin('mobz/elasticsearch-head/1.0.0').with(:ensure => 'absent') }
+      it { should contain_elasticsearch__plugin(
+        'mobz/elasticsearch-head/1.0.0'
+      ) }
+      it { should contain_elasticsearch_plugin(
+        'mobz/elasticsearch-head/1.0.0'
+      ).with(
+        :ensure => 'absent'
+      ) }
+      it { should contain_file(
+        '/usr/share/elasticsearch/plugins/head'
+      ).that_requires(
+        'Elasticsearch_plugin[mobz/elasticsearch-head/1.0.0]'
+      ) }
     end
 
   end
