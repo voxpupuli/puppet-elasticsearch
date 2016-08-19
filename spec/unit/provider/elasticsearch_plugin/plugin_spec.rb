@@ -27,7 +27,7 @@ shared_examples 'plugin provider' do |version, build|
           'install',
           ['http://url/to/my/plugin.zip'].tap do |args|
             if version.start_with? '1'
-              args.unshift(shortname, '--url')
+              args.unshift('kopf', '--url')
             else
               args
             end
@@ -43,7 +43,7 @@ shared_examples 'plugin provider' do |version, build|
           'install',
           ['file:///tmp/plugin.zip'].tap do |args|
             if version.start_with? '1'
-              args.unshift(shortname, '--url')
+              args.unshift('kopf', '--url')
             else
               args
             end
@@ -119,7 +119,6 @@ describe provider_class do
     provider.resource = resource
     provider
   end
-  let(:shortname) { provider.plugin_name(resource_name) }
 
   include_examples 'plugin provider',
     '1.x',
