@@ -51,7 +51,6 @@ describe 'other tests' do
         .with('-version')
         .returns('Version: 1.7.3, Build: b88f43f/2015-07-29T09:54:16Z, JVM: 1.7.0_79')
       provider.expects(:plugin).with([
-        '-Des.path.conf=/usr/share/elasticsearch',
         'install',
         'lmenezes/elasticsearch-kopf'
       ])
