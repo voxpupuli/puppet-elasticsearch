@@ -3,6 +3,7 @@
 ### Summary
 
 #### Features
+* Plugin installation for the 5.x series of Elasticsearch is now properly supported.
 
 #### Bugfixes
 * Recursively enforce correct plugin directory mode to avoid Elasticsearch startup permissions errors.
