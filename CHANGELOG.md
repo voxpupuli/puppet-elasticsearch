@@ -7,6 +7,7 @@
 
 #### Bugfixes
 * Recursively enforce correct plugin directory mode to avoid Elasticsearch startup permissions errors.
+* Fixed an edge case where dependency cycles could arise when managing absent resources.
 
 #### Changes
 * Updated the elasticsearch_template type to return more helpful error output.

@@ -116,6 +116,7 @@ class Puppet::Provider::ElasticPlugin < Puppet::Provider
   def create
     es_version
     commands = []
+    commands << "-Des.path.conf=#{homedir}" if is2x?
     commands << 'install'
     commands << '--batch' if batch_capable?
     commands += is1x? ? install1x : install2x
