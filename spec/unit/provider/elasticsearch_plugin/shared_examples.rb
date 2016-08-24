@@ -12,9 +12,13 @@ shared_examples 'plugin provider' do |version, build|
       it 'installs with default parameters' do
         provider.expects(:plugin).with(
           ['install', resource_name].tap do |args|
-            if build =~ (/^\S+\s+([^,]+),/) and \
-                Puppet::Util::Package.versioncmp($1, '2.2.0') >= 0
-              args.insert 1, '--batch'
+            if build =~ (/^\S+\s+([^,]+),/)
+              if Puppet::Util::Package.versioncmp($1, '2.2.0') >= 0
+                args.insert 1, '--batch'
+              end
+              if $1.start_with? '2'
+                args.unshift '-Des.path.conf=/usr/share/elasticsearch'
+              end
             end
           end
         )
@@ -23,8 +27,11 @@ shared_examples 'plugin provider' do |version, build|
 
       it 'installs via URLs' do
         resource[:url] = 'http://url/to/my/plugin.zip'
-        provider.expects(:plugin).with(['install'] +
-          ['http://url/to/my/plugin.zip'].tap do |args|
+        provider.expects(:plugin).with(['install'].tap { |args|
+              if version.start_with? '2'
+                args.unshift '-Des.path.conf=/usr/share/elasticsearch'
+              end
+            } + ['http://url/to/my/plugin.zip'].tap { |args|
             build =~ (/^\S+\s+([^,]+),/)
             if $1.start_with? '1'
               args.unshift('kopf', '--url')
@@ -35,15 +42,18 @@ shared_examples 'plugin provider' do |version, build|
             end
 
             args
-          end
+          }
         )
         provider.create
       end
 
       it 'installs with a local file' do
         resource[:source] = '/tmp/plugin.zip'
-        provider.expects(:plugin).with(['install'] +
-          ['file:///tmp/plugin.zip'].tap do |args|
+        provider.expects(:plugin).with(['install'].tap { |args|
+            if version.start_with? '2'
+              args.unshift '-Des.path.conf=/usr/share/elasticsearch'
+            end
+          } + ['file:///tmp/plugin.zip'].tap { |args|
             build =~ (/^\S+\s+([^,]+),/)
             if $1.start_with? '1'
               args.unshift('kopf', '--url')
@@ -54,7 +64,7 @@ shared_examples 'plugin provider' do |version, build|
             end
 
             args
-          end
+          }
         )
         provider.create
       end
