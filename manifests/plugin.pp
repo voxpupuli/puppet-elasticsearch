@@ -102,9 +102,11 @@ define elasticsearch::plugin(
       }
 
       $_file_ensure = 'directory'
+      $_file_before = []
     }
     'absent': {
       $_file_ensure = $ensure
+      $_file_before = File[$elasticsearch::plugindir]
     }
     default: {
       fail("'${ensure}' is not a valid ensure parameter value")
@@ -168,5 +170,6 @@ define elasticsearch::plugin(
     ensure  => $_file_ensure,
     mode    => 'o+Xr',
     recurse => true,
+    before  => $_file_before,
   }
 }
