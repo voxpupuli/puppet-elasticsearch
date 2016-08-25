@@ -8,6 +8,7 @@
 #### Bugfixes
 * Recursively enforce correct plugin directory mode to avoid Elasticsearch startup permissions errors.
 * Fixed an edge case where dependency cycles could arise when managing absent resources.
+* Elasticsearch templates now properly use HTTPS when instructed to do so.
 
 #### Changes
 * Updated the elasticsearch_template type to return more helpful error output.
