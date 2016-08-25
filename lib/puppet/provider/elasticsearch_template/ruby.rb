@@ -47,6 +47,8 @@ Puppet::Type.type(:elasticsearch_template).provide(:ruby) do
     http = Net::HTTP.new uri.host, uri.port
     req = Net::HTTP::Get.new uri.request_uri
 
+    http.use_ssl = uri.scheme == 'https'
+
     response = rest http, req, validate_tls, timeout, username, password
 
     if response.code.to_i == 200
@@ -110,6 +112,7 @@ Puppet::Type.type(:elasticsearch_template).provide(:ruby) do
       resource[:name]
     ])
     http = Net::HTTP.new uri.host, uri.port
+    http.use_ssl = uri.scheme == 'https'
 
     case @property_flush[:ensure]
     when :absent
