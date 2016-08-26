@@ -1,20 +1,12 @@
-require 'puppet/provider/parsedfile'
-
-case Facter.value('osfamily')
-when 'OpenBSD'
-  users = '/usr/local/elasticsearch/shield/users'
-else
-  users = '/usr/share/elasticsearch/shield/users'
-end
+require 'puppet/provider/elastic_parsedfile'
 
 Puppet::Type.type(:elasticsearch_shield_user).provide(
   :parsed,
-  :parent => Puppet::Provider::ParsedFile,
-  :default_target => users
+  :parent => Puppet::Provider::ElasticParsedFile
 ) do
   desc "Provider for Shield esusers using plain files."
 
-  confine :exists => users
+  shield_config 'users'
 
   has_feature :manages_passwords
 

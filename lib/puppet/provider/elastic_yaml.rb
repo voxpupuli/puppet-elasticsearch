@@ -1,9 +1,9 @@
 $LOAD_PATH.unshift(File.join(File.dirname(__FILE__),"..","..",".."))
-require 'puppet/provider/parsedfile'
+require 'puppet/provider/elastic_parsedfile'
 require 'puppet/util/package'
 require 'puppet_x/elastic/hash'
 
-class Puppet::Provider::ElasticYaml < Puppet::Provider::ParsedFile
+class Puppet::Provider::ElasticYaml < Puppet::Provider::ElasticParsedFile
 
   class << self
     attr_accessor :metadata

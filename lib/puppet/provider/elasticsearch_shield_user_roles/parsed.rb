@@ -1,20 +1,12 @@
-require 'puppet/provider/parsedfile'
-
-case Facter.value('osfamily')
-when 'OpenBSD'
-  users_roles = '/usr/local/elasticsearch/shield/users_roles'
-else
-  users_roles = '/usr/share/elasticsearch/shield/users_roles'
-end
+require 'puppet/provider/elastic_yaml'
 
 Puppet::Type.type(:elasticsearch_shield_user_roles).provide(
   :parsed,
-  :parent => Puppet::Provider::ParsedFile,
-  :default_target => users_roles
+  :parent => Puppet::Provider::ElasticYaml
 ) do
   desc "Provider for Shield user roles (parsed file.)"
 
-  confine :exists => users_roles
+  shield_config 'users_roles'
 
   def self.parse text
     text.split("\n").map{|l|l.strip}.select do |line|
