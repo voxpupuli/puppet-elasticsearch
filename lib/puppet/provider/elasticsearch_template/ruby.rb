@@ -32,7 +32,16 @@ Puppet::Type.type(:elasticsearch_template).provide(:ruby) do
     http.open_timeout = timeout
     http.verify_mode = OpenSSL::SSL::VERIFY_NONE if not validate_tls
 
-    http.request req
+    begin
+      http.request req
+    rescue EOFError => e
+      # Because the provider attempts a best guess at API access, we
+      # only fail when HTTP operations fail for mutating methods.
+      unless ['GET', 'OPTIONS', 'HEAD'].include? req.method
+        raise Puppet::Error,
+          "Received '#{e}' from the Elasticsearch API. Are your API settings correct?"
+      end
+    end
   end
 
   def self.templates protocol='http', \
@@ -47,9 +56,11 @@ Puppet::Type.type(:elasticsearch_template).provide(:ruby) do
     http = Net::HTTP.new uri.host, uri.port
     req = Net::HTTP::Get.new uri.request_uri
 
+    http.use_ssl = uri.scheme == 'https'
+
     response = rest http, req, validate_tls, timeout, username, password
 
-    if response.code.to_i == 200
+    if response.respond_to? :code and response.code.to_i == 200
       JSON.parse(response.body).map do |name, template|
         {
           :name => name,
@@ -110,6 +121,7 @@ Puppet::Type.type(:elasticsearch_template).provide(:ruby) do
       resource[:name]
     ])
     http = Net::HTTP.new uri.host, uri.port
+    http.use_ssl = uri.scheme == 'https'
 
     case @property_flush[:ensure]
     when :absent
