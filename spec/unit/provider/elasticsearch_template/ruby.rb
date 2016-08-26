@@ -116,4 +116,45 @@ describe Puppet::Type.type(:elasticsearch_template).provider(:ruby) do
     end
   end
 
+  describe 'https' do
+    before :all do
+      stub_request(:get, 'https://localhost:9200/_template').
+        to_return(
+          :status => 200,
+          :body => <<-EOS
+            {
+              "foobar-ssl": {
+                "aliases": {},
+                "mappings": {},
+                "order": 10,
+                "settings": {},
+                "template": "foobar-ssl-*"
+              }
+            }
+          EOS
+      )
+    end
+
+    it 'uses ssl' do
+      expect(described_class.templates(
+        'https', true, 'localhost', '9200', 10
+      ).map { |provider|
+        described_class.new(
+          provider
+        ).instance_variable_get(:@property_hash)
+      }).to contain_exactly({
+        :name => 'foobar-ssl',
+        :ensure => :present,
+        :provider => :ruby,
+        :content => {
+          'aliases' => {},
+          'mappings' => {},
+          'settings' => {},
+          'template' => 'foobar-ssl-*',
+          'order' => 10,
+        }
+      })
+    end
+  end
+
 end # of describe puppet type
