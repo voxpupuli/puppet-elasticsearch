@@ -1,6 +1,7 @@
-## x.x.x (Month Day, Year)
+## 0.13.2 (August 29, 2016)
 
 ### Summary
+Primarily a bugfix release to resolve HTTPS use in elasticsearch::template resources, 5.x plugin operations, and plugin file permission enforcement.
 
 #### Features
 * Plugin installation for the 5.x series of Elasticsearch is now properly supported.
