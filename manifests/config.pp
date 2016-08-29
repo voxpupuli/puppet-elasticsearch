@@ -137,6 +137,7 @@ class elasticsearch::config {
       ensure => 'absent',
       force  => true,
       backup => false,
+      mode   => 'o+Xr',
     }
 
   }

@@ -276,7 +276,13 @@ describe 'elasticsearch', :type => 'class' do
         else
           it { should contain_package('elasticsearch').with(:ensure => 'purged') }
         end
-        it { should contain_file('/usr/share/elasticsearch/plugins').with(:ensure => 'absent') }
+        it {
+          should contain_file('/usr/share/elasticsearch/plugins')
+            .with(
+              :ensure => 'absent',
+              :mode => 'o+Xr'
+          )
+        }
 
       end
 
