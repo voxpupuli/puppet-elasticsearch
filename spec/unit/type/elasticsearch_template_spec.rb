@@ -12,6 +12,8 @@ describe Puppet::Type.type(:elasticsearch_template) do
       :port,
       :protocol,
       :validate_tls,
+      :ca_file,
+      :ca_path,
       :timeout,
       :username,
       :password
