@@ -282,6 +282,16 @@
 #   Defines the default REST basic auth password for API authentication.
 #   Defaults to: undef
 #
+# [*api_ca_file*]
+#   Path to a CA file which will be used to validate server certs when
+#   communicating with the Elasticsearch API over HTTPS.
+#   Defaults to: undef
+#
+# [*api_ca_path*]
+#   Path to a directory with CA files which will be used to validate server
+#   certs when communicating with the Elasticsearch API over HTTPS.
+#   Defaults to: undef
+#
 # [*system_key*]
 #   Source for the Shield system key. Valid values are any that are
 #   supported for the file resource `source` parameter.
@@ -369,6 +379,8 @@ class elasticsearch(
   $api_timeout             = 10,
   $api_basic_auth_username = undef,
   $api_basic_auth_password = undef,
+  $api_ca_file             = undef,
+  $api_ca_path             = undef,
   $validate_tls            = true,
   $system_key              = undef,
 ) inherits elasticsearch::params {

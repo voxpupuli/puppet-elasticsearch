@@ -8,6 +8,7 @@
 * Permissions on the Elasticsearch plugin directory have been fixed to permit world read rights.
 
 #### Changes
+* The `api_ca_file` and `api_ca_path` parameters have been added to support custom CA bundles for API access.
 
 #### Testing changes
 

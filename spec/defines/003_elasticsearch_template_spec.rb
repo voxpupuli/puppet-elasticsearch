@@ -17,6 +17,20 @@ describe 'elasticsearch::template', :type => 'define' do
   EOS
   }
 
+  describe 'parameter validation' do
+    [:api_ca_file, :api_ca_path].each do |param|
+      let :params do {
+        :ensure => 'present',
+        :content => '{}',
+        param => 'foo/cert'
+      } end
+
+      it { is_expected.to compile
+        .and_raise_error(/absolute path/) }
+    end
+  end
+
+
   describe 'template from source' do
 
     let :params do {
@@ -61,6 +75,8 @@ describe 'elasticsearch::template', :type => 'define' do
         api_timeout => 11,
         api_basic_auth_username => 'elastic',
         api_basic_auth_password => 'password',
+        api_ca_file => '/foo/bar.pem',
+        api_ca_path => '/foo/',
         validate_tls => false,
       }
     EOS
@@ -75,6 +91,8 @@ describe 'elasticsearch::template', :type => 'define' do
       :timeout => 11,
       :username => 'elastic',
       :password => 'password',
+      :ca_file => '/foo/bar.pem',
+      :ca_path => '/foo/',
       :validate_tls => false
     ) }
   end
