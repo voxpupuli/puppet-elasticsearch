@@ -5,6 +5,7 @@
 #### Features
 
 #### Bugfixes
+* Permissions on the Elasticsearch plugin directory have been fixed to permit world read rights.
 
 #### Changes
 
