@@ -133,6 +133,8 @@ class { 'elasticsearch':
   api_timeout             => 10,
   api_basic_auth_username => undef,
   api_basic_auth_password => undef,
+  api_ca_file             => undef,
+  api_ca_path             => undef,
   validate_tls            => true,
 }
 ```
@@ -252,6 +254,8 @@ elasticsearch::template { 'templatename':
   api_timeout             => 60,
   api_basic_auth_username => 'admin',
   api_basic_auth_password => 'adminpassword',
+  api_ca_file             => '/etc/ssl/certs',
+  api_ca_path             => '/etc/pki/certs',
   validate_tls            => false,
   source                  => 'puppet:///path/to/template.json',
 }
