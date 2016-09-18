@@ -292,6 +292,13 @@ define elasticsearch::instance(
       validate_string($system_key)
     }
 
+    exec { "mkdir_logdir_elasticsearch_${name}":
+      command => "mkdir -p ${instance_logdir}",
+      creates => $instance_logdir,
+      require => Class['elasticsearch::package'],
+      before  => File[$instance_logdir],
+    }
+
     file { $instance_logdir:
       ensure  => 'directory',
       owner   => $elasticsearch::elasticsearch_user,
