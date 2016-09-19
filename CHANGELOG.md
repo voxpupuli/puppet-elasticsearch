@@ -6,6 +6,7 @@
 
 #### Bugfixes
 * Permissions on the Elasticsearch plugin directory have been fixed to permit world read rights.
+* The service systemd unit now `Wants=` a network target to fix bootup parallelization problems.
 
 #### Changes
 * The `api_ca_file` and `api_ca_path` parameters have been added to support custom CA bundles for API access.
