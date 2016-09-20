@@ -79,7 +79,7 @@ class elasticsearch::config {
           ensure  => 'file',
           content => template("${module_name}/usr/lib/tmpfiles.d/elasticsearch.conf.erb"),
           owner   => 'root',
-          group   => 'root',
+          group   => '0',
         }
       }
     }
@@ -100,7 +100,7 @@ class elasticsearch::config {
       ensure => 'directory',
       mode   => '0644',
       owner  => 'root',
-      group  => 'root',
+      group  => '0',
     }
 
     if ($elasticsearch::service_providers == 'systemd') {

@@ -116,7 +116,7 @@ define elasticsearch::service::systemd(
         ensure => $ensure,
         source => $init_defaults_file,
         owner  => 'root',
-        group  => 'root',
+        group  => '0',
         mode   => '0644',
         before => Service["elasticsearch-instance-${name}"],
         notify => $notify_service,
