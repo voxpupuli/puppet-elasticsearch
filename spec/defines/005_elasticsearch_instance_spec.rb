@@ -199,6 +199,7 @@ describe 'elasticsearch::instance', :type => 'define' do
   context 'data directory' do
 
     context 'default' do
+      it { should contain_exec('mkdir_logdir_elasticsearch_es-01') }
       it { should contain_exec('mkdir_datadir_elasticsearch_es-01') }
       it { should contain_file('/usr/share/elasticsearch/data/es-01').with( :ensure => 'directory') }
       it { should contain_file('/usr/share/elasticsearch/data').with( :ensure => 'directory') }
@@ -212,6 +213,7 @@ describe 'elasticsearch::instance', :type => 'define' do
       EOS
       }
 
+      it { should contain_exec('mkdir_logdir_elasticsearch_es-01') }
       it { should contain_exec('mkdir_datadir_elasticsearch_es-01') }
       it { should contain_file('/var/lib/elasticsearch-data').with( :ensure => 'directory') }
       it { should contain_file('/var/lib/elasticsearch-data/es-01').with( :ensure => 'directory') }
@@ -222,6 +224,7 @@ describe 'elasticsearch::instance', :type => 'define' do
         :datadir => '/var/lib/elasticsearch/data'
       } end
 
+      it { should contain_exec('mkdir_logdir_elasticsearch_es-01') }
       it { should contain_exec('mkdir_datadir_elasticsearch_es-01') }
       it { should contain_file('/var/lib/elasticsearch/data').with( :ensure => 'directory') }
 
@@ -238,6 +241,7 @@ describe 'elasticsearch::instance', :type => 'define' do
       EOS
       }
 
+      it { should contain_exec('mkdir_logdir_elasticsearch_es-01') }
       it { should contain_exec('mkdir_datadir_elasticsearch_es-01') }
       it { should contain_file('/var/lib/elasticsearch-data01').with( :ensure => 'directory') }
       it { should contain_file('/var/lib/elasticsearch-data01/es-01').with( :ensure => 'directory') }
@@ -253,6 +257,7 @@ describe 'elasticsearch::instance', :type => 'define' do
         ]
       } end
 
+      it { should contain_exec('mkdir_logdir_elasticsearch_es-01') }
       it { should contain_exec('mkdir_datadir_elasticsearch_es-01') }
       it { should contain_file('/var/lib/elasticsearch-data/01').with( :ensure => 'directory') }
       it { should contain_file('/var/lib/elasticsearch-data/02').with( :ensure => 'directory') }
@@ -264,6 +269,7 @@ describe 'elasticsearch::instance', :type => 'define' do
        :config  => { 'path.data' => '/var/lib/elasticsearch/otherdata' }
      } end
 
+      it { should contain_exec('mkdir_logdir_elasticsearch_es-01') }
       it { should contain_exec('mkdir_datadir_elasticsearch_es-01') }
       it { should contain_file('/var/lib/elasticsearch/data').with( :ensure => 'directory') }
       it { should_not contain_file('/var/lib/elasticsearch/otherdata').with( :ensure => 'directory') }
@@ -277,6 +283,7 @@ describe 'elasticsearch::instance', :type => 'define' do
        }
      } end
 
+      it { should contain_exec('mkdir_logdir_elasticsearch_es-01') }
       it { should contain_exec('mkdir_datadir_elasticsearch_es-01') }
       it { should contain_file('/var/lib/elasticsearch/data').with( :ensure => 'directory') }
       it { should_not contain_file('/var/lib/elasticsearch/otherdata').with( :ensure => 'directory') }
@@ -288,6 +295,7 @@ describe 'elasticsearch::instance', :type => 'define' do
        :config  => { 'path' => { 'home' => '/var/lib/elasticsearch' } }
      } end
 
+      it { should contain_exec('mkdir_logdir_elasticsearch_es-01') }
       it { should contain_exec('mkdir_datadir_elasticsearch_es-01') }
       it { should contain_file('/var/lib/elasticsearch/data').with( :ensure => 'directory') }
    end
