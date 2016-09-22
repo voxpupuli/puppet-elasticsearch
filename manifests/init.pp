@@ -311,7 +311,7 @@
 #
 # [*rolling_file_max_backup_index*]
 #   Max number of logs to store whern file_rolling_type is 'rollingFile'
-#   Value type is int
+#   Value type is integer
 #   Default value: 1
 #
 # [*rolling_file_max_file_size*]
@@ -432,7 +432,7 @@ class elasticsearch(
     file("\"${file_rolling_type}\" is not a valid type")
   }
 
-  validate_int($rolling_file_max_backup_index)
+  validate_integer($rolling_file_max_backup_index)
   validate_string($daily_rolling_date_pattern)
   validate_string($rolling_file_max_file_size)
 
