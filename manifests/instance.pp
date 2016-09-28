@@ -111,6 +111,27 @@
 #   Value type is string
 #   Default value: undef
 #
+# [*file_rolling_type*]
+#   Configuration for the file appender rotation. It can be 'dailyRollingFile'
+#   or 'rollingFile'. The first rotates by name, and the second one by size.
+#   Value type is string
+#   Default value: dailyRollingFile
+#
+# [*daily_rolling_date_pattern*]
+#   File pattern for the file appender log when file_rolling_type is 'dailyRollingFile'
+#   Value type is string
+#   Default value: "'.'yyyy-MM-dd"
+#
+# [*rolling_file_max_backup_index*]
+#   Max number of logs to store whern file_rolling_type is 'rollingFile'
+#   Value type is integer
+#   Default value: 1
+#
+# [*rolling_file_max_file_size*]
+#   Max log file size when file_rolling_type is 'rollingFile'
+#   Value type is string
+#   Default value: 10MB
+#
 # === Authors
 #
 # * Tyler Langlois <mailto:tyler@elastic.co>
