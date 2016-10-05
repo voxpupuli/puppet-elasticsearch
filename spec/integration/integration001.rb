@@ -1,11 +1,19 @@
 require 'spec_helper_acceptance'
+require 'json'
 
 describe "Integration testing" do
 
-  shell("mkdir -p #{default['distmoduledir']}/another/files")
-  shell("echo '#{test_settings['good_json']}' >> #{default['distmoduledir']}/another/files/good.json")
-  shell("echo '#{test_settings['bad_json']}' >> #{default['distmoduledir']}/another/files/bad.json")
+  before :all do
+    shell "mkdir -p #{default['distmoduledir']}/another/files"
 
+    create_remote_file default,
+      "#{default['distmoduledir']}/another/files/good.json",
+      JSON.dump(test_settings['template'])
+
+    create_remote_file default,
+      "#{default['distmoduledir']}/another/files/bad.json",
+      JSON.dump(test_settings['template'])[0..-5]
+  end
 
   describe "Setup Elasticsearch", :main => true do
 

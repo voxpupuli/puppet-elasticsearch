@@ -38,11 +38,6 @@ class elasticsearch::config {
 
   if ( $elasticsearch::ensure == 'present' ) {
 
-    $notify_service = $elasticsearch::restart_on_change ? {
-      true  => Class['elasticsearch::service'],
-      false => undef,
-    }
-
     file { $elasticsearch::configdir:
       ensure => directory,
       mode   => '0644',
@@ -84,7 +79,7 @@ class elasticsearch::config {
           ensure  => 'file',
           content => template("${module_name}/usr/lib/tmpfiles.d/elasticsearch.conf.erb"),
           owner   => 'root',
-          group   => 'root',
+          group   => '0',
         }
       }
     }
@@ -105,17 +100,19 @@ class elasticsearch::config {
       ensure => 'directory',
       mode   => '0644',
       owner  => 'root',
-      group  => 'root',
+      group  => '0',
+    }
+
+    if ($elasticsearch::service_providers == 'systemd') {
+      # Mask default unit (from package)
+      exec { 'systemctl mask elasticsearch.service':
+        unless => 'test `systemctl is-enabled elasticsearch.service` = masked',
+      }
     }
 
     # Removal of files that are provided with the package which we don't use
     file { '/etc/init.d/elasticsearch':
       ensure => 'absent',
-    }
-    if $elasticsearch::params::systemd_service_path {
-      file { "${elasticsearch::params::systemd_service_path}/elasticsearch.service":
-        ensure => 'absent',
-      }
     }
 
     $new_init_defaults = { 'CONF_DIR' => $elasticsearch::configdir }
@@ -140,6 +137,7 @@ class elasticsearch::config {
       ensure => 'absent',
       force  => true,
       backup => false,
+      mode   => 'o+Xr',
     }
 
   }

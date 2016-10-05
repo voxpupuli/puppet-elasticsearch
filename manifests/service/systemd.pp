@@ -103,7 +103,7 @@ define elasticsearch::service::systemd(
     $service_enable = false
   }
 
-  $notify_service = $elasticsearch::restart_on_change ? {
+  $notify_service = $elasticsearch::restart_config_change ? {
     true  => [ Exec["systemd_reload_${name}"], Service["elasticsearch-instance-${name}"] ],
     false => Exec["systemd_reload_${name}"]
   }
@@ -116,7 +116,7 @@ define elasticsearch::service::systemd(
         ensure => $ensure,
         source => $init_defaults_file,
         owner  => 'root',
-        group  => 'root',
+        group  => '0',
         mode   => '0644',
         before => Service["elasticsearch-instance-${name}"],
         notify => $notify_service,

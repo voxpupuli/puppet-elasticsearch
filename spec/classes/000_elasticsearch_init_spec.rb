@@ -79,12 +79,14 @@ describe 'elasticsearch', :type => 'class' do
 
         # Base files
         if test_pid == true
-          it { should contain_file('/usr/lib/tmpfiles.d/elasticsearch.conf') }
+          it { should contain_exec('systemctl mask elasticsearch.service')}
+          it { should contain_file(
+            '/usr/lib/tmpfiles.d/elasticsearch.conf'
+          ) }
         end
 
         # file removal from package
         it { should contain_file('/etc/init.d/elasticsearch').with(:ensure => 'absent') }
-        it { should contain_file("#{systemd_service_path}/elasticsearch.service").with(:ensure => 'absent') if defined? systemd_service_path }
         it { should contain_file('/etc/elasticsearch/elasticsearch.yml').with(:ensure => 'absent') }
         it { should contain_file('/etc/elasticsearch/logging.yml').with(:ensure => 'absent') }
       end
@@ -109,6 +111,12 @@ describe 'elasticsearch', :type => 'class' do
             }
 
             it { should contain_package('elasticsearch').with(:ensure => "1.0#{version_add}") }
+            case facts[:osfamily]
+            when 'RedHat'
+              it { should contain_yum__versionlock(
+                "0:elasticsearch-1.0#{version_add}.noarch"
+              ) }
+            end
           end
 
           if facts[:osfamily] == 'RedHat'
@@ -121,6 +129,9 @@ describe 'elasticsearch', :type => 'class' do
               }
 
               it { should contain_package('elasticsearch').with(:ensure => "1.1-2") }
+              it { should contain_yum__versionlock(
+                '0:elasticsearch-1.1-2.noarch'
+              ) }
             end
           end
 
@@ -258,10 +269,20 @@ describe 'elasticsearch', :type => 'class' do
         case facts[:osfamily]
         when 'Suse'
           it { should contain_package('elasticsearch').with(:ensure => 'absent') }
+        when 'RedHat'
+          it { should contain_exec(
+            'elasticsearch_purge_versionlock.list'
+          ) }
         else
           it { should contain_package('elasticsearch').with(:ensure => 'purged') }
         end
-        it { should contain_file('/usr/share/elasticsearch/plugins').with(:ensure => 'absent') }
+        it {
+          should contain_file('/usr/share/elasticsearch/plugins')
+            .with(
+              :ensure => 'absent',
+              :mode => 'o+Xr'
+          )
+        }
 
       end
 
@@ -281,6 +302,7 @@ describe 'elasticsearch', :type => 'class' do
         when 'RedHat'
           it { should contain_class('elasticsearch::repo').that_requires('Anchor[elasticsearch::begin]') }
           it { should contain_yumrepo('elasticsearch').with(:baseurl => 'http://packages.elastic.co/elasticsearch/1.0/centos', :gpgkey => 'http://packages.elastic.co/GPG-KEY-elasticsearch', :enabled => 1) }
+          it { should contain_exec('elasticsearch_yumrepo_yum_clean') }
         when 'SuSE'
           it { should contain_class('elasticsearch::repo').that_requires('Anchor[elasticsearch::begin]') }
           it { should contain_exec('elasticsearch_suse_import_gpg') }
@@ -297,6 +319,65 @@ describe 'elasticsearch', :type => 'class' do
           })
         }
         it { expect { should raise_error(Puppet::Error, 'Please fill in a repository version at $repo_version') } }
+      end
+
+      context 'package pinning' do
+
+        let :params do
+          default_params.merge({
+            :package_pin => true,
+            :version => '1.6.0'
+          })
+        end
+
+        it { should contain_class(
+          'elasticsearch::package::pin'
+        ).that_comes_before(
+          'Class[elasticsearch::package]'
+        ) }
+
+        case facts[:osfamily]
+        when 'Debian'
+          context 'is supported' do
+            it { should contain_apt__pin('elasticsearch').with(:packages => ['elasticsearch'], :version => '1.6.0') }
+          end
+        when 'RedHat'
+          context 'is supported' do
+            it { should contain_yum__versionlock(
+              '0:elasticsearch-1.6.0-1.noarch'
+            ) }
+          end
+        else
+          context 'is not supported' do
+            pending("unable to test for warnings yet. https://github.com/rodjek/rspec-puppet/issues/108")
+          end
+        end
+      end
+
+      context 'repository priority pinning' do
+
+        let :params do
+          default_params.merge({
+            :manage_repo => true,
+            :repo_priority => 10,
+            :repo_version => '2.x'
+          })
+        end
+
+        case facts[:osfamily]
+        when 'Debian'
+          context 'is supported' do
+            it { should contain_apt__source('elasticsearch').with(
+              :pin => 10
+            ) }
+          end
+        when 'RedHat'
+          context 'is supported' do
+            it { should contain_yumrepo('elasticsearch').with(
+              :priority => 10
+            ) }
+          end
+        end
       end
 
       context "Running a a different user" do

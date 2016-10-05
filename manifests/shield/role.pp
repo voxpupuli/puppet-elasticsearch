@@ -4,6 +4,13 @@
 #
 # === Parameters
 #
+# [*ensure*]
+#   Whether the role should be present or not.
+#   Set to 'absent' to ensure a role is not present.
+#   Value type is string
+#   Default value: present
+#   This variable is optional
+#
 # [*privileges*]
 #   A hash of permissions defined for the role. Valid privilege settings can
 #   be found in the Shield documentation:

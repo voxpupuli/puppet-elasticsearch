@@ -107,7 +107,7 @@ define elasticsearch::service::init(
 
   }
 
-  $notify_service = $elasticsearch::restart_on_change ? {
+  $notify_service = $elasticsearch::restart_config_change ? {
     true  => Service["elasticsearch-instance-${name}"],
     false => undef,
   }
@@ -121,7 +121,7 @@ define elasticsearch::service::init(
         ensure => $ensure,
         source => $init_defaults_file,
         owner  => 'root',
-        group  => 'root',
+        group  => '0',
         mode   => '0644',
         before => Service["elasticsearch-instance-${name}"],
         notify => $notify_service,
@@ -157,7 +157,7 @@ define elasticsearch::service::init(
         ensure  => $ensure,
         content => template($init_template),
         owner   => 'root',
-        group   => 'root',
+        group   => '0',
         mode    => '0755',
         before  => Service["elasticsearch-instance-${name}"],
         notify  => $notify_service,

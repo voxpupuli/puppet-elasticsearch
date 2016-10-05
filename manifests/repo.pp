@@ -26,8 +26,8 @@
 class elasticsearch::repo {
 
   Exec {
-    path      => [ '/bin', '/usr/bin', '/usr/local/bin' ],
-    cwd       => '/',
+    path => [ '/bin', '/usr/bin', '/usr/local/bin' ],
+    cwd  => '/',
   }
 
   case $::osfamily {
@@ -36,15 +36,24 @@ class elasticsearch::repo {
       Class['apt::update'] -> Package[$elasticsearch::package_name]
 
       apt::source { 'elasticsearch':
+        ensure      => $elasticsearch::ensure,
         location    => "http://packages.elastic.co/elasticsearch/${elasticsearch::repo_version}/debian",
         release     => 'stable',
         repos       => 'main',
         key         => $::elasticsearch::repo_key_id,
         key_source  => $::elasticsearch::repo_key_source,
         include_src => false,
+        pin         => $elasticsearch::repo_priority,
       }
     }
     'RedHat', 'Linux': {
+      # Versions prior to 3.5.1 have issues with this param
+      # See: https://tickets.puppetlabs.com/browse/PUP-2163
+      if versioncmp($::puppetversion, '3.5.1') >= 0 {
+        Yumrepo['elasticsearch'] {
+          ensure => $elasticsearch::ensure,
+        }
+      }
       yumrepo { 'elasticsearch':
         descr    => 'elasticsearch repo',
         baseurl  => "http://packages.elastic.co/elasticsearch/${elasticsearch::repo_version}/centos",
@@ -52,6 +61,12 @@ class elasticsearch::repo {
         gpgkey   => $::elasticsearch::repo_key_source,
         enabled  => 1,
         proxy    => $::elasticsearch::repo_proxy,
+        priority => $elasticsearch::repo_priority,
+      } ~>
+      exec { 'elasticsearch_yumrepo_yum_clean':
+        command     => 'yum clean metadata expire-cache --disablerepo="*" --enablerepo="elasticsearch"',
+        refreshonly => true,
+        returns     => [0, 1],
       }
     }
     'Suse': {
@@ -64,8 +79,9 @@ class elasticsearch::repo {
 
       exec { 'elasticsearch_suse_import_gpg':
         command => $_import_cmd,
-        unless  => "test $(rpm -qa gpg-pubkey | grep -i '${::elasticsearch::repo_key_id}' | wc -l) -eq 1 ",
-        notify  => [ Zypprepo['elasticsearch'] ],
+        unless  =>
+          "test $(rpm -qa gpg-pubkey | grep -i 'D88E42B4' | wc -l) -eq 1",
+        notify  => Zypprepo['elasticsearch'],
       }
 
       zypprepo { 'elasticsearch':
@@ -87,32 +103,4 @@ class elasticsearch::repo {
     }
   }
 
-  # Package pinning
-
-    case $::osfamily {
-      'Debian': {
-        include ::apt
-
-        if ($elasticsearch::package_pin == true and $elasticsearch::version != false) {
-          apt::pin { $elasticsearch::package_name:
-            ensure   => 'present',
-            packages => $elasticsearch::package_name,
-            version  => $elasticsearch::version,
-            priority => 1000,
-          }
-        }
-
-      }
-      'RedHat', 'Linux': {
-
-        if ($elasticsearch::package_pin == true and $elasticsearch::version != false) {
-          yum::versionlock { "0:elasticsearch-${elasticsearch::pkg_version}.noarch":
-            ensure => 'present',
-          }
-        }
-      }
-      default: {
-        warning("Unable to pin package for OSfamily \"${::osfamily}\".")
-      }
-    }
 }
