@@ -5,22 +5,14 @@ Puppet::Type.type(:elasticsearch_plugin).provide(:plugin) do
         which handles plugin installation"
 
   os = Facter.value('osfamily')
+  commands :plugin => @parameters[:home_dir] + '/bin/plugin'
+  commands :es => @parameters[:home_dir] + '/bin/elasticsearch'
   if os == 'OpenBSD'
-    commands :plugin => '/usr/local/elasticsearch/bin/plugin'
-    commands :es => '/usr/local/elasticsearch/bin/elasticsearch'
     commands :javapathhelper => '/usr/local/bin/javaPathHelper'
-  else
-    commands :plugin => '/usr/share/elasticsearch/bin/plugin'
-    commands :es => '/usr/share/elasticsearch/bin/elasticsearch'
   end
 
   def homedir
-    case Facter.value('osfamily')
-    when 'OpenBSD'
-      '/usr/local/elasticsearch'
-    else
-      '/usr/share/elasticsearch'
-    end
+    @parameters[:home_dir]
   end
 
   def exists?

@@ -110,7 +110,7 @@ class elasticsearch::params {
       $homedir     = '/usr/share/elasticsearch'
       $plugindir   = "${homedir}/plugins"
       $plugintool  = "${homedir}/bin/plugin"
-      $datadir     = '/usr/share/elasticsearch/data'
+      $datadir     = "${homedir}/data"
     }
     'OpenBSD': {
       $configdir   = '/etc/elasticsearch'

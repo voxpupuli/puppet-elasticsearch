@@ -366,7 +366,7 @@ define elasticsearch::instance(
     file { "${instance_configdir}/shield":
       ensure  => 'directory',
       mode    => '0644',
-      source  => "${elasticsearch::params::homedir}/shield",
+      source  => "${elasticsearch::homedir}/shield",
       recurse => 'remote',
       owner   => 'root',
       group   => 'root',
@@ -388,7 +388,7 @@ define elasticsearch::instance(
       $global_init_defaults = { }
     }
 
-    $instance_init_defaults_main = { 'CONF_DIR' => $instance_configdir, 'CONF_FILE' => "${instance_configdir}/elasticsearch.yml", 'LOG_DIR' => $instance_logdir, 'ES_HOME' => '/usr/share/elasticsearch' }
+    $instance_init_defaults_main = { 'CONF_DIR' => $instance_configdir, 'CONF_FILE' => "${instance_configdir}/elasticsearch.yml", 'LOG_DIR' => $instance_logdir, 'ES_HOME' => $elasticsearch::homedir }
 
     if (is_hash($init_defaults)) {
       $instance_init_defaults = $init_defaults

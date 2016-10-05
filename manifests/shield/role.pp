@@ -60,10 +60,12 @@ define elasticsearch::shield::role (
   elasticsearch_shield_role { $name :
     ensure     => $_role_ensure,
     privileges => $privileges,
+    home_dir   => $elasticsearch::homedir,
   }
 
   elasticsearch_shield_role_mapping { $name :
     ensure   => $_mapping_ensure,
     mappings => $mappings,
+    home_dir => $elasticsearch::homedir,
   }
 }

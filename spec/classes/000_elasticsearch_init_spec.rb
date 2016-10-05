@@ -320,11 +320,12 @@ describe 'elasticsearch', :type => 'class' do
 
         let (:params) {
           default_params.merge({
-                                 :homedir => '/foo'
+            :homedir => '/foo'
                                })
         }
 
-        it { should contain_file('/foo/elasticsearch') }
+        it { should contain_file('/foo/elasticsearch').with(:ensure => 'directory') }
+        it { should contain_file('/foo/elasticsearch/data').with(:ensure => 'directory') }
       end
 
     end
