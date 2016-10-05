@@ -3,6 +3,7 @@
 ### Summary
 
 #### Features
+* Added 'file_rolling_type' parameter to allow selecting file logging rotation type between "dailyRollingFile" or "rollingFile". Also added 'daily_rolling_date_pattern', 'rolling_file_max_backup_index' and 'rolling_file_max_file_size' for file rolling customization.
 
 #### Bugfixes
 * Permissions on the Elasticsearch plugin directory have been fixed to permit world read rights.
