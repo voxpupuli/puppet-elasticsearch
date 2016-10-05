@@ -31,7 +31,7 @@ if [ -f /etc/rc.d/init.d/functions ]; then
     . /etc/rc.d/init.d/functions
 fi
 
-exec="/usr/share/elasticsearch/bin/elasticsearch"
+exec="<%= homedir %>/bin/elasticsearch"
 prog="elasticsearch-<%= @name %>"
 pidfile=/var/run/elasticsearch/${prog}.pid
 

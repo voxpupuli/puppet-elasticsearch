@@ -6,14 +6,10 @@ Puppet::Type.type(:elasticsearch_plugin).provide(
 ) do
   desc 'Pre-5.x provider for Elasticsearch bin/plugin command operations.'
 
+  commands :plugin => @parameters[:home_dir] + '/bin/plugin'
+  commands :es => @parameters[:home_dir] + '/bin/elasticsearch'
   case Facter.value('osfamily')
   when 'OpenBSD'
-    commands :plugin => '/usr/local/elasticsearch/bin/plugin'
-    commands :es => '/usr/local/elasticsearch/bin/elasticsearch'
     commands :javapathhelper => '/usr/local/bin/javaPathHelper'
-  else
-    commands :plugin => '/usr/share/elasticsearch/bin/plugin'
-    commands :es => '/usr/share/elasticsearch/bin/elasticsearch'
   end
-
 end

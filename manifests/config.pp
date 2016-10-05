@@ -50,7 +50,7 @@ class elasticsearch::config {
       recurse => true,
     }
 
-    file { $elasticsearch::params::homedir:
+    file { $elasticsearch::homedir:
       ensure  => 'directory',
     }
 
@@ -85,18 +85,18 @@ class elasticsearch::config {
     }
 
 
-    file { "${elasticsearch::params::homedir}/templates_import":
+    file { "${elasticsearch::homedir}/templates_import":
       ensure => 'directory',
       mode   => '0644',
     }
 
-    file { "${elasticsearch::params::homedir}/scripts":
+    file { "${elasticsearch::homedir}/scripts":
       ensure => 'directory',
       mode   => '0644',
     }
 
     # Resources for shield management
-    file { "${elasticsearch::params::homedir}/shield":
+    file { "${elasticsearch::homedir}/shield":
       ensure => 'directory',
       mode   => '0644',
       owner  => 'root',

@@ -21,7 +21,8 @@ fi
 ES_DATA_PATH="${ES_BASE_PATH}/data"
 ES_WORK_PATH="${ES_BASE_PATH}/work"
 
-export ES_INCLUDE="/usr/share/elasticsearch/bin/elasticsearch.in.sh"
+export HOMEDIR="<%= @homedir %>"
+export ES_INCLUDE="${HOMEDIR}/bin/elasticsearch.in.sh"
 export JAVA_OPTS
 export ES_JAVA_OPTS
 export ES_HEAP_SIZE
@@ -29,7 +30,7 @@ export ES_HEAP_NEWSIZE
 export ES_DIRECT_SIZE
 export ES_USE_IPV4
 
-server_command="/usr/share/elasticsearch/bin/elasticsearch"
+server_command="${HOMEDIR}/bin/elasticsearch"
 server_args=" -p ${PIDFILE} -Des.default.path.conf=\"${ES_CONF_PATH}\" -Des.default.path.data=\"${ES_DATA_PATH}\" -Des.default.path.work=\"${ES_WORK_PATH}\" -Des.default.path.logs=\"${ES_LOG_PATH}\""
 
 depend() {

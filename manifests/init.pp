@@ -157,6 +157,9 @@
 #   Enable Hiera merging for the config hash
 #   Defaults to: false
 #
+# [*homedir*]
+#   Allows you to set the home directory of Elasticsearch; all software will be installed within
+#
 # [*datadir*]
 #   Allows you to set the data directory of Elasticsearch
 #
@@ -323,6 +326,55 @@
 # * Richard Pijnenburg <mailto:richard.pijnenburg@elasticsearch.com>
 #
 class elasticsearch(
+<<<<<<< HEAD
+  $ensure                = $elasticsearch::params::ensure,
+  $status                = $elasticsearch::params::status,
+  $restart_on_change     = $elasticsearch::params::restart_on_change,
+  $autoupgrade           = $elasticsearch::params::autoupgrade,
+  $version               = false,
+  $package_provider      = 'package',
+  $package_url           = undef,
+  $package_dir           = $elasticsearch::params::package_dir,
+  $package_name          = $elasticsearch::params::package,
+  $package_pin           = true,
+  $purge_package_dir     = $elasticsearch::params::purge_package_dir,
+  $package_dl_timeout    = $elasticsearch::params::package_dl_timeout,
+  $proxy_url             = undef,
+  $elasticsearch_user    = $elasticsearch::params::elasticsearch_user,
+  $elasticsearch_group   = $elasticsearch::params::elasticsearch_group,
+  $configdir             = $elasticsearch::params::configdir,
+  $purge_configdir       = $elasticsearch::params::purge_configdir,
+  $service_provider      = 'init',
+  $init_defaults         = undef,
+  $init_defaults_file    = undef,
+  $init_template         = "${module_name}/etc/init.d/${elasticsearch::params::init_template}",
+  $config                = undef,
+  $homedir               = $elasticsearch::params::homedir,
+  $datadir               = $elasticsearch::params::datadir,
+  $logdir                = $elasticsearch::params::logdir,
+  $plugindir             = $elasticsearch::params::plugindir,
+  $plugintool            = $elasticsearch::params::plugintool,
+  $java_install          = false,
+  $java_package          = undef,
+  $manage_repo           = false,
+  $repo_version          = undef,
+  $repo_key_id           = 'D88E42B4',
+  $repo_key_source       = 'http://packages.elastic.co/GPG-KEY-elasticsearch',
+  $repo_proxy            = undef,
+  $logging_file          = undef,
+  $logging_config        = undef,
+  $logging_template      = undef,
+  $default_logging_level = $elasticsearch::params::default_logging_level,
+  $repo_stage            = false,
+  $instances             = undef,
+  $instances_hiera_merge = false,
+  $plugins               = undef,
+  $plugins_hiera_merge   = false,
+  $use_ssl               = false,
+  $validate_ssl          = true,
+  $ssl_user              = undef,
+  $ssl_password          = undef
+=======
   $ensure                  = $elasticsearch::params::ensure,
   $status                  = $elasticsearch::params::status,
   $restart_on_change       = $elasticsearch::params::restart_on_change,
@@ -383,6 +435,7 @@ class elasticsearch(
   $api_ca_path             = undef,
   $validate_tls            = true,
   $system_key              = undef,
+>>>>>>> a93350b4b13ad5c8f795c67a3ca3046a88cdf25a
 ) inherits elasticsearch::params {
 
   anchor {'elasticsearch::begin': }

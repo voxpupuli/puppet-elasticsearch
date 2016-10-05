@@ -352,13 +352,13 @@ define elasticsearch::instance(
 
     file { "${instance_configdir}/scripts":
       ensure => 'link',
-      target => "${elasticsearch::params::homedir}/scripts",
+      target => "${elasticsearch::homedir}/scripts",
     }
 
     file { "${instance_configdir}/shield":
       ensure  => 'directory',
       mode    => '0644',
-      source  => "${elasticsearch::params::homedir}/shield",
+      source  => "${elasticsearch::homedir}/shield",
       recurse => 'remote',
       owner   => 'root',
       group   => '0',
@@ -394,7 +394,7 @@ define elasticsearch::instance(
       'CONF_DIR'  => $instance_configdir,
       'CONF_FILE' => "${instance_configdir}/elasticsearch.yml",
       'LOG_DIR'   => $instance_logdir,
-      'ES_HOME'   => '/usr/share/elasticsearch',
+      'ES_HOME'   => $elasticsearch::homedir,
     }
 
     if (is_hash($init_defaults)) {
