@@ -12,6 +12,7 @@
 
 #### Changes
 * The `api_ca_file` and `api_ca_path` parameters have been added to support custom CA bundles for API access.
+* puppetlabs/java is now listed as a dependency in metadata.json to avoid unexpected installation problems.
 
 #### Testing changes
 
