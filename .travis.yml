@@ -17,20 +17,20 @@ env:
   - TEST_SUITE=integration
   - DISTRO=centos-6-x64
   - DISTRO=centos-6-x64 PE=true
-  - DISTRO=centos-6-x64 PE=true PE_VER=2016.1.1
+  - DISTRO=centos-6-x64 PE=true PE_VER=2016.1.2
   - DISTRO=centos-7-x64
   - DISTRO=centos-7-x64 PE=true
-  - DISTRO=centos-7-x64 PE=true PE_VER=2016.1.1
+  - DISTRO=centos-7-x64 PE=true PE_VER=2016.1.2
   - DISTRO=debian-7-x64
   - DISTRO=debian-7-x64 PE=true
     # No 2016.x release for debian 7
   - DISTRO=debian-8-x64
   - DISTRO=ubuntu-server-1204-x64
   - DISTRO=ubuntu-server-1204-x64 PE=true
-  - DISTRO=ubuntu-server-1204-x64 PE=true PE_VER=2016.1.1
+  - DISTRO=ubuntu-server-1204-x64 PE=true PE_VER=2016.1.2
   - DISTRO=ubuntu-server-1404-x64
   - DISTRO=ubuntu-server-1404-x64 PE=true
-  - DISTRO=ubuntu-server-1404-x64 PE=true PE_VER=2016.1.1
+  - DISTRO=ubuntu-server-1404-x64 PE=true PE_VER=2016.1.2
   - DISTRO=opensuse-13-x64
   - DISTRO=sles-12-x64
   - DISTRO=sles-12-x64 PE=true
