@@ -9,6 +9,7 @@
 * The service systemd unit now `Wants=` a network target to fix bootup parallelization problems.
 * Recursively create the logdir for elasticsearch when creating multiple instances
 * Files and directories with root ownership now specify UID/GID 0 instead to improve compatability with *BSDs.
+* Fixed issue when using the `proxy` parameter on plugins in Elasticsearch 2.x.
 
 #### Changes
 * The `api_ca_file` and `api_ca_path` parameters have been added to support custom CA bundles for API access.
