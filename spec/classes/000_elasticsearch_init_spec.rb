@@ -397,6 +397,31 @@ describe 'elasticsearch', :type => 'class' do
         it { should contain_file('/var/run/elasticsearch').with(:owner => 'myesuser') } if facts[:osfamily] == 'RedHat'
       end
 
+      context "rollingFile appender" do
+
+        let (:params) {
+          default_params.merge({
+            :file_rolling_type => 'rollingFile',
+            :rolling_file_max_backup_index => 10,
+            :rolling_file_max_file_size => '100MB',
+            :instances => { 'test' => {} }
+          })
+        }
+
+        it { should contain_file('/etc/elasticsearch/test/logging.yml').with_content(/type: rollingFile/, /maxBackupIndex: 10/, /maxBackupIndex: 10/, /maxFileSize: 100MB/) }
+      end
+
+      context "Default file appender" do
+
+        let (:params) {
+          default_params.merge({
+            :instances => { 'test' => {} }
+          })
+        }
+
+        it { should contain_file('/etc/elasticsearch/test/logging.yml').with_content(/type: dailyRollingFile/, /datePattern: "'.'yyyy-MM-dd"/) }
+      end
+
     end
 
   end
