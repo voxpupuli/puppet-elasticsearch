@@ -74,4 +74,16 @@ describe 'elasticsearch.yml.erb' do
       }.config))
   end
 
+  it 'should not quote numeric values' do
+    harness.set(
+      '@data', {
+        'some.setting' => '10'
+      }
+    )
+
+    expect( YAML.load(harness.run) ).to eq( YAML.load(%q{
+      some.setting: 10
+    }.config))
+  end
+
 end
