@@ -111,33 +111,58 @@
 #   Value type is string
 #   Default value: undef
 #
+# [*file_rolling_type*]
+#   Configuration for the file appender rotation. It can be 'dailyRollingFile'
+#   or 'rollingFile'. The first rotates by name, and the second one by size.
+#   Value type is string
+#   Default value: dailyRollingFile
+#
+# [*daily_rolling_date_pattern*]
+#   File pattern for the file appender log when file_rolling_type is 'dailyRollingFile'
+#   Value type is string
+#   Default value: "'.'yyyy-MM-dd"
+#
+# [*rolling_file_max_backup_index*]
+#   Max number of logs to store whern file_rolling_type is 'rollingFile'
+#   Value type is integer
+#   Default value: 1
+#
+# [*rolling_file_max_file_size*]
+#   Max log file size when file_rolling_type is 'rollingFile'
+#   Value type is string
+#   Default value: 10MB
+#
 # === Authors
 #
 # * Tyler Langlois <mailto:tyler@elastic.co>
 # * Richard Pijnenburg <mailto:richard.pijnenburg@elasticsearch.com>
 #
 define elasticsearch::instance(
-  $ensure             = $elasticsearch::ensure,
-  $status             = $elasticsearch::status,
-  $config             = undef,
-  $configdir          = undef,
-  $datadir            = undef,
-  $logdir             = undef,
-  $logging_file       = undef,
-  $logging_config     = undef,
-  $logging_template   = undef,
-  $logging_level      = $elasticsearch::default_logging_level,
-  $service_flags      = undef,
-  $init_defaults      = undef,
-  $init_defaults_file = undef,
-  $init_template      = $elasticsearch::init_template,
-  $ssl                = false,
-  $ca_certificate     = undef,
-  $certificate        = undef,
-  $private_key        = undef,
-  $keystore_password  = undef,
-  $keystore_path      = undef,
-  $system_key         = $elasticsearch::system_key,
+  $ensure                        = $elasticsearch::ensure,
+  $status                        = $elasticsearch::status,
+  $config                        = undef,
+  $configdir                     = undef,
+  $datadir                       = undef,
+  $logdir                        = undef,
+  $logging_file                  = undef,
+  $logging_config                = undef,
+  $logging_template              = undef,
+  $logging_level                 = $elasticsearch::default_logging_level,
+  $service_flags                 = undef,
+  $init_defaults                 = undef,
+  $init_defaults_file            = undef,
+  $init_template                 = $elasticsearch::init_template,
+  $ssl                           = false,
+  $ca_certificate                = undef,
+  $certificate                   = undef,
+  $private_key                   = undef,
+  $keystore_password             = undef,
+  $keystore_path                 = undef,
+  $system_key                    = $elasticsearch::system_key,
+  $file_rolling_type             = $elasticsearch::file_rolling_type,
+  $daily_rolling_date_pattern    = $elasticsearch::daily_rolling_date_pattern,
+  $rolling_file_max_backup_index = $elasticsearch::rolling_file_max_backup_index,
+  $rolling_file_max_file_size    = $elasticsearch::rolling_file_max_file_size,
 ) {
 
   require elasticsearch::params
