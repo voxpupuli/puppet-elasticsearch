@@ -116,7 +116,12 @@ class Puppet::Provider::ElasticPlugin < Puppet::Provider
   def create
     es_version
     commands = []
-    commands << "-Des.path.conf=#{homedir}" if is2x?
+    if is2x?
+      commands << "-Des.path.conf=#{homedir}"
+      if @resource[:proxy]
+        commands += proxy_args(@resource[:proxy])
+      end
+    end
     commands << 'install'
     commands << '--batch' if batch_capable?
     commands += is1x? ? install1x : install2x
@@ -191,12 +196,15 @@ class Puppet::Provider::ElasticPlugin < Puppet::Provider
   # Run a command wrapped in necessary env vars
   def with_environment(&block)
     env_vars = {
-      'ES_JAVA_OPTS' => ["-Des.path.conf=#{homedir}"],
+      'ES_JAVA_OPTS' => [],
     }
     saved_vars = {}
 
-    if @resource[:proxy]
-      env_vars['ES_JAVA_OPTS'] += proxy_args(@resource[:proxy])
+    if not is2x?
+      env_vars['ES_JAVA_OPTS'] << "-Des.path.conf=#{homedir}"
+      if @resource[:proxy]
+        env_vars['ES_JAVA_OPTS'] += proxy_args(@resource[:proxy])
+      end
     end
 
     env_vars['ES_JAVA_OPTS'] = env_vars['ES_JAVA_OPTS'].join(' ')
