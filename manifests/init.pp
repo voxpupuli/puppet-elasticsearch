@@ -669,7 +669,9 @@ class elasticsearch(
 
     # Top-level ordering bindings for resources.
     Class['elasticsearch::config']
-    -> Elasticsearch::Plugin <| |>
+    -> Elasticsearch::Plugin <| ensure == 'present' or ensure == 'installed' |>
+    Elasticsearch::Plugin <| ensure == 'absent' |>
+    -> Class['elasticsearch::config']
     Class['elasticsearch::config']
     -> Elasticsearch::Instance <| |>
     Class['elasticsearch::config']
