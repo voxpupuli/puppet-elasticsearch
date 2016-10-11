@@ -364,7 +364,13 @@ describe 'elasticsearch::instance', :type => 'define' do
   context 'logging' do
 
     context 'default' do
-      it { should contain_file('/etc/elasticsearch/es-01/logging.yml').with_content(/^logger.index.search.slowlog: TRACE, index_search_slow_log_file$/).with(:source => nil) }
+      it { should contain_file('/etc/elasticsearch/es-01/logging.yml')
+        .with_content(
+          /^logger.index.search.slowlog: TRACE, index_search_slow_log_file$/,
+          /type: dailyRollingFile/,
+          /datePattern: "'.'yyyy-MM-dd"/
+        ).with(:source => nil)
+      }
     end
 
     context 'from main class' do
@@ -416,6 +422,23 @@ describe 'elasticsearch::instance', :type => 'define' do
 
     end
 
+    describe 'rollingFile apender' do
+      let(:pre_condition) {%q{
+        class { 'elasticsearch':
+          file_rolling_type             => 'rollingFile',
+          rolling_file_max_backup_index => 10,
+          rolling_file_max_file_size    => '100MB',
+        }
+      }}
+
+      it { should contain_file('/etc/elasticsearch/es-01/logging.yml')
+        .with_content(
+          /type: rollingFile/,
+          /maxBackupIndex: 10/,
+          /maxBackupIndex: 10/,
+          /maxFileSize: 100MB/)
+      }
+    end
   end
 
   context 'running as an other user' do
