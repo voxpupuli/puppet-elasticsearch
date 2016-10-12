@@ -1,6 +1,8 @@
-## x.x.x (Month Day, Year)
+## 0.14.0 (October 12, 2016)
 
 ### Summary
+Primarily a bugfix release for issues related to plugin proxy functionality, various system service fixes, and directory permissions.
+This release also adds the ability to define logging rolling file settings and a CA file/path for template API access.
 
 #### Features
 * Added 'file_rolling_type' parameter to allow selecting file logging rotation type between "dailyRollingFile" or "rollingFile". Also added 'daily_rolling_date_pattern', 'rolling_file_max_backup_index' and 'rolling_file_max_file_size' for file rolling customization.
