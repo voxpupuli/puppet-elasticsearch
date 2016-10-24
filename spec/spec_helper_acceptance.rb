@@ -1,5 +1,4 @@
 require 'beaker-rspec'
-require 'pry'
 require 'securerandom'
 require 'thread'
 require 'infrataster/rspec'
