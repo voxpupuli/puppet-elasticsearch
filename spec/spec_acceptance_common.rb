@@ -31,8 +31,14 @@
           test_settings['url']             = 'http://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-1.3.1.deb'
           test_settings['local']           = '/tmp/elasticsearch-1.3.1.deb'
           test_settings['puppet']          = 'elasticsearch-1.3.1.deb'
-          test_settings['pid_file_a']      = '/var/run/elasticsearch-es-01.pid'
-          test_settings['pid_file_b']      = '/var/run/elasticsearch-es-02.pid'
+          # From 15.04 onwards, ubuntu moved to systemd.
+          if Gem::Version.new(fact('operatingsystemrelease')) >= Gem::Version.new('15.04')
+            test_settings['pid_file_a']    = '/var/run/elasticsearch/elasticsearch-es-01.pid'
+            test_settings['pid_file_b']    = '/var/run/elasticsearch/elasticsearch-es-02.pid'
+          else
+            test_settings['pid_file_a']    = '/var/run/elasticsearch-es-01.pid'
+            test_settings['pid_file_b']    = '/var/run/elasticsearch-es-02.pid'
+          end
         when 'Debian'
           case fact('lsbmajdistrelease')
             when '7'
