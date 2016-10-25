@@ -1,6 +1,7 @@
 ## x.x.x (Month Day, Year)
 
 ### Summary
+* Support for Ubuntu Xenial (16.04) formally declared.
 
 #### Features
 
@@ -9,6 +10,7 @@
 #### Changes
 
 #### Testing changes
+* Ubuntu Xenial (16.04) added to the test matrix.
 
 ## 0.14.0 (October 12, 2016)
 
