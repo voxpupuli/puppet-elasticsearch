@@ -87,12 +87,14 @@ describe 'elasticsearch::shield::role' do
       }}
 
       it { should contain_elasticsearch__plugin('shield') }
-      it { should contain_elasticsearch__shield__role('elastic_role')
-        .that_comes_before([
-        'Elasticsearch::Template[foo]',
-        'Elasticsearch::Plugin[shield]',
-        'Elasticsearch::Shield::User[elastic]'
-      ])}
+      # TODO: Uncomment once upstream issue is fixed.
+      # https://github.com/rodjek/rspec-puppet/issues/418
+      # it { should contain_elasticsearch__shield__role('elastic_role')
+      #   .that_comes_before([
+      #   'Elasticsearch::Template[foo]',
+      #   'Elasticsearch::Plugin[shield]',
+      #   'Elasticsearch::Shield::User[elastic]'
+      # ])}
     end
   end
 end
