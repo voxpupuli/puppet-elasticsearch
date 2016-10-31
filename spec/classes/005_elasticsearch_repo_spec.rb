@@ -13,7 +13,6 @@ describe 'elasticsearch', :type => 'class' do
 
     context "on #{os}" do
 
-
       let(:facts) do
         facts.merge({ 'scenario' => '', 'common' => '' })
       end
@@ -69,7 +68,8 @@ describe 'elasticsearch', :type => 'class' do
         end
       when 'Suse'
         context 'has zypper repo parts' do
-          it { should contain_exec('elasticsearch_suse_import_gpg').with(:command => 'rpmkeys --import http://packages.elastic.co/GPG-KEY-elasticsearch') }
+          it { should contain_exec('elasticsearch_suse_import_gpg')
+            .with(:command => 'rpmkeys --import https://artifacts.elastic.co/GPG-KEY-elasticsearch') }
           it { should contain_zypprepo('elasticsearch').with(:baseurl => 'http://packages.elastic.co/elasticsearch/1.3/centos') }
           it { should contain_exec('elasticsearch_zypper_refresh_elasticsearch') }
         end
@@ -89,7 +89,7 @@ describe 'elasticsearch', :type => 'class' do
             it { is_expected.to contain_apt__source('elasticsearch').with({
               :key => {
                 'id' => '46095ACC8548582C1A2699A9D27D666CD88E42B4',
-                'source' => 'http://packages.elastic.co/GPG-KEY-elasticsearch'
+                'source' => 'https://artifacts.elastic.co/GPG-KEY-elasticsearch'
               }
             })}
           end
@@ -109,7 +109,7 @@ describe 'elasticsearch', :type => 'class' do
 
         let :params do
           default_params.merge({
-            :repo_key_source => 'https://packages.elasticsearch.org/GPG-KEY-elasticsearch'
+            :repo_key_source => 'http://artifacts.elastic.co/GPG-KEY-elasticsearch'
           })
         end
 
@@ -119,17 +119,19 @@ describe 'elasticsearch', :type => 'class' do
             it { is_expected.to contain_apt__source('elasticsearch').with({
               :key => {
                 'id' => '46095ACC8548582C1A2699A9D27D666CD88E42B4',
-                'source' => 'https://packages.elasticsearch.org/GPG-KEY-elasticsearch'
+                'source' => 'http://artifacts.elastic.co/GPG-KEY-elasticsearch'
               }
             })}
           end
         when 'RedHat'
           context 'has override yum key source' do
-            it { should contain_yumrepo('elasticsearch').with(:gpgkey => 'https://packages.elasticsearch.org/GPG-KEY-elasticsearch') }
+            it { should contain_yumrepo('elasticsearch')
+              .with(:gpgkey => 'http://artifacts.elastic.co/GPG-KEY-elasticsearch') }
           end
         when 'Suse'
           context 'has override yum key source' do
-            it { should contain_exec('elasticsearch_suse_import_gpg').with(:command => 'rpmkeys --import https://packages.elasticsearch.org/GPG-KEY-elasticsearch') }
+            it { should contain_exec('elasticsearch_suse_import_gpg')
+              .with(:command => 'rpmkeys --import http://artifacts.elastic.co/GPG-KEY-elasticsearch') }
           end
         end
 
@@ -148,6 +150,29 @@ describe 'elasticsearch', :type => 'class' do
           context 'has override repo proxy' do
             it { is_expected.to contain_yumrepo('elasticsearch').with_proxy('http://proxy.com:8080') }
           end
+        end
+
+      end
+
+      describe 'unified release repositories' do
+
+        let :params do
+          default_params.merge({
+            :repo_version => '5.x',
+            :version => '5.0.0'
+          })
+        end
+
+        case facts[:osfamily]
+        when 'Debian'
+          it { should contain_apt__source('elasticsearch')
+            .with_location('https://artifacts.elastic.co/packages/5.x/apt') }
+        when 'RedHat'
+          it { should contain_yumrepo('elasticsearch')
+            .with_baseurl('https://artifacts.elastic.co/packages/5.x/yum') }
+        when 'Suse'
+          it { should contain_zypprepo('elasticsearch')
+            .with_baseurl('https://artifacts.elastic.co/packages/5.x/yum') }
         end
 
       end

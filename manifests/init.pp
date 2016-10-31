@@ -379,7 +379,7 @@ class elasticsearch(
   $repo_version                   = undef,
   $repo_priority                  = undef,
   $repo_key_id                    = '46095ACC8548582C1A2699A9D27D666CD88E42B4',
-  $repo_key_source                = 'http://packages.elastic.co/GPG-KEY-elasticsearch',
+  $repo_key_source                = 'https://artifacts.elastic.co/GPG-KEY-elasticsearch',
   $repo_proxy                     = undef,
   $logging_file                   = undef,
   $logging_config                 = undef,
