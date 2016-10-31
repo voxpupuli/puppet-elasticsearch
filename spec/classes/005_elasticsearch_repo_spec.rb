@@ -87,7 +87,10 @@ describe 'elasticsearch', :type => 'class' do
         when 'Debian'
           context 'has override apt key' do
             it { is_expected.to contain_apt__source('elasticsearch').with({
-              :key => '46095ACC8548582C1A2699A9D27D666CD88E42B4',
+              :key => {
+                'id' => '46095ACC8548582C1A2699A9D27D666CD88E42B4',
+                'source' => 'http://packages.elastic.co/GPG-KEY-elasticsearch'
+              }
             })}
           end
         when 'Suse'
@@ -114,7 +117,10 @@ describe 'elasticsearch', :type => 'class' do
         when 'Debian'
           context 'has override apt key source' do
             it { is_expected.to contain_apt__source('elasticsearch').with({
-              :key_source => 'https://packages.elasticsearch.org/GPG-KEY-elasticsearch',
+              :key => {
+                'id' => '46095ACC8548582C1A2699A9D27D666CD88E42B4',
+                'source' => 'https://packages.elasticsearch.org/GPG-KEY-elasticsearch'
+              }
             })}
           end
         when 'RedHat'
