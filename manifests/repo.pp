@@ -30,24 +30,26 @@ class elasticsearch::repo {
     cwd  => '/',
   }
 
-  if versioncmp($elasticsearch::repo_version, '5.0') >= 0 {
-    $_repo_url = 'https://artifacts.elastic.co/packages'
-    case $::osfamily {
-      'Debian': {
-        $_repo_path = 'apt'
+  if $elasticsearch::ensure == 'present' {
+    if versioncmp($elasticsearch::repo_version, '5.0') >= 0 {
+      $_repo_url = 'https://artifacts.elastic.co/packages'
+      case $::osfamily {
+        'Debian': {
+          $_repo_path = 'apt'
+        }
+        default: {
+          $_repo_path = 'yum'
+        }
       }
-      default: {
-        $_repo_path = 'yum'
-      }
-    }
-  } else {
-    $_repo_url = 'http://packages.elastic.co/elasticsearch'
-    case $::osfamily {
-      'Debian': {
-        $_repo_path = 'debian'
-      }
-      default: {
-        $_repo_path = 'centos'
+    } else {
+      $_repo_url = 'http://packages.elastic.co/elasticsearch'
+      case $::osfamily {
+        'Debian': {
+          $_repo_path = 'debian'
+        }
+        default: {
+          $_repo_path = 'centos'
+        }
       }
     }
   }
