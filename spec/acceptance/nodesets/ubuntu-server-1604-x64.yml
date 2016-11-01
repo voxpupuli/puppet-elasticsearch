@@ -15,6 +15,4 @@ HOSTS:
       - dpkg-reconfigure locales
 CONFIG:
   type: foss
-  # Skip for now; beaker doesn't handle -pc1- packages and puppet ships with
-  # the stock xenial repos anyway.
   skip_puppet_install: true
