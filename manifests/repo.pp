@@ -52,6 +52,17 @@ class elasticsearch::repo {
         }
       }
     }
+
+    $_baseurl = "${_repo_url}/${elasticsearch::repo_version}/${_repo_path}"
+  } else {
+    case $::osfamily {
+      'Debian': {
+        $_baseurl = undef
+      }
+      default: {
+        $_baseurl = 'absent'
+      }
+    }
   }
 
   case $::osfamily {
@@ -61,7 +72,7 @@ class elasticsearch::repo {
 
       apt::source { 'elasticsearch':
         ensure   => $elasticsearch::ensure,
-        location => "${_repo_url}/${elasticsearch::repo_version}/${_repo_path}",
+        location => $_baseurl,
         release  => 'stable',
         repos    => 'main',
         key      => {
@@ -85,7 +96,7 @@ class elasticsearch::repo {
       }
       yumrepo { 'elasticsearch':
         descr    => 'elasticsearch repo',
-        baseurl  => "${_repo_url}/${elasticsearch::repo_version}/${_repo_path}",
+        baseurl  => $_baseurl,
         gpgcheck => 1,
         gpgkey   => $::elasticsearch::repo_key_source,
         enabled  => 1,
@@ -114,7 +125,7 @@ class elasticsearch::repo {
       }
 
       zypprepo { 'elasticsearch':
-        baseurl     => "${_repo_url}/${elasticsearch::repo_version}/${_repo_path}",
+        baseurl     => $_baseurl,
         enabled     => 1,
         autorefresh => 1,
         name        => 'elasticsearch',
