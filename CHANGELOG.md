@@ -7,6 +7,7 @@
 
 #### Bugfixes
 * Update the apt::source call to not cause deprecation warnings
+* Updated module metadata to correctly require puppet-stdlib with validate_integer()
 
 #### Changes
 
