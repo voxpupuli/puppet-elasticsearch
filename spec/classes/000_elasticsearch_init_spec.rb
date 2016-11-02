@@ -300,7 +300,12 @@ describe 'elasticsearch', :type => 'class' do
           it { should contain_apt__source('elasticsearch').with(:release => 'stable', :repos => 'main', :location => 'http://packages.elastic.co/elasticsearch/1.0/debian') }
         when 'RedHat'
           it { should contain_class('elasticsearch::repo').that_requires('Anchor[elasticsearch::begin]') }
-          it { should contain_yumrepo('elasticsearch').with(:baseurl => 'http://packages.elastic.co/elasticsearch/1.0/centos', :gpgkey => 'http://packages.elastic.co/GPG-KEY-elasticsearch', :enabled => 1) }
+          it { should contain_yumrepo('elasticsearch')
+            .with(
+              :baseurl => 'http://packages.elastic.co/elasticsearch/1.0/centos',
+              :gpgkey  => 'https://artifacts.elastic.co/GPG-KEY-elasticsearch',
+              :enabled => 1
+          ) }
           it { should contain_exec('elasticsearch_yumrepo_yum_clean') }
         when 'SuSE'
           it { should contain_class('elasticsearch::repo').that_requires('Anchor[elasticsearch::begin]') }

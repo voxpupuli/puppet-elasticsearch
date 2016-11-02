@@ -4,9 +4,11 @@
 * Support for Ubuntu Xenial (16.04) formally declared.
 
 #### Features
+* Support management of 5.x-style Elastic yum/apt package repositories.
 
 #### Bugfixes
 * Update the apt::source call to not cause deprecation warnings
+* Updated module metadata to correctly require puppet-stdlib with validate_integer()
 
 #### Changes
 
