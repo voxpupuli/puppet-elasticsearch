@@ -3,6 +3,7 @@
 ### Summary
 
 #### Features
+* Support management of 5.x-style Elastic yum/apt package repositories.
 
 #### Bugfixes
 * Update the apt::source call to not cause deprecation warnings
