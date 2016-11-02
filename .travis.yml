@@ -38,7 +38,9 @@ env:
   - DISTRO=oracle-7-x64
 matrix:
   allow_failures:
+  # Both are too slow. Spot check when needed instead.
   - env: DISTRO=sles-12-x64
+  - env: DISTRO=ubuntu-server-1204-x64 PE=true PE_VER=2016.1.2
   fast_finish: true
 script:
 - make test-$TEST_SUITE
