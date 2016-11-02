@@ -1,6 +1,7 @@
 ## x.x.x (Month Day, Year)
 
 ### Summary
+* Support for Ubuntu Xenial (16.04) formally declared.
 
 #### Features
 * Support management of 5.x-style Elastic yum/apt package repositories.
@@ -12,6 +13,7 @@
 #### Changes
 
 #### Testing changes
+* Ubuntu Xenial (16.04) added to the test matrix.
 
 ## 0.14.0 (October 12, 2016)
 

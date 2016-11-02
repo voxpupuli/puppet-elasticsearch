@@ -1,5 +1,4 @@
 require 'beaker-rspec'
-require 'pry'
 require 'securerandom'
 require 'thread'
 require 'infrataster/rspec'
@@ -55,7 +54,9 @@ hosts.each do |host|
     install_pe
     pe_progress.exit
   else
-    install_puppet_on host, :default_action => 'gem_install'
+    unless host[:skip_puppet_install]
+      install_puppet_on host, :default_action => 'gem_install'
+    end
 
     if fact('osfamily') == 'Suse'
       install_package host, '--force-resolution augeas-devel libxml2-devel'
