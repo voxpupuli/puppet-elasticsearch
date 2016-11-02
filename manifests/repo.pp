@@ -30,6 +30,41 @@ class elasticsearch::repo {
     cwd  => '/',
   }
 
+  if $elasticsearch::ensure == 'present' {
+    if versioncmp($elasticsearch::repo_version, '5.0') >= 0 {
+      $_repo_url = 'https://artifacts.elastic.co/packages'
+      case $::osfamily {
+        'Debian': {
+          $_repo_path = 'apt'
+        }
+        default: {
+          $_repo_path = 'yum'
+        }
+      }
+    } else {
+      $_repo_url = 'http://packages.elastic.co/elasticsearch'
+      case $::osfamily {
+        'Debian': {
+          $_repo_path = 'debian'
+        }
+        default: {
+          $_repo_path = 'centos'
+        }
+      }
+    }
+
+    $_baseurl = "${_repo_url}/${elasticsearch::repo_version}/${_repo_path}"
+  } else {
+    case $::osfamily {
+      'Debian': {
+        $_baseurl = undef
+      }
+      default: {
+        $_baseurl = 'absent'
+      }
+    }
+  }
+
   case $::osfamily {
     'Debian': {
       include ::apt
@@ -37,7 +72,7 @@ class elasticsearch::repo {
 
       apt::source { 'elasticsearch':
         ensure   => $elasticsearch::ensure,
-        location => "http://packages.elastic.co/elasticsearch/${elasticsearch::repo_version}/debian",
+        location => $_baseurl,
         release  => 'stable',
         repos    => 'main',
         key      => {
@@ -61,7 +96,7 @@ class elasticsearch::repo {
       }
       yumrepo { 'elasticsearch':
         descr    => 'elasticsearch repo',
-        baseurl  => "http://packages.elastic.co/elasticsearch/${elasticsearch::repo_version}/centos",
+        baseurl  => $_baseurl,
         gpgcheck => 1,
         gpgkey   => $::elasticsearch::repo_key_source,
         enabled  => 1,
@@ -90,7 +125,7 @@ class elasticsearch::repo {
       }
 
       zypprepo { 'elasticsearch':
-        baseurl     => "http://packages.elastic.co/elasticsearch/${elasticsearch::repo_version}/centos",
+        baseurl     => $_baseurl,
         enabled     => 1,
         autorefresh => 1,
         name        => 'elasticsearch',
