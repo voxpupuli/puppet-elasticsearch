@@ -170,8 +170,7 @@ define elasticsearch::service::systemd(
         pid_dir           => $elasticsearch::pid_dir,
         user              => $elasticsearch::elasticsearch_user,
         notify            => $notify_service,
-      }
-
+      } ->
       file { "${elasticsearch::params::systemd_service_path}/elasticsearch-${name}.service":
         ensure => $ensure,
         before => Service["elasticsearch-instance-${name}"],
