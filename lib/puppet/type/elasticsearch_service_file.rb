@@ -1,0 +1,60 @@
+$LOAD_PATH.unshift(File.join(File.dirname(__FILE__),"..","..",".."))
+
+require 'puppet_x/elastic/es_versioning'
+
+Puppet::Type.newtype(:elasticsearch_service_file) do
+
+  @doc = "Init file"
+
+  ensurable
+
+  newparam(:name, :namevar => true) do
+    desc 'Fully qualified path to the service file.'
+  end
+
+  newproperty(:content) do
+    desc 'Service file contents in erb template form.'
+
+    # Interploate the erb source before comparing it to the on-disk
+    # init script
+    def insync?(is)
+      opt_flags = Puppet_X::Elastic::EsVersioning.opt_flags(
+        resource[:package_name], resource.catalog
+      )
+      template = ERB.new(should, 0, "-")
+      is == template.result(binding)
+    end
+  end
+
+  newparam(:defaults_location) do
+    desc 'File path to defaults file.'
+  end
+
+  newparam(:group) do
+    desc 'Group to run service under.'
+  end
+
+  newparam(:instance) do
+    desc 'Elasticsearch instance name.'
+  end
+
+  newparam(:memlock) do
+    desc 'Memlock setting for service.'
+  end
+
+  newparam(:nofile) do
+    desc 'Service NOFILE ulimit.'
+  end
+
+  newparam(:package_name) do
+    desc 'Name of the system Elasticsearch package.'
+  end
+
+  newparam(:pid_dir) do
+    desc 'Directory to use for storing service PID.'
+  end
+
+  newparam(:user) do
+    desc 'User to run service under.'
+  end
+end

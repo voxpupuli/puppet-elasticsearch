@@ -146,11 +146,6 @@ define elasticsearch::service::systemd(
     # init file from template
     if ($init_template != undef) {
 
-      $user              = $elasticsearch::elasticsearch_user
-      $group             = $elasticsearch::elasticsearch_group
-      $pid_dir           = $elasticsearch::pid_dir
-      $defaults_location = $elasticsearch::defaults_location
-
       if ($new_init_defaults != undef and is_hash($new_init_defaults) and has_key($new_init_defaults, 'MAX_OPEN_FILES')) {
         $nofile = $new_init_defaults['MAX_OPEN_FILES']
       }else{
@@ -163,11 +158,24 @@ define elasticsearch::service::systemd(
         $memlock = undef
       }
 
+      elasticsearch_service_file { "${elasticsearch::params::systemd_service_path}/elasticsearch-${name}.service":
+        ensure            => $ensure,
+        content           => file($init_template),
+        defaults_location => $elasticsearch::defaults_location,
+        group             => $elasticsearch::elasticsearch_group,
+        instance          => $name,
+        memlock           => $memlock,
+        nofile            => $nofile,
+        package_name      => $elasticsearch::package_name,
+        pid_dir           => $elasticsearch::pid_dir,
+        user              => $elasticsearch::elasticsearch_user,
+        notify            => $notify_service,
+      }
+
       file { "${elasticsearch::params::systemd_service_path}/elasticsearch-${name}.service":
-        ensure  => $ensure,
-        content => template($init_template),
-        before  => Service["elasticsearch-instance-${name}"],
-        notify  => $notify_service,
+        ensure => $ensure,
+        before => Service["elasticsearch-instance-${name}"],
+        notify => $notify_service,
       }
 
     }
