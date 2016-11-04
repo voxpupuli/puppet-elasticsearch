@@ -1,13 +1,13 @@
 #!/bin/sh
 #
-# elasticsearch <%= @name %> <summary>
+# elasticsearch<%= @resource[:instance] %> <summary>
 #
 # chkconfig:   2345 80 20
 # description: Starts and stops a single elasticsearch instance on this system
 #
 
 ### BEGIN INIT INFO
-# Provides: Elasticsearch-<%= @name %>
+# Provides: Elasticsearch-<%= @resource[:instance] %>
 # Required-Start: $network $named
 # Required-Stop: $network $named
 # Default-Start: 2 3 4 5
@@ -31,12 +31,9 @@ if [ -f /etc/rc.d/init.d/functions ]; then
     . /etc/rc.d/init.d/functions
 fi
 
-EXE="/usr/share/elasticsearch/bin/elasticsearch"
-prog="elasticsearch-<%= @name %>"
+exec="/usr/share/elasticsearch/bin/elasticsearch"
+prog="elasticsearch-<%= @resource[:instance] %>"
 pidfile=/var/run/elasticsearch/${prog}.pid
-
-export JAVA_HOME=/usr/java/latest
-JAVAPROG=${JAVA_HOME}/bin/java
 
 [ -e /etc/sysconfig/$prog ] && . /etc/sysconfig/$prog
 
@@ -44,6 +41,10 @@ export ES_HEAP_SIZE
 export ES_HEAP_NEWSIZE
 export ES_DIRECT_SIZE
 export ES_JAVA_OPTS
+export ES_CLASSPATH
+export JAVA_HOME 
+export ES_INCLUDE
+export ES_GC_LOG_FILE
 
 lockfile=/var/lock/subsys/$prog
 
@@ -67,7 +68,7 @@ checkJava() {
 
 start() {
     checkJava
-    [ -x $EXE ] || exit 5
+    [ -x $exec ] || exit 5
     [ -f $CONF_FILE ] || exit 6
     if [ -n "$MAX_LOCKED_MEMORY" -a -z "$ES_HEAP_SIZE" ]; then
         echo "MAX_LOCKED_MEMORY is set - ES_HEAP_SIZE must also be set"
@@ -87,26 +88,21 @@ start() {
         chown "$ES_USER":"$ES_GROUP" "$WORK_DIR"
     fi
     echo -n $"Starting $prog: "
-    # if not running, start it up here, usually something like "daemon $EXE"
-    startproc -u $ES_USER $EXE -d -p $pidfile -Des.default.path.home=$ES_HOME -Des.default.path.logs=$LOG_DIR -Des.default.path.data=$DATA_DIR -Des.default.path.work=$WORK_DIR -Des.default.path.conf=$CONF_DIR &
+    # if not running, start it up here, usually something like "daemon $exec"
+    daemon --user $ES_USER --pidfile $pidfile $exec -p $pidfile -d -Des.default.path.home=$ES_HOME -Des.default.path.logs=$LOG_DIR -Des.default.path.data=$DATA_DIR -Des.default.path.work=$WORK_DIR -Des.default.path.conf=$CONF_DIR
     retval=$?
-    if [ $retval -eq 0 ]; then
-	touch $lockfile
-    fi
-    rc_status -v
+    echo
+    [ $retval -eq 0 ] && touch $lockfile
     return $retval
 }
 
 stop() {
     echo -n $"Stopping $prog: "
-    #ps ax|grep $JAVA|grep `cat $pidfile`
-    killproc -p $pidfile $JAVAPROG
+    # stop it here, often "killproc $prog"
+    killproc -p $pidfile -d 20 $prog
     retval=$?
-
-    if [ $retval -eq 0 ]; then
-	rm -f $lockfile
-    fi
-    rc_status -v
+    echo
+    [ $retval -eq 0 ] && rm -f $lockfile
     return $retval
 }
 
@@ -119,31 +115,48 @@ reload() {
     restart
 }
 
-status() {
-    # run checks to determine if the service is running or use generic status
-    echo "Checking processes for elasticsearch"
-    checkproc -p $pidfile $JAVAPROG
-    rc_status -v
+force_reload() {
+    restart
 }
+
+rh_status() {
+    # run checks to determine if the service is running or use generic status
+    status -p $pidfile $prog
+}
+
+rh_status_q() {
+    rh_status >/dev/null 2>&1
+}
+
 
 case "$1" in
     start)
-	start
+        rh_status_q && exit 0
+        $1
         ;;
     stop)
-        stop
+        rh_status_q || exit 0
+        $1
         ;;
     restart)
-        restart
+        $1
         ;;
     reload)
-        reload
+        rh_status_q || exit 7
+        $1
+        ;;
+    force-reload)
+        force_reload
         ;;
     status)
-        status
+        rh_status
+        ;;
+    condrestart|try-restart)
+        rh_status_q || exit 0
+        restart
         ;;
     *)
-        echo $"Usage: $0 {start|stop|status|restart|reload}"
+        echo $"Usage: $0 {start|stop|status|restart|condrestart|try-restart|reload|force-reload}"
         exit 2
 esac
 exit $?

@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# /etc/init.d/elasticsearch-<%= @name %> -- startup script for Elasticsearch
+# /etc/init.d/elasticsearch-<%= @resource[:instance] %> -- startup script for Elasticsearch
 #
 # Written by Miquel van Smoorenburg <miquels@cistron.nl>.
 # Modified for Debian GNU/Linux	by Ian Murdock <imurdock@gnu.ai.mit.edu>.
@@ -10,18 +10,18 @@
 # Modified by Nicolas Huray for Elasticsearch <nicolas.huray@gmail.com>.
 #
 ### BEGIN INIT INFO
-# Provides:          elasticsearch-<%= @name %>
+# Provides:          elasticsearch-<%= @resource[:instance] %>
 # Required-Start:    $network $remote_fs $named
 # Required-Stop:     $network $remote_fs $named
 # Default-Start:     2 3 4 5
 # Default-Stop:      0 1 6
-# Short-Description: Starts elasticsearch-<%= @name %>
-# Description:       Starts elasticsearch-<%= @name %> using start-stop-daemon
+# Short-Description: Starts elasticsearch-<%= @resource[:instance] %>
+# Description:       Starts elasticsearch-<%= @resource[:instance] %> using start-stop-daemon
 ### END INIT INFO
 
 PATH=/bin:/usr/bin:/sbin:/usr/sbin
-NAME=elasticsearch-<%= @name %>
-DESC="Elasticsearch Server <%= @name %>"
+NAME=elasticsearch-<%= @resource[:instance] %>
+DESC="Elasticsearch Server <%= @resource[:instance] %>"
 DEFAULT=/etc/default/$NAME
 
 if [ `id -u` -ne 0 ]; then
