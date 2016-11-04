@@ -30,11 +30,7 @@ Puppet::Type.type(:elasticsearch_service_file).provide(:ruby) do
           :name => service.to_s,
           :ensure => :present,
           :provider => :ruby,
-          :content =>
-            Puppet::Util::FileType
-              .filetype(:flat)
-              .new(service.to_s)
-              .read
+          :content => Puppet::Util::FileType.filetype(:flat).new(service.to_s).read
         }
       end
     end.flatten.compact
@@ -74,10 +70,7 @@ Puppet::Type.type(:elasticsearch_service_file).provide(:ruby) do
     template = ERB.new(resource[:content], 0, "-")
     result = template.result(binding)
 
-    Puppet::Util::FileType
-      .filetype(:flat)
-      .new(resource[:name])
-      .write(result)
+    Puppet::Util::FileType.filetype(:flat).new(resource[:name]).write(result)
 
     @property_hash = self.class.services.detect do |t|
       t[:name] == resource[:name]
