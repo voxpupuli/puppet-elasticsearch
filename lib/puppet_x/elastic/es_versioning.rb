@@ -3,7 +3,7 @@ module Puppet_X
     class EsVersioning
       def self.opt_flags(package_name, catalog)
         if (es_pkg = catalog.resource("Package[#{package_name}]"))
-          es_version = es_pkg.provider.properties[:version]
+          es_version = es_pkg.provider.properties[:version] || es_pkg.provider.properties[:ensure]
         else
           raise Puppet::Error, "could not find `Package[#{package_name}]` resource"
         end
