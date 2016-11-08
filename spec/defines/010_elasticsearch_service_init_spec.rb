@@ -12,9 +12,13 @@ describe 'elasticsearch::service::init', :type => 'define' do
   } end
 
   let(:title) { 'es-01' }
-  let(:pre_condition) { 'class {"elasticsearch": config => { "node" => {"name" => "test" }}}' }
+  let(:pre_condition) {%q{
+    class { "elasticsearch":
+      config => { "node" => {"name" => "test" }}
+    }
+  }}
 
-  context "Setup service" do
+  context 'setup service' do
 
     let :params do {
       :ensure => 'present',
@@ -22,34 +26,36 @@ describe 'elasticsearch::service::init', :type => 'define' do
     } end
 
     it { should contain_elasticsearch__service__init('es-01') }
-    it { should contain_service('elasticsearch-instance-es-01').with(:ensure => 'running', :enable => true) }
+    it { should contain_service('elasticsearch-instance-es-01')
+      .with(:ensure => 'running', :enable => true) }
   end
 
-  context "Remove service" do
+  context 'remove service' do
 
     let :params do {
       :ensure => 'absent'
     } end
 
     it { should contain_elasticsearch__service__init('es-01') }
-    it { should contain_service('elasticsearch-instance-es-01').with(:ensure => 'stopped', :enable => false) }
+    it { should contain_service('elasticsearch-instance-es-01')
+      .with(:ensure => 'stopped', :enable => false) }
   end
 
-  context "unmanaged" do
+  context 'unmanaged' do
       let :params do {
         :ensure => 'present',
-	:status => 'unmanaged'
+        :status => 'unmanaged'
       } end
 
     it { should contain_elasticsearch__service__init('es-01') }
-    it { should contain_service('elasticsearch-instance-es-01').with(:enable => false) }
+    it { should contain_service('elasticsearch-instance-es-01')
+      .with(:enable => false) }
     it { should contain_augeas('defaults_es-01') }
-
   end
 
-  context "Defaults file" do
+  context 'defaults file' do
 
-    context "Set via file" do
+    context 'set via file' do
       let :params do {
         :ensure => 'present',
         :status => 'enabled',
@@ -69,7 +75,7 @@ describe 'elasticsearch::service::init', :type => 'define' do
       ) }
     end
 
-    context "Set via hash" do
+    context 'set via hash' do
       let :params do {
         :ensure => 'present',
         :status => 'enabled',
@@ -98,7 +104,7 @@ describe 'elasticsearch::service::init', :type => 'define' do
         }
       }}
 
-      context "Set via file" do
+      context 'set via file' do
         let :params do {
           :ensure => 'present',
           :status => 'enabled',
@@ -122,7 +128,7 @@ describe 'elasticsearch::service::init', :type => 'define' do
         ) }
       end
 
-      context "Set via hash" do
+      context 'set via hash' do
         let :params do {
           :ensure => 'present',
           :status => 'enabled',
@@ -157,7 +163,7 @@ describe 'elasticsearch::service::init', :type => 'define' do
         }
       }}
 
-      context "Set via file" do
+      context 'set via file' do
         let :params do {
           :ensure => 'present',
           :status => 'enabled',
@@ -171,7 +177,7 @@ describe 'elasticsearch::service::init', :type => 'define' do
         ) }
       end
 
-      context "Set via hash" do
+      context 'set via hash' do
         let :params do {
           :ensure => 'present',
           :status => 'enabled',
