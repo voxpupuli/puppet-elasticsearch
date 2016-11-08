@@ -189,10 +189,14 @@ describe 'elasticsearch::service::init', :type => 'define' do
     end
   end
 
-  context "Init file" do
-    let(:pre_condition) { 'class {"elasticsearch": config => { "node" => {"name" => "test" }} } ' }
+  context 'init file' do
+    let(:pre_condition) {%q{
+      class { "elasticsearch":
+        config => { "node" => {"name" => "test" }}
+      }
+    }}
 
-    context "Via template" do
+    context 'via template' do
       let :params do {
         :ensure => 'present',
         :status => 'enabled',
@@ -200,9 +204,21 @@ describe 'elasticsearch::service::init', :type => 'define' do
           'elasticsearch/etc/init.d/elasticsearch.RedHat.erb'
       } end
 
-      it { should contain_file(
-        '/etc/init.d/elasticsearch-es-01'
-      ).that_comes_before('Service[elasticsearch-instance-es-01]') }
+      it do
+        should contain_elasticsearch_service_file(
+          '/etc/init.d/elasticsearch-es-01'
+        ).that_comes_before(
+          'File[/etc/init.d/elasticsearch-es-01]'
+        )
+      end
+
+      it do
+        should contain_file(
+          '/etc/init.d/elasticsearch-es-01'
+        ).that_comes_before(
+          'Service[elasticsearch-instance-es-01]'
+        )
+      end
     end
 
     context 'restarts when "restart_on_change" is true' do
