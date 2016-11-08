@@ -168,10 +168,14 @@ describe 'elasticsearch::service::systemd', :type => 'define' do
         end
       end
 
-      context "Init file" do
-        let(:pre_condition) { 'class {"elasticsearch": config => { "node" => {"name" => "test" }} } ' }
+      context 'Init file' do
+        let(:pre_condition) {%q{
+          class { "elasticsearch":
+            config => { "node" => {"name" => "test" }}
+          }
+        }}
 
-        context "Via template" do
+        context 'via template' do
           let :params do {
             :ensure => 'present',
             :status => 'enabled',
@@ -179,7 +183,21 @@ describe 'elasticsearch::service::systemd', :type => 'define' do
               'elasticsearch/etc/init.d/elasticsearch.systemd.erb'
           } end
 
-          it { should contain_file("#{systemd_service_path}/elasticsearch-es-01.service").with(:before => 'Service[elasticsearch-instance-es-01]') }
+          it do
+            should contain_elasticsearch_service_file(
+              "#{systemd_service_path}/elasticsearch-es-01.service"
+            ).with(
+              :before => "File[#{systemd_service_path}/elasticsearch-es-01.service]"
+            )
+          end
+
+          it do
+            should contain_file(
+              "#{systemd_service_path}/elasticsearch-es-01.service"
+            ).with(
+              :before => 'Service[elasticsearch-instance-es-01]'
+            )
+          end
         end
 
         context 'restarts when "restart_on_change" is true' do
