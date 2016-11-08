@@ -136,22 +136,12 @@ class elasticsearch::params {
 
   # packages
   case $::operatingsystem {
-    'RedHat', 'CentOS', 'Fedora', 'Scientific', 'Amazon', 'OracleLinux', 'SLC': {
-      # main application
-      $package = [ 'elasticsearch' ]
-    }
-    'Debian', 'Ubuntu': {
-      # main application
-      $package = [ 'elasticsearch' ]
-    }
-    'OpenSuSE', 'SLES': {
-      $package = [ 'elasticsearch' ]
+    'RedHat', 'CentOS', 'Fedora', 'Scientific', 'Amazon', 'OracleLinux', 'SLC',
+    'Debian', 'Ubuntu', 'OpenSuSE', 'SLES', 'OpenBSD': {
+      $package = 'elasticsearch'
     }
     'Gentoo': {
-      $package = [ 'app-misc/elasticsearch' ]
-    }
-    'OpenBSD': {
-      $package = [ 'elasticsearch' ]
+      $package = 'app-misc/elasticsearch'
     }
     default: {
       fail("\"${module_name}\" provides no package default value
