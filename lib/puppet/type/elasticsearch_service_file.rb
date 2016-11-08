@@ -1,9 +1,10 @@
 $LOAD_PATH.unshift(File.join(File.dirname(__FILE__),"..","..",".."))
 
+require 'puppet/util/checksums'
+
 require 'puppet_x/elastic/es_versioning'
 
 Puppet::Type.newtype(:elasticsearch_service_file) do
-
   @doc = "Init file"
 
   ensurable
@@ -13,6 +14,8 @@ Puppet::Type.newtype(:elasticsearch_service_file) do
   end
 
   newproperty(:content) do
+    include Puppet::Util::Checksums
+
     desc 'Service file contents in erb template form.'
 
     # Interploate the erb source before comparing it to the on-disk
@@ -23,6 +26,19 @@ Puppet::Type.newtype(:elasticsearch_service_file) do
       )
       template = ERB.new(should, 0, "-")
       is == template.result(binding)
+    end
+
+    # Represent as a checksum, not the whole file
+    def change_to_s(currentvalue, newvalue)
+      algo = Puppet[:digest_algorithm].to_sym
+
+      if currentvalue == :absent
+        return "defined content as '#{send(algo, newvalue)}'"
+      elsif newvalue == :absent
+        return "undefined content from '#{send(algo, currentvalue)}'"
+      else
+        return "content changed '#{send(algo, currentvalue)}' to '#{send(algo, newvalue)}'"
+      end
     end
   end
 
