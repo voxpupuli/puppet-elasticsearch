@@ -8,18 +8,18 @@ ES_INSTANCE=${SVCNAME#*.}
 
 if [ -n "${ES_INSTANCE}" ] && [ ${SVCNAME} != "elasticsearch" ]; then
     PIDFILE="/run/elasticsearch/elasticsearch.${ES_INSTANCE}.pid"
-    ES_BASE_PATH="/var/lib/elasticsearch/${ES_INSTANCE}"
-    ES_CONF_PATH="/etc/elasticsearch/${ES_INSTANCE}"
-    ES_LOG_PATH="/var/log/elasticsearch/${ES_INSTANCE}"
+    ES_HOME="/var/lib/elasticsearch/${ES_INSTANCE}"
+    CONF_DIR="/etc/elasticsearch/${ES_INSTANCE}"
+    LOG_DIR="/var/log/elasticsearch/${ES_INSTANCE}"
 else
     PIDFILE="/run/elasticsearch/elasticsearch.pid"
-    ES_BASE_PATH="/var/lib/elasticsearch/_default"
-    ES_CONF_PATH="/etc/elasticsearch"
-    ES_LOG_PATH="/var/log/elasticsearch/_default"
+    ES_HOME="/var/lib/elasticsearch/_default"
+    CONF_DIR="/etc/elasticsearch"
+    LOG_DIR="/var/log/elasticsearch/_default"
 fi
 
-ES_DATA_PATH="${ES_BASE_PATH}/data"
-ES_WORK_PATH="${ES_BASE_PATH}/work"
+DATA_DIR="${ES_HOME}/data"
+WORK_DIR="${ES_HOME}/work"
 
 export ES_INCLUDE="/usr/share/elasticsearch/bin/elasticsearch.in.sh"
 export JAVA_OPTS
@@ -30,16 +30,13 @@ export ES_DIRECT_SIZE
 export ES_USE_IPV4
 
 server_command="/usr/share/elasticsearch/bin/elasticsearch"
-server_args=" -p ${PIDFILE} -Des.default.path.conf=\"${ES_CONF_PATH}\" -Des.default.path.data=\"${ES_DATA_PATH}\" -Des.default.path.work=\"${ES_WORK_PATH}\" -Des.default.path.logs=\"${ES_LOG_PATH}\""
+server_args=" -p ${PIDFILE} <%= opt_flags.join(' ') %>"
 
 depend() {
     use net
 }
 
 start() {
-    # elasticsearch -Des.config=/path/to/config/file
-    # elasticsearch -Des.network.host=10.0.0.4
-
     [ ! -f "${ES_INCLUDE}" ] && {
         eerror "${ES_INCLUDE} must be copied into place"
         return 1
@@ -48,7 +45,7 @@ start() {
     local conf
     local conf_file
     for conf in elasticsearch.yml logging.yml; do
-        conf_file="${ES_CONF_PATH}/${conf}"
+        conf_file="${CONF_DIR}/${conf}"
         if [ ! -f "${conf_file}" ]; then
             eerror "${conf_file} must be copied into place"
             return 1
@@ -65,12 +62,12 @@ start() {
     checkpath -d -o "${ES_USER}" -m750 "/var/lib/elasticsearch"
     checkpath -d -o "${ES_USER}" -m750 "/var/log/elasticsearch"
     checkpath -d -o "${ES_USER}" -m750 "$(dirname "${PIDFILE}")"
-    checkpath -d -o "${ES_USER}" -m750 "${ES_BASE_PATH}"
-    checkpath -d -o "${ES_USER}" -m750 "${ES_LOG_PATH}"
+    checkpath -d -o "${ES_USER}" -m750 "${ES_HOME}"
+    checkpath -d -o "${ES_USER}" -m750 "${LOG_DIR}"
 
     start-stop-daemon --start \
         --background \
-        --chdir "${ES_BASE_PATH}" \
+        --chdir "${ES_HOME}" \
         --user="${ES_USER}" \
         --pidfile="${PIDFILE}" \
         --exec ${server_command} -- ${server_args}

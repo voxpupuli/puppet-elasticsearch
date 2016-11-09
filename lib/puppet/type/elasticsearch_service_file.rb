@@ -21,7 +21,7 @@ Puppet::Type.newtype(:elasticsearch_service_file) do
     # Interploate the erb source before comparing it to the on-disk
     # init script
     def insync?(is)
-      opt_flags = Puppet_X::Elastic::EsVersioning.opt_flags(
+      opt_flag, opt_flags = Puppet_X::Elastic::EsVersioning.opt_flags(
         resource[:package_name], resource.catalog
       )
       template = ERB.new(should, 0, "-")
