@@ -5,7 +5,7 @@ require 'puppet/util/checksums'
 require 'puppet_x/elastic/es_versioning'
 
 Puppet::Type.newtype(:elasticsearch_service_file) do
-  @doc = "Init file"
+  @doc = 'Manages elasticsearch service files.'
 
   ensurable
 
