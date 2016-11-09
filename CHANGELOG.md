@@ -5,6 +5,7 @@
 
 #### Features
 * Support management of 5.x-style Elastic yum/apt package repositories.
+* Support service scripts for 5.x series of Elasticsearch
 
 #### Bugfixes
 * Update the apt::source call to not cause deprecation warnings
