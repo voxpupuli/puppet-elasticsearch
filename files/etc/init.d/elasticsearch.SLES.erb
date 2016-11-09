@@ -88,10 +88,10 @@ start() {
     fi
     echo -n $"Starting $prog: "
     # if not running, start it up here, usually something like "daemon $EXE"
-    startproc -u $ES_USER $EXE -d -p $pidfile -Des.default.path.home=$ES_HOME -Des.default.path.logs=$LOG_DIR -Des.default.path.data=$DATA_DIR -Des.default.path.work=$WORK_DIR -Des.default.path.conf=$CONF_DIR &
+    startproc -u $ES_USER $EXE -d -p $pidfile <%= opt_flags.join(' ') %> &
     retval=$?
     if [ $retval -eq 0 ]; then
-	touch $lockfile
+        touch $lockfile
     fi
     rc_status -v
     return $retval
@@ -104,7 +104,7 @@ stop() {
     retval=$?
 
     if [ $retval -eq 0 ]; then
-	rm -f $lockfile
+        rm -f $lockfile
     fi
     rc_status -v
     return $retval
@@ -128,7 +128,7 @@ status() {
 
 case "$1" in
     start)
-	start
+        start
         ;;
     stop)
         stop

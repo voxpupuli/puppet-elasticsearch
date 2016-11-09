@@ -64,7 +64,7 @@ Puppet::Type.type(:elasticsearch_service_file).provide(:ruby) do
 
 
   def flush
-    opt_flags = Puppet_X::Elastic::EsVersioning.opt_flags(
+    opt_flag, opt_flags = Puppet_X::Elastic::EsVersioning.opt_flags(
       resource[:package_name], resource.catalog
     )
     template = ERB.new(resource[:content], 0, "-")
