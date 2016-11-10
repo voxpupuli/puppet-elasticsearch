@@ -72,6 +72,8 @@ class elasticsearch::config {
         ensure => 'absent';
       '/etc/elasticsearch/logging.yml':
         ensure => 'absent';
+      '/etc/elasticsearch/log4j2.properties':
+        ensure => 'absent';
       '/etc/init.d/elasticsearch':
         ensure => 'absent';
     }
