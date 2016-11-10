@@ -10,6 +10,7 @@ HOSTS:
     docker_cmd: ["/sbin/init"]
     docker_preserve_image: true
     docker_image_commands:
+      - apt-get update
       - apt-get install -yq libssl-dev puppet
       - locale-gen en_US en_US.UTF-8
       - dpkg-reconfigure locales
