@@ -3,17 +3,21 @@ require 'spec_helper_acceptance'
 describe 'elasticsearch 5.x' do
   # Java 8 is only easy to manage on recent distros
   if fact('osfamily') == 'RedHat' or fact('lsbdistcodename') == 'xenial'
-    # On CentOS/RedHat 7, we can just trust packages of java are recent
-    if fact('operatingsystemmajrelease') == '7'
-      java_install = true
-    else
+    # On earlier versions of CentOS/RedHat 7, manually get JRE 1.8
+    if fact('operatingsystemmajrelease') == '6'
       # Otherwise, grab the Oracle JRE 8 package
       java_install = false
       java_snippet = <<-EOS
+        package { 'java-openjdk' :
+          ensure => absent
+        } ->
         java::oracle { 'jre8':
           java_se => 'jre',
         }
       EOS
+    else
+      # Otherwise the distro should be recent enough to have JRE 1.8
+      java_install = true
     end
 
     describe 'manifest' do
