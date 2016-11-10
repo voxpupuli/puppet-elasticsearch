@@ -131,7 +131,11 @@ define elasticsearch::service::systemd(
           }
         }
       }
-      $init_defaults_pre_hash = { 'ES_USER' => $elasticsearch::elasticsearch_user, 'ES_GROUP' => $elasticsearch::elasticsearch_group, 'MAX_OPEN_FILES' => '65535' }
+      $init_defaults_pre_hash = {
+        'ES_USER' => $elasticsearch::elasticsearch_user,
+        'ES_GROUP' => $elasticsearch::elasticsearch_group,
+        'MAX_OPEN_FILES' => '65536'
+      }
       $new_init_defaults = merge($init_defaults_pre_hash, $init_defaults)
 
       augeas { "defaults_${name}":
@@ -149,7 +153,7 @@ define elasticsearch::service::systemd(
       if ($new_init_defaults != undef and is_hash($new_init_defaults) and has_key($new_init_defaults, 'MAX_OPEN_FILES')) {
         $nofile = $new_init_defaults['MAX_OPEN_FILES']
       }else{
-        $nofile = '65535'
+        $nofile = '65536'
       }
 
       if ($new_init_defaults != undef and is_hash($new_init_defaults) and has_key($new_init_defaults, 'MAX_LOCKED_MEMORY')) {
