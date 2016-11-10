@@ -168,6 +168,7 @@ describe 'elasticsearch', :type => 'class' do
           it { should contain_apt__source('elasticsearch')
             .with_location('https://artifacts.elastic.co/packages/5.x/apt') }
         when 'RedHat'
+          it { should contain_yum__versionlock('0:elasticsearch-5.0.0-1.noarch') }
           it { should contain_yumrepo('elasticsearch')
             .with_baseurl('https://artifacts.elastic.co/packages/5.x/yum') }
         when 'Suse'
