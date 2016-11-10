@@ -418,8 +418,8 @@ define elasticsearch::instance(
     $instance_init_defaults_main = {
       'CONF_DIR'  => $instance_configdir,
       'CONF_FILE' => "${instance_configdir}/elasticsearch.yml",
-      'LOG_DIR'   => $instance_logdir,
       'ES_HOME'   => '/usr/share/elasticsearch',
+      'LOG_DIR'   => $instance_logdir,
     }
 
     if (is_hash($init_defaults)) {
@@ -428,6 +428,7 @@ define elasticsearch::instance(
       $instance_init_defaults = { }
     }
     $init_defaults_new = merge(
+      { 'DATA_DIR'  => '$ES_HOME/data' },
       $global_init_defaults,
       $instance_init_defaults_main,
       $instance_init_defaults
