@@ -27,8 +27,6 @@ describe 'elasticsearch 2x' do
 
           Elasticsearch::Plugin { instances => 'es-01' }
           elasticsearch::plugin { 'cloud-aws': }
-          elasticsearch::plugin { 'marvel-agent': }
-          elasticsearch::plugin { 'license': }
         EOS
 
         it 'applies cleanly' do
@@ -103,8 +101,6 @@ describe 'elasticsearch 2x' do
 
           Elasticsearch::Plugin { instances => 'es-01' }
           elasticsearch::plugin { 'cloud-aws': }
-          elasticsearch::plugin { 'marvel-agent': }
-          elasticsearch::plugin { 'license': }
         EOS
 
         it 'applies cleanly' do
