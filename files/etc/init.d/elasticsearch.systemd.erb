@@ -1,8 +1,15 @@
+<%
+order = ["network-online.target"]
+if @resource[:service_order]
+   order.push(@resource[:service_order])
+end
+%>
+
 [Unit]
 Description=Starts and stops a single elasticsearch instance on this system
 Documentation=http://www.elasticsearch.org
 Wants=network-online.target
-After=network-online.target
+After=<%= order.join(" ") %>
 
 [Service]
 Type=forking

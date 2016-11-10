@@ -60,6 +60,7 @@ define elasticsearch::service::systemd(
   $init_defaults_file = undef,
   $init_defaults      = undef,
   $init_template      = undef,
+  $service_order      = undef,
 ) {
 
   #### Service management
@@ -169,6 +170,7 @@ define elasticsearch::service::systemd(
         package_name      => $elasticsearch::package_name,
         pid_dir           => $elasticsearch::pid_dir,
         user              => $elasticsearch::elasticsearch_user,
+        service_order     => $service_order,
         notify            => $notify_service,
       } ->
       file { "${elasticsearch::params::systemd_service_path}/elasticsearch-${name}.service":
