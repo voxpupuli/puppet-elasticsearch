@@ -107,7 +107,7 @@ describe 'elasticsearch::service::systemd', :type => 'define' do
                 "set ES_GROUP 'elasticsearch'",
                 "set ES_HOME '/usr/share/elasticsearch'",
                 "set ES_USER 'elasticsearch'",
-                "set MAX_OPEN_FILES '65535'"
+                "set MAX_OPEN_FILES '65536'"
               ].join("\n") << "\n",
               :before => 'Service[elasticsearch-instance-es-01]'
           ) }
@@ -156,7 +156,7 @@ describe 'elasticsearch::service::systemd', :type => 'define' do
                 "set ES_GROUP 'elasticsearch'",
                 "set ES_HOME '/usr/share/elasticsearch'",
                 "set ES_USER 'elasticsearch'",
-                "set MAX_OPEN_FILES '65535'"
+                "set MAX_OPEN_FILES '65536'"
               ].join("\n") << "\n"
             )}
             it { should contain_augeas(
