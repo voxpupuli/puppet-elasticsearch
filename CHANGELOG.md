@@ -2,6 +2,7 @@
 
 ### Summary
 * Support for Ubuntu Xenial (16.04) formally declared.
+* Initial support for running Elasticsearch 5.x series.
 
 #### Features
 * Support management of 5.x-style Elastic yum/apt package repositories.
