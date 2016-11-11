@@ -8,7 +8,7 @@ describe 'elasticsearch 5.x' do
       # Otherwise, grab the Oracle JRE 8 package
       java_install = false
       java_snippet = <<-EOS
-        package { 'java-openjdk' :
+        package { 'java-1.7.0-openjdk' :
           ensure => absent
         } ->
         java::oracle { 'jre8':
@@ -43,7 +43,7 @@ describe 'elasticsearch 5.x' do
         }
       EOS
       if not java_install
-        pp = java_snippet + '->' + pp
+        pp = java_snippet + "->\n" + pp
       end
 
       it 'applies cleanly' do
