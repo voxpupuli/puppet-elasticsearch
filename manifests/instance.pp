@@ -67,6 +67,9 @@
 # [*service_flags*]
 #   Service flags used for the OpenBSD service configuration, defaults to undef.
 #
+# [*service_order*]
+#   space separated string naming services to be started before Elasticsearch
+#
 # [*init_template*]
 #   Service file as a template
 #
