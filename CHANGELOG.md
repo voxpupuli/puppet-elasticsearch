@@ -1,3 +1,21 @@
+## x.x.x (Month Day, Year)
+
+ ### Summary
+* Support for Ubuntu Xenial (16.04) formally declared.
+
+ #### Features
+* Support management of 5.x-style Elastic yum/apt package repositories.
+* Support service scripts for 5.x series of Elasticsearch
+
+ #### Bugfixes
+* Update the apt::source call to not cause deprecation warnings
+* Updated module metadata to correctly require puppet-stdlib with validate_integer()
+
+ #### Changes
+
+ #### Testing changes
+* Ubuntu Xenial (16.04) added to the test matrix.
+
 ## 0.15.1 (November 11, 2016)
 
 ### Summary

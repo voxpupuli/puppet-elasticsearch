@@ -53,6 +53,9 @@
 # [*service_flags*]
 #   Service flags, used on OpenBSD for service configuration
 #
+# [*service_order*]
+#   space separated string naming services to be started before Elasticsearch
+#
 # === Authors
 #
 # * Richard Pijnenburg <mailto:richard.pijnenburg@elasticsearch.com>

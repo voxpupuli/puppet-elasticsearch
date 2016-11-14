@@ -50,6 +50,9 @@
 # [*init_template*]
 #   Service file as a template
 #
+# [*service_order*]
+#   space separated string naming services to be started before Elasticsearch
+#
 # === Authors
 #
 # * Richard Pijnenburg <mailto:richard.pijnenburg@elasticsearch.com>
