@@ -60,7 +60,7 @@ describe 'elasticsearch 5.x' do
 
     describe server :container do
       describe http "http://localhost:#{test_settings['port_a']}" do
-        it 'reports ES as upgraded', :with_retries do
+        it 'runs version 5', :with_retries do
           expect(
             JSON.parse(response.body)['version']['number']
           ).to eq('5.0.0')
