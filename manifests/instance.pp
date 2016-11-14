@@ -225,9 +225,11 @@ define elasticsearch::instance(
     if ($logging_file != undef) {
       $logging_source = $logging_file
       $logging_content = undef
+      $_log4j_content = undef
     } elsif ($elasticsearch::logging_file != undef) {
       $logging_source = $elasticsearch::logging_file
       $logging_content = undef
+      $_log4j_content = undef
     } else {
 
       if(is_hash($elasticsearch::logging_config)) {
@@ -241,13 +243,20 @@ define elasticsearch::instance(
       } else {
         $instance_logging_config = { }
       }
-      $logging_hash = merge($elasticsearch::params::logging_defaults, $main_logging_config, $instance_logging_config)
+      $logging_hash = merge(
+        $elasticsearch::params::logging_defaults,
+        $main_logging_config,
+        $instance_logging_config
+      )
       if ($logging_template != undef ) {
         $logging_content = template($logging_template)
+        $_log4j_content = template($logging_template)
       } elsif ($elasticsearch::logging_template != undef) {
         $logging_content = template($elasticsearch::logging_template)
+        $_log4j_content = template($elasticsearch::logging_template)
       } else {
         $logging_content = template("${module_name}/etc/elasticsearch/logging.yml.erb")
+        $_log4j_content = template("${module_name}/etc/elasticsearch/log4j2.properties.erb")
       }
       $logging_source = undef
     }
@@ -365,14 +374,23 @@ define elasticsearch::instance(
       before  => Elasticsearch::Service[$name],
     }
 
-    file { "${instance_configdir}/logging.yml":
-      ensure  => file,
-      content => $logging_content,
-      source  => $logging_source,
-      mode    => '0644',
-      notify  => $notify_service,
-      require => Class['elasticsearch::package'],
-      before  => Elasticsearch::Service[$name],
+    file {
+      "${instance_configdir}/logging.yml":
+        ensure  => file,
+        content => $logging_content,
+        source  => $logging_source,
+        mode    => '0644',
+        notify  => $notify_service,
+        require => Class['elasticsearch::package'],
+        before  => Elasticsearch::Service[$name];
+      "${instance_configdir}/log4j2.properties":
+        ensure  => file,
+        content => $_log4j_content,
+        source  => $logging_source,
+        mode    => '0644',
+        notify  => $notify_service,
+        require => Class['elasticsearch::package'],
+        before  => Elasticsearch::Service[$name];
     }
 
     file { "${instance_configdir}/scripts":

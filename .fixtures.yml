@@ -1,5 +1,8 @@
 fixtures:
   forge_modules:
+    archive:
+      repo: puppet/archive
+      ref: 0.5.1
     stdlib:
       repo: puppetlabs/stdlib
       ref: 4.11.0
