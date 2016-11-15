@@ -31,8 +31,8 @@ describe 'elasticsearch 5.x' do
           manage_repo => true,
           repo_version => '#{test_settings['repo_version5x']}',
           java_install => #{java_install},
-          version => '5.0.0',
           restart_on_change => true,
+          version => '5.0.1',
         }
 
         elasticsearch::instance { 'es-01':
@@ -63,7 +63,7 @@ describe 'elasticsearch 5.x' do
         it 'runs version 5', :with_retries do
           expect(
             JSON.parse(response.body)['version']['number']
-          ).to eq('5.0.0')
+          ).to eq('5.0.1')
         end
       end
     end
