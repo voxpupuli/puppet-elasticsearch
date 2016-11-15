@@ -160,7 +160,7 @@ describe 'concat_merge' do
     argument2 = { 'key2' => 'value2' }
     original2 = argument2.dup
 
-    subject.call([argument1, argument2])
+    subject.execute(argument1, argument2)
     expect(argument1).to eq(original1)
     expect(argument2).to eq(original2)
   end
