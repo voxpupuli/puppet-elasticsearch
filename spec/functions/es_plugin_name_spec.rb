@@ -58,7 +58,7 @@ describe 'es_plugin_name' do
     argument1 = 'foo'
     original1 = argument1.dup
 
-    subject.call([argument1])
+    subject.execute(argument1)
     expect(argument1).to eq(original1)
   end
 

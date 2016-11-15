@@ -104,7 +104,7 @@ describe 'deep_implode' do
     argument1 = { 'key1' => 'value1' }
     original1 = argument1.dup
 
-    subject.call([argument1])
+    subject.execute(argument1)
     expect(argument1).to eq(original1)
   end
 
