@@ -143,7 +143,7 @@ RSpec.configure do |c|
 
       copy_hiera_data_to(host, 'spec/fixtures/hiera/hieradata/')
 
-      modules = ['archive', 'stdlib', 'java', 'datacat', 'java_ks']
+      modules = ['archive', 'stdlib', 'java', 'datacat', 'java_ks', 'sysctl']
 
       dist_module = {
         'Debian' => 'apt',
