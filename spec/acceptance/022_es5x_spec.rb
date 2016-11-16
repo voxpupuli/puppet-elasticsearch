@@ -2,7 +2,10 @@ require 'spec_helper_acceptance'
 
 describe 'elasticsearch 5.x' do
   # Java 8 is only easy to manage on recent distros
-  if fact('osfamily') == 'RedHat' or fact('lsbdistcodename') == 'xenial'
+  if (fact('osfamily') == 'RedHat' and \
+      not (fact('operatingsystem') == 'OracleLinux' and \
+       fact('operatingsystemmajrelease') == '6')) or \
+      fact('lsbdistcodename') == 'xenial'
     # On earlier versions of CentOS/RedHat 7, manually get JRE 1.8
     if fact('operatingsystemmajrelease') == '6'
       # Otherwise, grab the Oracle JRE 8 package
