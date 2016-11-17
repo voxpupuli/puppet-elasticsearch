@@ -1,4 +1,4 @@
-## x.x.x (Month Day, Year)
+## 0.15.0 (November 17, 2016)
 
 ### Summary
 * Support for Ubuntu Xenial (16.04) formally declared.
