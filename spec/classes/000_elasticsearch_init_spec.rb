@@ -86,9 +86,23 @@ describe 'elasticsearch', :type => 'class' do
         end
 
         # file removal from package
-        it { should contain_file('/etc/init.d/elasticsearch').with(:ensure => 'absent') }
-        it { should contain_file('/etc/elasticsearch/elasticsearch.yml').with(:ensure => 'absent') }
-        it { should contain_file('/etc/elasticsearch/logging.yml').with(:ensure => 'absent') }
+        it { should contain_file('/etc/init.d/elasticsearch')
+          .with(:ensure => 'absent') }
+        it { should contain_file('/etc/elasticsearch/elasticsearch.yml')
+          .with(:ensure => 'absent') }
+        it { should contain_file('/etc/elasticsearch/logging.yml')
+          .with(:ensure => 'absent') }
+        it { should contain_file('/etc/elasticsearch/log4j2.properties')
+          .with(:ensure => 'absent') }
+        it { should contain_file('/etc/elasticsearch/log4j2.properties')
+          .with(:ensure => 'absent') }
+
+        # System-level settings
+        it { should contain_sysctl(
+          'vm.max_map_count'
+        ).with(
+          :value => 262144
+        ) }
       end
 
       context 'package installation' do
