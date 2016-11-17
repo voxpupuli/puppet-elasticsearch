@@ -1,6 +1,7 @@
   test_settings['cluster_name'] = SecureRandom.hex(10)
 
   test_settings['repo_version2x']          = '2.x'
+  test_settings['repo_version5x']          = '5.x'
   test_settings['repo_version']            = '1.7'
   test_settings['install_package_version'] = '1.7.4'
   test_settings['install_version']         = '1.7.4'
