@@ -1,3 +1,16 @@
+## x.x.x (Month Day, Year)
+
+### Summary
+
+#### Features
+
+#### Bugfixes
+* Removed ES_HEAP_SIZE check in init scripts for Elasticsearch 5.x
+
+#### Changes
+
+#### Testing changes
+
 ## 0.15.0 (November 17, 2016)
 
 ### Summary
