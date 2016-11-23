@@ -6,6 +6,7 @@
 
 #### Bugfixes
 * Removed ES_HEAP_SIZE check in init scripts for Elasticsearch 5.x
+* Changed sysctl value to a string to avoid type errors for some versions
 
 #### Changes
 
