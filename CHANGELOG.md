@@ -9,6 +9,7 @@
 * Changed sysctl value to a string to avoid type errors for some versions
 
 #### Changes
+* Updated minimium required version for Puppet and PE to reflect tested versions and versions supported by Puppet Labs
 
 #### Testing changes
 
