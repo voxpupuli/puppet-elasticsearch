@@ -35,7 +35,7 @@ describe 'elasticsearch 5.x' do
           repo_version => '#{test_settings['repo_version5x']}',
           java_install => #{java_install},
           restart_on_change => true,
-          version => '5.0.1',
+          version => '5.0.2',
         }
 
         elasticsearch::instance { 'es-01':
