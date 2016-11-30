@@ -1,6 +1,6 @@
 require 'spec_helper_acceptance'
 
-describe 'elasticsearch 2x' do
+describe 'elasticsearch 2x', :with_cleanup do
   context 'upgrading', :upgrade => true do
     describe '2.0.0 install' do
       describe 'manifest' do
