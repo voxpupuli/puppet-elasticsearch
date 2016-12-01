@@ -1,6 +1,8 @@
-## x.x.x (Month Day, Year)
+## 0.15.1 (December 1, 2016)
 
 ### Summary
+Primarily a bugfix release for Elasticsearch 5.x support-related issues.
+Note updated minimum required puppet versions as well.
 
 #### Features
 
