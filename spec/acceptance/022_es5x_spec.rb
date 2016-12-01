@@ -23,50 +23,51 @@ describe 'elasticsearch 5.x' do
       java_install = true
     end
 
-    describe 'manifest' do
-      pp = <<-EOS
-        class { 'elasticsearch':
-          config => {
-            'node.name' => 'elasticsearch001',
-            'cluster.name' => '#{test_settings['cluster_name']}',
-            'network.host' => '0.0.0.0',
-          },
-          manage_repo => true,
-          repo_version => '#{test_settings['repo_version5x']}',
-          java_install => #{java_install},
-          restart_on_change => true,
-          version => '5.0.1',
-        }
-
-        elasticsearch::instance { 'es-01':
-          config => {
-            'node.name' => 'elasticsearch001',
-            'http.port' => '#{test_settings['port_a']}'
+    describe 'basic installation', :with_cleanup do
+      describe 'manifest' do
+        pp = <<-EOS
+          class { 'elasticsearch':
+            config => {
+              'node.name' => 'elasticsearch001',
+              'cluster.name' => '#{test_settings['cluster_name']}',
+              'network.host' => '0.0.0.0',
+            },
+            manage_repo => true,
+            repo_version => '#{test_settings['repo_version5x']}',
+            java_install => #{java_install},
+            restart_on_change => true,
           }
-        }
-      EOS
-      if not java_install
-        pp = java_snippet + "->\n" + pp
+
+          elasticsearch::instance { 'es-01':
+            config => {
+              'node.name' => 'elasticsearch001',
+              'http.port' => '#{test_settings['port_a']}'
+            }
+          }
+        EOS
+        if not java_install
+          pp = java_snippet + "->\n" + pp
+        end
+
+        it 'applies cleanly' do
+          apply_manifest pp, :catch_failures => true
+        end
+        it 'is idempotent' do
+          apply_manifest pp , :catch_changes  => true
+        end
       end
 
-      it 'applies cleanly' do
-        apply_manifest pp, :catch_failures => true
+      describe port(test_settings['port_a']) do
+        it 'open', :with_retries do should be_listening end
       end
-      it 'is idempotent' do
-        apply_manifest pp , :catch_changes  => true
-      end
-    end
 
-    describe port(test_settings['port_a']) do
-      it 'open', :with_retries do should be_listening end
-    end
-
-    describe server :container do
-      describe http "http://localhost:#{test_settings['port_a']}" do
-        it 'runs version 5', :with_retries do
-          expect(
-            JSON.parse(response.body)['version']['number']
-          ).to eq('5.0.1')
+      describe server :container do
+        describe http "http://localhost:#{test_settings['port_a']}" do
+          it 'runs version 5', :with_retries do
+            expect(
+              JSON.parse(response.body)['version']['number']
+            ).to start_with('5')
+          end
         end
       end
     end
