@@ -7,6 +7,7 @@
 #### Bugfixes
 * Removed ES_HEAP_SIZE check in init scripts for Elasticsearch 5.x
 * Changed sysctl value to a string to avoid type errors for some versions
+* Fixed a $LOAD_PATH error that appeared in some cases for puppet_x/elastic/es_versioning
 
 #### Changes
 * Updated minimium required version for Puppet and PE to reflect tested versions and versions supported by Puppet Labs
