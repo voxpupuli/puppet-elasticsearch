@@ -89,7 +89,7 @@ describe 'elasticsearch::service::init', :type => 'define' do
             "set ES_GROUP 'elasticsearch'",
             "set ES_HOME '/usr/share/elasticsearch'",
             "set ES_USER 'elasticsearch'",
-            "set MAX_OPEN_FILES '65535'",
+            "set MAX_OPEN_FILES '65536'",
           ].join("\n") << "\n",
           :before => 'Service[elasticsearch-instance-es-01]'
         )
@@ -141,7 +141,7 @@ describe 'elasticsearch::service::init', :type => 'define' do
           'defaults_es-01'
         ).with(
           :incl => '/etc/sysconfig/elasticsearch-es-01',
-          :changes => "set ES_GROUP 'elasticsearch'\nset ES_HOME '/usr/share/elasticsearch'\nset ES_USER 'elasticsearch'\nset MAX_OPEN_FILES '65535'\n"
+          :changes => "set ES_GROUP 'elasticsearch'\nset ES_HOME '/usr/share/elasticsearch'\nset ES_USER 'elasticsearch'\nset MAX_OPEN_FILES '65536'\n"
         ) }
         it { should contain_augeas(
           'defaults_es-01'

@@ -1,6 +1,6 @@
 require 'spec_helper_acceptance'
 
-describe 'elasticsearch 2x' do
+describe 'elasticsearch 2x', :with_cleanup do
   context 'upgrading', :upgrade => true do
     describe '2.0.0 install' do
       describe 'manifest' do
@@ -24,11 +24,6 @@ describe 'elasticsearch 2x' do
               'http.port' => '#{test_settings['port_a']}'
             }
           }
-
-          Elasticsearch::Plugin { instances => 'es-01' }
-          elasticsearch::plugin { 'cloud-aws': }
-          elasticsearch::plugin { 'marvel-agent': }
-          elasticsearch::plugin { 'license': }
         EOS
 
         it 'applies cleanly' do
@@ -39,32 +34,8 @@ describe 'elasticsearch 2x' do
         end
       end
 
-      describe file('/usr/share/elasticsearch/plugins/cloud-aws') do
-        it { should be_directory }
-      end
-
       describe port(test_settings['port_a']) do
         it 'open', :with_retries do should be_listening end
-      end
-
-      describe server :container do
-        describe http(
-          "http://localhost:#{test_settings['port_a']}/_cluster/stats",
-        ) do
-          it 'returns cloud-aws with version 2.0.0', :with_retries do
-            json = JSON.parse(response.body)
-            plugins = json['nodes']['plugins'].map do |h|
-              {
-                name: h['name'],
-                version: h['version']
-              }
-            end
-            expect(plugins).to include({
-              name: 'cloud-aws',
-              version: '2.0.0'
-            })
-          end
-        end
       end
 
       describe server :container do
@@ -100,11 +71,6 @@ describe 'elasticsearch 2x' do
               'http.port' => '#{test_settings['port_a']}'
             }
           }
-
-          Elasticsearch::Plugin { instances => 'es-01' }
-          elasticsearch::plugin { 'cloud-aws': }
-          elasticsearch::plugin { 'marvel-agent': }
-          elasticsearch::plugin { 'license': }
         EOS
 
         it 'applies cleanly' do
@@ -115,32 +81,8 @@ describe 'elasticsearch 2x' do
         end
       end
 
-      describe file('/usr/share/elasticsearch/plugins/cloud-aws') do
-        it { should be_directory }
-      end
-
       describe port(test_settings['port_a']) do
         it 'open', :with_retries do should be_listening end
-      end
-
-      describe server :container do
-        describe http(
-          "http://localhost:#{test_settings['port_a']}/_cluster/stats",
-        ) do
-          it 'reports cloud-aws as upgraded', :with_retries do
-            json = JSON.parse(response.body)
-            plugins = json['nodes']['plugins'].map do |h|
-              {
-                name: h['name'],
-                version: h['version']
-              }
-            end
-            expect(plugins).to include({
-              name: 'cloud-aws',
-              version: '2.0.1'
-            })
-          end
-        end
       end
 
       describe server :container do

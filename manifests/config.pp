@@ -26,11 +26,6 @@ class elasticsearch::config {
 
   #### Configuration
 
-  File {
-    owner => $elasticsearch::elasticsearch_user,
-    group => $elasticsearch::elasticsearch_group,
-  }
-
   Exec {
     path => [ '/bin', '/usr/bin', '/usr/local/bin' ],
     cwd  => '/',
@@ -41,36 +36,53 @@ class elasticsearch::config {
     file {
       $elasticsearch::configdir:
         ensure => 'directory',
+        group  => $elasticsearch::elasticsearch_group,
+        owner  => $elasticsearch::elasticsearch_user,
         mode   => '0644';
       $elasticsearch::datadir:
-        ensure => 'directory';
+        ensure => 'directory',
+        group  => $elasticsearch::elasticsearch_group,
+        owner  => $elasticsearch::elasticsearch_user;
       $elasticsearch::logdir:
         ensure  => 'directory',
         group   => undef,
+        owner   => $elasticsearch::elasticsearch_user,
         mode    => '0644',
         recurse => true;
       $elasticsearch::plugindir:
         ensure => 'directory',
+        group  => $elasticsearch::elasticsearch_group,
+        owner  => $elasticsearch::elasticsearch_user,
         mode   => 'o+Xr';
       "${elasticsearch::homedir}/lib":
         ensure  => 'directory',
+        group   => $elasticsearch::elasticsearch_group,
+        owner   => $elasticsearch::elasticsearch_user,
         recurse => true;
       $elasticsearch::params::homedir:
-        ensure => 'directory';
+        ensure => 'directory',
+        group  => $elasticsearch::elasticsearch_group,
+        owner  => $elasticsearch::elasticsearch_user;
       "${elasticsearch::params::homedir}/templates_import":
         ensure => 'directory',
+        group  => $elasticsearch::elasticsearch_group,
+        owner  => $elasticsearch::elasticsearch_user,
         mode   => '0644';
       "${elasticsearch::params::homedir}/scripts":
         ensure => 'directory',
+        group  => $elasticsearch::elasticsearch_group,
+        owner  => $elasticsearch::elasticsearch_user,
         mode   => '0644';
       "${elasticsearch::params::homedir}/shield":
         ensure => 'directory',
         mode   => '0644',
-        owner  => 'root',
-        group  => '0';
+        group  => '0',
+        owner  => 'root';
       '/etc/elasticsearch/elasticsearch.yml':
         ensure => 'absent';
       '/etc/elasticsearch/logging.yml':
+        ensure => 'absent';
+      '/etc/elasticsearch/log4j2.properties':
         ensure => 'absent';
       '/etc/init.d/elasticsearch':
         ensure => 'absent';
@@ -80,19 +92,20 @@ class elasticsearch::config {
       file { $elasticsearch::params::pid_dir:
         ensure  => 'directory',
         group   => undef,
+        owner   => $elasticsearch::elasticsearch_user,
         recurse => true,
       }
 
       if ($elasticsearch::service_providers == 'systemd') {
-        $user = $elasticsearch::elasticsearch_user
         $group = $elasticsearch::elasticsearch_group
+        $user = $elasticsearch::elasticsearch_user
         $pid_dir = $elasticsearch::params::pid_dir
 
         file { '/usr/lib/tmpfiles.d/elasticsearch.conf':
           ensure  => 'file',
           content => template("${module_name}/usr/lib/tmpfiles.d/elasticsearch.conf.erb"),
-          owner   => 'root',
           group   => '0',
+          owner   => 'root',
         }
       }
     }
@@ -110,6 +123,13 @@ class elasticsearch::config {
         incl    => "${elasticsearch::params::defaults_location}/elasticsearch",
         lens    => 'Shellvars.lns',
         changes => template("${module_name}/etc/sysconfig/defaults.erb"),
+      }
+    }
+
+    # Other OS than Linux may not have that sysctl
+    if $::kernel == 'Linux' {
+      sysctl { 'vm.max_map_count':
+        value => '262144',
       }
     }
 

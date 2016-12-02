@@ -69,10 +69,6 @@ start() {
     checkJava
     [ -x $EXE ] || exit 5
     [ -f $CONF_FILE ] || exit 6
-    if [ -n "$MAX_LOCKED_MEMORY" -a -z "$ES_HEAP_SIZE" ]; then
-        echo "MAX_LOCKED_MEMORY is set - ES_HEAP_SIZE must also be set"
-        return 7
-    fi
     if [ -n "$MAX_OPEN_FILES" ]; then
         ulimit -n $MAX_OPEN_FILES
     fi

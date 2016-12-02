@@ -134,11 +134,6 @@ case "$1" in
   start)
 	checkJava
 
-	if [ -n "$MAX_LOCKED_MEMORY" -a -z "$ES_HEAP_SIZE" ]; then
-		log_failure_msg "MAX_LOCKED_MEMORY is set - ES_HEAP_SIZE must also be set"
-		exit 1
-	fi
-
 	log_daemon_msg "Starting $DESC"
 
 	pid=`pidofproc -p $PID_FILE elasticsearch`

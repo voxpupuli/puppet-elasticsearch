@@ -1,7 +1,26 @@
-## x.x.x (Month Day, Year)
+## 0.15.1 (December 1, 2016)
+
+### Summary
+Primarily a bugfix release for Elasticsearch 5.x support-related issues.
+Note updated minimum required puppet versions as well.
+
+#### Features
+
+#### Bugfixes
+* Removed ES_HEAP_SIZE check in init scripts for Elasticsearch 5.x
+* Changed sysctl value to a string to avoid type errors for some versions
+* Fixed a $LOAD_PATH error that appeared in some cases for puppet_x/elastic/es_versioning
+
+#### Changes
+* Updated minimium required version for Puppet and PE to reflect tested versions and versions supported by Puppet Labs
+
+#### Testing changes
+
+## 0.15.0 (November 17, 2016)
 
  ### Summary
 * Support for Ubuntu Xenial (16.04) formally declared.
+* Initial support for running Elasticsearch 5.x series.
 
  #### Features
 * Support management of 5.x-style Elastic yum/apt package repositories.
