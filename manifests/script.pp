@@ -42,8 +42,8 @@ define elasticsearch::script(
 
   validate_re($source, '^(puppet|file)://')
 
-  $filenameArray = split($source, '/')
-  $basefilename = $filenameArray[-1]
+  $filename_array = split($source, '/')
+  $basefilename = $filename_array[-1]
 
   file { "${elasticsearch::params::homedir}/scripts/${basefilename}":
     ensure => $ensure,

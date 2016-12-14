@@ -137,8 +137,8 @@ define elasticsearch::plugin(
 
   if ($source != undef) {
 
-    $filenameArray = split($source, '/')
-    $basefilename = $filenameArray[-1]
+    $filename_array = split($source, '/')
+    $basefilename = $filename_array[-1]
 
     $file_source = "${elasticsearch::package_dir}/${basefilename}"
 
