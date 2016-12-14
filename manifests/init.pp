@@ -429,7 +429,7 @@ class elasticsearch(
   }
 
   if ! ($file_rolling_type in [ 'dailyRollingFile', 'rollingFile']) {
-    file("\"${file_rolling_type}\" is not a valid type")
+    fail("\"${file_rolling_type}\" is not a valid type")
   }
 
   validate_integer($rolling_file_max_backup_index)
