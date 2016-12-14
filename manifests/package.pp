@@ -83,14 +83,14 @@ class elasticsearch::package {
       }
 
 
-      $filenameArray = split($elasticsearch::package_url, '/')
-      $basefilename = $filenameArray[-1]
+      $filename_array = split($elasticsearch::package_url, '/')
+      $basefilename = $filename_array[-1]
 
-      $sourceArray = split($elasticsearch::package_url, ':')
-      $protocol_type = $sourceArray[0]
+      $source_array = split($elasticsearch::package_url, ':')
+      $protocol_type = $source_array[0]
 
-      $extArray = split($basefilename, '\.')
-      $ext = $extArray[-1]
+      $ext_array = split($basefilename, '\.')
+      $ext = $ext_array[-1]
 
       $pkg_source = "${package_dir}/${basefilename}"
 
@@ -131,7 +131,7 @@ class elasticsearch::package {
         }
         'file': {
 
-          $source_path = $sourceArray[1]
+          $source_path = $source_array[1]
           file { $pkg_source:
             ensure  => file,
             source  => $source_path,
