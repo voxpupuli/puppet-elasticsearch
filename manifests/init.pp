@@ -163,6 +163,10 @@
 # [*logdir*]
 #   Use different directory for logging
 #
+# [*java_home*]
+#  Optional JAVA_HOME path to be added. Required if JAVA_HOME is not set at puppet execution
+#  Defaults to: undef
+#
 # [*java_install*]
 #  Install java which is required for Elasticsearch.
 #  Defaults to: false
