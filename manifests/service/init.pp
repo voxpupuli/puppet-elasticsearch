@@ -142,6 +142,7 @@ define elasticsearch::service::init(
         'ES_GROUP' => $elasticsearch::elasticsearch_group,
         'MAX_OPEN_FILES' => '65536',
       }
+
       $new_init_defaults = merge($init_defaults_pre_hash, $init_defaults)
 
       augeas { "defaults_${name}":

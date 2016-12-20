@@ -375,6 +375,7 @@ class elasticsearch(
   $plugindir                      = $elasticsearch::params::plugindir,
   $java_install                   = false,
   $java_package                   = undef,
+  $java_home                      = undef,
   $manage_repo                    = false,
   $repo_version                   = undef,
   $repo_priority                  = undef,
@@ -476,6 +477,10 @@ class elasticsearch(
 
   # java install validation
   validate_bool($java_install)
+
+  if ($java_home != undef) {
+    validate_absolute_path($java_home)
+  }
 
   validate_bool(
     $manage_repo,

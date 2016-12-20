@@ -32,4 +32,7 @@ Puppet::Type.newtype(:elasticsearch_plugin) do
     desc 'Override name of the directory created for the plugin'
   end
 
+  newparam(:java_home) do
+    desc 'Override the JAVA_HOME path'
+  end
 end

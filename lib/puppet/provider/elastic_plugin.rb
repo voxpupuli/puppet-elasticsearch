@@ -209,6 +209,10 @@ class Puppet::Provider::ElasticPlugin < Puppet::Provider
 
     env_vars['ES_JAVA_OPTS'] = env_vars['ES_JAVA_OPTS'].join(' ')
 
+    if !@resource[:java_home].nil?
+      env_vars['JAVA_HOME'] = @resource[:java_home]
+    end
+
     env_vars.each do |env_var, value|
       saved_vars[env_var] = ENV[env_var]
       ENV[env_var] = value
