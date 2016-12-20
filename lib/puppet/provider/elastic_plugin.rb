@@ -155,6 +155,10 @@ class Puppet::Provider::ElasticPlugin < Puppet::Provider
     es_save = ENV['ES_INCLUDE']
     java_save = ENV['JAVA_HOME']
 
+    if @resource[:java_home]
+      ENV['JAVA_HOME'] = @resource[:java_home]
+    end
+
     os = Facter.value('osfamily')
     if os == 'OpenBSD'
       ENV['JAVA_HOME'] = javapathhelper('-h', 'elasticsearch').chomp
@@ -209,7 +213,7 @@ class Puppet::Provider::ElasticPlugin < Puppet::Provider
 
     env_vars['ES_JAVA_OPTS'] = env_vars['ES_JAVA_OPTS'].join(' ')
 
-    if !@resource[:java_home].nil?
+    if @resource[:java_home]
       env_vars['JAVA_HOME'] = @resource[:java_home]
     end
 
