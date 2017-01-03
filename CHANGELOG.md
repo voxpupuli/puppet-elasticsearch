@@ -7,6 +7,7 @@
 #### Bugfixes
 
 #### Changes
+* sysctl settings are no longer managed by the thias/sysctl module.
 
 #### Testing changes
 
