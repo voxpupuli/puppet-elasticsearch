@@ -33,15 +33,13 @@ env:
   - DISTRO=ubuntu-server-1404-x64 PE=true PE_VER=2016.1.2
   - DISTRO=ubuntu-server-1604-x64
   - DISTRO=opensuse-13-x64
-  - DISTRO=sles-12-x64
-  - DISTRO=sles-12-x64 PE=true
   - DISTRO=oracle-6-x64
   - DISTRO=oracle-7-x64
 matrix:
   allow_failures:
-  # Both are too slow. Spot check when needed instead.
+  # SLES is a nightmare to acquire and run. Leave here for possible future use.
   - env: DISTRO=sles-12-x64
-  - env: DISTRO=ubuntu-server-1204-x64 PE=true PE_VER=2016.1.2
+  - env: DISTRO=sles-12-x64 PE=true
   fast_finish: true
 script:
 - make test-$TEST_SUITE
