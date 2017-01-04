@@ -44,7 +44,6 @@ This module has been tested against all versions of ES 1.x, 2.x, and 5.x.
 * [Augeas](http://augeas.net/)
 * [puppetlabs-java](https://forge.puppetlabs.com/puppetlabs/java) for Java installation (optional).
 * [puppetlabs-java_ks](https://forge.puppetlabs.com/puppetlabs/java_ks) for Shield certificate management (optional).
-* [thias-sysctl](https://forge.puppet.com/thias/sysctl) for managing sysctl properties.
 
 #### Repository management
 

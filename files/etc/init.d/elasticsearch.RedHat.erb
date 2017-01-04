@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 #
 # elasticsearch<%= @resource[:instance] %> <summary>
 #
@@ -31,9 +31,18 @@ if [ -f /etc/rc.d/init.d/functions ]; then
     . /etc/rc.d/init.d/functions
 fi
 
-exec="/usr/share/elasticsearch/bin/elasticsearch"
+# Sets the default values for elasticsearch variables used in this script
+ES_USER="elasticsearch"
+ES_GROUP="elasticsearch"
+ES_HOME="/usr/share/elasticsearch"
+MAX_OPEN_FILES=65536
+MAX_MAP_COUNT=262144
+
+PID_DIR="/var/run/elasticsearch"
+
+exec="$ES_HOME/bin/elasticsearch"
 prog="elasticsearch-<%= @resource[:instance] %>"
-pidfile=/var/run/elasticsearch/${prog}.pid
+pidfile="$PID_DIR/${prog}.pid"
 
 [ -e /etc/sysconfig/$prog ] && . /etc/sysconfig/$prog
 
@@ -41,16 +50,19 @@ export ES_HEAP_SIZE
 export ES_HEAP_NEWSIZE
 export ES_DIRECT_SIZE
 export ES_JAVA_OPTS
-export ES_CLASSPATH
-export JAVA_HOME 
+export JAVA_HOME
 export ES_INCLUDE
-export ES_GC_LOG_FILE
 
 lockfile=/var/lock/subsys/$prog
 
 # backwards compatibility for old config sysconfig files, pre 0.90.1
 if [ -n $USER ] && [ -z $ES_USER ] ; then
    ES_USER=$USER
+fi
+
+if [ ! -x "$exec" ]; then
+    echo "The elasticsearch startup script does not exists or it is not executable, tried: $exec"
+    exit 1
 fi
 
 checkJava() {
@@ -76,13 +88,24 @@ start() {
     if [ -n "$MAX_LOCKED_MEMORY" ]; then
         ulimit -l $MAX_LOCKED_MEMORY
     fi
-    if [ -n "$MAX_MAP_COUNT" ]; then
+    if [ -n "$MAX_MAP_COUNT" -a -f /proc/sys/vm/max_map_count ]; then
         sysctl -q -w vm.max_map_count=$MAX_MAP_COUNT
     fi
+
+    # Ensure that the PID_DIR exists (it is cleaned at OS startup time)
+    if [ -n "$PID_DIR" ] && [ ! -e "$PID_DIR" ]; then
+        mkdir -p "$PID_DIR" && chown "$ES_USER":"$ES_GROUP" "$PID_DIR"
+    fi
+    if [ -n "$pidfile" ] && [ ! -e "$pidfile" ]; then
+        touch "$pidfile" && chown "$ES_USER":"$ES_GROUP" "$pidfile"
+    fi
+
     if [ -n "$WORK_DIR" ]; then
         mkdir -p "$WORK_DIR"
         chown "$ES_USER":"$ES_GROUP" "$WORK_DIR"
     fi
+
+    cd $ES_HOME
     echo -n $"Starting $prog: "
     # if not running, start it up here, usually something like "daemon $exec"
     daemon --user $ES_USER --pidfile $pidfile $exec -p $pidfile -d <%= opt_flags.join(' ') %>
