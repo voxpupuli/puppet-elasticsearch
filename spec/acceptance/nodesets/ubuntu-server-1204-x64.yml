@@ -14,5 +14,3 @@ HOSTS:
       - ln -sf /sbin/initctl.distrib /sbin/initctl
       - locale-gen en_US en_US.UTF-8
       - dpkg-reconfigure locales
-CONFIG:
-  type: foss

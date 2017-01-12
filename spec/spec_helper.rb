@@ -12,5 +12,4 @@ $LOAD_PATH.unshift(File.expand_path(File.dirname(__FILE__) + '/../'))
 RSpec.configure do |c|
   c.add_setting :fixture_path, :default => fixture_path
   c.mock_with(:rspec)
-  c.hiera_config = File.join(fixture_path, '/hiera/hiera.yaml')
 end
