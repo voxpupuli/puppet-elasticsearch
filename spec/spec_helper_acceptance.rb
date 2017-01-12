@@ -49,6 +49,10 @@ files_dir = ENV['files_dir'] || './spec/fixtures/artifacts'
 
 hosts.each do |host|
 
+  # Fix the Puppet type
+  host[:type] = ENV['PUPPET_INSTALL_TYPE'].dup
+  host[:type] = 'aio' if host[:type] == 'agent'
+
   # Install Puppet
   #
   # We spawn a thread to print dots periodically while installing puppet to
