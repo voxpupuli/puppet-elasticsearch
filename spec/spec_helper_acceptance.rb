@@ -1,4 +1,5 @@
 require 'beaker-rspec'
+require 'beaker/puppet_install_helper'
 require 'securerandom'
 require 'thread'
 require 'infrataster/rspec'
@@ -49,24 +50,19 @@ files_dir = ENV['files_dir'] || './spec/fixtures/artifacts'
 hosts.each do |host|
 
   # Install Puppet
-  if host.is_pe?
-    pe_progress = Thread.new { while sleep 5 ; print '.' ; end }
-    install_pe
-    pe_progress.exit
-  else
-    unless host[:skip_puppet_install]
-      install_puppet_on host, :default_action => 'gem_install'
-    end
+  #
+  # We spawn a thread to print dots periodically while installing puppet to
+  # avoid inactivity timeouts in Travis. Don't judge me.
+  unless host[:skip_puppet_install]
+    progress = Thread.new { while sleep 5 ; print '.' ; end }
+    run_puppet_install_helper
+    progress.exit
+  end
 
-    if fact('osfamily') == 'Suse'
-      install_package host, '--force-resolution augeas-devel libxml2-devel'
-      install_package host, 'ruby-devel' if fact('operatingsystem') == 'SLES'
-      on host, "gem install ruby-augeas --no-ri --no-rdoc"
-    end
-
-    if host[:type] == 'aio'
-      on host, "mkdir -p /var/log/puppetlabs/puppet"
-    end
+  if fact('osfamily') == 'Suse'
+    install_package host, '--force-resolution augeas-devel libxml2-devel'
+    install_package host, 'ruby-devel' if fact('operatingsystem') == 'SLES'
+    on host, "gem install ruby-augeas --no-ri --no-rdoc"
   end
 
   if ENV['ES_VERSION']
