@@ -22,8 +22,5 @@ fixtures:
       repo: darin/zypprepo
       ref: 1.0.2
     java_ks: puppetlabs/java_ks
-    sysctl:
-      repo: thias/sysctl
-      ref: 1.0.6
   symlinks:
     elasticsearch: "#{source_dir}"

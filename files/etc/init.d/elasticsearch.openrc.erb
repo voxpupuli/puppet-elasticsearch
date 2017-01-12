@@ -20,6 +20,7 @@ fi
 
 DATA_DIR="${ES_HOME}/data"
 WORK_DIR="${ES_HOME}/work"
+MAX_MAP_COUNT=262144
 
 export ES_INCLUDE="/usr/share/elasticsearch/bin/elasticsearch.in.sh"
 export JAVA_OPTS
@@ -57,6 +58,10 @@ start() {
     if [ -n "${ES_MAX_FD}" ]; then
         ulimit -n ${ES_MAX_FD}
         einfo "Max open filedescriptors  : ${ES_MAX_FD}"
+    fi
+
+    if [ -n "${MAX_MAP_COUNT}" -a -f /proc/sys/vm/max_map_count ]; then
+        sysctl -q -w vm.max_map_count=$MAX_MAP_COUNT
     fi
 
     checkpath -d -o "${ES_USER}" -m750 "/var/lib/elasticsearch"
