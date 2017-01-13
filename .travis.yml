@@ -30,7 +30,6 @@ env:
   - DISTRO=ubuntu-server-1404-x64 PUPPET_INSTALL_TYPE=foss
   - DISTRO=ubuntu-server-1404-x64
   - DISTRO=ubuntu-server-1404-x64 PUPPET_INSTALL_TYPE=pe
-  - DISTRO=ubuntu-server-1604-x64 PUPPET_INSTALL_TYPE=foss
   - DISTRO=ubuntu-server-1604-x64
   - DISTRO=opensuse-42-x64 PUPPET_INSTALL_TYPE=foss
   - DISTRO=oracle-6-x64
