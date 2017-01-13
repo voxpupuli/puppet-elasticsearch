@@ -420,6 +420,17 @@ class { 'elasticsearch':
 }
 ```
 
+When configuring Elasticsearch's memory usage, you can do so by either changing init defaults for Elasticsearch 1.x/2.x (see the [following example](#hash-representation)), or modify it globally in 5.x using `jvm.options`:
+
+```puppet
+class { 'elasticsearch':
+  jvm_options => [
+    '-Xms4g',
+    '-Xmx4g'
+  ]
+}
+```
+
 ### Service management
 
 Currently only the basic SysV-style [init](https://en.wikipedia.org/wiki/Init) and [Systemd](http://en.wikipedia.org/wiki/Systemd) service providers are supported, but other systems could be implemented as necessary (pull requests welcome).
