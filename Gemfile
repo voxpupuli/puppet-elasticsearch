@@ -6,6 +6,7 @@ gem 'puppet', puppetversion, :require => false
 gem 'beaker', '~> 3.7'
 gem 'beaker-pe', '~> 1.8'
 gem 'beaker-rspec', '~> 6.0'
+gem 'beaker-puppet_install_helper'
 gem 'metadata-json-lint'
 gem 'rspec-puppet', '~> 2.4'
 gem 'specinfra', '~> 2.60'
