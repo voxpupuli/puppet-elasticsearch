@@ -3,7 +3,7 @@ PE ?= false
 STRICT_VARIABLES ?= yes
 
 ifeq ($(PE), true)
-	PE_VER ?= 3.8.6
+	PE_VER ?= 2016.1.2
 	BEAKER_PE_VER := $(PE_VER)
 	BEAKER_IS_PE := $(PE)
 	export BEAKER_PE_VER
