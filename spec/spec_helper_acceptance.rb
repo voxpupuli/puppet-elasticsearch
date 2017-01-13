@@ -4,7 +4,6 @@ require 'securerandom'
 require 'thread'
 require 'infrataster/rspec'
 require 'rspec/retry'
-require_relative 'spec_acceptance_integration'
 require_relative 'spec_helper_tls'
 
 def test_settings
@@ -48,7 +47,6 @@ end
 files_dir = ENV['files_dir'] || './spec/fixtures/artifacts'
 
 hosts.each do |host|
-
   # Fix the Puppet type
   host[:type] = ENV['PUPPET_INSTALL_TYPE'].dup
   host[:type] = 'aio' if host[:type] == 'agent'
@@ -58,7 +56,7 @@ hosts.each do |host|
   # We spawn a thread to print dots periodically while installing puppet to
   # avoid inactivity timeouts in Travis. Don't judge me.
   unless host[:skip_puppet_install]
-    progress = Thread.new { while sleep 5 ; print '.' ; end }
+    progress = Thread.new { print '.' while sleep 5 }
     run_puppet_install_helper
     progress.exit
   end
@@ -66,54 +64,38 @@ hosts.each do |host|
   if fact('osfamily') == 'Suse'
     install_package host,
                     '--force-resolution augeas-devel libxml2-devel ruby-devel'
-    on host, "gem install ruby-augeas --no-ri --no-rdoc"
+    on host, 'gem install ruby-augeas --no-ri --no-rdoc'
   end
 
-  if ENV['ES_VERSION']
+  package_name = case fact('osfamily')
+                 when 'Debian'
+                   case fact('lsbmajdistrelease')
+                   when '6'
+                     'elasticsearch-1.1.0.deb'
+                   else
+                     'elasticsearch-1.3.1.deb'
+                   end
+                 else
+                   'elasticsearch-1.3.1.noarch.rpm'
+                 end
 
-    case fact('osfamily')
-      when 'RedHat'
-        if ENV['ES_VERSION'][0,1] == '1'
-          ext='noarch.rpm'
-        else
-          ext='rpm'
-        end
-      when 'Debian'
-        ext='deb'
-      when  'Suse'
-        ext='rpm'
-    end
+  snapshot_package = {
+      :src => "#{files_dir}/#{package_name}",
+      :dst => "/tmp/#{package_name}"
+  }
 
-    url = get_url
-    RSpec.configuration.test_settings['snapshot_package'] = url.gsub('$EXT$', ext)
-  else
+  scp_to host,
+         snapshot_package[:src],
+         snapshot_package[:dst]
+  scp_to host,
+         "#{files_dir}/elasticsearch-bigdesk.zip",
+         '/tmp/elasticsearch-bigdesk.zip'
+  scp_to host,
+         "#{files_dir}/elasticsearch-kopf.zip",
+         '/tmp/elasticsearch-kopf.zip'
 
-    case fact('osfamily')
-      when 'RedHat'
-        package_name = 'elasticsearch-1.3.1.noarch.rpm'
-      when 'Debian'
-        case fact('lsbmajdistrelease')
-          when '6'
-            package_name = 'elasticsearch-1.1.0.deb'
-          else
-            package_name = 'elasticsearch-1.3.1.deb'
-        end
-      when 'Suse'
-        package_name = 'elasticsearch-1.3.1.noarch.rpm'
-    end
-
-    snapshot_package = {
-        :src => "#{files_dir}/#{package_name}",
-        :dst => "/tmp/#{package_name}"
-    }
-
-    scp_to(host, snapshot_package[:src], snapshot_package[:dst])
-    scp_to(host, "#{files_dir}/elasticsearch-bigdesk.zip", "/tmp/elasticsearch-bigdesk.zip")
-    scp_to(host, "#{files_dir}/elasticsearch-kopf.zip", "/tmp/elasticsearch-kopf.zip")
-
-    RSpec.configuration.test_settings['snapshot_package'] = "file:#{snapshot_package[:dst]}"
-
-  end
+  RSpec.configuration.test_settings['snapshot_package'] = \
+    "file:#{snapshot_package[:dst]}"
 
   Infrataster::Server.define(:docker) do |server|
     server.address = host[:ip]
@@ -126,46 +108,37 @@ hosts.each do |host|
 end
 
 RSpec.configure do |c|
-
   # Uncomment for verbose test descriptions.
   # Readable test descriptions
   # c.formatter = :documentation
 
   # Configure all nodes in nodeset
   c.before :suite do
-
     # Install module and dependencies
     install_dev_puppet_module :ignore_list => [
       'junit'
     ] + Beaker::DSL::InstallUtils::ModuleUtils::PUPPET_MODULE_INSTALL_IGNORE
 
     hosts.each do |host|
-
       copy_hiera_data_to(host, 'spec/fixtures/hiera/hieradata/')
 
-      modules = ['archive', 'stdlib', 'java', 'datacat', 'java_ks']
+      modules = %w(archive stdlib java datacat java_ks)
 
       dist_module = {
         'Debian' => 'apt',
         'Suse'   => 'zypprepo',
-        'RedHat' => 'yum',
+        'RedHat' => 'yum'
       }[fact('osfamily')]
 
-      modules << dist_module if not dist_module.nil?
+      modules << dist_module unless dist_module.nil?
 
       modules.each do |mod|
-        copy_module_to host, {
+        copy_module_to host,
           :module_name => mod,
           :source      => "spec/fixtures/modules/#{mod}"
-        }
-      end
-
-      if host.is_pe?
-        on(host, 'sed -i -e "s/PATH=PATH:\/opt\/puppet\/bin:/PATH=PATH:/" ~/.ssh/environment')
       end
 
       on(host, 'mkdir -p etc/puppet/modules/another/files/')
-
     end
   end
 
@@ -173,13 +146,12 @@ RSpec.configure do |c|
     if ENV['ES_VERSION']
       hosts.each do |host|
         timestamp = Time.now
-        log_dir = File.join('./spec/logs', timestamp.strftime("%F_%H_%M_%S"))
+        log_dir = File.join('./spec/logs', timestamp.strftime('%F_%H_%M_%S'))
         FileUtils.mkdir_p(log_dir) unless File.directory?(log_dir)
         scp_from(host, '/var/log/elasticsearch', log_dir)
       end
     end
   end
-
 end
 
 require_relative 'spec_acceptance_common'
