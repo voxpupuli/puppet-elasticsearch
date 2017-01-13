@@ -3,6 +3,7 @@
 ### Summary
 
 #### Features
+* Support management of the global jvm.options configuration file.
 
 #### Bugfixes
 
