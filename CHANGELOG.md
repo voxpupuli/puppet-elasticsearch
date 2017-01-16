@@ -4,6 +4,7 @@
 
 #### Features
 * Support management of the global jvm.options configuration file.
+* Restricted permissions to the elasticsearch.yml file.
 
 #### Bugfixes
 
