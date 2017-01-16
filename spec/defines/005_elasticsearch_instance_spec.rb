@@ -3,7 +3,9 @@ require 'spec_helper'
 describe 'elasticsearch::instance', :type => 'define' do
 
   let(:title) { 'es-01' }
-  let(:pre_condition) { 'class { "elasticsearch": }' }
+  let(:pre_condition) { %q{
+    class { "elasticsearch": }
+  } }
 
   on_supported_os.each do |os, facts|
 
@@ -172,6 +174,7 @@ describe 'elasticsearch::instance', :type => 'define' do
 
       it { should contain_file('/etc/elasticsearch-config/es-01/logging.yml') }
       it { should contain_file('/etc/elasticsearch-config/es-01/log4j2.properties') }
+      it { should contain_file('/etc/elasticsearch-config/jvm.options') }
       it { should contain_file('/usr/share/elasticsearch/scripts') }
       it { should contain_file('/usr/share/elasticsearch/shield') }
       it { should contain_file('/etc/elasticsearch-config/es-01/scripts').with(:target => '/usr/share/elasticsearch/scripts') }

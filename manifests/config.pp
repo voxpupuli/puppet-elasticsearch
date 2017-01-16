@@ -126,6 +126,13 @@ class elasticsearch::config {
       }
     }
 
+    $jvm_options = $elasticsearch::jvm_options
+    file { "${elasticsearch::configdir}/jvm.options":
+      content => template("${module_name}/etc/elasticsearch/jvm.options.erb"),
+      owner   => $elasticsearch::elasticsearch_user,
+      group   => $elasticsearch::elasticsearch_group,
+    }
+
   } elsif ( $elasticsearch::ensure == 'absent' ) {
 
     file { $elasticsearch::plugindir:

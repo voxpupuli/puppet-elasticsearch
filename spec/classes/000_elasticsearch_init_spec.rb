@@ -68,6 +68,7 @@ describe 'elasticsearch', :type => 'class' do
 
         # Base directories
         it { should contain_file('/etc/elasticsearch') }
+        it { should contain_file('/etc/elasticsearch/jvm.options') }
         it { should contain_file('/usr/share/elasticsearch/templates_import') }
         it { should contain_file('/usr/share/elasticsearch/scripts') }
         it { should contain_file('/usr/share/elasticsearch/shield') }
@@ -406,6 +407,45 @@ describe 'elasticsearch', :type => 'class' do
         # it { should contain_file('/usr/share/elasticsearch/plugins').with(:owner => 'myesuser', :group => 'myesgroup') }
         it { should contain_file('/usr/share/elasticsearch/data').with(:owner => 'myesuser', :group => 'myesgroup') }
         it { should contain_file('/var/run/elasticsearch').with(:owner => 'myesuser') } if facts[:osfamily] == 'RedHat'
+      end
+
+      describe 'jvm.options' do
+        context 'class overrides' do
+          let :params do
+            default_params.merge({
+              :jvm_options => [
+                '-Xms1g',
+                '-Xmx1g',
+              ],
+            })
+          end
+
+          it { should contain_file(
+            '/etc/elasticsearch/jvm.options'
+          ).with_content(/
+            -Dfile.encoding=UTF-8.
+            -Dio.netty.noKeySetOptimization=true.
+            -Dio.netty.noUnsafe=true.
+            -Dio.netty.recycler.maxCapacityPerThread=0.
+            -Djava.awt.headless=true.
+            -Djdk.io.permissionsUseCanonicalPath=true.
+            -Djna.nosys=true.
+            -Dlog4j.shutdownHookEnabled=false.
+            -Dlog4j.skipJansi=true.
+            -Dlog4j2.disable.jmx=true.
+            -XX:\+AlwaysPreTouch.
+            -XX:\+DisableExplicitGC.
+            -XX:\+HeapDumpOnOutOfMemoryError.
+            -XX:\+UseCMSInitiatingOccupancyOnly.
+            -XX:\+UseConcMarkSweepGC.
+            -XX:CMSInitiatingOccupancyFraction=75.
+            -Xms1g.
+            -Xmx1g.
+            -Xss1m.
+            -server.
+          /xm
+          ) }
+        end
       end
 
     end
