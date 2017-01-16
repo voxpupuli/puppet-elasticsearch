@@ -3,6 +3,84 @@
 ### Summary
 
 #### Features
+* Support management of the global jvm.options configuration file.
+
+#### Bugfixes
+
+#### Changes
+* sysctl settings are no longer managed by the thias/sysctl module.
+* Calls to `elasticsearch -version` in elasticsearch::plugin code replaced with native Puppet code to resolve Elasticsearch package version. Should improve resiliency when managing plugins.
+
+#### Testing changes
+
+## 0.15.1 (December 1, 2016)
+
+### Summary
+Primarily a bugfix release for Elasticsearch 5.x support-related issues.
+Note updated minimum required puppet versions as well.
+
+#### Features
+
+#### Bugfixes
+* Removed ES_HEAP_SIZE check in init scripts for Elasticsearch 5.x
+* Changed sysctl value to a string to avoid type errors for some versions
+* Fixed a $LOAD_PATH error that appeared in some cases for puppet_x/elastic/es_versioning
+
+#### Changes
+* Updated minimium required version for Puppet and PE to reflect tested versions and versions supported by Puppet Labs
+
+#### Testing changes
+
+## 0.15.0 (November 17, 2016)
+
+### Summary
+* Support for Ubuntu Xenial (16.04) formally declared.
+* Initial support for running Elasticsearch 5.x series.
+
+#### Features
+* Support management of 5.x-style Elastic yum/apt package repositories.
+* Support service scripts for 5.x series of Elasticsearch
+
+#### Bugfixes
+* Update the apt::source call to not cause deprecation warnings
+* Updated module metadata to correctly require puppet-stdlib with validate_integer()
+
+#### Changes
+
+#### Testing changes
+* Ubuntu Xenial (16.04) added to the test matrix.
+
+## 0.14.0 (October 12, 2016)
+
+### Summary
+Primarily a bugfix release for issues related to plugin proxy functionality, various system service fixes, and directory permissions.
+This release also adds the ability to define logging rolling file settings and a CA file/path for template API access.
+
+#### Features
+* Added 'file_rolling_type' parameter to allow selecting file logging rotation type between "dailyRollingFile" or "rollingFile". Also added 'daily_rolling_date_pattern', 'rolling_file_max_backup_index' and 'rolling_file_max_file_size' for file rolling customization.
+
+#### Bugfixes
+* Permissions on the Elasticsearch plugin directory have been fixed to permit world read rights.
+* The service systemd unit now `Wants=` a network target to fix bootup parallelization problems.
+* Recursively create the logdir for elasticsearch when creating multiple instances
+* Files and directories with root ownership now specify UID/GID 0 instead to improve compatability with *BSDs.
+* Elasticsearch Debian init file changed to avoid throwing errors when DATA_DIR, WORK_DIR and/or LOG_DIR were an empty variable.
+* Fixed a broken File dependency when a plugin was set to absent and ::elasticsearch set to present.
+* Fixed issue when using the `proxy` parameter on plugins in Elasticsearch 2.x.
+
+#### Changes
+* The `api_ca_file` and `api_ca_path` parameters have been added to support custom CA bundles for API access.
+* Numerics in elasticsearch.yml will always be properly unquoted.
+* puppetlabs/java is now listed as a dependency in metadata.json to avoid unexpected installation problems.
+
+#### Testing changes
+
+## 0.13.2 (August 29, 2016)
+
+### Summary
+Primarily a bugfix release to resolve HTTPS use in elasticsearch::template resources, 5.x plugin operations, and plugin file permission enforcement.
+
+#### Features
 * Plugin installation for the 5.x series of Elasticsearch is now properly supported.
 
 #### Bugfixes

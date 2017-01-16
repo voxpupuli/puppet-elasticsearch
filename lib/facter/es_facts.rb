@@ -49,6 +49,7 @@ module EsFacts
             uri = URI("http://localhost:#{port}")
             http = Net::HTTP.new(uri.host, uri.port)
             http.read_timeout = 10
+            http.open_timeout = 2
             response = http.get("/")
             json_data = JSON.parse(response.body)
             next if json_data['status'] && json_data['status'] != 200
@@ -59,6 +60,7 @@ module EsFacts
             uri2 = URI("http://localhost:#{port}/_nodes/#{json_data['name']}")
             http2 = Net::HTTP.new(uri2.host, uri2.port)
             http2.read_timeout = 10
+            http2.open_timeout = 2
             response2 = http2.get(uri2.path)
             json_data_node = JSON.parse(response2.body)
 

@@ -111,33 +111,58 @@
 #   Value type is string
 #   Default value: undef
 #
+# [*file_rolling_type*]
+#   Configuration for the file appender rotation. It can be 'dailyRollingFile'
+#   or 'rollingFile'. The first rotates by name, and the second one by size.
+#   Value type is string
+#   Default value: dailyRollingFile
+#
+# [*daily_rolling_date_pattern*]
+#   File pattern for the file appender log when file_rolling_type is 'dailyRollingFile'
+#   Value type is string
+#   Default value: "'.'yyyy-MM-dd"
+#
+# [*rolling_file_max_backup_index*]
+#   Max number of logs to store whern file_rolling_type is 'rollingFile'
+#   Value type is integer
+#   Default value: 1
+#
+# [*rolling_file_max_file_size*]
+#   Max log file size when file_rolling_type is 'rollingFile'
+#   Value type is string
+#   Default value: 10MB
+#
 # === Authors
 #
 # * Tyler Langlois <mailto:tyler@elastic.co>
 # * Richard Pijnenburg <mailto:richard.pijnenburg@elasticsearch.com>
 #
 define elasticsearch::instance(
-  $ensure             = $elasticsearch::ensure,
-  $status             = $elasticsearch::status,
-  $config             = undef,
-  $configdir          = undef,
-  $datadir            = undef,
-  $logdir             = undef,
-  $logging_file       = undef,
-  $logging_config     = undef,
-  $logging_template   = undef,
-  $logging_level      = $elasticsearch::default_logging_level,
-  $service_flags      = undef,
-  $init_defaults      = undef,
-  $init_defaults_file = undef,
-  $init_template      = $elasticsearch::init_template,
-  $ssl                = false,
-  $ca_certificate     = undef,
-  $certificate        = undef,
-  $private_key        = undef,
-  $keystore_password  = undef,
-  $keystore_path      = undef,
-  $system_key         = $elasticsearch::system_key,
+  $ensure                        = $elasticsearch::ensure,
+  $status                        = $elasticsearch::status,
+  $config                        = undef,
+  $configdir                     = undef,
+  $datadir                       = undef,
+  $logdir                        = undef,
+  $logging_file                  = undef,
+  $logging_config                = undef,
+  $logging_template              = undef,
+  $logging_level                 = $elasticsearch::default_logging_level,
+  $service_flags                 = undef,
+  $init_defaults                 = undef,
+  $init_defaults_file            = undef,
+  $init_template                 = $elasticsearch::init_template,
+  $ssl                           = false,
+  $ca_certificate                = undef,
+  $certificate                   = undef,
+  $private_key                   = undef,
+  $keystore_password             = undef,
+  $keystore_path                 = undef,
+  $system_key                    = $elasticsearch::system_key,
+  $file_rolling_type             = $elasticsearch::file_rolling_type,
+  $daily_rolling_date_pattern    = $elasticsearch::daily_rolling_date_pattern,
+  $rolling_file_max_backup_index = $elasticsearch::rolling_file_max_backup_index,
+  $rolling_file_max_file_size    = $elasticsearch::rolling_file_max_file_size,
 ) {
 
   require elasticsearch::params
@@ -200,9 +225,11 @@ define elasticsearch::instance(
     if ($logging_file != undef) {
       $logging_source = $logging_file
       $logging_content = undef
+      $_log4j_content = undef
     } elsif ($elasticsearch::logging_file != undef) {
       $logging_source = $elasticsearch::logging_file
       $logging_content = undef
+      $_log4j_content = undef
     } else {
 
       if(is_hash($elasticsearch::logging_config)) {
@@ -216,13 +243,20 @@ define elasticsearch::instance(
       } else {
         $instance_logging_config = { }
       }
-      $logging_hash = merge($elasticsearch::params::logging_defaults, $main_logging_config, $instance_logging_config)
+      $logging_hash = merge(
+        $elasticsearch::params::logging_defaults,
+        $main_logging_config,
+        $instance_logging_config
+      )
       if ($logging_template != undef ) {
         $logging_content = template($logging_template)
+        $_log4j_content = template($logging_template)
       } elsif ($elasticsearch::logging_template != undef) {
         $logging_content = template($elasticsearch::logging_template)
+        $_log4j_content = template($elasticsearch::logging_template)
       } else {
         $logging_content = template("${module_name}/etc/elasticsearch/logging.yml.erb")
+        $_log4j_content = template("${module_name}/etc/elasticsearch/log4j2.properties.erb")
       }
       $logging_source = undef
     }
@@ -292,6 +326,13 @@ define elasticsearch::instance(
       validate_string($system_key)
     }
 
+    exec { "mkdir_logdir_elasticsearch_${name}":
+      command => "mkdir -p ${instance_logdir}",
+      creates => $instance_logdir,
+      require => Class['elasticsearch::package'],
+      before  => File[$instance_logdir],
+    }
+
     file { $instance_logdir:
       ensure  => 'directory',
       owner   => $elasticsearch::elasticsearch_user,
@@ -333,14 +374,23 @@ define elasticsearch::instance(
       before  => Elasticsearch::Service[$name],
     }
 
-    file { "${instance_configdir}/logging.yml":
-      ensure  => file,
-      content => $logging_content,
-      source  => $logging_source,
-      mode    => '0644',
-      notify  => $notify_service,
-      require => Class['elasticsearch::package'],
-      before  => Elasticsearch::Service[$name],
+    file {
+      "${instance_configdir}/logging.yml":
+        ensure  => file,
+        content => $logging_content,
+        source  => $logging_source,
+        mode    => '0644',
+        notify  => $notify_service,
+        require => Class['elasticsearch::package'],
+        before  => Elasticsearch::Service[$name];
+      "${instance_configdir}/log4j2.properties":
+        ensure  => file,
+        content => $_log4j_content,
+        source  => $logging_source,
+        mode    => '0644',
+        notify  => $notify_service,
+        require => Class['elasticsearch::package'],
+        before  => Elasticsearch::Service[$name];
     }
 
     file { "${instance_configdir}/scripts":
@@ -354,7 +404,7 @@ define elasticsearch::instance(
       source  => "${elasticsearch::params::homedir}/shield",
       recurse => 'remote',
       owner   => 'root',
-      group   => 'root',
+      group   => '0',
       before  => Elasticsearch::Service[$name],
     }
 
@@ -386,8 +436,8 @@ define elasticsearch::instance(
     $instance_init_defaults_main = {
       'CONF_DIR'  => $instance_configdir,
       'CONF_FILE' => "${instance_configdir}/elasticsearch.yml",
-      'LOG_DIR'   => $instance_logdir,
       'ES_HOME'   => '/usr/share/elasticsearch',
+      'LOG_DIR'   => $instance_logdir,
     }
 
     if (is_hash($init_defaults)) {
@@ -396,6 +446,7 @@ define elasticsearch::instance(
       $instance_init_defaults = { }
     }
     $init_defaults_new = merge(
+      { 'DATA_DIR'  => '$ES_HOME/data' },
       $global_init_defaults,
       $instance_init_defaults_main,
       $instance_init_defaults

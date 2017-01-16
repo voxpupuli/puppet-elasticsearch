@@ -1,6 +1,6 @@
 {
   "name": "elasticsearch-elasticsearch",
-  "version": "0.13.1",
+  "version": "0.15.1",
   "source": "https://github.com/elastic/puppet-elasticsearch",
   "author": "elasticsearch",
   "license": "Apache-2.0",
@@ -10,20 +10,24 @@
   "issues_url": "https://github.com/elastic/puppet-elasticsearch/issues",
   "dependencies": [
     {
-      "name": "puppetlabs/stdlib",
-      "version_requirement": ">= 3.2.0 < 5.0.0"
-    },
-    {
       "name": "puppetlabs/apt",
-      "version_requirement": ">= 1.4.0 < 3.0.0"
-    },
-    {
-      "name": "ceritsc/yum",
-      "version_requirement": ">= 0.9.6 < 1.0.0"
+      "version_requirement": ">= 2.0.0 < 3.0.0"
     },
     {
       "name": "richardc/datacat",
       "version_requirement": ">= 0.6.2 < 1.0.0"
+    },
+    {
+      "name": "puppetlabs/java",
+      "version_requirement": ">= 1.0.0 < 2.0.0"
+    },
+    {
+      "name": "puppetlabs/stdlib",
+      "version_requirement": ">= 4.6.0 < 5.0.0"
+    },
+    {
+      "name": "ceritsc/yum",
+      "version_requirement": ">= 0.9.6"
     }
   ],
   "operatingsystem_support": [
@@ -72,7 +76,8 @@
       "operatingsystemrelease": [
         "10.04",
         "12.04",
-        "14.04"
+        "14.04",
+        "16.04"
       ]
     },
     {
@@ -93,11 +98,11 @@
   "requirements": [
     {
       "name": "pe",
-      "version_requirement": ">= 3.3.2"
+      "version_requirement": ">= 3.8.0"
     },
     {
       "name": "puppet",
-      "version_requirement": ">=3.2.0 <5.0.0"
+      "version_requirement": ">=3.8.0 <5.0.0"
     }
   ]
 }

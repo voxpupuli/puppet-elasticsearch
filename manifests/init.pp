@@ -170,6 +170,11 @@
 # [*java_package*]
 #   If you like to install a custom java package, put the name here.
 #
+# [*jvm_options*]
+#   Array of options to set in jvm_options.
+#   Value type is Array
+#   Default value: []
+#
 # [*manage_repo*]
 #   Enable repo management by enabling our official repositories
 #
@@ -282,11 +287,42 @@
 #   Defines the default REST basic auth password for API authentication.
 #   Defaults to: undef
 #
+# [*api_ca_file*]
+#   Path to a CA file which will be used to validate server certs when
+#   communicating with the Elasticsearch API over HTTPS.
+#   Defaults to: undef
+#
+# [*api_ca_path*]
+#   Path to a directory with CA files which will be used to validate server
+#   certs when communicating with the Elasticsearch API over HTTPS.
+#   Defaults to: undef
+#
 # [*system_key*]
 #   Source for the Shield system key. Valid values are any that are
 #   supported for the file resource `source` parameter.
 #   Value type is string
 #   Default value: undef
+#
+# [*file_rolling_type*]
+#   Configuration for the file appender rotation. It can be 'dailyRollingFile'
+#   or 'rollingFile'. The first rotates by name, and the second one by size.
+#   Value type is string
+#   Default value: dailyRollingFile
+#
+# [*daily_rolling_date_pattern*]
+#   File pattern for the file appender log when file_rolling_type is 'dailyRollingFile'
+#   Value type is string
+#   Default value: "'.'yyyy-MM-dd"
+#
+# [*rolling_file_max_backup_index*]
+#   Max number of logs to store whern file_rolling_type is 'rollingFile'
+#   Value type is integer
+#   Default value: 1
+#
+# [*rolling_file_max_file_size*]
+#   Max log file size when file_rolling_type is 'rollingFile'
+#   Value type is string
+#   Default value: 10MB
 #
 # The default values for the parameters are set in elasticsearch::params. Have
 # a look at the corresponding <tt>params.pp</tt> manifest file if you need more
@@ -313,64 +349,71 @@
 # * Richard Pijnenburg <mailto:richard.pijnenburg@elasticsearch.com>
 #
 class elasticsearch(
-  $ensure                  = $elasticsearch::params::ensure,
-  $status                  = $elasticsearch::params::status,
-  $restart_on_change       = $elasticsearch::params::restart_on_change,
-  $restart_config_change   = $elasticsearch::restart_on_change,
-  $restart_package_change  = $elasticsearch::restart_on_change,
-  $restart_plugin_change   = $elasticsearch::restart_on_change,
-  $autoupgrade             = $elasticsearch::params::autoupgrade,
-  $version                 = false,
-  $package_provider        = 'package',
-  $package_url             = undef,
-  $package_dir             = $elasticsearch::params::package_dir,
-  $package_name            = $elasticsearch::params::package,
-  $package_pin             = true,
-  $purge_package_dir       = $elasticsearch::params::purge_package_dir,
-  $package_dl_timeout      = $elasticsearch::params::package_dl_timeout,
-  $proxy_url               = undef,
-  $elasticsearch_user      = $elasticsearch::params::elasticsearch_user,
-  $elasticsearch_group     = $elasticsearch::params::elasticsearch_group,
-  $configdir               = $elasticsearch::params::configdir,
-  $purge_configdir         = $elasticsearch::params::purge_configdir,
-  $service_provider        = 'init',
-  $init_defaults           = undef,
-  $init_defaults_file      = undef,
-  $init_template           = "${module_name}/etc/init.d/${elasticsearch::params::init_template}",
-  $config                  = undef,
-  $config_hiera_merge      = false,
-  $datadir                 = $elasticsearch::params::datadir,
-  $logdir                  = $elasticsearch::params::logdir,
-  $plugindir               = $elasticsearch::params::plugindir,
-  $java_install            = false,
-  $java_package            = undef,
-  $manage_repo             = false,
-  $repo_version            = undef,
-  $repo_priority           = undef,
-  $repo_key_id             = '46095ACC8548582C1A2699A9D27D666CD88E42B4',
-  $repo_key_source         = 'http://packages.elastic.co/GPG-KEY-elasticsearch',
-  $repo_proxy              = undef,
-  $logging_file            = undef,
-  $logging_config          = undef,
-  $logging_template        = undef,
-  $default_logging_level   = $elasticsearch::params::default_logging_level,
-  $repo_stage              = false,
-  $instances               = undef,
-  $instances_hiera_merge   = false,
-  $plugins                 = undef,
-  $plugins_hiera_merge     = false,
-  $use_ssl                 = undef,
-  $validate_ssl            = undef,
-  $ssl_user                = undef,
-  $ssl_password            = undef,
-  $api_protocol            = 'http',
-  $api_host                = 'localhost',
-  $api_port                = 9200,
-  $api_timeout             = 10,
-  $api_basic_auth_username = undef,
-  $api_basic_auth_password = undef,
-  $validate_tls            = true,
-  $system_key              = undef,
+  $ensure                         = $elasticsearch::params::ensure,
+  $status                         = $elasticsearch::params::status,
+  $restart_on_change              = $elasticsearch::params::restart_on_change,
+  $restart_config_change          = $elasticsearch::restart_on_change,
+  $restart_package_change         = $elasticsearch::restart_on_change,
+  $restart_plugin_change          = $elasticsearch::restart_on_change,
+  $autoupgrade                    = $elasticsearch::params::autoupgrade,
+  $version                        = false,
+  $package_provider               = 'package',
+  $package_url                    = undef,
+  $package_dir                    = $elasticsearch::params::package_dir,
+  $package_name                   = $elasticsearch::params::package,
+  $package_pin                    = true,
+  $purge_package_dir              = $elasticsearch::params::purge_package_dir,
+  $package_dl_timeout             = $elasticsearch::params::package_dl_timeout,
+  $proxy_url                      = undef,
+  $elasticsearch_user             = $elasticsearch::params::elasticsearch_user,
+  $elasticsearch_group            = $elasticsearch::params::elasticsearch_group,
+  $configdir                      = $elasticsearch::params::configdir,
+  $purge_configdir                = $elasticsearch::params::purge_configdir,
+  $service_provider               = 'init',
+  $init_defaults                  = undef,
+  $init_defaults_file             = undef,
+  $init_template                  = "${module_name}/etc/init.d/${elasticsearch::params::init_template}",
+  $config                         = undef,
+  $config_hiera_merge             = false,
+  $datadir                        = $elasticsearch::params::datadir,
+  $logdir                         = $elasticsearch::params::logdir,
+  $plugindir                      = $elasticsearch::params::plugindir,
+  $java_install                   = false,
+  $java_package                   = undef,
+  $jvm_options                    = [],
+  $manage_repo                    = false,
+  $repo_version                   = undef,
+  $repo_priority                  = undef,
+  $repo_key_id                    = '46095ACC8548582C1A2699A9D27D666CD88E42B4',
+  $repo_key_source                = 'https://artifacts.elastic.co/GPG-KEY-elasticsearch',
+  $repo_proxy                     = undef,
+  $logging_file                   = undef,
+  $logging_config                 = undef,
+  $logging_template               = undef,
+  $default_logging_level          = $elasticsearch::params::default_logging_level,
+  $repo_stage                     = false,
+  $instances                      = undef,
+  $instances_hiera_merge          = false,
+  $plugins                        = undef,
+  $plugins_hiera_merge            = false,
+  $use_ssl                        = undef,
+  $validate_ssl                   = undef,
+  $ssl_user                       = undef,
+  $ssl_password                   = undef,
+  $api_protocol                   = 'http',
+  $api_host                       = 'localhost',
+  $api_port                       = 9200,
+  $api_timeout                    = 10,
+  $api_basic_auth_username        = undef,
+  $api_basic_auth_password        = undef,
+  $api_ca_file                    = undef,
+  $api_ca_path                    = undef,
+  $validate_tls                   = true,
+  $system_key                     = undef,
+  $file_rolling_type              = $elasticsearch::params::file_rolling_type,
+  $daily_rolling_date_pattern     = $elasticsearch::params::daily_rolling_date_pattern,
+  $rolling_file_max_backup_index  = $elasticsearch::params::rolling_file_max_backup_index,
+  $rolling_file_max_file_size     = $elasticsearch::params::rolling_file_max_file_size,
 ) inherits elasticsearch::params {
 
   anchor {'elasticsearch::begin': }
@@ -390,6 +433,15 @@ class elasticsearch(
   if ! ($status in [ 'enabled', 'disabled', 'running', 'unmanaged' ]) {
     fail("\"${status}\" is not a valid status parameter value")
   }
+
+  if ! ($file_rolling_type in [ 'dailyRollingFile', 'rollingFile']) {
+    fail("\"${file_rolling_type}\" is not a valid type")
+  }
+
+  validate_array($jvm_options)
+  validate_integer($rolling_file_max_backup_index)
+  validate_string($daily_rolling_date_pattern)
+  validate_string($rolling_file_max_file_size)
 
   # restart on change
   validate_bool(
@@ -623,7 +675,9 @@ class elasticsearch(
 
     # Top-level ordering bindings for resources.
     Class['elasticsearch::config']
-    -> Elasticsearch::Plugin <| |>
+    -> Elasticsearch::Plugin <| ensure == 'present' or ensure == 'installed' |>
+    Elasticsearch::Plugin <| ensure == 'absent' |>
+    -> Class['elasticsearch::config']
     Class['elasticsearch::config']
     -> Elasticsearch::Instance <| |>
     Class['elasticsearch::config']

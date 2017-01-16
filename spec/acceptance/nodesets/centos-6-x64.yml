@@ -12,5 +12,4 @@ HOSTS:
     docker_image_commands:
       - yum install -y wget tar which
       - rm /etc/init/tty.conf
-CONFIG:
-  type: foss
+      - echo -e "elasticsearch hard nproc 2048\nelasticsearch soft nproc 2048" >> /etc/security/limits.conf

@@ -50,13 +50,20 @@ Puppet::Type.type(:elasticsearch_template).provide(:ruby) do
                      port=9200, \
                      timeout=10, \
                      username=nil, \
-                     password=nil
+                     password=nil, \
+                     ca_file=nil, \
+                     ca_path=nil
 
     uri = URI("#{protocol}://#{host}:#{port}/_template")
     http = Net::HTTP.new uri.host, uri.port
     req = Net::HTTP::Get.new uri.request_uri
 
     http.use_ssl = uri.scheme == 'https'
+    [[ca_file, :ca_file=], [ca_path, :ca_path=]].each do |arg, method|
+      if arg and http.respond_to? method
+        http.send method, arg
+      end
+    end
 
     response = rest http, req, validate_tls, timeout, username, password
 
@@ -93,7 +100,9 @@ Puppet::Type.type(:elasticsearch_template).provide(:ruby) do
         p[:port].value,
         p[:timeout].value,
         (p.has_key?(:username) ? p[:username].value : nil),
-        (p.has_key?(:password) ? p[:password].value : nil)
+        (p.has_key?(:password) ? p[:password].value : nil),
+        (p.has_key?(:ca_file) ? p[:ca_file].value : nil),
+        (p.has_key?(:ca_path) ? p[:ca_path].value : nil)
       ]
     # Deduplicate identical settings, and fetch templates
     end.uniq.map do |api|
@@ -120,8 +129,14 @@ Puppet::Type.type(:elasticsearch_template).provide(:ruby) do
       resource[:port],
       resource[:name]
     ])
+
     http = Net::HTTP.new uri.host, uri.port
     http.use_ssl = uri.scheme == 'https'
+    [:ca_file, :ca_path].each do |arg|
+      if not resource[arg].nil? and http.respond_to? arg
+        http.send "#{arg}=".to_sym, resource[arg]
+      end
+    end
 
     case @property_flush[:ensure]
     when :absent
@@ -167,7 +182,9 @@ Puppet::Type.type(:elasticsearch_template).provide(:ruby) do
       resource[:port],
       resource[:timeout],
       resource[:username],
-      resource[:password]
+      resource[:password],
+      resource[:ca_file],
+      resource[:ca_path]
     ).detect do |t|
       t[:name] == resource[:name]
     end

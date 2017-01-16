@@ -150,6 +150,14 @@ Puppet::Type.newtype(:elasticsearch_template) do
     desc 'Optional HTTP basic authentication plaintext password for Elasticsearch.'
   end
 
+  newparam(:ca_file) do
+    desc 'Absolute path to a CA file to authenticate server certificates against.'
+  end
+
+  newparam(:ca_path) do
+    desc 'Absolute path to a directory containing CA files to authenticate server certificates against.'
+  end
+
   validate do
 
     # Ensure that at least one source of template content has been provided

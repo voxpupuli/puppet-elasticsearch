@@ -28,9 +28,14 @@ appender:
       conversionPattern: "[%d{ISO8601}][%-5p][%-25c] %m%n"
 
   file:
-    type: dailyRollingFile
+    type: <%= @file_rolling_type %>
     file: ${path.logs}/${cluster.name}.log
-    datePattern: "'.'yyyy-MM-dd"
+    <%- if @file_rolling_type == 'dailyRollingFile' -%>
+    datePattern: <%= @daily_rolling_date_pattern %>
+    <%- elsif @file_rolling_type == 'rollingFile' -%>
+    maxBackupIndex: <%= @rolling_file_max_backup_index %>
+    maxFileSize: <%= @rolling_file_max_file_size %>
+    <%- end -%>
     layout:
       type: pattern
       conversionPattern: "[%d{ISO8601}][%-5p][%-25c] %m%n"

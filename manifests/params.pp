@@ -60,6 +60,14 @@ class elasticsearch::params {
     'index.indexing.slowlog' => 'TRACE, index_indexing_slow_log_file',
   }
 
+  $file_rolling_type = 'dailyRollingFile'
+
+  $daily_rolling_date_pattern = '"\'.\'yyyy-MM-dd"'
+
+  $rolling_file_max_backup_index = 1
+
+  $rolling_file_max_file_size ='10MB'
+
   #### Internal module values
 
   # User and Group for the files and user to run the service as.
@@ -128,22 +136,12 @@ class elasticsearch::params {
 
   # packages
   case $::operatingsystem {
-    'RedHat', 'CentOS', 'Fedora', 'Scientific', 'Amazon', 'OracleLinux', 'SLC': {
-      # main application
-      $package = [ 'elasticsearch' ]
-    }
-    'Debian', 'Ubuntu': {
-      # main application
-      $package = [ 'elasticsearch' ]
-    }
-    'OpenSuSE', 'SLES': {
-      $package = [ 'elasticsearch' ]
+    'RedHat', 'CentOS', 'Fedora', 'Scientific', 'Amazon', 'OracleLinux', 'SLC',
+    'Debian', 'Ubuntu', 'OpenSuSE', 'SLES', 'OpenBSD': {
+      $package = 'elasticsearch'
     }
     'Gentoo': {
-      $package = [ 'app-misc/elasticsearch' ]
-    }
-    'OpenBSD': {
-      $package = [ 'elasticsearch' ]
+      $package = 'app-misc/elasticsearch'
     }
     default: {
       fail("\"${module_name}\" provides no package default value
