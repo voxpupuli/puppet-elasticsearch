@@ -170,6 +170,11 @@
 # [*java_package*]
 #   If you like to install a custom java package, put the name here.
 #
+# [*jvm_options*]
+#   Array of options to set in jvm_options.
+#   Value type is Array
+#   Default value: []
+#
 # [*manage_repo*]
 #   Enable repo management by enabling our official repositories
 #
@@ -375,6 +380,7 @@ class elasticsearch(
   $plugindir                      = $elasticsearch::params::plugindir,
   $java_install                   = false,
   $java_package                   = undef,
+  $jvm_options                    = [],
   $manage_repo                    = false,
   $repo_version                   = undef,
   $repo_priority                  = undef,
@@ -432,10 +438,10 @@ class elasticsearch(
     fail("\"${file_rolling_type}\" is not a valid type")
   }
 
+  validate_array($jvm_options)
   validate_integer($rolling_file_max_backup_index)
   validate_string($daily_rolling_date_pattern)
   validate_string($rolling_file_max_file_size)
-
 
   # restart on change
   validate_bool(
