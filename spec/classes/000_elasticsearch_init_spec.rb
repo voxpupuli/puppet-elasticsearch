@@ -71,7 +71,6 @@ describe 'elasticsearch', :type => 'class' do
         it { should contain_file('/etc/elasticsearch/jvm.options') }
         it { should contain_file('/usr/share/elasticsearch/templates_import') }
         it { should contain_file('/usr/share/elasticsearch/scripts') }
-        it { should contain_file('/usr/share/elasticsearch/shield') }
         it { should contain_file('/usr/share/elasticsearch') }
         it { should contain_file('/usr/share/elasticsearch/lib') }
         it { should contain_augeas("#{defaults_path}/elasticsearch") }
@@ -445,6 +444,28 @@ describe 'elasticsearch', :type => 'class' do
             -server.
           /xm
           ) }
+        end
+      end
+
+      context 'security plugins' do
+        describe 'shield' do
+          let (:params) {
+            default_params.merge({
+              :security_plugin => 'shield'
+            })
+          }
+
+          it { should contain_file('/usr/share/elasticsearch/shield') }
+        end
+
+        describe 'x-pack' do
+          let (:params) {
+            default_params.merge({
+              :security_plugin => 'x-pack'
+            })
+          }
+
+          it { should contain_file('/etc/elasticsearch/x-pack') }
         end
       end
 

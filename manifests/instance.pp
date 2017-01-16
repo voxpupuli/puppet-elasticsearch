@@ -132,6 +132,10 @@
 #   Value type is string
 #   Default value: 10MB
 #
+# [*security_plugin*]
+#   Which security plugin will be used to manage users, roles, and
+#   certificates. Inherited from top-level Elasticsearch class.
+#
 # === Authors
 #
 # * Tyler Langlois <mailto:tyler@elastic.co>
@@ -163,6 +167,7 @@ define elasticsearch::instance(
   $daily_rolling_date_pattern    = $elasticsearch::daily_rolling_date_pattern,
   $rolling_file_max_backup_index = $elasticsearch::rolling_file_max_backup_index,
   $rolling_file_max_file_size    = $elasticsearch::rolling_file_max_file_size,
+  $security_plugin               = $elasticsearch::security_plugin,
 ) {
 
   require elasticsearch::params
@@ -180,6 +185,12 @@ define elasticsearch::instance(
   # ensure
   if ! ($ensure in [ 'present', 'absent' ]) {
     fail("\"${ensure}\" is not a valid ensure parameter value")
+  }
+
+  if $ssl or ($system_key != undef) {
+    if $security_plugin == undef or ! ($security_plugin in ['shield', 'x-pack']) {
+      fail("\"${security_plugin}\" is not a valid security_plugin parameter value")
+    }
   }
 
   $notify_service = $elasticsearch::restart_config_change ? {
@@ -290,17 +301,26 @@ define elasticsearch::instance(
       validate_string($keystore_password)
 
       if ($keystore_path == undef) {
-        $_keystore_path = "${instance_configdir}/shield/${name}.ks"
+        $_keystore_path = "${instance_configdir}/${security_plugin}/${name}.ks"
       } else {
         validate_absolute_path($keystore_path)
         $_keystore_path = $keystore_path
       }
 
-      $tls_config = {
-        'shield.ssl.keystore.path'     => $_keystore_path,
-        'shield.ssl.keystore.password' => $keystore_password,
-        'shield.transport.ssl'         => true,
-        'shield.http.ssl'              => true,
+      if $security_plugin == 'shield' {
+        $tls_config = {
+          'shield.transport.ssl'         => true,
+          'shield.http.ssl'              => true,
+          'shield.ssl.keystore.path'     => $_keystore_path,
+          'shield.ssl.keystore.password' => $keystore_password,
+        }
+      } elsif $security_plugin == 'x-pack' {
+        $tls_config = {
+          'xpack.security.transport.ssl.enabled' => true,
+          'xpack.security.http.ssl.enabled'      => true,
+          'xpack.ssl.keystore.path'              => $_keystore_path,
+          'xpack.ssl.keystore.password'          => $keystore_password,
+        }
       }
 
       # Trust CA Certificate
@@ -398,28 +418,42 @@ define elasticsearch::instance(
       target => "${elasticsearch::params::homedir}/scripts",
     }
 
-    file { "${instance_configdir}/shield":
-      ensure  => 'directory',
-      mode    => '0644',
-      source  => "${elasticsearch::params::homedir}/shield",
-      recurse => 'remote',
-      owner   => 'root',
-      group   => '0',
-      before  => Elasticsearch::Service[$name],
+    if $security_plugin != undef {
+      $_security_source = $security_plugin ? {
+        'shield' => $elasticsearch::params::homedir,
+        'x-pack' => $elasticsearch::configdir,
+      }
+
+      file { "${instance_configdir}/${security_plugin}":
+        ensure  => 'directory',
+        mode    => '0644',
+        source  => "${_security_source}/${security_plugin}",
+        recurse => 'remote',
+        owner   => 'root',
+        group   => '0',
+        before  => Elasticsearch::Service[$name],
+      }
     }
 
     if $system_key != undef {
-      file { "${instance_configdir}/shield/system_key":
+      file { "${instance_configdir}/${security_plugin}/system_key":
         ensure  => 'file',
         source  => $system_key,
         mode    => '0400',
         before  => Elasticsearch::Service[$name],
-        require => File["${instance_configdir}/shield"],
+        require => File["${instance_configdir}/${security_plugin}"],
       }
     }
 
     # build up new config
-    $instance_conf = merge($main_config, $instance_node_name, $instance_config, $instance_datadir_config, $instance_logdir_config, $tls_config)
+    $instance_conf = merge(
+      $main_config,
+      $instance_node_name,
+      $instance_config,
+      $instance_datadir_config,
+      $instance_logdir_config,
+      $tls_config
+    )
 
     # defaults file content
     # ensure user did not provide both init_defaults and init_defaults_file
