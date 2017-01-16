@@ -97,7 +97,6 @@ describe 'elasticsearch', :type => 'class' do
         it { should contain_elasticsearch_service_file('/etc/init.d/elasticsearch-es-02') }
         it { should contain_file('/etc/init.d/elasticsearch-es-02') }
         it { should contain_file('/etc/elasticsearch/es-02/scripts').with(:target => '/usr/share/elasticsearch/scripts') }
-        it { should contain_file('/etc/elasticsearch/es-02/shield') }
         it { should contain_datacat_fragment('main_config_es-02') }
         it { should contain_datacat('/etc/elasticsearch/es-02/elasticsearch.yml') }
 
@@ -183,7 +182,6 @@ describe 'elasticsearch', :type => 'class' do
       it { should contain_elasticsearch_service_file('/etc/init.d/elasticsearch-default') }
       it { should contain_file('/etc/init.d/elasticsearch-default') }
       it { should contain_file('/etc/elasticsearch/default/scripts').with(:target => '/usr/share/elasticsearch/scripts') }
-      it { should contain_file('/etc/elasticsearch/default/shield') }
       it { should contain_datacat_fragment('main_config_default') }
       it { should contain_datacat('/etc/elasticsearch/default/elasticsearch.yml') }
 

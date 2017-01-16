@@ -73,11 +73,6 @@ class elasticsearch::config {
         group  => $elasticsearch::elasticsearch_group,
         owner  => $elasticsearch::elasticsearch_user,
         mode   => '0644';
-      "${elasticsearch::params::homedir}/shield":
-        ensure => 'directory',
-        mode   => '0644',
-        group  => '0',
-        owner  => 'root';
       '/etc/elasticsearch/elasticsearch.yml':
         ensure => 'absent';
       '/etc/elasticsearch/logging.yml':
@@ -86,6 +81,22 @@ class elasticsearch::config {
         ensure => 'absent';
       '/etc/init.d/elasticsearch':
         ensure => 'absent';
+    }
+
+    if $elasticsearch::security_plugin == 'shield' {
+      file { "${elasticsearch::params::homedir}/shield":
+        ensure => 'directory',
+        mode   => '0644',
+        group  => '0',
+        owner  => 'root',
+      }
+    } elsif $elasticsearch::security_plugin == 'x-pack' {
+      file { "${elasticsearch::configdir}/x-pack":
+        ensure => 'directory',
+        mode   => '0644',
+        group  => '0',
+        owner  => 'root',
+      }
     }
 
     if $elasticsearch::params::pid_dir {

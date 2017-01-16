@@ -2,24 +2,23 @@ require 'spec_helper_acceptance'
 require 'spec_helper_faraday'
 require 'json'
 
-describe "elasticsearch shield" do
+describe 'elasticsearch x-pack security' do
 
   # Template manifest
   let :base_manifest do <<-EOF
     class { 'elasticsearch' :
       java_install => true,
       manage_repo  => true,
-      repo_version => '#{test_settings['repo_version']}',
+      repo_version => '#{test_settings['repo_version5x']}',
       config => {
         'cluster.name' => '#{test_settings['cluster_name']}',
         'http.port' => #{test_settings['port_a']},
       },
       restart_on_change => true,
-      security_plugin => 'shield',
+      security_plugin => 'x-pack',
     }
 
-    elasticsearch::plugin { 'elasticsearch/license/latest' :  }
-    elasticsearch::plugin { 'elasticsearch/shield/latest' : }
+    elasticsearch::plugin { 'x-pack' :  }
     EOF
   end
 
@@ -302,7 +301,7 @@ describe "elasticsearch shield" do
                 keystore_password    => '#{@keystore_password}',
                 config => {
                   'discovery.zen.minimum_master_nodes' => %s,
-                  'shield.ssl.hostname_verification' => false,
+                  'xpack.ssl.hostname_verification' => false,
                   'http.port' => '92%02d',
                 }
               }

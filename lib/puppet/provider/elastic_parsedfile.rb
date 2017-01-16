@@ -10,4 +10,8 @@ class Puppet::Provider::ElasticParsedFile < Puppet::Provider::ParsedFile
         "/usr/share/elasticsearch/shield/#{val}"
       end
   end
+
+  def self.xpack_config val
+    @default_target ||= "/etc/elasticsearch/x-pack/#{val}"
+  end
 end
