@@ -10,8 +10,6 @@ HOSTS:
     docker_cmd: ["/sbin/init"]
     docker_preserve_image: true
     docker_image_commands:
-      - yum install -y wget
+      - yum install -y wget which
       - rm /etc/init/tty.conf
       - echo -e "elasticsearch hard nproc 2048\nelasticsearch soft nproc 2048" >> /etc/security/limits.conf
-CONFIG:
-  type: foss
