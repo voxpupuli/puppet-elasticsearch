@@ -1,24 +1,21 @@
 require 'puppet/util/package'
 
-shared_examples 'plugin provider' do |version, build|
+shared_examples 'plugin provider' do |version|
   describe "elasticsearch #{version}" do
     before(:each) do
-      klass.expects(:es).with('-version').returns(build)
       allow(File).to receive(:open)
-      provider.es_version
+      allow(provider).to receive(:es_version).and_return version
     end
 
     describe 'setup' do
       it 'installs with default parameters' do
         provider.expects(:plugin).with(
           ['install', resource_name].tap do |args|
-            if build =~ (/^\S+\s+([^,]+),/)
-              if Puppet::Util::Package.versioncmp($1, '2.2.0') >= 0
-                args.insert 1, '--batch'
-              end
-              if $1.start_with? '2'
-                args.unshift '-Des.path.conf=/usr/share/elasticsearch'
-              end
+            if Puppet::Util::Package.versioncmp(version, '2.2.0') >= 0
+              args.insert 1, '--batch'
+            end
+            if version.start_with? '2'
+              args.unshift '-Des.path.conf=/usr/share/elasticsearch'
             end
           end
         )
@@ -32,12 +29,11 @@ shared_examples 'plugin provider' do |version, build|
                 args.unshift '-Des.path.conf=/usr/share/elasticsearch'
               end
             } + ['http://url/to/my/plugin.zip'].tap { |args|
-            build =~ (/^\S+\s+([^,]+),/)
-            if $1.start_with? '1'
+            if version.start_with? '1'
               args.unshift('kopf', '--url')
             end
 
-            if Puppet::Util::Package.versioncmp($1, '2.2.0') >= 0
+            if Puppet::Util::Package.versioncmp(version, '2.2.0') >= 0
               args.unshift '--batch'
             end
 
@@ -54,12 +50,11 @@ shared_examples 'plugin provider' do |version, build|
               args.unshift '-Des.path.conf=/usr/share/elasticsearch'
             end
           } + ['file:///tmp/plugin.zip'].tap { |args|
-            build =~ (/^\S+\s+([^,]+),/)
-            if $1.start_with? '1'
+            if version.start_with? '1'
               args.unshift('kopf', '--url')
             end
 
-            if Puppet::Util::Package.versioncmp($1, '2.2.0') >= 0
+            if Puppet::Util::Package.versioncmp(version, '2.2.0') >= 0
               args.unshift '--batch'
             end
 
