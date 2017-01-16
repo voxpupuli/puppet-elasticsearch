@@ -24,15 +24,18 @@ module Puppet_X
       end
 
       def self.post_5?(package_name, catalog)
+        Puppet::Util::Package.versioncmp(
+          version(package_name, catalog), '5.0.0'
+        ) >= 0
+      end
+
+      def self.version(package_name, catalog)
         if (es_pkg = catalog.resource("Package[#{package_name}]"))
-          es_version = es_pkg.provider.properties[:version] || es_pkg.provider.properties[:ensure]
+          es_pkg.provider.properties[:version] || es_pkg.provider.properties[:ensure]
         else
           raise Puppet::Error, "could not find `Package[#{package_name}]` resource"
         end
-
-        Puppet::Util::Package.versioncmp(es_version, '5.0.0') >= 0
       end
     end
-
   end
 end
