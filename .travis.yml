@@ -15,30 +15,30 @@ env:
   matrix:
   - TEST_SUITE=intake
   - TEST_SUITE=integration
+  - DISTRO=centos-6-x64 PUPPET_INSTALL_TYPE=foss
   - DISTRO=centos-6-x64
-  - DISTRO=centos-6-x64 PE=true
-  - DISTRO=centos-6-x64 PE=true PE_VER=2016.1.1
+  - DISTRO=centos-6-x64 PUPPET_INSTALL_TYPE=pe
+  - DISTRO=centos-7-x64 PUPPET_INSTALL_TYPE=foss
   - DISTRO=centos-7-x64
-  - DISTRO=centos-7-x64 PE=true
-  - DISTRO=centos-7-x64 PE=true PE_VER=2016.1.1
+  - DISTRO=centos-7-x64 PUPPET_INSTALL_TYPE=pe
   - DISTRO=debian-7-x64
-  - DISTRO=debian-7-x64 PE=true
     # No 2016.x release for debian 7
   - DISTRO=debian-8-x64
+  - DISTRO=ubuntu-server-1204-x64 PUPPET_INSTALL_TYPE=foss
   - DISTRO=ubuntu-server-1204-x64
-  - DISTRO=ubuntu-server-1204-x64 PE=true
-  - DISTRO=ubuntu-server-1204-x64 PE=true PE_VER=2016.1.1
+  - DISTRO=ubuntu-server-1204-x64 PUPPET_INSTALL_TYPE=pe
+  - DISTRO=ubuntu-server-1404-x64 PUPPET_INSTALL_TYPE=foss
   - DISTRO=ubuntu-server-1404-x64
-  - DISTRO=ubuntu-server-1404-x64 PE=true
-  - DISTRO=ubuntu-server-1404-x64 PE=true PE_VER=2016.1.1
-  - DISTRO=opensuse-13-x64
-  - DISTRO=sles-12-x64
-  - DISTRO=sles-12-x64 PE=true
+  - DISTRO=ubuntu-server-1404-x64 PUPPET_INSTALL_TYPE=pe
+  - DISTRO=ubuntu-server-1604-x64
+  - DISTRO=opensuse-42-x64 PUPPET_INSTALL_TYPE=foss
   - DISTRO=oracle-6-x64
   - DISTRO=oracle-7-x64
 matrix:
   allow_failures:
+  # SLES is a nightmare to acquire and run. Leave here for possible future use.
   - env: DISTRO=sles-12-x64
+  - env: DISTRO=sles-12-x64 PE=true
   fast_finish: true
 script:
 - make test-$TEST_SUITE

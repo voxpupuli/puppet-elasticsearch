@@ -20,11 +20,6 @@ describe provider_class do
   end
   let(:klass) { provider_class }
 
-  include_examples 'plugin provider',
-    '1.x',
-    'Version: 1.7.1, Build: b88f43f/2015-07-29T09:54:16Z, JVM: 1.7.0_79'
-
-  include_examples 'plugin provider',
-    '2.x',
-    'Version: 2.0.0, Build: de54438/2015-10-22T08:09:48Z, JVM: 1.8.0_66'
+  include_examples 'plugin provider', '1.7.0'
+  include_examples 'plugin provider', '2.0.0'
 end

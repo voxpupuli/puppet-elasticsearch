@@ -3,12 +3,13 @@ source 'https://rubygems.org'
 puppetversion = ENV['PUPPET_VERSION'] || '~> 3.8.0'
 gem 'puppet', puppetversion, :require => false
 
-gem 'beaker'
-gem 'beaker-pe', '~> 0.7.0'
-gem 'beaker-rspec'
+gem 'beaker', '~> 3.7'
+gem 'beaker-pe', '~> 1.8'
+gem 'beaker-rspec', '~> 6.0'
+gem 'beaker-puppet_install_helper'
 gem 'metadata-json-lint'
-gem 'rspec-puppet'
-gem 'specinfra', '>= 2.59.3'
+gem 'rspec-puppet', '~> 2.4'
+gem 'specinfra', '~> 2.60'
 gem 'infrataster'
 
 gem 'pry'
@@ -27,7 +28,7 @@ gem 'rspec-retry'
 gem 'webmock'
 
 # Extra Puppet-lint gems
-gem 'puppet-lint-appends-check', :require => false
+gem 'puppet-lint-appends-check', :git => 'https://github.com/voxpupuli/puppet-lint-appends-check', :ref => '07be8ce22d69353db055820b60bb77fe020238a6', :require => false
 gem 'puppet-lint-version_comparison-check', :require => false
 gem 'puppet-lint-unquoted_string-check', :require => false
 gem 'puppet-lint-undef_in_function-check', :require => false

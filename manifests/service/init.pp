@@ -121,7 +121,7 @@ define elasticsearch::service::init(
         ensure => $ensure,
         source => $init_defaults_file,
         owner  => 'root',
-        group  => 'root',
+        group  => '0',
         mode   => '0644',
         before => Service["elasticsearch-instance-${name}"],
         notify => $notify_service,
@@ -137,7 +137,11 @@ define elasticsearch::service::init(
         }
       }
 
-      $init_defaults_pre_hash = { 'ES_USER' => $elasticsearch::elasticsearch_user, 'ES_GROUP' => $elasticsearch::elasticsearch_group, 'MAX_OPEN_FILES' => '65535' }
+      $init_defaults_pre_hash = {
+        'ES_USER' => $elasticsearch::elasticsearch_user,
+        'ES_GROUP' => $elasticsearch::elasticsearch_group,
+        'MAX_OPEN_FILES' => '65536',
+      }
       $new_init_defaults = merge($init_defaults_pre_hash, $init_defaults)
 
       augeas { "defaults_${name}":
@@ -153,14 +157,20 @@ define elasticsearch::service::init(
     # init file from template
     if ($init_template != undef) {
 
+      elasticsearch_service_file { "/etc/init.d/elasticsearch-${name}":
+        ensure       => $ensure,
+        content      => file($init_template),
+        instance     => $name,
+        notify       => $notify_service,
+        package_name => $elasticsearch::package_name,
+      } ->
       file { "/etc/init.d/elasticsearch-${name}":
-        ensure  => $ensure,
-        content => template($init_template),
-        owner   => 'root',
-        group   => 'root',
-        mode    => '0755',
-        before  => Service["elasticsearch-instance-${name}"],
-        notify  => $notify_service,
+        ensure => $ensure,
+        owner  => 'root',
+        group  => '0',
+        mode   => '0755',
+        before => Service["elasticsearch-instance-${name}"],
+        notify => $notify_service,
       }
 
     }

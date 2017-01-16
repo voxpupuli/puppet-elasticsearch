@@ -22,6 +22,26 @@ describe 'elasticsearch::plugin', :type => 'define' do
     }
   }}
 
+  context 'default values' do
+    context 'present' do
+      let :params do {
+        :ensure => 'present',
+        :instances  => 'es-01'
+      } end
+
+      it { is_expected.to compile }
+    end
+
+    context 'absent' do
+      let :params do {
+        :ensure => 'absent',
+        :instances  => 'es-01'
+      } end
+
+      it { is_expected.to compile }
+    end
+  end
+
   context 'with module_dir' do
 
     context "Add a plugin" do

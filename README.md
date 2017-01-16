@@ -22,7 +22,7 @@
 
 This module sets up [Elasticsearch](https://www.elastic.co/overview/elasticsearch/) instances with additional resource for plugins, templates, and more.
 
-This module has been tested against all versions of ES 1.x and 2.x.
+This module has been tested against all versions of ES 1.x, 2.x, and 5.x.
 
 ## Setup
 
@@ -60,11 +60,15 @@ Declare the top-level `elasticsearch` class (managing repositories) and set up a
 class { 'elasticsearch':
   java_install => true,
   manage_repo  => true,
-  repo_version => '2.x',
+  repo_version => '5.x',
 }
 
 elasticsearch::instance { 'es-01': }
 ```
+
+**Note**: Elasticsearch 5.x requires a recent version of the JVM.
+If you are on a recent version of your distribution of choice (such as Ubuntu 16.04 or CentOS 7), setting `java_install => true` will work out-of-the-box.
+If you are on an earlier distribution, you may need to take additional measures to install Java 1.8.
 
 ## Usage
 
@@ -133,6 +137,8 @@ class { 'elasticsearch':
   api_timeout             => 10,
   api_basic_auth_username => undef,
   api_basic_auth_password => undef,
+  api_ca_file             => undef,
+  api_ca_path             => undef,
   validate_tls            => true,
 }
 ```
@@ -252,6 +258,8 @@ elasticsearch::template { 'templatename':
   api_timeout             => 60,
   api_basic_auth_username => 'admin',
   api_basic_auth_password => 'adminpassword',
+  api_ca_file             => '/etc/ssl/certs',
+  api_ca_path             => '/etc/pki/certs',
   validate_tls            => false,
   source                  => 'puppet:///path/to/template.json',
 }
@@ -409,6 +417,17 @@ Specify a particular Java package/version to be installed:
 class { 'elasticsearch':
   java_install => true,
   java_package => 'packagename'
+}
+```
+
+When configuring Elasticsearch's memory usage, you can do so by either changing init defaults for Elasticsearch 1.x/2.x (see the [following example](#hash-representation)), or modify it globally in 5.x using `jvm.options`:
+
+```puppet
+class { 'elasticsearch':
+  jvm_options => [
+    '-Xms4g',
+    '-Xmx4g'
+  ]
 }
 ```
 

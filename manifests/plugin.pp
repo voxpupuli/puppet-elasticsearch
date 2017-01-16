@@ -137,8 +137,8 @@ define elasticsearch::plugin(
 
   if ($source != undef) {
 
-    $filenameArray = split($source, '/')
-    $basefilename = $filenameArray[-1]
+    $filename_array = split($source, '/')
+    $basefilename = $filename_array[-1]
 
     $file_source = "${elasticsearch::package_dir}/${basefilename}"
 
@@ -159,12 +159,13 @@ define elasticsearch::plugin(
   $_module_dir = es_plugin_name($module_dir, $name)
 
   elasticsearch_plugin { $name:
-    ensure      => $ensure,
-    source      => $file_source,
-    url         => $url,
-    proxy       => $_proxy,
-    plugin_dir  => $::elasticsearch::plugindir,
-    plugin_path => $module_dir,
+    ensure                     => $ensure,
+    elasticsearch_package_name => $elasticsearch::package_name,
+    source                     => $file_source,
+    url                        => $url,
+    proxy                      => $_proxy,
+    plugin_dir                 => $::elasticsearch::plugindir,
+    plugin_path                => $module_dir,
   } ->
   file { "${elasticsearch::plugindir}/${_module_dir}":
     ensure  => $_file_ensure,

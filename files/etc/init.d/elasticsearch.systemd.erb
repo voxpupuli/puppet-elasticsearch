@@ -1,0 +1,26 @@
+[Unit]
+Description=Starts and stops a single elasticsearch instance on this system
+Documentation=http://www.elasticsearch.org
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=forking
+EnvironmentFile=<%= @resource[:defaults_location] %>/elasticsearch-<%= @resource[:instance] %>
+User=<%= @resource[:user] %>
+Group=<%= @resource[:group] %>
+PIDFile=<%= @resource[:pid_dir] %>/elasticsearch-<%= @resource[:instance] %>.pid
+ExecStart=/usr/share/elasticsearch/bin/elasticsearch -d -p <%= @resource[:pid_dir] %>/elasticsearch-<%= @resource[:instance] %>.pid <%= opt_flags.join(' ') %>
+# See MAX_OPEN_FILES in sysconfig
+LimitNOFILE=<%= @resource[:nofile] %>
+# See MAX_LOCKED_MEMORY in sysconfig, use "infinity" when MAX_LOCKED_MEMORY=unlimited and using bootstrap.mlockall: true
+<% if @resource[:memlock] == 'unlimited' %>
+LimitMEMLOCK=infinity
+<% elsif @resource[:memlock] %>
+LimitMEMLOCK=<%= @resource[:memlock] %>
+<% end %>
+# Shutdown delay in seconds, before process is tried to be killed with KILL (if configured)
+TimeoutStopSec=20
+
+[Install]
+WantedBy=multi-user.target
