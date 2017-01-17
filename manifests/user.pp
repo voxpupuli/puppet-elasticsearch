@@ -55,10 +55,14 @@ define elasticsearch::user (
       hashed_password => $password,
     }
   } else {
+    $_provider = $elasticsearch::security_plugin ? {
+      'shield' => 'esusers',
+      'x-pack' => 'users',
+    }
     elasticsearch_user { $name:
       ensure   => $ensure,
       password => $password,
-      provider => 'esusers',
+      provider => $_provider,
     }
   }
 

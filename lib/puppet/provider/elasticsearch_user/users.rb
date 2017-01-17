@@ -1,15 +1,13 @@
 require 'puppet/provider/elastic_user_command'
 
 Puppet::Type.type(:elasticsearch_user).provide(
-  :esusers,
+  :users,
   :parent => Puppet::Provider::ElasticUserCommand
 ) do
-  desc "Provider for Shield file (esusers) user resources."
+  desc "Provider for X-Pack file (users) user resources."
 
   mk_resource_methods
 
-  @command_arguments = ["--default.path.conf=#{homedir}"]
-
-  commands :users_cli => "#{homedir}/bin/shield/esusers"
+  commands :users_cli => "#{homedir}/bin/x-pack/users"
   commands :es => "#{homedir}/bin/elasticsearch"
 end
