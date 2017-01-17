@@ -390,4 +390,8 @@ describe 'elasticsearch x-pack security' do
       end
     end
   end
+
+  after :all do
+    shell 'rm -rf {/usr/share,/etc}/elasticsearch'
+  end
 end
