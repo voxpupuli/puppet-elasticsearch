@@ -2,7 +2,7 @@ require 'spec_helper_acceptance'
 require 'spec_helper_faraday'
 require 'json'
 
-describe 'elasticsearch x-pack security' do
+describe 'elasticsearch x-pack security', :with_certificates, :then_purge do
 
   # Template manifest
   let :base_manifest do <<-EOF
@@ -372,26 +372,5 @@ describe 'elasticsearch x-pack security' do
         apply_manifest removal_manifest, :catch_failures => true
       end
     end
-  end
-
-  # Boilerplate for shield setup
-  before :all do
-
-    @keystore_password = SecureRandom.hex
-    @role = [*('a'..'z')].sample(8).join
-
-    # Setup TLS cert placement
-    @tls = gen_certs(2, '/tmp')
-
-    create_remote_file hosts, @tls[:ca][:cert][:path], @tls[:ca][:cert][:pem]
-    @tls[:clients].each do |node|
-      node.each do |type, params|
-        create_remote_file hosts, params[:path], params[:pem]
-      end
-    end
-  end
-
-  after :all do
-    shell 'rm -rf {/usr/share,/etc}/elasticsearch'
   end
 end
