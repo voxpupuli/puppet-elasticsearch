@@ -13,6 +13,12 @@ describe 'elasticsearch::role' do
 
   let(:title) { 'elastic_role' }
 
+  let(:pre_condition) {%q{
+    class { 'elasticsearch':
+      security_plugin => 'shield',
+    }
+  }}
+
   let(:params) do
     {
       :privileges => {
