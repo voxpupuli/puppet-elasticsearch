@@ -14,7 +14,7 @@ Puppet::Type.type(:elasticsearch_user).provide(
   text_line :comment,
             :match => %r{^\s*#}
 
-  record_line :parsed,
+  record_line :shield,
               :fields => %w{name hashed_password},
               :separator => ':',
               :joiner => ':'
