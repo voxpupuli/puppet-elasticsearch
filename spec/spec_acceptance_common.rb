@@ -8,10 +8,10 @@
   test_settings['upgrade_package_version'] = '1.7.5'
   test_settings['upgrade_version']         = '1.7.5'
 
-  test_settings['shield_user']             = 'elastic'
-  test_settings['shield_password']         = SecureRandom.hex
-  test_settings['shield_hashed_password']  = '$2a$10$DddrTs0PS3qNknUTq0vpa.g.0JpU.jHDdlKp1xox1W5ZHX.w8Cc8C'
-  test_settings['shield_hashed_plaintext'] = 'foobar'
+  test_settings['security_user']             = 'elasticuser'
+  test_settings['security_password']         = SecureRandom.hex
+  test_settings['security_hashed_password']  = '$2a$10$DddrTs0PS3qNknUTq0vpa.g.0JpU.jHDdlKp1xox1W5ZHX.w8Cc8C'
+  test_settings['security_hashed_plaintext'] = 'foobar'
   case fact('osfamily')
     when 'RedHat'
       test_settings['url']             = 'http://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-1.3.1.noarch.rpm'
