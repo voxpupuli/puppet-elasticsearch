@@ -301,7 +301,7 @@ describe 'elasticsearch x-pack security', :with_certificates, :then_purge do
                 keystore_password    => '#{@keystore_password}',
                 config => {
                   'discovery.zen.minimum_master_nodes' => %s,
-                  'xpack.ssl.hostname_verification' => false,
+                  'xpack.ssl.verification_mode' => 'none',
                   'http.port' => '92%02d',
                 }
               }
