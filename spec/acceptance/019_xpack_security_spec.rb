@@ -32,13 +32,13 @@ describe 'elasticsearch x-pack security', :with_certificates, :then_purge do
 
           Elasticsearch::Plugin { instances => ['es-01'],  }
 
-          elasticsearch::user { '#{test_settings['shield_user']}':
-            password => '#{test_settings['shield_password']}',
-            roles    => ['admin'],
+          elasticsearch::user { '#{test_settings['security_user']}':
+            password => '#{test_settings['security_password']}',
+            roles    => ['superuser'],
           }
-          elasticsearch::user { '#{test_settings['shield_user']}pwchange':
-            password => '#{test_settings['shield_hashed_password']}',
-            roles    => ['admin'],
+          elasticsearch::user { '#{test_settings['security_user']}pwchange':
+            password => '#{test_settings['security_hashed_password']}',
+            roles    => ['superuser'],
           }
         EOF
       end
@@ -74,8 +74,8 @@ describe 'elasticsearch x-pack security', :with_certificates, :then_purge do
         {
           :faraday_middleware => middleware,
           :basic_auth => [
-            test_settings['shield_user'],
-            test_settings['shield_password']
+            test_settings['security_user'],
+            test_settings['security_password']
           ]
         }
       ) do
@@ -89,8 +89,8 @@ describe 'elasticsearch x-pack security', :with_certificates, :then_purge do
         {
           :faraday_middleware => middleware,
           :basic_auth => [
-            "#{test_settings['shield_user']}pwchange",
-            test_settings['shield_hashed_plaintext']
+            "#{test_settings['security_user']}pwchange",
+            test_settings['security_hashed_plaintext']
           ]
         }
       ) do
@@ -112,9 +112,9 @@ describe 'elasticsearch x-pack security', :with_certificates, :then_purge do
           Elasticsearch::Plugin { instances => ['es-01'],  }
 
           notify { 'change password' : } ~>
-          elasticsearch::user { '#{test_settings['shield_user']}pwchange':
-            password => '#{test_settings['shield_password'][0..5]}',
-            roles    => ['admin'],
+          elasticsearch::user { '#{test_settings['security_user']}pwchange':
+            password => '#{test_settings['security_password'][0..5]}',
+            roles    => ['superuser'],
           }
         EOF
       end
@@ -134,8 +134,8 @@ describe 'elasticsearch x-pack security', :with_certificates, :then_purge do
         {
           :faraday_middleware => middleware,
           :basic_auth => [
-            "#{test_settings['shield_user']}pwchange",
-            test_settings['shield_password'][0..5]
+            "#{test_settings['security_user']}pwchange",
+            test_settings['security_password'][0..5]
           ]
         }
       ) do
@@ -165,8 +165,8 @@ describe 'elasticsearch x-pack security', :with_certificates, :then_purge do
             }
           }
 
-          elasticsearch::user { '#{test_settings['shield_user']}':
-            password => '#{test_settings['shield_password']}',
+          elasticsearch::user { '#{test_settings['security_user']}':
+            password => '#{test_settings['security_password']}',
             roles    => ['#{@role}'],
           }
         EOF
@@ -194,8 +194,8 @@ describe 'elasticsearch x-pack security', :with_certificates, :then_purge do
         {
           :faraday_middleware => middleware,
           :basic_auth => [
-            test_settings['shield_user'],
-            test_settings['shield_password']
+            test_settings['security_user'],
+            test_settings['security_password']
           ]
         }
       ) do
@@ -209,8 +209,8 @@ describe 'elasticsearch x-pack security', :with_certificates, :then_purge do
         {
           :faraday_middleware => middleware,
           :basic_auth => [
-            test_settings['shield_user'],
-            test_settings['shield_password']
+            test_settings['security_user'],
+            test_settings['security_password']
           ]
         }
       ) do
@@ -239,9 +239,9 @@ describe 'elasticsearch x-pack security', :with_certificates, :then_purge do
 
             Elasticsearch::Plugin { instances => ['es-01'],  }
 
-            elasticsearch::user { '#{test_settings['shield_user']}':
-              password => '#{test_settings['shield_password']}',
-              roles => ['admin'],
+            elasticsearch::user { '#{test_settings['security_user']}':
+              password => '#{test_settings['security_password']}',
+              roles => ['superuser'],
             }
           EOF
         end
@@ -268,8 +268,8 @@ describe 'elasticsearch x-pack security', :with_certificates, :then_purge do
           {
             :faraday_middleware => middleware,
             :basic_auth => [
-              test_settings['shield_user'],
-              test_settings['shield_password']
+              test_settings['security_user'],
+              test_settings['security_password']
             ],
             :ssl => {:verify => false}
           }
@@ -287,9 +287,9 @@ describe 'elasticsearch x-pack security', :with_certificates, :then_purge do
 
         let :multi_manifest do
           base_manifest + %Q{
-            elasticsearch::user { '#{test_settings['shield_user']}':
-              password => '#{test_settings['shield_password']}',
-              roles => ['admin'],
+            elasticsearch::user { '#{test_settings['security_user']}':
+              password => '#{test_settings['security_password']}',
+              roles => ['superuser'],
             }
           } + @tls[:clients].each_with_index.map do |cert, i|
             %Q{
@@ -337,8 +337,8 @@ describe 'elasticsearch x-pack security', :with_certificates, :then_purge do
           {
             :faraday_middleware => middleware,
             :basic_auth => [
-              test_settings['shield_user'],
-              test_settings['shield_password']
+              test_settings['security_user'],
+              test_settings['security_password']
             ],
             :ssl => {:verify => false}
           }
