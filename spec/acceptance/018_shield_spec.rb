@@ -391,4 +391,8 @@ describe "elasticsearch shield" do
       end
     end
   end
+
+  after :all do
+    shell 'rm -rf {/usr/share,/etc}/elasticsearch'
+  end
 end
