@@ -1,5 +1,4 @@
 require 'spec_helper_acceptance'
-require 'spec_helper_faraday'
 require 'json'
 
 describe "elasticsearch shield", :with_certificates, :then_purge do
@@ -62,8 +61,7 @@ describe "elasticsearch shield", :with_certificates, :then_purge do
 
     describe server :container do
       describe http(
-        "http://localhost:#{test_settings['port_a']}/_cluster/health",
-        :faraday_middleware => middleware
+        "http://localhost:#{test_settings['port_a']}/_cluster/health"
       ) do
         it 'denies unauthorized access', :with_retries do
           expect(response.status).to eq(401)
@@ -73,7 +71,6 @@ describe "elasticsearch shield", :with_certificates, :then_purge do
       describe http(
         "http://localhost:#{test_settings['port_a']}/_cluster/health",
         {
-          :faraday_middleware => middleware,
           :basic_auth => [
             test_settings['security_user'],
             test_settings['security_password']
@@ -88,7 +85,6 @@ describe "elasticsearch shield", :with_certificates, :then_purge do
       describe http(
         "http://localhost:#{test_settings['port_a']}/_cluster/health",
         {
-          :faraday_middleware => middleware,
           :basic_auth => [
             "#{test_settings['security_user']}pwchange",
             test_settings['security_hashed_plaintext']
@@ -133,7 +129,6 @@ describe "elasticsearch shield", :with_certificates, :then_purge do
       describe http(
         "http://localhost:#{test_settings['port_a']}/_cluster/health",
         {
-          :faraday_middleware => middleware,
           :basic_auth => [
             "#{test_settings['security_user']}pwchange",
             test_settings['security_password'][0..5]
@@ -193,7 +188,6 @@ describe "elasticsearch shield", :with_certificates, :then_purge do
       describe http(
         "http://localhost:#{test_settings['port_a']}/_cluster/stats",
         {
-          :faraday_middleware => middleware,
           :basic_auth => [
             test_settings['security_user'],
             test_settings['security_password']
@@ -208,7 +202,6 @@ describe "elasticsearch shield", :with_certificates, :then_purge do
       describe http(
         "http://localhost:#{test_settings['port_a']}/_cluster/health",
         {
-          :faraday_middleware => middleware,
           :basic_auth => [
             test_settings['security_user'],
             test_settings['security_password']
@@ -267,7 +260,6 @@ describe "elasticsearch shield", :with_certificates, :then_purge do
         describe http(
           "https://localhost:#{test_settings['port_a']}/_cluster/health",
           {
-            :faraday_middleware => middleware,
             :basic_auth => [
               test_settings['security_user'],
               test_settings['security_password']
@@ -336,7 +328,6 @@ describe "elasticsearch shield", :with_certificates, :then_purge do
         describe http(
           "https://localhost:#{test_settings['port_a']}/_nodes",
           {
-            :faraday_middleware => middleware,
             :basic_auth => [
               test_settings['security_user'],
               test_settings['security_password']

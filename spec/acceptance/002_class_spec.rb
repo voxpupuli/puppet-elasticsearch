@@ -1,5 +1,4 @@
 require 'spec_helper_acceptance'
-require 'spec_helper_faraday'
 require 'json'
 
 describe '::elasticsearch' do
@@ -73,8 +72,7 @@ describe '::elasticsearch' do
 
     describe server :container do
       describe http(
-        "http://localhost:#{test_settings['port_a']}/_nodes/_local",
-        :faraday_middleware => middleware
+        "http://localhost:#{test_settings['port_a']}/_nodes/_local"
       ) do
         it 'serves requests', :with_retries do
           expect(response.status).to eq(200)
@@ -160,8 +158,7 @@ describe '::elasticsearch' do
 
     describe server :container do
       describe http(
-        "http://localhost:#{test_settings['port_a']}",
-        :faraday_middleware => middleware
+        "http://localhost:#{test_settings['port_a']}"
       ) do
         describe 'instance a' do
           it 'serves requests', :with_retries do
@@ -171,8 +168,7 @@ describe '::elasticsearch' do
       end
 
       describe http(
-        "http://localhost:#{test_settings['port_b']}",
-        :faraday_middleware => middleware
+        "http://localhost:#{test_settings['port_b']}"
       ) do
         describe 'instance b' do
           it 'serves requests', :with_retries do
