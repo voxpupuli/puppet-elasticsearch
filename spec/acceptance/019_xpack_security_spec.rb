@@ -13,6 +13,7 @@ describe 'elasticsearch x-pack security', :with_certificates, :then_purge do
       config => {
         'cluster.name' => '#{test_settings['cluster_name']}',
         'http.port' => #{test_settings['port_a']},
+        'network.host' => '0.0.0.0',
       },
       restart_on_change => true,
       security_plugin => 'x-pack',
