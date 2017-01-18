@@ -83,22 +83,6 @@ class elasticsearch::config {
         ensure => 'absent';
     }
 
-    if $elasticsearch::security_plugin == 'shield' {
-      file { "${elasticsearch::params::homedir}/shield":
-        ensure => 'directory',
-        mode   => '0644',
-        group  => '0',
-        owner  => 'root',
-      }
-    } elsif $elasticsearch::security_plugin == 'x-pack' {
-      file { "${elasticsearch::configdir}/x-pack":
-        ensure => 'directory',
-        mode   => '0644',
-        group  => '0',
-        owner  => 'root',
-      }
-    }
-
     if $elasticsearch::params::pid_dir {
       file { $elasticsearch::params::pid_dir:
         ensure  => 'directory',
