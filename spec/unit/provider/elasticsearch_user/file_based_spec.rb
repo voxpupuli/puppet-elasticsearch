@@ -20,7 +20,7 @@ require 'spec_helper'
           }.gsub(/^\s+/, ''))[0]).to eq({
             :name => 'elastic',
             :hashed_password => '$2a$10$DddrTs0PS3qNknUTq0vpa.g.0JpU.jHDdlKp1xox1W5ZHX.w8Cc8C',
-            :record_type => :parsed,
+            :record_type => provider,
           })
         end
       end
