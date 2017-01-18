@@ -447,28 +447,6 @@ describe 'elasticsearch', :type => 'class' do
         end
       end
 
-      context 'security plugins' do
-        describe 'shield' do
-          let (:params) {
-            default_params.merge({
-              :security_plugin => 'shield'
-            })
-          }
-
-          it { should contain_file('/usr/share/elasticsearch/shield') }
-        end
-
-        describe 'x-pack' do
-          let (:params) {
-            default_params.merge({
-              :security_plugin => 'x-pack'
-            })
-          }
-
-          it { should contain_file('/etc/elasticsearch/x-pack') }
-        end
-      end
-
     end
 
   end
