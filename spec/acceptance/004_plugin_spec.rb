@@ -1,5 +1,4 @@
 require 'spec_helper_acceptance'
-require 'spec_helper_faraday'
 require 'json'
 
 shared_examples 'plugin behavior' do |version, user, plugin, offline, config|

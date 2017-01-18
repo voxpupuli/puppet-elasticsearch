@@ -1,5 +1,4 @@
 require 'spec_helper_acceptance'
-require 'spec_helper_faraday'
 require 'json'
 
 describe 'elasticsearch::template', :with_cleanup do
@@ -58,8 +57,7 @@ describe 'elasticsearch::template', :with_cleanup do
       describe server :container do
         describe http(
           "http://localhost:#{test_settings['port_a']}/_template/foo",
-          :params => {'flat_settings' => 'false'},
-          :faraday_middleware => middleware
+          :params => {'flat_settings' => 'false'}
         ) do
           it 'returns the installed template', :with_retries do
             expect(JSON.parse(response.body)['foo'])
@@ -108,8 +106,7 @@ describe 'elasticsearch::template', :with_cleanup do
       describe server :container do
         describe http(
           "http://localhost:#{test_settings['port_a']}/_template/foo",
-          :params => {'flat_settings' => 'false'},
-          :faraday_middleware => middleware
+          :params => {'flat_settings' => 'false'}
         ) do
           it 'returns the installed template', :with_retries do
             expect(JSON.parse(response.body)['foo'])
