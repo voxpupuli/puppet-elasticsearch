@@ -6,6 +6,8 @@ Puppet::Type.type(:elasticsearch_user).provide(
 ) do
   desc "Provider for Shield file (esusers) user resources."
 
+  has_feature :manages_plaintext_passwords
+
   mk_resource_methods
 
   @command_arguments = ["--default.path.conf=#{homedir}"]
