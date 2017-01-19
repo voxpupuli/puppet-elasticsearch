@@ -12,6 +12,9 @@
   test_settings['security_password']         = SecureRandom.hex
   test_settings['security_hashed_password']  = '$2a$10$DddrTs0PS3qNknUTq0vpa.g.0JpU.jHDdlKp1xox1W5ZHX.w8Cc8C'
   test_settings['security_hashed_plaintext'] = 'foobar'
+
+  test_settings['index'] = [*('a'..'z')].sample(8).join
+
   case fact('osfamily')
     when 'RedHat'
       test_settings['url']             = 'http://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-1.3.1.noarch.rpm'
