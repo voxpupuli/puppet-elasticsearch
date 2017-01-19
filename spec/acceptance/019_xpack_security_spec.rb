@@ -5,11 +5,27 @@ describe 'elasticsearch x-pack security',
          :if => is_5x_capable?,
          :with_certificates => true,
          :then_purge => true do
+  if fact('operatingsystemmajrelease') == '6'
+    # Otherwise, grab the Oracle JRE 8 package
+    java_install = false
+    java_snippet = <<-EOS
+      package { 'java-1.7.0-openjdk' :
+        ensure => absent
+      } ->
+      java::oracle { 'jre8':
+        java_se => 'jre',
+      }
+    EOS
+  else
+    # Otherwise the distro should be recent enough to have JRE 1.8
+    java_install = true
+  end
 
   # Template manifest
-  let :base_manifest do <<-EOF
+  let :base_manifest do
+    manifest = <<-EOF
     class { 'elasticsearch' :
-      java_install => true,
+      java_install => #{java_install},
       manage_repo  => true,
       repo_version => '#{test_settings['repo_version5x']}',
       config => {
@@ -27,6 +43,12 @@ describe 'elasticsearch x-pack security',
 
     elasticsearch::plugin { 'x-pack' :  }
     EOF
+
+    if not java_install
+      manifest = java_snippet + "->\n" + manifest
+    end
+
+    manifest
   end
 
   describe 'user authentication' do
