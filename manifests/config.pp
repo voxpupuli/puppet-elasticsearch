@@ -136,6 +136,10 @@ class elasticsearch::config {
       backup => false,
     }
 
+    file { "${elasticsearch::configdir}/jvm.options":
+      ensure => 'absent',
+    }
+
   }
 
 }
