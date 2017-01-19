@@ -1,9 +1,12 @@
 Puppet::Type.newtype(:elasticsearch_user) do
   desc "Type to model Elasticsearch users."
 
-  feature :manages_passwords,
+  feature :manages_encrypted_passwords,
     'The provider can control the password hash without a need
     to explicitly refresh.'
+
+  feature :manages_plaintext_passwords,
+    'The provider can control the password in plaintext form.'
 
   ensurable do
     defaultvalues
@@ -14,7 +17,10 @@ Puppet::Type.newtype(:elasticsearch_user) do
     desc 'User name.'
   end
 
-  newparam(:password) do
+  newparam(
+    :password,
+    :required_features => :manages_plaintext_passwords
+  ) do
     desc 'Plaintext password for user.'
 
     validate do |value|
@@ -33,7 +39,7 @@ Puppet::Type.newtype(:elasticsearch_user) do
 
   newproperty(
     :hashed_password,
-    :required_features => :manages_passwords
+    :required_features => :manages_encrypted_passwords
   ) do
     desc 'Hashed password for user.'
 

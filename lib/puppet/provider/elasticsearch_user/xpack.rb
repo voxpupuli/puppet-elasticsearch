@@ -9,7 +9,7 @@ Puppet::Type.type(:elasticsearch_user).provide(
   xpack_config 'users'
   confine :exists => default_target
 
-  has_feature :manages_passwords
+  has_feature :manages_encrypted_passwords
 
   text_line :comment,
             :match => %r{^\s*#}

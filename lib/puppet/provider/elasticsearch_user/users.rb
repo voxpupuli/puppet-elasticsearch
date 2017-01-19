@@ -6,6 +6,8 @@ Puppet::Type.type(:elasticsearch_user).provide(
 ) do
   desc "Provider for X-Pack file (users) user resources."
 
+  has_feature :manages_plaintext_passwords
+
   mk_resource_methods
 
   commands :users_cli => "#{homedir}/bin/x-pack/users"
