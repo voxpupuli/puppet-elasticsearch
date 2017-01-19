@@ -181,12 +181,15 @@ describe 'elasticsearch x-pack security',
 
           Elasticsearch::Plugin { instances => ['es-01'],  }
 
-
           elasticsearch::role { '#{@role}':
             privileges => {
               'cluster' => [
                 'cluster:monitor/health',
-              ]
+              ],
+              'indices' => [{
+                'names'      => [ '#{test_settings['index']}' ],
+                'privileges' => [ 'create_index', 'delete_index' ],
+              }]
             }
           }
 
@@ -213,6 +216,7 @@ describe 'elasticsearch x-pack security',
       it 'open', :with_retries do should be_listening end
     end
 
+    # Cluster API denial
     describe server :container do
       describe http(
         "http://localhost:#{test_settings['port_a']}/_cluster/stats",
@@ -228,6 +232,7 @@ describe 'elasticsearch x-pack security',
         end
       end
 
+      # Cluser API permitted
       describe http(
         "http://localhost:#{test_settings['port_a']}/_cluster/health",
         {
@@ -238,6 +243,55 @@ describe 'elasticsearch x-pack security',
         }
       ) do
         it 'permits health API access', :with_retries do
+          expect(response.status).to eq(200)
+        end
+      end
+
+      # Index creation permission
+      describe http(
+        "http://localhost:#{test_settings['port_a']}/#{test_settings['index']}",
+        {
+          :basic_auth => [
+            test_settings['security_user'],
+            test_settings['security_password']
+          ],
+          :method => :put
+        }
+      ) do
+        it 'permits index creation', :with_retries do
+          expect(response.status).to eq(200)
+        end
+      end
+
+      # Document indexing denial
+      describe http(
+        "http://localhost:#{test_settings['port_a']}/#{test_settings['index']}/a/b",
+        {
+          :basic_auth => [
+            test_settings['security_user'],
+            test_settings['security_password']
+          ],
+          :method => :put,
+          :body => '{ "foo" => "bar" }'
+        }
+      ) do
+        it 'denies indexing', :with_retries do
+          expect(response.status).to eq(403)
+        end
+      end
+
+      # Index deletion permission
+      describe http(
+        "http://localhost:#{test_settings['port_a']}/#{test_settings['index']}",
+        {
+          :basic_auth => [
+            test_settings['security_user'],
+            test_settings['security_password']
+          ],
+          :method => :delete,
+        }
+      ) do
+        it 'denies indexing', :with_retries do
           expect(response.status).to eq(200)
         end
       end
