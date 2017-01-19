@@ -4,6 +4,7 @@
 
 #### Features
 * Support management of the global jvm.options configuration file.
+* X-Pack support added.
 
 #### Bugfixes
 
