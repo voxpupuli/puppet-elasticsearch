@@ -19,6 +19,10 @@ describe 'elasticsearch x-pack security',
       },
       restart_on_change => true,
       security_plugin => 'x-pack',
+      jvm_options => [
+        '-Xms256m',
+        '-Xmx256m',
+      ],
     }
 
     elasticsearch::plugin { 'x-pack' :  }
