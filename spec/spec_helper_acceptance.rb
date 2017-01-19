@@ -174,3 +174,11 @@ RSpec.configure do |c|
 end
 
 require_relative 'spec_acceptance_common'
+
+# Java 8 is only easy to manage on recent distros
+def is_5x_capable?
+  (fact('osfamily') == 'RedHat' and \
+        not (fact('operatingsystem') == 'OracleLinux' and \
+         fact('operatingsystemmajrelease') == '6')) or \
+    fact('lsbdistcodename') == 'xenial'
+end
