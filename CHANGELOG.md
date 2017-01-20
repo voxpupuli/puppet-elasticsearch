@@ -5,6 +5,7 @@
 #### Features
 * Support management of the global jvm.options configuration file.
 * X-Pack support added.
+* Restricted permissions to the elasticsearch.yml file.
 
 #### Bugfixes
 

@@ -500,6 +500,7 @@ define elasticsearch::instance(
       require  => Class['elasticsearch::package'],
       owner    => $elasticsearch::elasticsearch_user,
       group    => $elasticsearch::elasticsearch_group,
+      mode     => '0440',
     }
 
     $require_service = Class['elasticsearch::package']
