@@ -71,7 +71,6 @@ describe 'elasticsearch', :type => 'class' do
         it { should contain_file('/etc/elasticsearch/jvm.options') }
         it { should contain_file('/usr/share/elasticsearch/templates_import') }
         it { should contain_file('/usr/share/elasticsearch/scripts') }
-        it { should contain_file('/usr/share/elasticsearch/shield') }
         it { should contain_file('/usr/share/elasticsearch') }
         it { should contain_file('/usr/share/elasticsearch/lib') }
         it { should contain_augeas("#{defaults_path}/elasticsearch") }

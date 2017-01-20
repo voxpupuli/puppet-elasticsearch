@@ -1,5 +1,4 @@
 require 'spec_helper_acceptance'
-require 'spec_helper_faraday'
 require 'json'
 
 describe 'elasticsearch::datadir' do
@@ -47,8 +46,7 @@ describe 'elasticsearch::datadir' do
 
     describe server :container do
       describe http(
-        "http://localhost:#{test_settings['port_a']}/_nodes/_local",
-        :faraday_middleware => middleware
+        "http://localhost:#{test_settings['port_a']}/_nodes/_local"
       ) do
         it 'uses a custom data path' do
           json = JSON.parse(response.body)['nodes'].values.first
@@ -104,8 +102,7 @@ describe 'elasticsearch::datadir' do
 
     describe server :container do
       describe http(
-        "http://localhost:#{test_settings['port_a']}/_nodes/_local",
-        :faraday_middleware => middleware
+        "http://localhost:#{test_settings['port_a']}/_nodes/_local"
       ) do
         it 'uses the default data path' do
           json = JSON.parse(response.body)['nodes'].values.first
@@ -168,8 +165,7 @@ describe 'elasticsearch::datadir' do
 
     describe server :container do
       describe http(
-        "http://localhost:#{test_settings['port_a']}/_nodes/_local",
-        :faraday_middleware => middleware
+        "http://localhost:#{test_settings['port_a']}/_nodes/_local"
       ) do
         it 'uses custom data paths' do
           json = JSON.parse(response.body)['nodes'].values.first
@@ -235,8 +231,7 @@ describe 'elasticsearch::datadir' do
 
     describe server :container do
       describe http(
-        "http://localhost:#{test_settings['port_a']}/_nodes/_local",
-        :faraday_middleware => middleware
+        "http://localhost:#{test_settings['port_a']}/_nodes/_local"
       ) do
         it 'uses custom data paths' do
           json = JSON.parse(response.body)['nodes'].values.first
