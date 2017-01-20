@@ -46,7 +46,6 @@ describe Puppet::Provider::ElasticYaml do
     it 'returns sorted yaml' do
       expect(described_class.to_file(unsorted_hash).flattened).to(
         eq(%q{
-          ---
           role:
             alpha: foobar
             beta: foobaz

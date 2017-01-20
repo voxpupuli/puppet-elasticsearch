@@ -1,9 +1,9 @@
 $LOAD_PATH.unshift(File.join(File.dirname(__FILE__),"..","..",".."))
-require 'puppet/provider/parsedfile'
+require 'puppet/provider/elastic_parsedfile'
 require 'puppet/util/package'
 require 'puppet_x/elastic/hash'
 
-class Puppet::Provider::ElasticYaml < Puppet::Provider::ParsedFile
+class Puppet::Provider::ElasticYaml < Puppet::Provider::ElasticParsedFile
 
   class << self
     attr_accessor :metadata
@@ -31,7 +31,10 @@ class Puppet::Provider::ElasticYaml < Puppet::Provider::ParsedFile
     end.inject({}) do |hash, record|
       # Flatten array of hashes into single hash
       hash.merge({ record['name'] => record.delete(@metadata.to_s) })
-    end.extend(Puppet_X::Elastic::SortedHash).to_yaml
+    end.extend(Puppet_X::Elastic::SortedHash).to_yaml.split("\n")
+
+    yaml.shift if yaml.first =~ /---/
+    yaml = yaml.join("\n")
 
     # Puppet < 4 uses ZAML, which prepends spaces in to_yaml ಠ_ಠ
     unless Puppet::Util::Package.versioncmp(Puppet.version, '4') >= 0

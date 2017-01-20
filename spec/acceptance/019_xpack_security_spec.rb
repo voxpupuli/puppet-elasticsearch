@@ -1,25 +1,54 @@
 require 'spec_helper_acceptance'
 require 'json'
 
-describe "elasticsearch shield", :with_certificates, :then_purge do
+describe 'elasticsearch x-pack security',
+         :if => is_5x_capable?,
+         :with_certificates => true,
+         :then_purge => true do
+  if fact('operatingsystemmajrelease') == '6'
+    # Otherwise, grab the Oracle JRE 8 package
+    java_install = false
+    java_snippet = <<-EOS
+      package { 'java-1.7.0-openjdk' :
+        ensure => absent
+      } ->
+      java::oracle { 'jre8':
+        java_se => 'jre',
+      }
+    EOS
+  else
+    # Otherwise the distro should be recent enough to have JRE 1.8
+    java_install = true
+  end
 
   # Template manifest
-  let :base_manifest do <<-EOF
+  let :base_manifest do
+    manifest = <<-EOF
     class { 'elasticsearch' :
-      java_install => true,
+      java_install => #{java_install},
       manage_repo  => true,
-      repo_version => '#{test_settings['repo_version']}',
+      repo_version => '#{test_settings['repo_version5x']}',
       config => {
         'cluster.name' => '#{test_settings['cluster_name']}',
         'http.port' => #{test_settings['port_a']},
+        'network.host' => '0.0.0.0',
       },
       restart_on_change => true,
-      security_plugin => 'shield',
+      security_plugin => 'x-pack',
+      jvm_options => [
+        '-Xms256m',
+        '-Xmx256m',
+      ],
     }
 
-    elasticsearch::plugin { 'elasticsearch/license/latest' :  }
-    elasticsearch::plugin { 'elasticsearch/shield/latest' : }
+    elasticsearch::plugin { 'x-pack' :  }
     EOF
+
+    if not java_install
+      manifest = java_snippet + "->\n" + manifest
+    end
+
+    manifest
   end
 
   describe 'user authentication' do
@@ -34,11 +63,11 @@ describe "elasticsearch shield", :with_certificates, :then_purge do
 
           elasticsearch::user { '#{test_settings['security_user']}':
             password => '#{test_settings['security_password']}',
-            roles    => ['admin'],
+            roles    => ['superuser'],
           }
           elasticsearch::user { '#{test_settings['security_user']}pwchange':
             password => '#{test_settings['security_hashed_password']}',
-            roles    => ['admin'],
+            roles    => ['superuser'],
           }
         EOF
       end
@@ -111,7 +140,7 @@ describe "elasticsearch shield", :with_certificates, :then_purge do
           notify { 'change password' : } ~>
           elasticsearch::user { '#{test_settings['security_user']}pwchange':
             password => '#{test_settings['security_password'][0..5]}',
-            roles    => ['admin'],
+            roles    => ['superuser'],
           }
         EOF
       end
@@ -152,12 +181,15 @@ describe "elasticsearch shield", :with_certificates, :then_purge do
 
           Elasticsearch::Plugin { instances => ['es-01'],  }
 
-
           elasticsearch::role { '#{@role}':
             privileges => {
               'cluster' => [
                 'cluster:monitor/health',
-              ]
+              ],
+              'indices' => [{
+                'names'      => [ '#{test_settings['index']}' ],
+                'privileges' => [ 'create_index', 'delete_index' ],
+              }]
             }
           }
 
@@ -184,6 +216,7 @@ describe "elasticsearch shield", :with_certificates, :then_purge do
       it 'open', :with_retries do should be_listening end
     end
 
+    # Cluster API denial
     describe server :container do
       describe http(
         "http://localhost:#{test_settings['port_a']}/_cluster/stats",
@@ -199,6 +232,7 @@ describe "elasticsearch shield", :with_certificates, :then_purge do
         end
       end
 
+      # Cluser API permitted
       describe http(
         "http://localhost:#{test_settings['port_a']}/_cluster/health",
         {
@@ -209,6 +243,55 @@ describe "elasticsearch shield", :with_certificates, :then_purge do
         }
       ) do
         it 'permits health API access', :with_retries do
+          expect(response.status).to eq(200)
+        end
+      end
+
+      # Index creation permission
+      describe http(
+        "http://localhost:#{test_settings['port_a']}/#{test_settings['index']}",
+        {
+          :basic_auth => [
+            test_settings['security_user'],
+            test_settings['security_password']
+          ],
+          :method => :put
+        }
+      ) do
+        it 'permits index creation', :with_retries do
+          expect(response.status).to eq(200)
+        end
+      end
+
+      # Document indexing denial
+      describe http(
+        "http://localhost:#{test_settings['port_a']}/#{test_settings['index']}/a/b",
+        {
+          :basic_auth => [
+            test_settings['security_user'],
+            test_settings['security_password']
+          ],
+          :method => :put,
+          :body => '{ "foo" => "bar" }'
+        }
+      ) do
+        it 'denies indexing', :with_retries do
+          expect(response.status).to eq(403)
+        end
+      end
+
+      # Index deletion permission
+      describe http(
+        "http://localhost:#{test_settings['port_a']}/#{test_settings['index']}",
+        {
+          :basic_auth => [
+            test_settings['security_user'],
+            test_settings['security_password']
+          ],
+          :method => :delete,
+        }
+      ) do
+        it 'denies indexing', :with_retries do
           expect(response.status).to eq(200)
         end
       end
@@ -235,7 +318,7 @@ describe "elasticsearch shield", :with_certificates, :then_purge do
 
             elasticsearch::user { '#{test_settings['security_user']}':
               password => '#{test_settings['security_password']}',
-              roles => ['admin'],
+              roles => ['superuser'],
             }
           EOF
         end
@@ -282,7 +365,7 @@ describe "elasticsearch shield", :with_certificates, :then_purge do
           base_manifest + %Q{
             elasticsearch::user { '#{test_settings['security_user']}':
               password => '#{test_settings['security_password']}',
-              roles => ['admin'],
+              roles => ['superuser'],
             }
           } + @tls[:clients].each_with_index.map do |cert, i|
             %Q{
@@ -294,7 +377,7 @@ describe "elasticsearch shield", :with_certificates, :then_purge do
                 keystore_password    => '#{@keystore_password}',
                 config => {
                   'discovery.zen.minimum_master_nodes' => %s,
-                  'shield.ssl.hostname_verification' => false,
+                  'xpack.ssl.verification_mode' => 'none',
                   'http.port' => '92%02d',
                 }
               }

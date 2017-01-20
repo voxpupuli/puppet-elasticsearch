@@ -73,11 +73,6 @@ class elasticsearch::config {
         group  => $elasticsearch::elasticsearch_group,
         owner  => $elasticsearch::elasticsearch_user,
         mode   => '0644';
-      "${elasticsearch::params::homedir}/shield":
-        ensure => 'directory',
-        mode   => '0644',
-        group  => '0',
-        owner  => 'root';
       '/etc/elasticsearch/elasticsearch.yml':
         ensure => 'absent';
       '/etc/elasticsearch/logging.yml':
@@ -139,6 +134,10 @@ class elasticsearch::config {
       ensure => 'absent',
       force  => true,
       backup => false,
+    }
+
+    file { "${elasticsearch::configdir}/jvm.options":
+      ensure => 'absent',
     }
 
   }

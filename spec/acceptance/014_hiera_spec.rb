@@ -1,5 +1,4 @@
 require 'spec_helper_acceptance'
-require 'spec_helper_faraday'
 require 'json'
 
 describe 'hiera' do
@@ -46,8 +45,7 @@ describe 'hiera' do
 
     describe server :container do
       describe http(
-        "http://localhost:#{test_settings['port_a']}",
-        :faraday_middleware => middleware
+        "http://localhost:#{test_settings['port_a']}"
       ) do
         it 'serves requests' do
           expect(response.status).to eq(200)
@@ -78,8 +76,7 @@ describe 'hiera' do
 
     describe server :container do
       describe http(
-        "http://localhost:#{test_settings['port_a']}/_cluster/stats",
-        :faraday_middleware => middleware
+        "http://localhost:#{test_settings['port_a']}/_cluster/stats"
       ) do
         it 'reports the plugin as installed', :with_retries do
           plugins = JSON.parse(response.body)['nodes']['plugins'].map do |h|
@@ -129,8 +126,7 @@ describe 'hiera' do
 
     describe server :container do
       describe http(
-        "http://localhost:#{test_settings['port_a']}",
-        :faraday_middleware => middleware
+        "http://localhost:#{test_settings['port_a']}"
       ) do
         it 'serves requests' do
           expect(response.status).to eq(200)
@@ -144,8 +140,7 @@ describe 'hiera' do
 
     describe server :container do
       describe http(
-        "http://localhost:#{test_settings['port_b']}",
-        :faraday_middleware => middleware
+        "http://localhost:#{test_settings['port_b']}"
       ) do
         it 'serves requests' do
           expect(response.status).to eq(200)
