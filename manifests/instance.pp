@@ -58,6 +58,15 @@
 #   Default logging level for Elasticsearch.
 #   Defaults to: INFO
 #
+# [*deprecation_logging*]
+#   Wheter to enable deprecation logging. If enabled, deprecation logs will be
+#   saved to ${cluster.name}_deprecation.log in the elastic search log folder.
+#   Default value: false
+#
+# [*deprecation_logging_level*]
+#   Default deprecation logging level for Elasticsearch.
+#   Defaults to: DEBUG
+#
 # [*init_defaults*]
 #   Defaults file content in hash representation
 #
@@ -152,6 +161,8 @@ define elasticsearch::instance(
   $logging_config                = undef,
   $logging_template              = undef,
   $logging_level                 = $elasticsearch::default_logging_level,
+  $deprecation_logging           = false,
+  $deprecation_logging_level     = 'DEBUG',
   $service_flags                 = undef,
   $init_defaults                 = undef,
   $init_defaults_file            = undef,
