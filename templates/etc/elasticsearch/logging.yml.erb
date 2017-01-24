@@ -14,6 +14,10 @@ rootLogger: <%= @logging_level %>, console, file
 logger.<%= key %>: <%= value %>
 <% end %>
 
+<% if @deprecation_logging -%>
+logger.deprecation: <%= @deprecation_logging_level %>, deprecation_log_file
+<% end -%>
+
 # -------------------------------------------------------------------------------
 
 additivity:
@@ -55,3 +59,13 @@ appender:
     layout:
       type: pattern
       conversionPattern: "[%d{ISO8601}][%-5p][%-25c] %m%n"
+
+<% if @deprecation_logging -%>
+  deprecation_log_file:
+    type: dailyRollingFile
+    file: ${path.logs}/${cluster.name}_deprecation.log
+    datePattern: "'.'yyyy-MM-dd"
+    layout:
+      type: pattern
+      conversionPattern: "[%d{ISO8601}][%-5p][%-25c] %m%n"
+<% end %>

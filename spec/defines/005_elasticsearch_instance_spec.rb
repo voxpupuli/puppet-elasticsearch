@@ -421,6 +421,34 @@ describe 'elasticsearch::instance', :type => 'define' do
         it { should contain_file('/etc/elasticsearch/es-01/logging.yml').with(:source => 'puppet:///path/to/logging.yml', :content => nil) }
       end
 
+      context 'deprecation logging' do
+        let :params do {
+          :deprecation_logging => true
+        } end
+
+        it { should contain_file('/etc/elasticsearch/es-01/logging.yml').with_content(/^logger.deprecation: DEBUG, deprecation_log_file$/).with(:source=> nil) }
+        it { should contain_file('/etc/elasticsearch/es-01/logging.yml')
+          .with_content(
+            /deprecation_log_file:$/,
+            /type: dailyRollingFile$/,
+            /file: ${path.logs}\/\${cluster.name}_deprecation.log$/,
+            /datePattern: "'.'yyyy-MM-dd"$/,
+            /layout:$/,
+            /type: pattern$/,
+            /conversionPattern: "[%d{ISO8601}][%-5p][%-25c] %m%n"$/
+          ).with(:source=>nil)
+        }
+      end
+
+      context 'deprecation logging level' do
+        let :params do {
+          :deprecation_logging => true,
+          :deprecation_logging_level => 'INFO'
+        } end
+
+        it { should contain_file('/etc/elasticsearch/es-01/logging.yml').with_content(/^logger.deprecation: INFO, deprecation_log_file$/).with(:source=> nil) }
+      end
+
     end
 
     describe 'rollingFile apender' do
