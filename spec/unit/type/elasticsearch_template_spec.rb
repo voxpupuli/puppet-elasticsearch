@@ -222,6 +222,28 @@ describe Puppet::Type.type(:elasticsearch_template) do
           }
         })
       end
+
+      it 'detects flat qualified index settings' do
+        expect(described_class.new(
+          :name => resource_name,
+          :content => {
+            'settings' => {
+              'number_of_replicas' => '2',
+              'index.number_of_shards' => '3'
+            }
+          }
+        )[:content]).to eq({
+          'order' => 0,
+          'aliases' => {},
+          'mappings' => {},
+          'settings' => {
+            'index' => {
+              'number_of_replicas' => 2,
+              'number_of_shards' => 3
+            }
+          }
+        })
+      end
     end
   end # of describing when validing values
 end # of describe Puppet::Type
