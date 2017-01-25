@@ -49,8 +49,13 @@ Puppet::Type.newtype(:elasticsearch_template) do
                 val['settings']['index'] = {}
               end
               (val['settings'].keys - ['index']).each do |setting|
-                val['settings']['index'][setting] = \
-                  val['settings'].delete(setting)
+                new_key = if setting.start_with? 'index.'
+                            setting[6..-1]
+                          else
+                            setting
+                          end
+                val['settings']['index'][new_key] = \
+                  val['settings'].delete setting
               end
             end
           end
