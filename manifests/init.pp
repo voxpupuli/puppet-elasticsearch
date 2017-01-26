@@ -657,11 +657,6 @@ class elasticsearch(
       }
     }
 
-    if defined(Class['elasticsearch::package::pin']) {
-      Class['elasticsearch::package::pin']
-      -> Class['elasticsearch::repo']
-    }
-
   }
 
   #### Manage relationships
