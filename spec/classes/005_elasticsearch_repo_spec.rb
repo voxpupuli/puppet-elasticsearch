@@ -21,19 +21,6 @@ describe 'elasticsearch', :type => 'class' do
         default_params
       end
 
-      context 'ordered with package pinning' do
-
-        let :params do
-          default_params
-        end
-
-        it { should contain_class(
-          'elasticsearch::package::pin'
-        ).that_comes_before(
-          'Class[elasticsearch::repo]'
-        ) }
-      end
-
       context "Use anchor type for ordering" do
 
         let :params do
