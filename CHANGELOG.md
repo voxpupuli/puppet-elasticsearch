@@ -10,6 +10,7 @@
 
 #### Bugfixes
 * Fixed case in which index template could prepend an additional 'index.' to index settings.
+* Fixed a case in which dependency cycles could arise when pinning packages on CentOS.
 
 #### Changes
 * sysctl settings are no longer managed by the thias/sysctl module.
