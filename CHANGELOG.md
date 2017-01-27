@@ -1,6 +1,7 @@
-## x.x.x (Month Day, Year)
+## 0.16.0 (January 26, 2017)
 
 ### Summary
+Bugfix release including support for configuring the jvm.options file.
 
 #### Features
 * Support management of the global jvm.options configuration file.
