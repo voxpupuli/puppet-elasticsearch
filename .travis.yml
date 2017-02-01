@@ -40,6 +40,9 @@ matrix:
   - env: DISTRO=sles-12-x64
   - env: DISTRO=sles-12-x64 PE=true
   fast_finish: true
+install:
+- make
+- bundle exec rake spec_prep
 script:
 - make test-$TEST_SUITE
 notifications:
