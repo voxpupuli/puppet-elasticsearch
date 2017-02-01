@@ -1,7 +1,7 @@
 require 'spec_helper_acceptance'
 require 'json'
 
-describe "elasticsearch shield", :with_certificates, :then_purge do
+describe "elasticsearch shield", :with_certificates, :with_cleanup do
 
   # Template manifest
   let :base_manifest do <<-EOF

@@ -33,14 +33,9 @@ RSpec.configure do |c|
         manage_repo => true,
       }
       elasticsearch::instance { 'es-01': ensure => 'absent' }
-
-      file { '/usr/share/elasticsearch/plugin':
-        ensure  => 'absent',
-        force   => true,
-        recurse => true,
-        require => Class['elasticsearch'],
-      }
     EOS
+
+    shell 'rm -rf {/usr/share,/etc,/var/lib}/elasticsearch*'
   end
 
   c.before :context, :with_certificates do
@@ -56,10 +51,6 @@ RSpec.configure do |c|
         create_remote_file hosts, params[:path], params[:pem]
       end
     end
-  end
-
-  c.after :context, :then_purge do
-    shell 'rm -rf {/usr/share,/etc}/elasticsearch'
   end
 end
 
