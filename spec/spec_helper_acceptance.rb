@@ -59,7 +59,7 @@ RSpec.configure do |c|
   end
 
   c.after :context, :then_purge do
-    shell 'rm -rf {/usr/share,/etc}/elasticsearch'
+    shell 'rm -rf {/usr/share,/etc,/var/lib}/elasticsearch*'
   end
 end
 
