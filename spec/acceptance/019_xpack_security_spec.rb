@@ -4,7 +4,7 @@ require 'json'
 describe 'elasticsearch x-pack security',
          :if => is_5x_capable?,
          :with_certificates => true,
-         :with_cleanup => true do
+         :then_purge => true do
   if fact('operatingsystemmajrelease') == '6'
     # Otherwise, grab the Oracle JRE 8 package
     java_install = false
