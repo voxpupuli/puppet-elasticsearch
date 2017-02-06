@@ -97,19 +97,6 @@ describe 'elasticsearch::template', :type => 'define' do
     ) }
   end
 
-  describe 'template from file' do
-
-    let :params do {
-      :ensure => 'present',
-      :file => '/path/to/other_foo.json',
-    } end
-
-    it { should contain_elasticsearch_template('foo').with(
-      :ensure => 'present',
-      :source => '/path/to/other_foo.json',
-    ) }
-  end
-
   describe 'template deletion' do
 
     let :params do {
