@@ -138,10 +138,8 @@ define elasticsearch::service::systemd(
       }
       $new_init_defaults = merge($init_defaults_pre_hash, $init_defaults)
 
-      augeas { "defaults_${name}":
-        incl    => "${elasticsearch::params::defaults_location}/elasticsearch-${name}",
-        lens    => 'Shellvars.lns',
-        changes => template("${module_name}/etc/sysconfig/defaults.erb"),
+      file { "${elasticsearch::params::defaults_location}/elasticsearch-${name}":
+        content => template("${module_name}/etc/sysconfig/defaults.erb"),
         before  => Service["elasticsearch-instance-${name}"],
         notify  => $notify_service,
       }
@@ -167,6 +165,7 @@ define elasticsearch::service::systemd(
         content           => file($init_template),
         defaults_location => $elasticsearch::defaults_location,
         group             => $elasticsearch::elasticsearch_group,
+        homedir           => $elasticsearch::params::homedir,
         instance          => $name,
         memlock           => $memlock,
         nofile            => $nofile,

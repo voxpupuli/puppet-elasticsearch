@@ -34,7 +34,7 @@ describe 'elasticsearch', :type => 'class' do
         it { should contain_elasticsearch__service('es-01') }
         it { should contain_elasticsearch__service__init('es-01') }
         it { should contain_service('elasticsearch-instance-es-01') }
-        it { should contain_augeas('defaults_es-01') }
+        it { should contain_file('/etc/sysconfig/elasticsearch-es-01') }
         it { should contain_file('/etc/elasticsearch/es-01').with(:ensure => 'directory') }
         it { should contain_file('/etc/elasticsearch/es-01/elasticsearch.yml') }
         it { should contain_file('/etc/elasticsearch/es-01/logging.yml') }
@@ -63,7 +63,7 @@ describe 'elasticsearch', :type => 'class' do
         it { should contain_elasticsearch__service('es-01') }
         it { should contain_elasticsearch__service__init('es-01') }
         it { should contain_service('elasticsearch-instance-es-01') }
-        it { should contain_augeas('defaults_es-01') }
+        it { should contain_file('/etc/sysconfig/elasticsearch-es-01') }
         it { should contain_exec('mkdir_configdir_elasticsearch_es-01') }
         it { should contain_file('/etc/elasticsearch/es-01').with(:ensure => 'directory') }
         it { should contain_file('/etc/elasticsearch/es-01/elasticsearch.yml') }
@@ -84,7 +84,7 @@ describe 'elasticsearch', :type => 'class' do
         it { should contain_elasticsearch__service('es-02') }
         it { should contain_elasticsearch__service__init('es-02') }
         it { should contain_service('elasticsearch-instance-es-02') }
-        it { should contain_augeas('defaults_es-02') }
+        it { should contain_file('/etc/sysconfig/elasticsearch-es-02') }
         it { should contain_exec('mkdir_configdir_elasticsearch_es-02') }
         it { should contain_file('/etc/elasticsearch/es-02').with(:ensure => 'directory') }
         it { should contain_file('/etc/elasticsearch/es-02/elasticsearch.yml') }
@@ -169,7 +169,7 @@ describe 'elasticsearch', :type => 'class' do
       it { should contain_elasticsearch__service('default') }
       it { should contain_elasticsearch__service__init('default') }
       it { should contain_service('elasticsearch-instance-default') }
-      it { should contain_augeas('defaults_default') }
+      it { should contain_file('/etc/sysconfig/elasticsearch-default') }
       it { should contain_exec('mkdir_configdir_elasticsearch_default') }
       it { should contain_file('/etc/elasticsearch/default').with(:ensure => 'directory') }
       it { should contain_file('/etc/elasticsearch/default/elasticsearch.yml') }
@@ -190,7 +190,7 @@ describe 'elasticsearch', :type => 'class' do
       it { should contain_elasticsearch__service('es-01') }
       it { should contain_elasticsearch__service__init('es-01') }
       it { should contain_service('elasticsearch-instance-es-01') }
-      it { should contain_augeas('defaults_es-01') }
+      it { should contain_file('/etc/sysconfig/elasticsearch-es-01') }
       it { should contain_exec('mkdir_configdir_elasticsearch_es-01') }
       it { should contain_file('/etc/elasticsearch/es-01').with(:ensure => 'directory') }
       it { should contain_file('/etc/elasticsearch/es-01/elasticsearch.yml') }

@@ -73,7 +73,7 @@ describe 'elasticsearch::service::systemd', :type => 'define' do
         it { should contain_elasticsearch__service__systemd('es-01') }
         it { should contain_service('elasticsearch-instance-es-01')
           .with(:enable => false) }
-        it { should contain_augeas('defaults_es-01') }
+        it { should contain_file('/etc/sysconfig/elasticsearch-es-01') }
 
       end
 
@@ -100,17 +100,18 @@ describe 'elasticsearch::service::systemd', :type => 'define' do
             :init_defaults => {'ES_HOME' => '/usr/share/elasticsearch' }
           } end
 
-          it { should contain_augeas('defaults_es-01')
-            .with(
-              :incl => '/etc/sysconfig/elasticsearch-es-01',
-              :changes => [
-                "set ES_GROUP 'elasticsearch'",
-                "set ES_HOME '/usr/share/elasticsearch'",
-                "set ES_USER 'elasticsearch'",
-                "set MAX_OPEN_FILES '65536'"
-              ].join("\n") << "\n",
-              :before => 'Service[elasticsearch-instance-es-01]'
-          ) }
+          it do
+            should contain_file(
+              '/etc/sysconfig/elasticsearch-es-01'
+            ).with_content(%r{
+                ES_GROUP=elasticsearch\n
+                ES_HOME=/usr/share/elasticsearch\n
+                ES_USER=elasticsearch\n
+                MAX_OPEN_FILES=65536\n
+            }xm).that_comes_before(
+              'Service[elasticsearch-instance-es-01]'
+            )
+          end
         end
 
         context 'restarts when "restart_on_change" is true' do
@@ -148,27 +149,20 @@ describe 'elasticsearch::service::systemd', :type => 'define' do
               }
             } end
 
-            it { should contain_augeas(
-              'defaults_es-01'
-            ).with(
-              :incl => '/etc/sysconfig/elasticsearch-es-01',
-              :changes => [
-                "set ES_GROUP 'elasticsearch'",
-                "set ES_HOME '/usr/share/elasticsearch'",
-                "set ES_USER 'elasticsearch'",
-                "set MAX_OPEN_FILES '65536'"
-              ].join("\n") << "\n"
-            )}
-            it { should contain_augeas(
-              'defaults_es-01'
-            ).that_comes_before(
-              'Service[elasticsearch-instance-es-01]'
-            ) }
-            it { should contain_augeas(
-              'defaults_es-01'
-            ).that_notifies(
-              'Exec[systemd_reload_es-01]'
-            ) }
+            it do
+              should contain_file(
+                '/etc/sysconfig/elasticsearch-es-01'
+              ).with_content(%r{
+                  ES_GROUP=elasticsearch\n
+                  ES_HOME=/usr/share/elasticsearch\n
+                  ES_USER=elasticsearch\n
+                  MAX_OPEN_FILES=65536\n
+              }xm).that_comes_before(
+                'Service[elasticsearch-instance-es-01]'
+              ).that_notifies(
+                'Service[elasticsearch-instance-es-01]'
+              )
+            end
           end
         end
 

@@ -57,12 +57,12 @@ describe 'elasticsearch::instance', :type => 'define' do
           "elasticsearch/etc/init.d/elasticsearch.#{initscript}.erb",
         :init_defaults => {
           "CONF_DIR"  => "/etc/elasticsearch/es-01",
-          "CONF_FILE" => "/etc/elasticsearch/es-01/elasticsearch.yml",
           "DATA_DIR"  => "$ES_HOME/data",
           "LOG_DIR"   => "/var/log/elasticsearch/es-01",
           "ES_HOME"   => "/usr/share/elasticsearch"
         }
       )}
+    it { should contain_file("#{defaults_path}/elasticsearch-es-01") }
 
     end # of on os context
   end # of on supported OSes loop
