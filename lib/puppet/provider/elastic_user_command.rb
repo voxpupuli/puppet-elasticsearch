@@ -1,6 +1,6 @@
 class Puppet::Provider::ElasticUserCommand < Puppet::Provider
 
-  attr_accessor :command_arguments, :homedir
+  attr_accessor :homedir
 
   def self.homedir
     @homedir ||= case Facter.value('osfamily')
@@ -11,13 +11,8 @@ class Puppet::Provider::ElasticUserCommand < Puppet::Provider
                  end
   end
 
-  def self.command_arguments
-    @command_arguments || []
-  end
-
-  def self.command_with_path args
-    args = [args] unless args.is_a? Array
-    users_cli(args + command_arguments)
+  def self.command_with_path(args)
+    users_cli(args.is_a?(Array) ? args : [args])
   end
 
   def self.fetch_users
