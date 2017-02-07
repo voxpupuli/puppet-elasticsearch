@@ -58,7 +58,7 @@ describe 'elasticsearch::instance', :type => 'define' do
         :init_defaults => {
           "CONF_DIR"  => "/etc/elasticsearch/es-01",
           "CONF_FILE" => "/etc/elasticsearch/es-01/elasticsearch.yml",
-          "DATA_DIR"  => "$ES_HOME/data",
+          "DATA_DIR"  => "/var/lib/elasticsearch",
           "LOG_DIR"   => "/var/log/elasticsearch/es-01",
           "ES_HOME"   => "/usr/share/elasticsearch"
         }
@@ -202,8 +202,8 @@ describe 'elasticsearch::instance', :type => 'define' do
     context 'default' do
       it { should contain_exec('mkdir_logdir_elasticsearch_es-01') }
       it { should contain_exec('mkdir_datadir_elasticsearch_es-01') }
-      it { should contain_file('/usr/share/elasticsearch/data/es-01').with( :ensure => 'directory') }
-      it { should contain_file('/usr/share/elasticsearch/data').with( :ensure => 'directory') }
+      it { should contain_file('/var/lib/elasticsearch/es-01').with( :ensure => 'directory') }
+      it { should contain_file('/var/lib/elasticsearch').with( :ensure => 'directory') }
     end
 
     context 'single from main config ' do
@@ -480,7 +480,7 @@ describe 'elasticsearch::instance', :type => 'define' do
     EOS
     }
 
-    it { should contain_file('/usr/share/elasticsearch/data/es-01').with(:owner => 'myesuser') }
+    it { should contain_file('/var/lib/elasticsearch/es-01').with(:owner => 'myesuser') }
     it { should contain_file('/etc/elasticsearch/es-01').with(:owner => 'myesuser', :group => 'myesgroup') }
     it { should contain_datacat('/etc/elasticsearch/es-01/elasticsearch.yml').with(:owner => 'myesuser', :group => 'myesgroup') }
     it { should contain_file('/etc/elasticsearch/es-01/elasticsearch.yml').with(:owner => 'myesuser', :group => 'myesgroup') }

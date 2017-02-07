@@ -47,14 +47,14 @@ describe '::elasticsearch' do
     describe file('/etc/elasticsearch/es-01/elasticsearch.yml') do
       it { should be_file }
       it { should contain 'name: elasticsearch001' }
-      it { should contain "/usr/share/elasticsearch/data/es-01" }
+      it { should contain "/var/lib/elasticsearch/es-01" }
     end
 
     describe file('/usr/share/elasticsearch/templates_import') do
       it { should be_directory }
     end
 
-    describe file('/usr/share/elasticsearch/data/es-01') do
+    describe file('/var/lib/elasticsearch/es-01') do
       it { should be_directory }
     end
 
@@ -83,7 +83,7 @@ describe '::elasticsearch' do
           expect(
             json['settings']['path']
           ).to include(
-              'data' => '/usr/share/elasticsearch/data/es-01'
+              'data' => '/var/lib/elasticsearch/es-01'
           )
         end
       end
