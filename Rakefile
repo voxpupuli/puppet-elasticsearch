@@ -1,3 +1,4 @@
+# rubocop:disable Style/FileName
 require 'rubygems'
 require 'puppetlabs_spec_helper/rake_tasks'
 require 'net/http'
@@ -8,6 +9,7 @@ require 'puppet-doc-lint/rake_task'
 require 'yaml'
 require 'json'
 
+# Workaround for certain rspec/beaker versions
 module TempFixForRakeLastComment
   def last_comment
     last_description
@@ -27,30 +29,31 @@ require 'puppet-syntax/tasks/puppet-syntax'
 PuppetSyntax.exclude_paths = exclude_paths
 PuppetSyntax.future_parser = true if ENV['FUTURE_PARSER'] == 'true'
 
-[
-  '80chars',
-  'class_inherits_from_params_class',
-  'class_parameter_defaults',
-  'documentation',
-  'single_quote_string_with_variables'
-].each do |check|
+%w(
+  80chars
+  class_inherits_from_params_class
+  class_parameter_defaults
+  documentation
+  single_quote_string_with_variable
+).each do |check|
   PuppetLint.configuration.send("disable_#{check}")
 end
 
 PuppetLint.configuration.ignore_paths = exclude_paths
-PuppetLint.configuration.log_format = "%{path}:%{line}:%{check}:%{KIND}:%{message}"
+PuppetLint.configuration.log_format = \
+  '%{path}:%{line}:%{check}:%{KIND}:%{message}'
 
 desc 'remove outdated module fixtures'
 task :spec_prune do
   mods = 'spec/fixtures/modules'
   fixtures = YAML.load_file '.fixtures.yml'
   fixtures['fixtures']['forge_modules'].each do |mod, params|
-    if params.is_a? Hash and params.key? 'ref' and File.exists? "#{mods}/#{mod}"
-      metadata = JSON.parse(File.read("#{mods}/#{mod}/metadata.json"))
-      unless metadata['version'] == params['ref']
-        FileUtils.rm_rf "#{mods}/#{mod}"
-      end
-    end
+    next unless params.is_a? Hash \
+      and params.key? 'ref' \
+      and File.exist? "#{mods}/#{mod}"
+
+    metadata = JSON.parse(File.read("#{mods}/#{mod}/metadata.json"))
+    FileUtils.rm_rf "#{mods}/#{mod}" unless metadata['version'] == params['ref']
   end
 end
 task :spec_prep => [:spec_prune]
@@ -61,10 +64,8 @@ task :spec_docs do
     FileList['**/*.pp'].exclude(*exclude_paths)
   )
 
-  results.each { |result| result.result_report }
-  if results.map(&:percent_documented).any?{|n| n < 100}
-    abort 'Issues found!'
-  end
+  results.each(&:result_report)
+  abort 'Issues found' if results.map(&:percent_documented).any? { |n| n < 100 }
 end
 
 RSpec::Core::RakeTask.new(:spec_verbose) do |t|
@@ -98,70 +99,70 @@ RSpec::Core::RakeTask.new('beaker:acceptance') do |c|
 end
 task 'beaker:acceptance' => [:spec_prep, 'artifacts:prep']
 
-
-if not ENV['BEAKER_IS_PE'].nil? and ENV['BEAKER_IS_PE'] == 'true'
+if !ENV['BEAKER_IS_PE'].nil? and ENV['BEAKER_IS_PE'] == 'true'
   task :beaker => 'artifacts:pe'
   task 'beaker:integration' => 'artifacts:pe'
   task 'beaker:acceptance' => 'artifacts:pe'
 end
 
-
+# rubocop:disable Metrics/BlockLength
 namespace :artifacts do
-  desc "Fetch artifacts for tests"
+  desc 'Fetch artifacts for tests'
   task :prep do
-    fetch_archives({
-    'https://github.com/lmenezes/elasticsearch-kopf/archive/v2.1.1.zip' => 'elasticsearch-kopf.zip',
-    'https://download.elastic.co/elasticsearch/elasticsearch/elasticsearch-2.3.5.deb' => 'elasticsearch-2.3.5.deb',
-    'https://download.elastic.co/elasticsearch/elasticsearch/elasticsearch-2.3.5.rpm' => 'elasticsearch-2.3.5.rpm',
-  })
+    dl_base = 'https://download.elastic.co/elasticsearch/elasticsearch'
+    fetch_archives(
+      'https://github.com/lmenezes/elasticsearch-kopf/archive/v2.1.1.zip' => \
+        'elasticsearch-kopf.zip',
+      "#{dl_base}/elasticsearch-2.3.5.deb" => 'elasticsearch-2.3.5.deb',
+      "#{dl_base}/elasticsearch-2.3.5.rpm" => 'elasticsearch-2.3.5.rpm'
+    )
   end
 
-  desc "Retrieve PE archives"
+  desc 'Retrieve PE archives'
   task :pe do
-    if not ENV['BEAKER_set'].nil?
+    if !ENV['BEAKER_set'].nil?
       case ENV['BEAKER_set']
-      when /centos-(\d)/
+      when /centos-(?<release>\d)/
         distro = 'el'
-        version = $1
-        arch = "x86_64"
-      when /(debian)-(\d)/
-        distro = $1
-        version = $2
-        arch = "amd64"
-      when /(sles)-(\d+)/
-        distro = $1
-        version = $2
-        arch = "x86_64"
-      when /(ubuntu)-server-(12|14)/
-        distro = $1
-        version = "#{$2}.04"
-        arch = "amd64"
+        version = Regexp.last_match(:release)
+        arch = 'x86_64'
+      when /(?<distro>debian)-(?<release>\d)/
+        distro = Regexp.last_match(:distro)
+        version = Regexp.last_match(:release)
+        arch = 'amd64'
+      when /(?<distro>sles)-(?<release>\d+)/
+        distro = Regexp.last_match(:distro)
+        version = Regexp.last_match(:release)
+        arch = 'x86_64'
+      when /(?<distro>ubuntu)-server-(?<release>12|14)/
+        distro = Regexp.last_match(:distro)
+        version = "#{Regexp.last_match(:release)}.04"
+        arch = 'amd64'
       else
         puts "Could not find PE version for #{ENV['BEAKER_set']}"
         return
       end
-      pe_version = ENV['BEAKER_PE_VER']
-      file = "puppet-enterprise-#{pe_version}-#{distro}-#{version}-#{arch}.tar.gz"
-      fetch_archives({
-        "https://s3.amazonaws.com/pe-builds/released/#{pe_version}/#{file}" => file
-      })
+      pe_ver = ENV['BEAKER_PE_VER']
+      file = "puppet-enterprise-#{pe_ver}-#{distro}-#{version}-#{arch}.tar.gz"
+      fetch_archives(
+        "https://s3.amazonaws.com/pe-builds/released/#{pe_ver}/#{file}" => file
+      )
     else
-      puts "No nodeset set, skipping PE artifact retrieval"
+      puts 'No nodeset set, skipping PE artifact retrieval'
     end
   end
 
-  desc "Purge fetched artifacts"
+  desc 'Purge fetched artifacts'
   task :clean do
     FileUtils.rm_rf(Dir.glob('spec/fixtures/artifacts/*'))
   end
 end
 
-def fetch_archives archives
+def fetch_archives(archives)
   archives.each do |url, fp|
     fp.replace "spec/fixtures/artifacts/#{fp}"
-    if File.exists? fp
-      if fp.end_with? 'tar.gz' and \
-          not system("tar -tzf #{fp} &>/dev/null")
+    if File.exist? fp
+      if fp.end_with? 'tar.gz' and !system("tar -tzf #{fp} &>/dev/null")
         puts "Archive #{fp} corrupt, re-fetching..."
         File.delete fp
       else
@@ -173,11 +174,11 @@ def fetch_archives archives
   end
 end
 
-def get url, file_path
+def get(url, file_path)
   puts "Fetching #{url}..."
   found = false
   until found
-    uri = URI::parse(url)
+    uri = URI.parse(url)
     conn = Net::HTTP.new(uri.host, uri.port)
     conn.use_ssl = true
     res = conn.get(uri.path)
