@@ -125,8 +125,8 @@ describe 'elasticsearch::datadir' do
           repo_version => '#{test_settings['repo_version']}',
           java_install => true,
           datadir => [
-            '/var/lib/elasticsearch/01',
-            '/var/lib/elasticsearch/02'
+            '/var/lib/elasticsearch-01',
+            '/var/lib/elasticsearch-02'
           ]
         }
 
@@ -148,14 +148,14 @@ describe 'elasticsearch::datadir' do
 
     describe file('/etc/elasticsearch/es-01/elasticsearch.yml') do
       it { should be_file }
-      it { should contain '/var/lib/elasticsearch/01/es-01' }
-      it { should contain '/var/lib/elasticsearch/02/es-01' }
+      it { should contain '/var/lib/elasticsearch-01/es-01' }
+      it { should contain '/var/lib/elasticsearch-02/es-01' }
     end
 
-    describe file '/var/lib/elasticsearch/01/es-01' do
+    describe file '/var/lib/elasticsearch-01/es-01' do
       it { should be_directory }
     end
-    describe file '/var/lib/elasticsearch/02/es-01' do
+    describe file '/var/lib/elasticsearch-02/es-01' do
       it { should be_directory }
     end
 
@@ -172,8 +172,8 @@ describe 'elasticsearch::datadir' do
           expect(
             json['settings']['path']['data']
           ).to contain_exactly(
-            '/var/lib/elasticsearch/01/es-01',
-            '/var/lib/elasticsearch/02/es-01'
+            '/var/lib/elasticsearch-01/es-01',
+            '/var/lib/elasticsearch-02/es-01'
           )
         end
       end
