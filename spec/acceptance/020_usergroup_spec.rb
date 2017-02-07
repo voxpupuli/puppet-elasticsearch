@@ -1,12 +1,8 @@
 require 'spec_helper_acceptance'
 
-describe 'elasticsearch::elasticsearch_user' do
+describe 'elasticsearch::elasticsearch_user', :then_purge do
   describe 'changing service user', :with_cleanup do
     describe 'manifest' do
-      before :all do
-        shell 'rm -rf /usr/share/elasticsearch'
-      end
-
       pp = <<-EOS
         user { 'esuser':
           ensure => 'present',
@@ -83,9 +79,5 @@ describe 'elasticsearch::elasticsearch_user' do
         end
       end
     end
-  end
-
-  after :all do
-    shell 'rm -rf /usr/share/elasticsearch'
   end
 end
