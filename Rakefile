@@ -112,7 +112,7 @@ namespace :artifacts do
     fetch_archives({
     'https://github.com/lmenezes/elasticsearch-kopf/archive/v2.1.1.zip' => 'elasticsearch-kopf.zip',
     'https://download.elastic.co/elasticsearch/elasticsearch/elasticsearch-2.3.5.deb' => 'elasticsearch-2.3.5.deb',
-    'https://download.elastic.co/elasticsearch/elasticsearch/elasticsearch-2.3.5.noarch.rpm' => 'elasticsearch-2.3.5.noarch.rpm',
+    'https://download.elastic.co/elasticsearch/elasticsearch/elasticsearch-2.3.5.rpm' => 'elasticsearch-2.3.5.rpm',
   })
   end
 
