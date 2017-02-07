@@ -116,7 +116,6 @@ class elasticsearch::config {
     if $elasticsearch::params::defaults_location {
       file { "${elasticsearch::params::defaults_location}/elasticsearch":
         content => template("${module_name}/etc/sysconfig/defaults.erb"),
-        before  => Service["elasticsearch-instance-${name}"],
       }
     }
 

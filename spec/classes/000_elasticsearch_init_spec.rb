@@ -73,7 +73,7 @@ describe 'elasticsearch', :type => 'class' do
         it { should contain_file('/usr/share/elasticsearch/scripts') }
         it { should contain_file('/usr/share/elasticsearch') }
         it { should contain_file('/usr/share/elasticsearch/lib') }
-        it { should contain_augeas("#{defaults_path}/elasticsearch") }
+        it { should contain_file("#{defaults_path}/elasticsearch") }
 
         it { should contain_exec('remove_plugin_dir') }
 
