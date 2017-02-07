@@ -425,6 +425,7 @@ class elasticsearch(
 
   anchor {'elasticsearch::begin': }
 
+  $is_newer_puppet = (versioncmp($::clientversion,'4.4.0') >= 0)
 
   #### Validate parameters
 
@@ -434,7 +435,9 @@ class elasticsearch(
   }
 
   # autoupgrade
-  validate_bool($autoupgrade)
+  if $is_newer_puppet { validate_legacy(Boolean,'validate_bool',$autoupgrade) } else {
+    validate_bool($autoupgrade)
+  }
 
   # service status
   if ! ($status in [ 'enabled', 'disabled', 'running', 'unmanaged' ]) {
@@ -445,23 +448,42 @@ class elasticsearch(
     fail("\"${file_rolling_type}\" is not a valid type")
   }
 
-  validate_array($jvm_options)
-  validate_integer($rolling_file_max_backup_index)
-  validate_string($daily_rolling_date_pattern)
-  validate_string($rolling_file_max_file_size)
+  if $is_newer_puppet { validate_legacy(Array,'validate_array',$jvm_options) } else {
+    validate_array($jvm_options)
+  }
+  if $is_newer_puppet { validate_legacy(Integer,'validate_integer',$rolling_file_max_backup_index) } else {
+    validate_integer($rolling_file_max_backup_index)
+  }
+  if $is_newer_puppet { validate_legacy(String,'validate_string',$daily_rolling_date_pattern) } else {
+    validate_string($daily_rolling_date_pattern)
+  }
+  if $is_newer_puppet { validate_legacy(String,'validate_string',$rolling_file_max_file_size) } else {
+    validate_string($rolling_file_max_file_size)
+  }
 
   # restart on change
-  validate_bool(
-    $restart_on_change,
-    $restart_config_change,
-    $restart_package_change,
-    $restart_plugin_change
-  )
+  if $is_newer_puppet {
+    validate_legacy(Boolean,'validate_bool',
+      $restart_on_change,
+      $restart_config_change,
+      $restart_package_change,
+      $restart_plugin_change
+    )
+  } else {
+    validate_bool(
+      $restart_on_change,
+      $restart_config_change,
+      $restart_package_change,
+      $restart_plugin_change
+    )
+  }
 
   # purge conf dir
-  validate_bool($purge_configdir)
+  if $is_newer_puppet { validate_legacy(Boolean,'validate_bool',$purge_configdir) } else {
+    validate_bool($purge_configdir)
+  }
 
-  if is_array($elasticsearch::params::service_providers) {
+  if count( any2array($elasticsearch::params::service_providers) ) > 1 {
     # Verify the service provider given is in the array
     if ! ($service_provider in $elasticsearch::params::service_providers) {
       fail("\"${service_provider}\" is not a valid provider for \"${::operatingsystem}\"")
@@ -479,27 +501,42 @@ class elasticsearch(
   if $ensure == 'present' {
     # validate config hash
     if ($config != undef) {
-      validate_hash($config)
+      if $is_newer_puppet { validate_legacy(Hash,'validate_hash',$config) } else {
+        validate_hash($config)
+      }
     }
 
     if ($logging_config != undef) {
-      validate_hash($logging_config)
+      if $is_newer_puppet { validate_legacy(Hash,'validate_hash',$logging_config) } else {
+        validate_hash($logging_config)
+      }
     }
   }
 
   # java install validation
-  validate_bool($java_install)
+  if $is_newer_puppet { validate_legacy(Boolean,'validate_bool',$java_install) } else {
+    validate_bool($java_install)
+  }
 
-  validate_bool(
-    $manage_repo,
-    $package_pin
-  )
+  if $is_newer_puppet {
+    validate_legacy(Boolean,'validate_bool',
+      $manage_repo,
+      $package_pin
+    )
+   } else {
+    validate_bool(
+      $manage_repo,
+      $package_pin
+    )
+  }
 
   if ($manage_repo == true and $ensure == 'present') {
     if $repo_version == undef {
       fail('Please fill in a repository version at $repo_version')
     } else {
-      validate_string($repo_version)
+      if $is_newer_puppet { validate_legacy(String,'validate_string',$repo_version) } else {
+        validate_string($repo_version)
+      }
     }
   }
 
@@ -520,51 +557,79 @@ class elasticsearch(
 
   # Various parameters governing API access to Elasticsearch, handling
   # deprecated params.
-  validate_string($api_protocol, $api_host)
+  if $is_newer_puppet { validate_legacy(String,'validate_string',$api_protocol, $api_host) } else {
+    validate_string($api_protocol, $api_host)
+  }
   if $use_ssl != undef {
-    validate_bool($use_ssl)
+    if $is_newer_puppet { validate_legacy(Boolean,'validate_bool',$use_ssl) } else {
+      validate_bool($use_ssl)
+    }
     warning('"use_ssl" parameter is deprecated; set $api_protocol to "https" instead')
     $_api_protocol = 'https'
   } else {
     $_api_protocol = $api_protocol
   }
 
-  validate_bool($validate_tls)
+  if $is_newer_puppet { validate_legacy(Boolean,'validate_bool',$validate_tls) } else {
+    validate_bool($validate_tls)
+  }
   if $validate_ssl != undef {
-    validate_bool($validate_ssl)
+    if $is_newer_puppet { validate_legacy(Boolean,'validate_bool',$validate_ssl) } else {
+      validate_bool($validate_ssl)
+    }
     warning('"validate_ssl" parameter is deprecated; use $validate_tls instead')
     $_validate_tls = $validate_ssl
   } else {
     $_validate_tls = $validate_tls
   }
 
-  if $api_basic_auth_username { validate_string($api_basic_auth_username) }
+  if $api_basic_auth_username {
+    if $is_newer_puppet { validate_legacy(String,'validate_string',$api_basic_auth_username) } else {
+      validate_string($api_basic_auth_username)
+    }
+  }
   if $ssl_user != undef {
-    validate_string($ssl_user)
+    if $is_newer_puppet { validate_legacy(String,'validate_string',$ssl_user) } else {
+      validate_string($ssl_user)
+    }
     warning('"ssl_user" parameter is deprecated; use $api_basic_auth_username instead')
     $_api_basic_auth_username = $ssl_user
   } else {
     $_api_basic_auth_username = $api_basic_auth_username
   }
 
-  if $api_basic_auth_password { validate_string($api_basic_auth_password) }
+  if $api_basic_auth_password {
+    if $is_newer_puppet { validate_legacy(String,'validate_string',$api_basic_auth_password) } else {
+      validate_string($api_basic_auth_password)
+    }
+  }
   if $ssl_password != undef {
-    validate_string($ssl_password)
+    if $is_newer_puppet { validate_legacy(String,'validate_string',$ssl_password) } else {
+      validate_string($ssl_password)
+    }
     warning('"ssl_password" parameter is deprecated; use $api_basic_auth_password instead')
     $_api_basic_auth_password = $ssl_password
   } else {
     $_api_basic_auth_password = $api_basic_auth_password
   }
 
-  if ! is_integer($api_timeout) {
+  if $is_newer_puppet {
+    validate_legacy(Integer,'is_integer',$api_timeout)
+  } elsif ! is_integer($api_timeout) {
     fail("'${api_timeout}' is not an integer")
   }
 
-  if ! is_integer($api_port) {
+  if $is_newer_puppet {
+    validate_legacy(Integer,'is_integer',$api_port)
+  } elsif ! is_integer($api_port) {
     fail("'${api_port}' is not an integer")
   }
 
-  if $system_key != undef { validate_string($system_key) }
+  if $system_key != undef {
+    if $is_newer_puppet { validate_legacy(String,'validate_string',$system_key) } else {
+      validate_string($system_key)
+    }
+  }
 
   #### Manage actions
 
@@ -575,7 +640,9 @@ class elasticsearch(
   class { 'elasticsearch::config': }
 
   # Hiera support for configuration hash
-  validate_bool($config_hiera_merge)
+  if $is_newer_puppet { validate_legacy(Boolean,'validate_bool',$config_hiera_merge) } else {
+    validate_bool($config_hiera_merge)
+  }
 
   if $config_hiera_merge == true {
     $x_config = hiera_hash('elasticsearch::config', $config)
@@ -584,7 +651,9 @@ class elasticsearch(
   }
 
   # Hiera support for instances
-  validate_bool($instances_hiera_merge)
+  if $is_newer_puppet { validate_legacy(Boolean,'validate_bool',$instances_hiera_merge) } else {
+    validate_bool($instances_hiera_merge)
+  }
 
   if $instances_hiera_merge == true {
     $x_instances = hiera_hash('elasticsearch::instances', $::elasticsearch::instances)
@@ -593,12 +662,16 @@ class elasticsearch(
   }
 
   if $x_instances {
-    validate_hash($x_instances)
+    if $is_newer_puppet { validate_legacy(Hash,'validate_hash',$x_instances) } else {
+      validate_hash($x_instances)
+    }
     create_resources('elasticsearch::instance', $x_instances)
   }
 
   # Hiera support for plugins
-  validate_bool($plugins_hiera_merge)
+  if $is_newer_puppet { validate_legacy(Boolean,'validate_bool',$plugins_hiera_merge) } else {
+    validate_bool($plugins_hiera_merge)
+  }
 
   if $plugins_hiera_merge == true {
     $x_plugins = hiera_hash('elasticsearch::plugins', $::elasticsearch::plugins)
@@ -607,7 +680,9 @@ class elasticsearch(
   }
 
   if $x_plugins {
-    validate_hash($x_plugins)
+    if $is_newer_puppet { validate_legacy(Hash,'validate_hash',$x_plugins) } else {
+      validate_hash($x_plugins)
+    }
     create_resources('elasticsearch::plugin', $x_plugins)
   }
 
