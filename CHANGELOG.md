@@ -16,6 +16,7 @@
 #### Changes
 * sysctl settings are no longer managed by the thias/sysctl module.
 * Calls to `elasticsearch -version` in elasticsearch::plugin code replaced with native Puppet code to resolve Elasticsearch package version. Should improve resiliency when managing plugins.
+* Removed deprecated ceritsc/yum module in favor of puppet/yum.
 
 #### Testing changes
 

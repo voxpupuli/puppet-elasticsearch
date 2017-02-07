@@ -5,6 +5,8 @@ require 'uri'
 require 'fileutils'
 require 'rspec/core/rake_task'
 require 'puppet-doc-lint/rake_task'
+require 'yaml'
+require 'json'
 
 module TempFixForRakeLastComment
   def last_comment
@@ -36,7 +38,22 @@ PuppetSyntax.future_parser = true if ENV['FUTURE_PARSER'] == 'true'
 end
 
 PuppetLint.configuration.ignore_paths = exclude_paths
-PuppetLint.configuration.log_format = "%{path}:%{linenumber}:%{check}:%{KIND}:%{message}"
+PuppetLint.configuration.log_format = "%{path}:%{line}:%{check}:%{KIND}:%{message}"
+
+desc 'remove outdated module fixtures'
+task :spec_prune do
+  mods = 'spec/fixtures/modules'
+  fixtures = YAML.load_file '.fixtures.yml'
+  fixtures['fixtures']['forge_modules'].each do |mod, params|
+    if params.is_a? Hash and params.key? 'ref' and File.exists? "#{mods}/#{mod}"
+      metadata = JSON.parse(File.read("#{mods}/#{mod}/metadata.json"))
+      unless metadata['version'] == params['ref']
+        FileUtils.rm_rf "#{mods}/#{mod}"
+      end
+    end
+  end
+end
+task :spec_prep => [:spec_prune]
 
 desc 'Run documentation tests'
 task :spec_docs do

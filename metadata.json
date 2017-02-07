@@ -26,7 +26,7 @@
       "version_requirement": ">= 4.6.0 < 5.0.0"
     },
     {
-      "name": "ceritsc/yum",
+      "name": "puppet/yum",
       "version_requirement": ">= 0.9.6"
     }
   ],
