@@ -20,7 +20,8 @@ describe 'elasticsearch::package_url' do
           java_install => true,
           config => {
             'node.name' => 'elasticsearch001',
-            'cluster.name' => '#{test_settings['cluster_name']}'
+            'cluster.name' => '#{test_settings['cluster_name']}',
+            'network.host' => '0.0.0.0',
           }
         }
 
@@ -44,7 +45,7 @@ describe 'elasticsearch::package_url' do
       it { should be_running }
     end
 
-    describe file(test_settings['pid_file_a']) do
+    describe file(test_settings['pid_a']) do
       it { should be_file }
       its(:content) { should match(/[0-9]+/) }
     end
@@ -72,7 +73,8 @@ describe 'elasticsearch::package_url' do
           java_install => true,
           config => {
             'node.name' => 'elasticsearch001',
-            'cluster.name' => '#{test_settings['cluster_name']}'
+            'cluster.name' => '#{test_settings['cluster_name']}',
+            'network.host' => '0.0.0.0',
           }
         }
 
@@ -96,7 +98,7 @@ describe 'elasticsearch::package_url' do
       it { should be_running }
     end
 
-    describe file(test_settings['pid_file_a']) do
+    describe file(test_settings['pid_a']) do
       it { should be_file }
       its(:content) { should match(/[0-9]+/) }
     end
@@ -125,7 +127,8 @@ describe 'elasticsearch::package_url' do
           java_install => true,
           config => {
             'node.name' => 'elasticsearch001',
-            'cluster.name' => '#{test_settings['cluster_name']}'
+            'cluster.name' => '#{test_settings['cluster_name']}',
+            'network.host' => '0.0.0.0',
           }
         }
 
@@ -149,7 +152,7 @@ describe 'elasticsearch::package_url' do
       it { should be_running }
     end
 
-    describe file(test_settings['pid_file_a']) do
+    describe file(test_settings['pid_a']) do
       it { should be_file }
       its(:content) { should match(/[0-9]+/) }
     end

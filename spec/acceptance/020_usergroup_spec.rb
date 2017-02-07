@@ -13,7 +13,8 @@ describe 'elasticsearch::elasticsearch_user', :then_purge do
 
         class { 'elasticsearch':
           config => {
-            'cluster.name' => '#{test_settings['cluster_name']}'
+            'cluster.name' => '#{test_settings['cluster_name']}',
+            'network.host' => '0.0.0.0',
           },
           manage_repo => true,
           repo_version => '#{test_settings['repo_version']}',

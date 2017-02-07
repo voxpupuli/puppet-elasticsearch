@@ -25,7 +25,8 @@ describe 'elasticsearch::template', :with_cleanup do
           class { 'elasticsearch':
             config => {
               'node.name' => 'elasticsearch001',
-              'cluster.name' => '#{test_settings['cluster_name']}'
+              'cluster.name' => '#{test_settings['cluster_name']}',
+              'network.host' => '0.0.0.0',
             },
             manage_repo => true,
             repo_version => '#{test_settings['repo_version']}',
@@ -74,7 +75,8 @@ describe 'elasticsearch::template', :with_cleanup do
           class { 'elasticsearch':
             config => {
               'node.name' => 'elasticsearch001',
-              'cluster.name' => '#{test_settings['cluster_name']}'
+              'cluster.name' => '#{test_settings['cluster_name']}',
+              'network.host' => '0.0.0.0',
             },
             manage_repo => true,
             repo_version => '#{test_settings['repo_version']}',
@@ -127,7 +129,8 @@ describe 'elasticsearch::template', :with_cleanup do
           class { 'elasticsearch':
             config => {
               'node.name' => 'elasticsearch001',
-              'cluster.name' => '#{test_settings['cluster_name']}'
+              'cluster.name' => '#{test_settings['cluster_name']}',
+              'network.host' => '0.0.0.0',
             },
             manage_repo => true,
             repo_version => '#{test_settings['repo_version']}',
