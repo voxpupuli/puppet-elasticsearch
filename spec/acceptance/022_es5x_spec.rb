@@ -1,5 +1,6 @@
 require 'spec_helper_acceptance'
 
+# rubocop:disable Metrics/BlockLength
 describe 'elasticsearch 5.x', :if => is_5x_capable? do
   # On earlier versions of CentOS/RedHat 7, manually get JRE 1.8
   if fact('operatingsystemmajrelease') == '6'
@@ -40,20 +41,20 @@ describe 'elasticsearch 5.x', :if => is_5x_capable? do
           }
         }
       EOS
-      if not java_install
-        pp = java_snippet + "->\n" + pp
-      end
+      pp = java_snippet + "->\n" + pp unless java_install
 
       it 'applies cleanly' do
         apply_manifest pp, :catch_failures => true
       end
       it 'is idempotent' do
-        apply_manifest pp , :catch_changes  => true
+        apply_manifest pp, :catch_changes => true
       end
     end
 
     describe port(test_settings['port_a']) do
-      it 'open', :with_retries do should be_listening end
+      it 'open', :with_retries do
+        should be_listening
+      end
     end
 
     describe server :container do

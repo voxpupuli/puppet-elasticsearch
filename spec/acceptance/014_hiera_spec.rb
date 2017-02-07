@@ -1,6 +1,7 @@
 require 'spec_helper_acceptance'
 require 'json'
 
+# rubocop:disable Metrics/BlockLength
 describe 'hiera' do
   let :base_manifest do
     <<-EOS
@@ -15,7 +16,7 @@ describe 'hiera' do
 
   describe 'single instance' do
     describe 'manifest' do
-      before :all do write_hiera_config(['singleinstance']) end
+      before(:all) { write_hiera_config(['singleinstance']) }
 
       it 'applies cleanly ' do
         apply_manifest base_manifest, :catch_failures => true
@@ -41,7 +42,9 @@ describe 'hiera' do
     end
 
     describe port(test_settings['port_a']) do
-      it 'open', :with_retries do should be_listening end
+      it 'open', :with_retries do
+        should be_listening
+      end
     end
 
     describe server :container do
@@ -57,7 +60,7 @@ describe 'hiera' do
 
   describe 'single instance with plugin' do
     describe 'manifest' do
-      before :all do write_hiera_config(['singleplugin']) end
+      before(:all) { write_hiera_config(['singleplugin']) }
 
       it 'applies cleanly ' do
         apply_manifest base_manifest, :catch_failures => true
@@ -72,7 +75,9 @@ describe 'hiera' do
     end
 
     describe port(test_settings['port_a']) do
-      it 'open', :with_retries do should be_listening end
+      it 'open', :with_retries do
+        should be_listening
+      end
     end
 
     describe server :container do
@@ -91,7 +96,7 @@ describe 'hiera' do
 
   describe 'multiple instances' do
     describe 'manifest' do
-      before :all do write_hiera_config(['multipleinstances']) end
+      before(:all) { write_hiera_config(['multipleinstances']) }
 
       it 'applies cleanly ' do
         apply_manifest base_manifest, :catch_failures => true
@@ -122,7 +127,9 @@ describe 'hiera' do
     end
 
     describe port(test_settings['port_a']) do
-      it 'open', :with_retries do should be_listening end
+      it 'open', :with_retries do
+        should be_listening
+      end
     end
 
     describe server :container do
@@ -136,7 +143,9 @@ describe 'hiera' do
     end
 
     describe port(test_settings['port_b']) do
-      it 'open', :with_retries do should be_listening end
+      it 'open', :with_retries do
+        should be_listening
+      end
     end
 
     describe server :container do
