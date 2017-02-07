@@ -14,9 +14,11 @@
 * No longer recursively change the Elasticsearch home directory's lib/ to the elasticsearch user.
 
 #### Changes
+* Changed default data directory to /var/lib
 * sysctl settings are no longer managed by the thias/sysctl module.
 * Calls to `elasticsearch -version` in elasticsearch::plugin code replaced with native Puppet code to resolve Elasticsearch package version. Should improve resiliency when managing plugins.
 * Shield and X-Pack configuration files are stored in /etc/elasticsearch instead of /usr/share/elasticsearch.
+* Removed deprecated ceritsc/yum module in favor of puppet/yum.
 
 #### Testing changes
 
