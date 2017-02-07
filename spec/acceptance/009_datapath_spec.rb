@@ -1,6 +1,7 @@
 require 'spec_helper_acceptance'
 require 'json'
 
+# rubocop:disable Metrics/BlockLength
 describe 'elasticsearch::datadir' do
   describe 'single data dir from class', :with_cleanup do
     describe 'manifest' do
@@ -28,7 +29,7 @@ describe 'elasticsearch::datadir' do
         apply_manifest pp, :catch_failures => true
       end
       it 'is idempotent' do
-        apply_manifest pp , :catch_changes  => true
+        apply_manifest pp, :catch_changes => true
       end
     end
 
@@ -42,7 +43,9 @@ describe 'elasticsearch::datadir' do
     end
 
     describe port(test_settings['port_a']) do
-      it 'open', :with_retries do should be_listening end
+      it 'open', :with_retries do
+        should be_listening
+      end
     end
 
     describe server :container do
@@ -85,13 +88,13 @@ describe 'elasticsearch::datadir' do
         apply_manifest pp, :catch_failures => true
       end
       it 'is idempotent' do
-        apply_manifest pp , :catch_changes  => true
+        apply_manifest pp, :catch_changes => true
       end
     end
 
     describe file('/etc/elasticsearch/es-01/elasticsearch.yml') do
       it { should be_file }
-      it { should contain "#{test_settings['datadir_1']}" }
+      it { should contain(test_settings['datadir_1']) }
     end
 
     describe file(test_settings['datadir_1']) do
@@ -99,7 +102,9 @@ describe 'elasticsearch::datadir' do
     end
 
     describe port(test_settings['port_a']) do
-      it 'open', :with_retries do should be_listening end
+      it 'open', :with_retries do
+        should be_listening
+      end
     end
 
     describe server :container do
@@ -145,7 +150,7 @@ describe 'elasticsearch::datadir' do
         apply_manifest pp, :catch_failures => true
       end
       it 'is idempotent' do
-        apply_manifest pp , :catch_changes  => true
+        apply_manifest pp, :catch_changes => true
       end
     end
 
@@ -163,7 +168,9 @@ describe 'elasticsearch::datadir' do
     end
 
     describe port(test_settings['port_a']) do
-      it 'open', :with_retries do should be_listening end
+      it 'open', :with_retries do
+        should be_listening
+      end
     end
 
     describe server :container do
@@ -212,7 +219,7 @@ describe 'elasticsearch::datadir' do
         apply_manifest pp, :catch_failures => true
       end
       it 'is idempotent' do
-        apply_manifest pp , :catch_changes  => true
+        apply_manifest pp, :catch_changes => true
       end
     end
 
@@ -230,7 +237,9 @@ describe 'elasticsearch::datadir' do
     end
 
     describe port(test_settings['port_a']) do
-      it 'open', :with_retries do should be_listening end
+      it 'open', :with_retries do
+        should be_listening
+      end
     end
 
     describe server :container do

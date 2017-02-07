@@ -1,15 +1,15 @@
 require 'spec_helper_acceptance'
 require 'json'
 
+# rubocop:disable Metrics/BlockLength
 describe 'elasticsearch::package_url' do
-
   before :all do
     shell "mkdir -p #{default['distmoduledir']}/another/files"
 
-    shell %W{
+    shell %W(
       cp #{test_settings['local']}
       #{default['distmoduledir']}/another/files/#{test_settings['puppet']}
-    }.join(' ')
+    ).join(' ')
   end
 
   context 'via http', :with_cleanup do
@@ -32,7 +32,7 @@ describe 'elasticsearch::package_url' do
         apply_manifest pp, :catch_failures => true
       end
       it 'is idempotent' do
-        apply_manifest pp , :catch_changes  => true
+        apply_manifest pp, :catch_changes => true
       end
     end
 
@@ -51,7 +51,9 @@ describe 'elasticsearch::package_url' do
     end
 
     describe port(test_settings['port_a']) do
-      it 'open', :with_retries do should be_listening end
+      it 'open', :with_retries do
+        should be_listening
+      end
     end
 
     describe server :container do
@@ -85,7 +87,7 @@ describe 'elasticsearch::package_url' do
         apply_manifest pp, :catch_failures => true
       end
       it 'is idempotent' do
-        apply_manifest pp , :catch_changes  => true
+        apply_manifest pp, :catch_changes => true
       end
     end
 
@@ -104,7 +106,9 @@ describe 'elasticsearch::package_url' do
     end
 
     describe port(test_settings['port_a']) do
-      it 'open', :with_retries do should be_listening end
+      it 'open', :with_retries do
+        should be_listening
+      end
     end
 
     describe server :container do
@@ -139,7 +143,7 @@ describe 'elasticsearch::package_url' do
         apply_manifest pp, :catch_failures => true
       end
       it 'is idempotent' do
-        apply_manifest pp , :catch_changes  => true
+        apply_manifest pp, :catch_changes => true
       end
     end
 
@@ -158,7 +162,9 @@ describe 'elasticsearch::package_url' do
     end
 
     describe port(test_settings['port_a']) do
-      it 'open', :with_retries do should be_listening end
+      it 'open', :with_retries do
+        should be_listening
+      end
     end
 
     describe server :container do
