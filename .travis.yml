@@ -36,10 +36,15 @@ env:
   - DISTRO=oracle-7-x64
 matrix:
   allow_failures:
+  # openSuSE has been really problematic
+  - env: DISTRO=opensuse-42-x64 PUPPET_INSTALL_TYPE=foss
   # SLES is a nightmare to acquire and run. Leave here for possible future use.
   - env: DISTRO=sles-12-x64
   - env: DISTRO=sles-12-x64 PE=true
   fast_finish: true
+install:
+- make
+- bundle exec rake spec_prep
 script:
 - make test-$TEST_SUITE
 notifications:
