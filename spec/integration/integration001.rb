@@ -66,7 +66,7 @@ describe "Integration testing" do
       it 'should run successfully' do
         pp = "class { 'elasticsearch': config => { 'cluster.name' => '#{test_settings['cluster_name']}'}, java_install => true, package_url => '#{test_settings['snapshot_package']}' }
               elasticsearch::instance { 'es-01': config => { 'node.name' => 'elasticsearch001', 'http.port' => '#{test_settings['port_a']}' } }
-              elasticsearch::template { 'foo': ensure => 'present', file => 'puppet:///modules/another/good.json' }"
+              elasticsearch::template { 'foo': ensure => 'present', source => 'puppet:///modules/another/good.json' }"
 
         # Run it twice and test for idempotency
         apply_manifest(pp, :catch_failures => true)
@@ -84,7 +84,7 @@ describe "Integration testing" do
         it 'run should fail' do
           pp = "class { 'elasticsearch': config => { 'cluster.name' => '#{test_settings['cluster_name']}'}, java_install => true, package_url => '#{test_settings['snapshot_package']}' }
                 elasticsearch::instance { 'es-01': config => { 'node.name' => 'elasticsearch001', 'http.port' => '#{test_settings['port_a']}' } }
-                elasticsearch::template { 'foo': ensure => 'present', file => 'puppet:///modules/another/bad.json' }"
+                elasticsearch::template { 'foo': ensure => 'present', source => 'puppet:///modules/another/bad.json' }"
 
           apply_manifest(pp, :expect_failures => true)
         end
