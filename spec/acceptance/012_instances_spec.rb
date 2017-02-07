@@ -7,7 +7,8 @@ describe 'elasticsearch::instance' do
       pp = <<-EOS
         class { 'elasticsearch':
           config => {
-            'cluster.name' => '#{test_settings['cluster_name']}'
+            'cluster.name' => '#{test_settings['cluster_name']}',
+            'network.host' => '0.0.0.0',
           },
           manage_repo => true,
           repo_version => '#{test_settings['repo_version']}',
@@ -47,12 +48,12 @@ describe 'elasticsearch::instance' do
       it { should be_running }
     end
 
-    describe file(test_settings['pid_file_a']) do
+    describe file(test_settings['pid_a']) do
       it { should be_file }
       its(:content) { should match(/[0-9]+/) }
     end
 
-    describe file(test_settings['pid_file_b']) do
+    describe file(test_settings['pid_b']) do
       it { should be_file }
       its(:content) { should match(/[0-9]+/) }
     end
@@ -109,7 +110,9 @@ describe 'elasticsearch::instance' do
       pp = <<-EOS
         class { 'elasticsearch':
           config => {
-            'cluster.name' => '#{test_settings['cluster_name']}'},
+            'cluster.name' => '#{test_settings['cluster_name']}',
+            'network.host' => '0.0.0.0',
+          },
           manage_repo => true,
           repo_version => '#{test_settings['repo_version']}',
           java_install => true
@@ -146,7 +149,7 @@ describe 'elasticsearch::instance' do
       it { should be_running }
     end
 
-    describe file(test_settings['pid_file_a']) do
+    describe file(test_settings['pid_a']) do
       it { should be_file }
       its(:content) { should match(/[0-9]+/) }
     end

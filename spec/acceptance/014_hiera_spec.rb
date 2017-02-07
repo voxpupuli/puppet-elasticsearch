@@ -7,7 +7,8 @@ describe 'hiera' do
       class { 'elasticsearch':
         manage_repo => true,
         repo_version => '#{test_settings['repo_version']}',
-        java_install => true
+        java_install => true,
+        restart_on_change => true,
       }
     EOS
   end
@@ -29,7 +30,7 @@ describe 'hiera' do
       it { should be_running }
     end
 
-    describe file(test_settings['pid_file_a']) do
+    describe file(test_settings['pid_a']) do
       it { should be_file }
       its(:content) { should match(/[0-9]+/) }
     end

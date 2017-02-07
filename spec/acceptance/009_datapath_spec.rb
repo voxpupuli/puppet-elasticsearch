@@ -7,7 +7,8 @@ describe 'elasticsearch::datadir' do
       pp = <<-EOS
         class { 'elasticsearch':
           config => {
-            'cluster.name' => '#{test_settings['cluster_name']}'
+            'cluster.name' => '#{test_settings['cluster_name']}',
+            'network.host' => '0.0.0.0',
           },
           manage_repo => true,
           repo_version => '#{test_settings['repo_version']}',
@@ -62,9 +63,10 @@ describe 'elasticsearch::datadir' do
     describe 'manifest' do
       pp = <<-EOS
         class { 'elasticsearch':
-            config => {
-            'cluster.name' => '#{test_settings['cluster_name']}'
-            },
+          config => {
+            'cluster.name' => '#{test_settings['cluster_name']}',
+            'network.host' => '0.0.0.0',
+          },
           manage_repo => true,
           repo_version => '#{test_settings['repo_version']}',
           java_install => true
@@ -119,7 +121,8 @@ describe 'elasticsearch::datadir' do
       pp = <<-EOS
         class { 'elasticsearch':
           config => {
-            'cluster.name' => '#{test_settings['cluster_name']}'
+            'cluster.name' => '#{test_settings['cluster_name']}',
+            'network.host' => '0.0.0.0',
           },
           manage_repo => true,
           repo_version => '#{test_settings['repo_version']}',
@@ -185,7 +188,8 @@ describe 'elasticsearch::datadir' do
       pp = <<-EOS
         class { 'elasticsearch':
           config => {
-            'cluster.name' => '#{test_settings['cluster_name']}'
+            'cluster.name' => '#{test_settings['cluster_name']}',
+            'network.host' => '0.0.0.0',
           },
           manage_repo => true,
           repo_version => '#{test_settings['repo_version']}',

@@ -88,14 +88,9 @@ hosts.each do |host|
 
   package_name = case fact('osfamily')
                  when 'Debian'
-                   case fact('lsbmajdistrelease')
-                   when '6'
-                     'elasticsearch-1.1.0.deb'
-                   else
-                     'elasticsearch-1.3.1.deb'
-                   end
+                   'elasticsearch-2.3.5.deb'
                  else
-                   'elasticsearch-1.3.1.noarch.rpm'
+                   'elasticsearch-2.3.5.rpm'
                  end
 
   snapshot_package = {
@@ -106,9 +101,6 @@ hosts.each do |host|
   scp_to host,
          snapshot_package[:src],
          snapshot_package[:dst]
-  scp_to host,
-         "#{files_dir}/elasticsearch-bigdesk.zip",
-         '/tmp/elasticsearch-bigdesk.zip'
   scp_to host,
          "#{files_dir}/elasticsearch-kopf.zip",
          '/tmp/elasticsearch-kopf.zip'

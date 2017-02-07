@@ -342,27 +342,10 @@ describe 'elasticsearch::plugin' do
     shell "mkdir -p #{default['distmoduledir']}/another/files"
 
     shell %W{
-      ln -sf /tmp/elasticsearch-bigdesk.zip
-      #{default['distmoduledir']}/another/files/elasticsearch-bigdesk.zip
-    }.join(' ')
-
-    shell %W{
       ln -sf /tmp/elasticsearch-kopf.zip
       #{default['distmoduledir']}/another/files/elasticsearch-kopf.zip
     }.join(' ')
   end
-
-  include_examples 'plugin behavior',
-    test_settings['repo_version'],
-    'root',
-    {
-      prefix: 'elasticsearch/elasticsearch-',
-      name: 'cloud-aws',
-      old: '2.1.1',
-      new: '2.2.0',
-    },
-    'bigdesk',
-    "repo_version => '#{test_settings['repo_version']}',"
 
   include_examples 'plugin behavior',
     test_settings['repo_version2x'],

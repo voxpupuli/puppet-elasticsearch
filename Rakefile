@@ -111,10 +111,8 @@ namespace :artifacts do
   task :prep do
     fetch_archives({
     'https://github.com/lmenezes/elasticsearch-kopf/archive/v2.1.1.zip' => 'elasticsearch-kopf.zip',
-    'https://download.elastic.co/elasticsearch/elasticsearch/elasticsearch-1.3.1.deb' => 'elasticsearch-1.3.1.deb',
-    'https://download.elastic.co/elasticsearch/elasticsearch/elasticsearch-1.1.0.deb' => 'elasticsearch-1.1.0.deb',
-    'https://download.elastic.co/elasticsearch/elasticsearch/elasticsearch-1.3.1.noarch.rpm' => 'elasticsearch-1.3.1.noarch.rpm',
-    'https://github.com/lukas-vlcek/bigdesk/zipball/v2.4.0' => 'elasticsearch-bigdesk.zip',
+    'https://download.elastic.co/elasticsearch/elasticsearch/elasticsearch-2.3.5.deb' => 'elasticsearch-2.3.5.deb',
+    'https://download.elastic.co/elasticsearch/elasticsearch/elasticsearch-2.3.5.noarch.rpm' => 'elasticsearch-2.3.5.noarch.rpm',
   })
   end
 
