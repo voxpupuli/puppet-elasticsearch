@@ -235,30 +235,6 @@
 #   package upgrades.
 #   Defaults to: true
 #
-# [*use_ssl*]
-#   Enable auth on api calls. This parameter is deprecated in favor of setting
-#   the `api_protocol` parameter to "https".
-#   Defaults to: false
-#   This variable is deprecated
-#
-# [*validate_ssl*]
-#   Enable ssl validation on api calls. This parameter is deprecated in favor
-#   of the `validate_tls` parameter.
-#   Defaults to: true
-#   This variable is deprecated
-#
-# [*ssl_user*]
-#   Defines the username for authentication. This parameter is deprecated in
-#   favor of the `api_basic_auth_username` parameter.
-#   Defaults to: undef
-#   This variable is deprecated
-#
-# [*ssl_password*]
-#   Defines the password for authentication. This parameter is deprecated in
-#   favor of the `api_basic_auth_password` parameter.
-#   Defaults to: undef
-#   This variable is deprecated
-#
 # [*api_protocol*]
 #   Default protocol to use when accessing Elasticsearch APIs.
 #   Defaults to: http
@@ -402,10 +378,6 @@ class elasticsearch(
   $instances_hiera_merge          = false,
   $plugins                        = undef,
   $plugins_hiera_merge            = false,
-  $use_ssl                        = undef,
-  $validate_ssl                   = undef,
-  $ssl_user                       = undef,
-  $ssl_password                   = undef,
   $api_protocol                   = 'http',
   $api_host                       = 'localhost',
   $api_port                       = 9200,
@@ -518,43 +490,11 @@ class elasticsearch(
     }
   }
 
-  # Various parameters governing API access to Elasticsearch, handling
-  # deprecated params.
+  # Various parameters governing API access to Elasticsearch
   validate_string($api_protocol, $api_host)
-  if $use_ssl != undef {
-    validate_bool($use_ssl)
-    warning('"use_ssl" parameter is deprecated; set $api_protocol to "https" instead')
-    $_api_protocol = 'https'
-  } else {
-    $_api_protocol = $api_protocol
-  }
-
   validate_bool($validate_tls)
-  if $validate_ssl != undef {
-    validate_bool($validate_ssl)
-    warning('"validate_ssl" parameter is deprecated; use $validate_tls instead')
-    $_validate_tls = $validate_ssl
-  } else {
-    $_validate_tls = $validate_tls
-  }
-
   if $api_basic_auth_username { validate_string($api_basic_auth_username) }
-  if $ssl_user != undef {
-    validate_string($ssl_user)
-    warning('"ssl_user" parameter is deprecated; use $api_basic_auth_username instead')
-    $_api_basic_auth_username = $ssl_user
-  } else {
-    $_api_basic_auth_username = $api_basic_auth_username
-  }
-
   if $api_basic_auth_password { validate_string($api_basic_auth_password) }
-  if $ssl_password != undef {
-    validate_string($ssl_password)
-    warning('"ssl_password" parameter is deprecated; use $api_basic_auth_password instead')
-    $_api_basic_auth_password = $ssl_password
-  } else {
-    $_api_basic_auth_password = $api_basic_auth_password
-  }
 
   if ! is_integer($api_timeout) {
     fail("'${api_timeout}' is not an integer")

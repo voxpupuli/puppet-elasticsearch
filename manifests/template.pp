@@ -15,13 +15,6 @@
 #   Value type is string
 #   Default value: present
 #
-# [*file*]
-#   File path of the template (json file). This parameter is deprecated;
-#   use `source` instead.
-#   Value type is string
-#   Default value: undef
-#   This variable is deprecated
-#
 # [*source*]
 #   Source path for the template file. Can be any value similar to `source`
 #   values for `file` resources.
@@ -102,18 +95,17 @@
 #
 define elasticsearch::template (
   $ensure                  = 'present',
-  $file                    = undef,
   $source                  = undef,
   $content                 = undef,
-  $api_protocol            = $elasticsearch::_api_protocol,
+  $api_protocol            = $elasticsearch::api_protocol,
   $api_host                = $elasticsearch::api_host,
   $api_port                = $elasticsearch::api_port,
   $api_timeout             = $elasticsearch::api_timeout,
-  $api_basic_auth_username = $elasticsearch::_api_basic_auth_username,
-  $api_basic_auth_password = $elasticsearch::_api_basic_auth_password,
+  $api_basic_auth_username = $elasticsearch::api_basic_auth_username,
+  $api_basic_auth_password = $elasticsearch::api_basic_auth_password,
   $api_ca_file             = $elasticsearch::api_ca_file,
   $api_ca_path             = $elasticsearch::api_ca_path,
-  $validate_tls            = $elasticsearch::_validate_tls,
+  $validate_tls            = $elasticsearch::validate_tls,
 ) {
   validate_string(
     $api_protocol,
@@ -131,14 +123,7 @@ define elasticsearch::template (
   if ($api_ca_file != undef) { validate_absolute_path($api_ca_file) }
   if ($api_ca_path != undef) { validate_absolute_path($api_ca_path) }
 
-  if ($file != undef) {
-    warning('"file" parameter is deprecated; use $source instead')
-    $_source = $file
-  } else {
-    $_source = $source
-  }
-
-  if $_source != undef { validate_string($_source) }
+  if $source != undef { validate_string($source) }
 
   if $content != undef and is_string($content) {
     $_content = parsejson($content)
@@ -146,9 +131,9 @@ define elasticsearch::template (
     $_content = $content
   }
 
-  if $ensure == 'present' and $_source == undef and $_content == undef {
+  if $ensure == 'present' and $source == undef and $_content == undef {
     fail('one of "file" or "content" required.')
-  } elsif $_source != undef and $_content != undef {
+  } elsif $source != undef and $_content != undef {
     fail('"file" and "content" cannot be simultaneously defined.')
   }
 
@@ -161,7 +146,7 @@ define elasticsearch::template (
   elasticsearch_template { $name:
     ensure       => $ensure,
     content      => $_content,
-    source       => $_source,
+    source       => $source,
     protocol     => $api_protocol,
     host         => $api_host,
     port         => $api_port,
