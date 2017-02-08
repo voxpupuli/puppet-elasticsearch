@@ -20,7 +20,8 @@ describe 'Integration testing' do
       pp = <<-EOS
         class { 'elasticsearch':
           config => {
-            'cluster.name' => '#{test_settings['cluster_name']}'
+            'cluster.name' => '#{test_settings['cluster_name']}',
+            'network.host' => '0.0.0.0',
           },
           java_install => true,
           package_url => '#{test_settings['snapshot_package']}'
@@ -81,7 +82,8 @@ describe 'Integration testing' do
         pp = <<-EOS
           class { 'elasticsearch':
             config => {
-              'cluster.name' => '#{test_settings['cluster_name']}'
+              'cluster.name' => '#{test_settings['cluster_name']}',
+              'network.host' => '0.0.0.0',
             },
             java_install => true,
             package_url => '#{test_settings['snapshot_package']}'
@@ -129,7 +131,8 @@ describe 'Integration testing' do
         pp = <<-EOS
           class { 'elasticsearch':
             config => {
-              'cluster.name' => '#{test_settings['cluster_name']}'
+              'cluster.name' => '#{test_settings['cluster_name']}',
+              'network.host' => '0.0.0.0',
             },
             java_install => true,
             package_url => '#{test_settings['snapshot_package']}'
@@ -159,7 +162,8 @@ describe 'Integration testing' do
         pp = <<-EOS
           class { 'elasticsearch':
             config => {
-              'cluster.name' => '#{test_settings['cluster_name']}'
+              'cluster.name' => '#{test_settings['cluster_name']}',
+              'network.host' => '0.0.0.0',
             },
             java_install => true,
             package_url => '#{test_settings['snapshot_package']}',
@@ -226,7 +230,8 @@ describe 'Integration testing' do
         pp = <<-EOS
           class { 'elasticsearch':
             config => {
-              'cluster.name' => '#{test_settings['cluster_name']}'
+              'cluster.name' => '#{test_settings['cluster_name']}',
+              'network.host' => '0.0.0.0',
             },
             java_install => true,
             package_url => '#{test_settings['snapshot_package']}'
