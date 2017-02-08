@@ -430,15 +430,10 @@ define elasticsearch::instance(
     }
 
     if $security_plugin != undef {
-      $_security_source = $security_plugin ? {
-        'shield' => $elasticsearch::params::homedir,
-        'x-pack' => $elasticsearch::configdir,
-      }
-
       file { "${instance_configdir}/${security_plugin}":
         ensure  => 'directory',
         mode    => '0644',
-        source  => "${_security_source}/${security_plugin}",
+        source  => "${elasticsearch::configdir}/${security_plugin}",
         recurse => 'remote',
         owner   => 'root',
         group   => '0',
