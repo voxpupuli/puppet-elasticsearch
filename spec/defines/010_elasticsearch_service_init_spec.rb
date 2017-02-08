@@ -50,7 +50,7 @@ describe 'elasticsearch::service::init', :type => 'define' do
     it { should contain_elasticsearch__service__init('es-01') }
     it { should contain_service('elasticsearch-instance-es-01')
       .with(:enable => false) }
-    it { should contain_file('/etc/sysconfig/elasticsearch-es-01') }
+    it { should contain_augeas('defaults_es-01') }
   end
 
   context 'defaults file' do
@@ -83,14 +83,16 @@ describe 'elasticsearch::service::init', :type => 'define' do
       } end
 
       it 'writes the defaults file' do
-        should contain_file(
-          '/etc/sysconfig/elasticsearch-es-01'
-        ).with_content(%r{
-            ES_GROUP=elasticsearch\n
-            ES_HOME=/usr/share/elasticsearch\n
-            ES_USER=elasticsearch\n
-            MAX_OPEN_FILES=65536\n
-        }xm).that_comes_before('Service[elasticsearch-instance-es-01]')
+        should contain_augeas('defaults_es-01').with(
+          :incl => '/etc/sysconfig/elasticsearch-es-01',
+          :changes => [
+            "set ES_GROUP 'elasticsearch'",
+            "set ES_HOME '/usr/share/elasticsearch'",
+            "set ES_USER 'elasticsearch'",
+            "set MAX_OPEN_FILES '65536'",
+          ].join("\n") << "\n",
+          :before => 'Service[elasticsearch-instance-es-01]'
+        )
       end
     end
 
@@ -135,20 +137,22 @@ describe 'elasticsearch::service::init', :type => 'define' do
           }
         } end
 
-        it do
-          should contain_file(
-            '/etc/sysconfig/elasticsearch-es-01'
-          ).with_content(%r{
-              ES_GROUP=elasticsearch\n
-              ES_HOME=/usr/share/elasticsearch\n
-              ES_USER=elasticsearch\n
-              MAX_OPEN_FILES=65536\n
-          }xm).that_comes_before(
-            'Service[elasticsearch-instance-es-01]'
-          ).that_notifies(
-            'Service[elasticsearch-instance-es-01]'
-          )
-        end
+        it { should contain_augeas(
+          'defaults_es-01'
+        ).with(
+          :incl => '/etc/sysconfig/elasticsearch-es-01',
+          :changes => "set ES_GROUP 'elasticsearch'\nset ES_HOME '/usr/share/elasticsearch'\nset ES_USER 'elasticsearch'\nset MAX_OPEN_FILES '65536'\n"
+        ) }
+        it { should contain_augeas(
+          'defaults_es-01'
+        ).that_comes_before(
+          'Service[elasticsearch-instance-es-01]'
+        ) }
+        it { should contain_augeas(
+          'defaults_es-01'
+        ).that_notifies(
+          'Service[elasticsearch-instance-es-01]'
+        ) }
       end
     end
 
@@ -182,13 +186,11 @@ describe 'elasticsearch::service::init', :type => 'define' do
           }
         } end
 
-        it do
-          should_not contain_file(
-            '/etc/sysconfig/elasticsearch-es-01'
-          ).that_notifies(
-            'Service[elasticsearch-instance-es-01]'
-          )
-        end
+        it { should_not contain_augeas(
+          'defaults_es-01'
+        ).that_notifies(
+          'Service[elasticsearch-instance-es-01]'
+        ) }
       end
     end
   end
