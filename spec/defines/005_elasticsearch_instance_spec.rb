@@ -62,7 +62,6 @@ describe 'elasticsearch::instance', :type => 'define' do
           "ES_HOME"  => "/usr/share/elasticsearch"
         }
       )}
-    it { should contain_file("#{defaults_path}/elasticsearch-es-01") }
 
     end # of on os context
   end # of on supported OSes loop
