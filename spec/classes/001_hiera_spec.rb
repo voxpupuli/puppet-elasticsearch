@@ -150,8 +150,8 @@ describe 'elasticsearch', :type => 'class' do
         })
       }
 
-      it { should contain_elasticsearch__plugin('mobz/elasticsearch-head/1.0.0').with(:ensure => 'present', :module_dir => 'head', :instances => ['es-01'] ) }
-      it { should contain_elasticsearch_plugin('mobz/elasticsearch-head/1.0.0') }
+      it { should contain_elasticsearch__plugin('mobz/elasticsearch-head').with(:ensure => 'present', :module_dir => 'head', :instances => ['es-01'] ) }
+      it { should contain_elasticsearch_plugin('mobz/elasticsearch-head') }
 
     end
 
