@@ -37,7 +37,7 @@ describe "Integration testing" do
       it { should be_installed }
     end
 
-    describe file(test_settings['pid_file_a']) do
+    describe file(test_settings['pid_a']) do
       it { should be_file }
       its(:content) { should match /[0-9]+/ }
     end
@@ -103,7 +103,7 @@ describe "Integration testing" do
     describe "Install a plugin from official repository" do
 
       it 'should run successfully' do
-        pp = "class { 'elasticsearch': config => { 'cluster.name' => '#{test_settings['cluster_name']}'}, java_install => true, package_url => '#{test_settings['snapshot_package']}' }
+        pp = "class { 'elasticsearch': config => { 'cluster.name' => '#{test_settings['cluster_name']}'}, java_install => true, package_url => '#{test_settings['snapshot_package']}', restart_on_change => true, }
               elasticsearch::instance { 'es-01': config => { 'node.name' => 'elasticsearch001', 'http.port' => '#{test_settings['port_a']}' } }
               elasticsearch::plugin { 'lmenezes/elasticsearch-kopf': instances => 'es-01' }
              "
@@ -122,7 +122,7 @@ describe "Integration testing" do
         it { should be_installed }
       end
 
-      describe file(test_settings['pid_file_a']) do
+      describe file(test_settings['pid_a']) do
         it { should be_file }
         its(:content) { should match /[0-9]+/ }
       end
