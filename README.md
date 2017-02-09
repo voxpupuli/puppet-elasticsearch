@@ -21,7 +21,7 @@
 
 This module sets up [Elasticsearch](https://www.elastic.co/overview/elasticsearch/) instances with additional resource for plugins, templates, and more.
 
-This module has been tested against Elasticsearch 1.x, 2.x, and 5.x.
+This module is actively tested against Elasticsearch 2.x and 5.x.
 
 ## Setup
 
@@ -38,7 +38,7 @@ This module has been tested against Elasticsearch 1.x, 2.x, and 5.x.
 ### Requirements
 
 * The [stdlib](https://forge.puppetlabs.com/puppetlabs/stdlib) Puppet library.
-* [ceritsc/yum](https://forge.puppetlabs.com/ceritsc/yum) For yum version lock.
+* [puppet/yum](https://forge.puppetlabs.com/puppet/yum) For yum version lock.
 * [richardc/datacat](https://forge.puppetlabs.com/richardc/datacat)
 * [Augeas](http://augeas.net/)
 * [puppetlabs-java](https://forge.puppetlabs.com/puppetlabs/java) for Java installation (optional).
