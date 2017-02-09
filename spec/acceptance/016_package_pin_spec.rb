@@ -1,5 +1,6 @@
 require 'spec_helper_acceptance'
 
+# rubocop:disable Metrics/BlockLength
 if fact('osfamily') != 'Suse'
   describe 'elasticsearch::package_pin', :with_cleanup do
     describe 'initial installation' do
@@ -7,18 +8,19 @@ if fact('osfamily') != 'Suse'
         pp = <<-EOS
           class { 'elasticsearch':
             config => {
-              'cluster.name' => '#{test_settings['cluster_name']}'
+              'cluster.name' => '#{test_settings['cluster_name']}',
+              'network.host' => '0.0.0.0',
             },
             manage_repo => true,
             repo_version => '#{test_settings['repo_version']}',
             version => '#{test_settings['install_package_version']}',
-            java_install => true
+            java_install => true,
           }
 
           elasticsearch::instance { 'es-01':
             config => {
               'node.name' => 'elasticsearch001',
-              'http.port' => '#{test_settings['port_a']}'
+              'http.port' => '#{test_settings['port_a']}',
             }
           }
         EOS
@@ -27,13 +29,15 @@ if fact('osfamily') != 'Suse'
           apply_manifest pp, :catch_failures => true
         end
         it 'is idempotent' do
-          apply_manifest pp , :catch_changes  => true
+          apply_manifest pp, :catch_changes => true
         end
       end
 
       describe package(test_settings['package_name']) do
         it do
-          should be_installed.with_version(test_settings['install_version'])
+          should be_installed.with_version(
+            test_settings['install_package_version']
+          )
         end
       end
     end
@@ -51,7 +55,9 @@ if fact('osfamily') != 'Suse'
 
     describe package(test_settings['package_name']) do
       it do
-        should be_installed.with_version(test_settings['install_version'])
+        should be_installed.with_version(
+          test_settings['install_package_version']
+        )
       end
     end
 
@@ -60,19 +66,20 @@ if fact('osfamily') != 'Suse'
         pp = <<-EOS
           class { 'elasticsearch':
             config => {
-              'cluster.name' => '#{test_settings['cluster_name']}'
+              'cluster.name' => '#{test_settings['cluster_name']}',
+              'network.host' => '0.0.0.0',
             },
             manage_repo => true,
             repo_version => '#{test_settings['repo_version']}',
             version => '#{test_settings['upgrade_package_version']}',
-            java_install => true
+            java_install => true,
           }
 
           elasticsearch::instance { 'es-01':
             config => {
               'node.name' => 'elasticsearch001',
-              'http.port' => '#{test_settings['port_a']}'
-            } 
+              'http.port' => '#{test_settings['port_a']}',
+            }
           }
         EOS
 
@@ -80,13 +87,15 @@ if fact('osfamily') != 'Suse'
           apply_manifest pp, :catch_failures => true
         end
         it 'is idempotent' do
-          apply_manifest pp , :catch_changes  => true
+          apply_manifest pp, :catch_changes => true
         end
       end
 
       describe package(test_settings['package_name']) do
         it do
-          should be_installed.with_version(test_settings['upgrade_version'])
+          should be_installed.with_version(
+            test_settings['upgrade_package_version']
+          )
         end
       end
     end
@@ -104,7 +113,9 @@ if fact('osfamily') != 'Suse'
 
     describe package(test_settings['package_name']) do
       it do
-        should be_installed.with_version(test_settings['upgrade_version'])
+        should be_installed.with_version(
+          test_settings['upgrade_package_version']
+        )
       end
     end
   end

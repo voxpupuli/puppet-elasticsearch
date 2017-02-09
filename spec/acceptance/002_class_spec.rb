@@ -1,13 +1,15 @@
 require 'spec_helper_acceptance'
 require 'json'
 
+# rubocop:disable Metrics/BlockLength
 describe '::elasticsearch' do
   describe 'single instance' do
     describe 'manifest' do
       pp = <<-EOS
         class { 'elasticsearch':
           config => {
-            'cluster.name' => '#{test_settings['cluster_name']}'
+            'cluster.name' => '#{test_settings['cluster_name']}',
+            'network.host' => '0.0.0.0',
           },
           manage_repo => true,
           repo_version => '#{test_settings['repo_version']}',
@@ -26,7 +28,7 @@ describe '::elasticsearch' do
         apply_manifest pp, :catch_failures => true
       end
       it 'is idempotent' do
-        apply_manifest pp , :catch_changes  => true
+        apply_manifest pp, :catch_changes => true
       end
     end
 
@@ -39,7 +41,7 @@ describe '::elasticsearch' do
       it { should be_installed }
     end
 
-    describe file(test_settings['pid_file_a']) do
+    describe file(test_settings['pid_a']) do
       it { should be_file }
       its(:content) { should match(/[0-9]+/) }
     end
@@ -47,7 +49,7 @@ describe '::elasticsearch' do
     describe file('/etc/elasticsearch/es-01/elasticsearch.yml') do
       it { should be_file }
       it { should contain 'name: elasticsearch001' }
-      it { should contain "/var/lib/elasticsearch/es-01" }
+      it { should contain '/var/lib/elasticsearch/es-01' }
     end
 
     describe file('/usr/share/elasticsearch/templates_import') do
@@ -67,7 +69,9 @@ describe '::elasticsearch' do
     end
 
     describe port(test_settings['port_a']) do
-      it 'open', :with_retries do should be_listening end
+      it 'open', :with_retries do
+        should be_listening
+      end
     end
 
     describe server :container do
@@ -83,7 +87,7 @@ describe '::elasticsearch' do
           expect(
             json['settings']['path']
           ).to include(
-              'data' => '/var/lib/elasticsearch/es-01'
+            'data' => '/var/lib/elasticsearch/es-01'
           )
         end
       end
@@ -91,13 +95,12 @@ describe '::elasticsearch' do
   end
 
   describe 'multiple instances' do
-
     it 'should run successfully' do
-
       pp = <<-EOS
         class { 'elasticsearch':
           config => {
-            'cluster.name' => '#{test_settings['cluster_name']}'
+            'cluster.name' => '#{test_settings['cluster_name']}',
+            'network.host' => '0.0.0.0',
           },
           manage_repo => true,
           repo_version => '#{test_settings['repo_version']}',
@@ -124,7 +127,6 @@ describe '::elasticsearch' do
       apply_manifest pp, :catch_changes => true
     end
 
-
     describe service(test_settings['service_name_a']) do
       it { should be_enabled }
       it { should be_running }
@@ -139,21 +141,25 @@ describe '::elasticsearch' do
       it { should be_installed }
     end
 
-    describe file(test_settings['pid_file_a']) do
+    describe file(test_settings['pid_a']) do
       it { should be_file }
       its(:content) { should match(/[0-9]+/) }
     end
 
-    describe file(test_settings['pid_file_b']) do
+    describe file(test_settings['pid_b']) do
       it { should be_file }
       its(:content) { should match(/[0-9]+/) }
     end
 
     describe port(test_settings['port_a']) do
-      it 'open', :with_retries do should be_listening end
+      it 'open', :with_retries do
+        should be_listening
+      end
     end
     describe port(test_settings['port_b']) do
-      it 'open', :with_retries do should be_listening end
+      it 'open', :with_retries do
+        should be_listening
+      end
     end
 
     describe server :container do
@@ -187,13 +193,10 @@ describe '::elasticsearch' do
       it { should be_file }
       it { should contain 'name: elasticsearch002' }
     end
-
   end
 
   describe 'module removal' do
-
     it 'should run successfully' do
-
       pp = <<-EOS
         class { 'elasticsearch': ensure => 'absent' }
         elasticsearch::instance { 'es-01': ensure => 'absent' }

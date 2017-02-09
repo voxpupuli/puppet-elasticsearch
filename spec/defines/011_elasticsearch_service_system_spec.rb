@@ -104,6 +104,7 @@ describe 'elasticsearch::service::systemd', :type => 'define' do
             .with(
               :incl => '/etc/sysconfig/elasticsearch-es-01',
               :changes => [
+                'rm CONF_FILE',
                 "set ES_GROUP 'elasticsearch'",
                 "set ES_HOME '/usr/share/elasticsearch'",
                 "set ES_USER 'elasticsearch'",
@@ -153,6 +154,7 @@ describe 'elasticsearch::service::systemd', :type => 'define' do
             ).with(
               :incl => '/etc/sysconfig/elasticsearch-es-01',
               :changes => [
+                'rm CONF_FILE',
                 "set ES_GROUP 'elasticsearch'",
                 "set ES_HOME '/usr/share/elasticsearch'",
                 "set ES_USER 'elasticsearch'",

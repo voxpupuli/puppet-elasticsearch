@@ -20,7 +20,8 @@ describe 'Integration testing' do
       pp = <<-EOS
         class { 'elasticsearch':
           config => {
-            'cluster.name' => '#{test_settings['cluster_name']}'
+            'cluster.name' => '#{test_settings['cluster_name']}',
+            'network.host' => '0.0.0.0',
           },
           java_install => true,
           package_url => '#{test_settings['snapshot_package']}'
@@ -48,7 +49,7 @@ describe 'Integration testing' do
       it { should be_installed }
     end
 
-    describe file(test_settings['pid_file_a']) do
+    describe file(test_settings['pid_a']) do
       it { should be_file }
       its(:content) { should match(/[0-9]+/) }
     end
@@ -81,7 +82,8 @@ describe 'Integration testing' do
         pp = <<-EOS
           class { 'elasticsearch':
             config => {
-              'cluster.name' => '#{test_settings['cluster_name']}'
+              'cluster.name' => '#{test_settings['cluster_name']}',
+              'network.host' => '0.0.0.0',
             },
             java_install => true,
             package_url => '#{test_settings['snapshot_package']}'
@@ -129,7 +131,8 @@ describe 'Integration testing' do
         pp = <<-EOS
           class { 'elasticsearch':
             config => {
-              'cluster.name' => '#{test_settings['cluster_name']}'
+              'cluster.name' => '#{test_settings['cluster_name']}',
+              'network.host' => '0.0.0.0',
             },
             java_install => true,
             package_url => '#{test_settings['snapshot_package']}'
@@ -159,10 +162,12 @@ describe 'Integration testing' do
         pp = <<-EOS
           class { 'elasticsearch':
             config => {
-              'cluster.name' => '#{test_settings['cluster_name']}'
+              'cluster.name' => '#{test_settings['cluster_name']}',
+              'network.host' => '0.0.0.0',
             },
             java_install => true,
-            package_url => '#{test_settings['snapshot_package']}'
+            package_url => '#{test_settings['snapshot_package']}',
+            restart_on_change => true,
           }
 
           elasticsearch::instance { 'es-01':
@@ -191,7 +196,7 @@ describe 'Integration testing' do
         it { should be_installed }
       end
 
-      describe file(test_settings['pid_file_a']) do
+      describe file(test_settings['pid_a']) do
         it { should be_file }
         its(:content) { should match(/[0-9]+/) }
       end
@@ -225,7 +230,8 @@ describe 'Integration testing' do
         pp = <<-EOS
           class { 'elasticsearch':
             config => {
-              'cluster.name' => '#{test_settings['cluster_name']}'
+              'cluster.name' => '#{test_settings['cluster_name']}',
+              'network.host' => '0.0.0.0',
             },
             java_install => true,
             package_url => '#{test_settings['snapshot_package']}'

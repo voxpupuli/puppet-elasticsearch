@@ -7,11 +7,13 @@
 * X-Pack support added.
 * Restricted permissions to the elasticsearch.yml file.
 * Deprecation log configuration support added.
+* Synced systemd service file with upstream.
 
 #### Bugfixes
 * Fixed case in which index template could prepend an additional 'index.' to index settings.
 * Fixed a case in which dependency cycles could arise when pinning packages on CentOS.
 * No longer recursively change the Elasticsearch home directory's lib/ to the elasticsearch user.
+* Unused defaults values now purged from instance init defaults files.
 
 #### Changes
 * Changed default data directory to /var/lib

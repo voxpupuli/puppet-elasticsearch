@@ -167,6 +167,7 @@ define elasticsearch::service::systemd(
         content           => file($init_template),
         defaults_location => $elasticsearch::defaults_location,
         group             => $elasticsearch::elasticsearch_group,
+        homedir           => $elasticsearch::params::homedir,
         instance          => $name,
         memlock           => $memlock,
         nofile            => $nofile,

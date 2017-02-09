@@ -10,6 +10,7 @@ describe Puppet::Type.type(:elasticsearch_service_file) do
       :defaults_location,
       :group,
       :instance,
+      :homedir,
       :memlock,
       :nofile,
       :package_name,
