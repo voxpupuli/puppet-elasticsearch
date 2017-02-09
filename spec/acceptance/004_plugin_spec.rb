@@ -1,6 +1,7 @@
 require 'spec_helper_acceptance'
 require 'json'
 
+# rubocop:disable Metrics/BlockLength
 shared_examples 'plugin behavior' do |version, user, plugin, offline, config|
   describe "plugin operations on #{version}" do
     context 'official repo', :with_cleanup do
@@ -34,7 +35,7 @@ shared_examples 'plugin behavior' do |version, user, plugin, offline, config|
           apply_manifest pp, :catch_failures => true
         end
         it 'is idempotent' do
-          apply_manifest pp , :catch_changes  => true
+          apply_manifest pp, :catch_changes => true
         end
       end
 
@@ -43,12 +44,14 @@ shared_examples 'plugin behavior' do |version, user, plugin, offline, config|
       end
 
       describe port(test_settings['port_a']) do
-        it 'open', :with_retries do should be_listening end
+        it 'open', :with_retries do
+          should be_listening
+        end
       end
 
       describe server :container do
         describe http(
-          "http://localhost:#{test_settings['port_a']}/_cluster/stats",
+          "http://localhost:#{test_settings['port_a']}/_cluster/stats"
         ) do
           it 'reports the plugin as installed', :with_retries do
             plugins = JSON.parse(response.body)['nodes']['plugins'].map do |h|
@@ -67,42 +70,36 @@ shared_examples 'plugin behavior' do |version, user, plugin, offline, config|
       describe server :container
     end
 
-    if fact('puppetversion') =~ /3\.[2-9]\./
-      context 'invalid plugin', :with_cleanup do
-        describe 'manifest' do
-          pp = <<-EOS
-            class { 'elasticsearch':
-              config => {
-                'node.name' => 'elasticearch001',
-                'cluster.name' => '#{test_settings['cluster_name']}',
-                'network.host' => '0.0.0.0',
-              },
-              manage_repo => true,
-              #{config}
-              java_install => true
-            }
+    context 'invalid plugin', :with_cleanup do
+      describe 'manifest' do
+        pp = <<-EOS
+          class { 'elasticsearch':
+            config => {
+              'node.name' => 'elasticearch001',
+              'cluster.name' => '#{test_settings['cluster_name']}',
+              'network.host' => '0.0.0.0',
+            },
+            manage_repo => true,
+            #{config}
+            java_install => true
+          }
 
-            elasticsearch::instance { 'es-01':
-              config => {
-                'node.name' => 'elasticsearch001',
-                'http.port' => '#{test_settings['port_a']}'
-              }
+          elasticsearch::instance { 'es-01':
+            config => {
+              'node.name' => 'elasticsearch001',
+              'http.port' => '#{test_settings['port_a']}'
             }
+          }
 
-            elasticsearch::plugin { 'elasticsearch/non-existing':
-              instances => 'es-01'
-            }
-          EOS
+          elasticsearch::plugin { 'elasticsearch/non-existing':
+            instances => 'es-01'
+          }
+        EOS
 
-          it 'fails to apply cleanly' do
-            apply_manifest pp, :expect_failures => true
-          end
+        it 'fails to apply cleanly' do
+          apply_manifest pp, :expect_failures => true
         end
       end
-    else
-      # The exit codes have changes since Puppet 3.2x
-      # Since beaker expectations are based on the most recent puppet code
-      # all runs on previous versions fails.
     end
 
     describe "running ES under #{user} user", :with_cleanup do
@@ -138,7 +135,7 @@ shared_examples 'plugin behavior' do |version, user, plugin, offline, config|
           apply_manifest pp, :catch_failures => true
         end
         it 'is idempotent' do
-          apply_manifest pp , :catch_changes  => true
+          apply_manifest pp, :catch_changes => true
         end
       end
 
@@ -147,12 +144,14 @@ shared_examples 'plugin behavior' do |version, user, plugin, offline, config|
       end
 
       describe port(test_settings['port_a']) do
-        it 'open', :with_retries do should be_listening end
+        it 'open', :with_retries do
+          should be_listening
+        end
       end
 
       describe server :container do
         describe http(
-          "http://localhost:#{test_settings['port_a']}/_cluster/stats",
+          "http://localhost:#{test_settings['port_a']}/_cluster/stats"
         ) do
           it 'reports the plugin as installed', :with_retries do
             plugins = JSON.parse(response.body)['nodes']['plugins'].map do |h|
@@ -161,10 +160,10 @@ shared_examples 'plugin behavior' do |version, user, plugin, offline, config|
                 version: h['version']
               }
             end
-            expect(plugins).to include({
+            expect(plugins).to include(
               name: plugin[:name],
               version: plugin[:old]
-            })
+            )
           end
         end
       end
@@ -204,17 +203,19 @@ shared_examples 'plugin behavior' do |version, user, plugin, offline, config|
             apply_manifest pp, :catch_failures => true
           end
           it 'is idempotent' do
-            apply_manifest pp , :catch_changes  => true
+            apply_manifest pp, :catch_changes => true
           end
         end
 
         describe port(test_settings['port_a']) do
-          it 'open', :with_retries do should be_listening end
+          it 'open', :with_retries do
+            should be_listening
+          end
         end
 
         describe server :container do
           describe http(
-            "http://localhost:#{test_settings['port_a']}/_cluster/stats",
+            "http://localhost:#{test_settings['port_a']}/_cluster/stats"
           ) do
             it 'reports the upgraded plugin version', :with_retries do
               j = JSON.parse(response.body)['nodes']['plugins'].find do |h|
@@ -261,17 +262,19 @@ shared_examples 'plugin behavior' do |version, user, plugin, offline, config|
           apply_manifest pp, :catch_failures => true
         end
         it 'is idempotent' do
-          apply_manifest pp , :catch_changes  => true
+          apply_manifest pp, :catch_changes => true
         end
       end
 
       describe port(test_settings['port_a']) do
-        it 'open', :with_retries do should be_listening end
+        it 'open', :with_retries do
+          should be_listening
+        end
       end
 
       describe server :container do
         describe http(
-          "http://localhost:#{test_settings['port_a']}/_cluster/stats",
+          "http://localhost:#{test_settings['port_a']}/_cluster/stats"
         ) do
           it 'reports the plugin as installed', :with_retries do
             plugins = JSON.parse(response.body)['nodes']['plugins']
@@ -313,17 +316,19 @@ shared_examples 'plugin behavior' do |version, user, plugin, offline, config|
           apply_manifest pp, :catch_failures => true
         end
         it 'is idempotent' do
-          apply_manifest pp , :catch_changes  => true
+          apply_manifest pp, :catch_changes => true
         end
       end
 
       describe port(test_settings['port_a']) do
-        it 'open', :with_retries do should be_listening end
+        it 'open', :with_retries do
+          should be_listening
+        end
       end
 
       describe server :container do
         describe http(
-          "http://localhost:#{test_settings['port_a']}/_cluster/stats",
+          "http://localhost:#{test_settings['port_a']}/_cluster/stats"
         ) do
           it 'reports the plugin as installed', :with_retries do
             plugins = JSON.parse(response.body)['nodes']['plugins'].map do |h|
@@ -341,41 +346,24 @@ describe 'elasticsearch::plugin' do
   before :all do
     shell "mkdir -p #{default['distmoduledir']}/another/files"
 
-    shell %W{
-      ln -sf /tmp/elasticsearch-bigdesk.zip
-      #{default['distmoduledir']}/another/files/elasticsearch-bigdesk.zip
-    }.join(' ')
-
-    shell %W{
+    shell %W(
       ln -sf /tmp/elasticsearch-kopf.zip
       #{default['distmoduledir']}/another/files/elasticsearch-kopf.zip
-    }.join(' ')
+    ).join(' ')
   end
 
   include_examples 'plugin behavior',
-    test_settings['repo_version'],
-    'root',
-    {
-      prefix: 'elasticsearch/elasticsearch-',
-      name: 'cloud-aws',
-      old: '2.1.1',
-      new: '2.2.0',
-    },
-    'bigdesk',
-    "repo_version => '#{test_settings['repo_version']}',"
-
-  include_examples 'plugin behavior',
-    test_settings['repo_version2x'],
-    'elasticsearch',
-    {
-      prefix: 'lmenezes/elasticsearch-',
-      name: 'kopf',
-      old: '2.0.1',
-      new: '2.1.1',
-    },
-    'kopf',
-    <<-EOS
-      repo_version => '#{test_settings['repo_version2x']}',
-      version => '2.0.0',
-    EOS
+                   test_settings['repo_version2x'],
+                   'elasticsearch',
+                   {
+                     prefix: 'lmenezes/elasticsearch-',
+                     name: 'kopf',
+                     old: '2.0.1',
+                     new: '2.1.1'
+                   },
+                   'kopf',
+                   <<-EOS
+                     repo_version => '#{test_settings['repo_version2x']}',
+                     version => '2.0.0',
+                   EOS
 end

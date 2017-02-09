@@ -50,6 +50,10 @@ Puppet::Type.newtype(:elasticsearch_service_file) do
     desc 'Group to run service under.'
   end
 
+  newparam(:homedir) do
+    desc 'Elasticsearch home directory.'
+  end
+
   newparam(:instance) do
     desc 'Elasticsearch instance name.'
   end

@@ -1,31 +1,31 @@
 require 'spec_helper_acceptance'
 require 'json'
 
-describe "elasticsearch shield", :with_certificates, :then_purge do
-
+# rubocop:disable Metrics/BlockLength
+describe 'elasticsearch shield', :with_certificates, :then_purge do
   # Template manifest
-  let :base_manifest do <<-EOF
-    class { 'elasticsearch' :
-      java_install => true,
-      manage_repo  => true,
-      repo_version => '#{test_settings['repo_version']}',
-      config => {
-        'cluster.name' => '#{test_settings['cluster_name']}',
-        'http.port' => #{test_settings['port_a']},
-      },
-      restart_on_change => true,
-      security_plugin => 'shield',
-    }
+  let :base_manifest do
+    <<-EOF
+      class { 'elasticsearch' :
+        java_install => true,
+        manage_repo  => true,
+        repo_version => '#{test_settings['repo_version']}',
+        config => {
+          'cluster.name' => '#{test_settings['cluster_name']}',
+          'http.port' => #{test_settings['port_a']},
+          'network.host' => '0.0.0.0',
+        },
+        restart_on_change => true,
+        security_plugin => 'shield',
+      }
 
-    elasticsearch::plugin { 'elasticsearch/license/latest' :  }
-    elasticsearch::plugin { 'elasticsearch/shield/latest' : }
+      elasticsearch::plugin { 'elasticsearch/license/latest' :  }
+      elasticsearch::plugin { 'elasticsearch/shield/latest' : }
     EOF
   end
 
   describe 'user authentication' do
-
     describe 'single instance manifest' do
-
       let :single_manifest do
         base_manifest + <<-EOF
           elasticsearch::instance { ['es-01'] :  }
@@ -56,7 +56,9 @@ describe "elasticsearch shield", :with_certificates, :then_purge do
     end
 
     describe port(test_settings['port_a']) do
-      it 'open', :with_retries do should be_listening end
+      it 'open', :with_retries do
+        should be_listening
+      end
     end
 
     describe server :container do
@@ -70,12 +72,10 @@ describe "elasticsearch shield", :with_certificates, :then_purge do
 
       describe http(
         "http://localhost:#{test_settings['port_a']}/_cluster/health",
-        {
-          :basic_auth => [
-            test_settings['security_user'],
-            test_settings['security_password']
-          ]
-        }
+        :basic_auth => [
+          test_settings['security_user'],
+          test_settings['security_password']
+        ]
       ) do
         it 'permits authorized access', :with_retries do
           expect(response.status).to eq(200)
@@ -84,12 +84,10 @@ describe "elasticsearch shield", :with_certificates, :then_purge do
 
       describe http(
         "http://localhost:#{test_settings['port_a']}/_cluster/health",
-        {
-          :basic_auth => [
-            "#{test_settings['security_user']}pwchange",
-            test_settings['security_hashed_plaintext']
-          ]
-        }
+        :basic_auth => [
+          "#{test_settings['security_user']}pwchange",
+          test_settings['security_hashed_plaintext']
+        ]
       ) do
         it 'permits authorized access using pre-hashed creds',
            :with_retries do
@@ -101,7 +99,6 @@ describe "elasticsearch shield", :with_certificates, :then_purge do
 
   describe 'changing passwords' do
     describe 'password change manifest' do
-
       let :passwd_manifest do
         base_manifest + <<-EOF
           elasticsearch::instance { ['es-01'] :  }
@@ -122,18 +119,18 @@ describe "elasticsearch shield", :with_certificates, :then_purge do
     end
 
     describe port(test_settings['port_a']) do
-      it 'open', :with_retries do should be_listening end
+      it 'open', :with_retries do
+        should be_listening
+      end
     end
 
     describe server :container do
       describe http(
         "http://localhost:#{test_settings['port_a']}/_cluster/health",
-        {
-          :basic_auth => [
-            "#{test_settings['security_user']}pwchange",
-            test_settings['security_password'][0..5]
-          ]
-        }
+        :basic_auth => [
+          "#{test_settings['security_user']}pwchange",
+          test_settings['security_password'][0..5]
+        ]
       ) do
         it 'authorizes changed passwords', :with_retries do
           expect(response.status).to eq(200)
@@ -143,9 +140,7 @@ describe "elasticsearch shield", :with_certificates, :then_purge do
   end
 
   describe 'role permission control' do
-
     describe 'single instance manifest' do
-
       let :single_manifest do
         base_manifest + <<-EOF
           elasticsearch::instance { ['es-01'] :  }
@@ -181,18 +176,18 @@ describe "elasticsearch shield", :with_certificates, :then_purge do
     end
 
     describe port(test_settings['port_a']) do
-      it 'open', :with_retries do should be_listening end
+      it 'open', :with_retries do
+        should be_listening
+      end
     end
 
     describe server :container do
       describe http(
         "http://localhost:#{test_settings['port_a']}/_cluster/stats",
-        {
-          :basic_auth => [
-            test_settings['security_user'],
-            test_settings['security_password']
-          ]
-        }
+        :basic_auth => [
+          test_settings['security_user'],
+          test_settings['security_password']
+        ]
       ) do
         it 'denies stats API access', :with_retries do
           expect(response.status).to eq(403)
@@ -201,12 +196,10 @@ describe "elasticsearch shield", :with_certificates, :then_purge do
 
       describe http(
         "http://localhost:#{test_settings['port_a']}/_cluster/health",
-        {
-          :basic_auth => [
-            test_settings['security_user'],
-            test_settings['security_password']
-          ]
-        }
+        :basic_auth => [
+          test_settings['security_user'],
+          test_settings['security_password']
+        ]
       ) do
         it 'permits health API access', :with_retries do
           expect(response.status).to eq(200)
@@ -216,11 +209,8 @@ describe "elasticsearch shield", :with_certificates, :then_purge do
   end
 
   describe 'tls' do
-
     describe 'single instance' do
-
       describe 'manifest' do
-
         let :single_manifest do
           base_manifest + <<-EOF
             elasticsearch::instance { 'es-01':
@@ -253,19 +243,19 @@ describe "elasticsearch shield", :with_certificates, :then_purge do
       end
 
       describe port(test_settings['port_a']) do
-        it 'open', :with_retries do should be_listening end
+        it 'open', :with_retries do
+          should be_listening
+        end
       end
 
       describe server :container do
         describe http(
           "https://localhost:#{test_settings['port_a']}/_cluster/health",
-          {
-            :basic_auth => [
-              test_settings['security_user'],
-              test_settings['security_password']
-            ],
-            :ssl => {:verify => false}
-          }
+          :basic_auth => [
+            test_settings['security_user'],
+            test_settings['security_password']
+          ],
+          :ssl => { :verify => false }
         ) do
           it 'permits TLS health API access', :with_retries do
             expect(response.status).to eq(200)
@@ -275,17 +265,15 @@ describe "elasticsearch shield", :with_certificates, :then_purge do
     end
 
     describe 'multi-instance' do
-
       describe 'manifest' do
-
         let :multi_manifest do
-          base_manifest + %Q{
+          base_manifest + %(
             elasticsearch::user { '#{test_settings['security_user']}':
               password => '#{test_settings['security_password']}',
               roles => ['admin'],
             }
-          } + @tls[:clients].each_with_index.map do |cert, i|
-            %Q{
+          ) + @tls[:clients].each_with_index.map do |cert, i|
+            format(%(
               elasticsearch::instance { 'es-%02d':
                 ssl                  => true,
                 ca_certificate       => '#{@tls[:ca][:cert][:path]}',
@@ -298,10 +286,12 @@ describe "elasticsearch shield", :with_certificates, :then_purge do
                   'http.port' => '92%02d',
                 }
               }
-            } % [i+1, @tls[:clients].length, i]
-          end.join("\n") + %Q{
+            ), i + 1, @tls[:clients].length, i)
+          end.join("\n") + format(%(
             Elasticsearch::Plugin { instances => %s, }
-          } % @tls[:clients].each_with_index.map { |_, i| "es-%02d" % (i+1)}.to_s
+          ), @tls[:clients].each_with_index.map do |_, i|
+            format('es-%02d', (i + 1))
+          end.to_s)
         end
 
         it 'should apply cleanly' do
@@ -317,23 +307,25 @@ describe "elasticsearch shield", :with_certificates, :then_purge do
       end
 
       describe port(test_settings['port_a']) do
-        it 'open', :with_retries do should be_listening end
+        it 'open', :with_retries do
+          should be_listening
+        end
       end
 
       describe port(test_settings['port_b']) do
-        it 'open', :with_retries do should be_listening end
+        it 'open', :with_retries do
+          should be_listening
+        end
       end
 
       describe server :container do
         describe http(
           "https://localhost:#{test_settings['port_a']}/_nodes",
-          {
-            :basic_auth => [
-              test_settings['security_user'],
-              test_settings['security_password']
-            ],
-            :ssl => {:verify => false}
-          }
+          :basic_auth => [
+            test_settings['security_user'],
+            test_settings['security_password']
+          ],
+          :ssl => { :verify => false }
         ) do
           it 'clusters over TLS', :with_generous_retries do
             expect(
@@ -346,18 +338,16 @@ describe "elasticsearch shield", :with_certificates, :then_purge do
   end
 
   describe 'module removal' do
-
     describe 'manifest' do
-
       let :removal_manifest do
-        %Q{
+        format(%(
           class { 'elasticsearch' : ensure => absent, }
 
           Elasticsearch::Instance { ensure => absent, }
           elasticsearch::instance { %s : }
-        } % @tls[:clients].each_with_index.map do |_, i|
-          "es-%02d" % (i+1)
-        end.to_s
+        ), @tls[:clients].each_with_index.map do |_, i|
+          format('es-%02d', (i + 1))
+        end.to_s)
       end
 
       it 'should apply cleanly' do

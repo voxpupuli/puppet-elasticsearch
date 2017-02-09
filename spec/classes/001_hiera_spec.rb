@@ -30,7 +30,14 @@ describe 'elasticsearch', :type => 'class' do
           })
         }
 
-        it { should contain_elasticsearch__instance('es-01').with(:config => { 'node.name' => 'es-01' }) }
+        it do
+          contain_elasticsearch__instance('es-01').with(
+            :config => {
+              'node.name' => 'es-01',
+              'network.host' => '0.0.0.0'
+            }
+          )
+        end
         it { should contain_elasticsearch__service('es-01') }
         it { should contain_elasticsearch__service__init('es-01') }
         it { should contain_service('elasticsearch-instance-es-01') }
@@ -59,7 +66,14 @@ describe 'elasticsearch', :type => 'class' do
           })
         }
 
-        it { should contain_elasticsearch__instance('es-01').with(:config => { 'node.name' => 'es-01' }) }
+        it do
+          should contain_elasticsearch__instance('es-01').with(
+            :config => {
+              'node.name' => 'es-01',
+              'network.host' => '0.0.0.0'
+            }
+          )
+        end
         it { should contain_elasticsearch__service('es-01') }
         it { should contain_elasticsearch__service__init('es-01') }
         it { should contain_service('elasticsearch-instance-es-01') }
@@ -79,8 +93,14 @@ describe 'elasticsearch', :type => 'class' do
         it { should contain_datacat_fragment('main_config_es-01') }
         it { should contain_datacat('/etc/elasticsearch/es-01/elasticsearch.yml') }
 
-
-        it { should contain_elasticsearch__instance('es-02').with(:config => { 'node.name' => 'es-02' }) }
+        it do
+          should contain_elasticsearch__instance('es-02').with(
+            :config => {
+              'node.name' => 'es-02',
+              'network.host' => '0.0.0.0'
+            }
+          )
+        end
         it { should contain_elasticsearch__service('es-02') }
         it { should contain_elasticsearch__service__init('es-02') }
         it { should contain_service('elasticsearch-instance-es-02') }
@@ -130,8 +150,8 @@ describe 'elasticsearch', :type => 'class' do
         })
       }
 
-      it { should contain_elasticsearch__plugin('mobz/elasticsearch-head/1.0.0').with(:ensure => 'present', :module_dir => 'head', :instances => ['es-01'] ) }
-      it { should contain_elasticsearch_plugin('mobz/elasticsearch-head/1.0.0') }
+      it { should contain_elasticsearch__plugin('mobz/elasticsearch-head').with(:ensure => 'present', :module_dir => 'head', :instances => ['es-01'] ) }
+      it { should contain_elasticsearch_plugin('mobz/elasticsearch-head') }
 
     end
 
@@ -165,7 +185,14 @@ describe 'elasticsearch', :type => 'class' do
         })
       }
 
-      it { should contain_elasticsearch__instance('default').with(:config => { 'node.name' => 'default' }) }
+      it do
+        should contain_elasticsearch__instance('default').with(
+          :config => {
+            'node.name' => 'default',
+            'network.host' => '0.0.0.0'
+          }
+        )
+      end
       it { should contain_elasticsearch__service('default') }
       it { should contain_elasticsearch__service__init('default') }
       it { should contain_service('elasticsearch-instance-default') }
@@ -186,7 +213,14 @@ describe 'elasticsearch', :type => 'class' do
       it { should contain_datacat('/etc/elasticsearch/default/elasticsearch.yml') }
 
 
-      it { should contain_elasticsearch__instance('es-01').with(:config => { 'node.name' => 'es-01' }) }
+      it do
+        should contain_elasticsearch__instance('es-01').with(
+          :config => {
+            'node.name' => 'es-01',
+            'network.host' => '0.0.0.0'
+          }
+        )
+      end
       it { should contain_elasticsearch__service('es-01') }
       it { should contain_elasticsearch__service__init('es-01') }
       it { should contain_service('elasticsearch-instance-es-01') }

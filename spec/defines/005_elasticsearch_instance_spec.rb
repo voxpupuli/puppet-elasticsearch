@@ -56,11 +56,10 @@ describe 'elasticsearch::instance', :type => 'define' do
         :init_template =>
           "elasticsearch/etc/init.d/elasticsearch.#{initscript}.erb",
         :init_defaults => {
-          "CONF_DIR"  => "/etc/elasticsearch/es-01",
-          "CONF_FILE" => "/etc/elasticsearch/es-01/elasticsearch.yml",
-          "DATA_DIR"  => "/var/lib/elasticsearch",
-          "LOG_DIR"   => "/var/log/elasticsearch/es-01",
-          "ES_HOME"   => "/usr/share/elasticsearch"
+          "CONF_DIR" => "/etc/elasticsearch/es-01",
+          "DATA_DIR" => "/var/lib/elasticsearch",
+          "LOG_DIR"  => "/var/log/elasticsearch/es-01",
+          "ES_HOME"  => "/usr/share/elasticsearch"
         }
       )}
 

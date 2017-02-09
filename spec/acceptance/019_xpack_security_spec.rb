@@ -1,6 +1,7 @@
 require 'spec_helper_acceptance'
 require 'json'
 
+# rubocop:disable Metrics/BlockLength
 describe 'elasticsearch x-pack security',
          :if => is_5x_capable?,
          :with_certificates => true,
@@ -44,17 +45,13 @@ describe 'elasticsearch x-pack security',
     elasticsearch::plugin { 'x-pack' :  }
     EOF
 
-    if not java_install
-      manifest = java_snippet + "->\n" + manifest
-    end
+    manifest = java_snippet + "->\n" + manifest unless java_install
 
     manifest
   end
 
   describe 'user authentication' do
-
     describe 'single instance manifest' do
-
       let :single_manifest do
         base_manifest + <<-EOF
           elasticsearch::instance { ['es-01'] :  }
@@ -85,7 +82,9 @@ describe 'elasticsearch x-pack security',
     end
 
     describe port(test_settings['port_a']) do
-      it 'open', :with_retries do should be_listening end
+      it 'open', :with_retries do
+        should be_listening
+      end
     end
 
     describe server :container do
@@ -99,12 +98,10 @@ describe 'elasticsearch x-pack security',
 
       describe http(
         "http://localhost:#{test_settings['port_a']}/_cluster/health",
-        {
-          :basic_auth => [
-            test_settings['security_user'],
-            test_settings['security_password']
-          ]
-        }
+        :basic_auth => [
+          test_settings['security_user'],
+          test_settings['security_password']
+        ]
       ) do
         it 'permits authorized access', :with_retries do
           expect(response.status).to eq(200)
@@ -113,12 +110,10 @@ describe 'elasticsearch x-pack security',
 
       describe http(
         "http://localhost:#{test_settings['port_a']}/_cluster/health",
-        {
-          :basic_auth => [
-            "#{test_settings['security_user']}pwchange",
-            test_settings['security_hashed_plaintext']
-          ]
-        }
+        :basic_auth => [
+          "#{test_settings['security_user']}pwchange",
+          test_settings['security_hashed_plaintext']
+        ]
       ) do
         it 'permits authorized access using pre-hashed creds',
            :with_retries do
@@ -130,7 +125,6 @@ describe 'elasticsearch x-pack security',
 
   describe 'changing passwords' do
     describe 'password change manifest' do
-
       let :passwd_manifest do
         base_manifest + <<-EOF
           elasticsearch::instance { ['es-01'] :  }
@@ -151,18 +145,18 @@ describe 'elasticsearch x-pack security',
     end
 
     describe port(test_settings['port_a']) do
-      it 'open', :with_retries do should be_listening end
+      it 'open', :with_retries do
+        should be_listening
+      end
     end
 
     describe server :container do
       describe http(
         "http://localhost:#{test_settings['port_a']}/_cluster/health",
-        {
-          :basic_auth => [
-            "#{test_settings['security_user']}pwchange",
-            test_settings['security_password'][0..5]
-          ]
-        }
+        :basic_auth => [
+          "#{test_settings['security_user']}pwchange",
+          test_settings['security_password'][0..5]
+        ]
       ) do
         it 'authorizes changed passwords', :with_retries do
           expect(response.status).to eq(200)
@@ -172,9 +166,7 @@ describe 'elasticsearch x-pack security',
   end
 
   describe 'role permission control' do
-
     describe 'single instance manifest' do
-
       let :single_manifest do
         base_manifest + <<-EOF
           elasticsearch::instance { ['es-01'] :  }
@@ -213,19 +205,19 @@ describe 'elasticsearch x-pack security',
     end
 
     describe port(test_settings['port_a']) do
-      it 'open', :with_retries do should be_listening end
+      it 'open', :with_retries do
+        should be_listening
+      end
     end
 
     # Cluster API denial
     describe server :container do
       describe http(
         "http://localhost:#{test_settings['port_a']}/_cluster/stats",
-        {
-          :basic_auth => [
-            test_settings['security_user'],
-            test_settings['security_password']
-          ]
-        }
+        :basic_auth => [
+          test_settings['security_user'],
+          test_settings['security_password']
+        ]
       ) do
         it 'denies stats API access', :with_retries do
           expect(response.status).to eq(403)
@@ -235,12 +227,10 @@ describe 'elasticsearch x-pack security',
       # Cluser API permitted
       describe http(
         "http://localhost:#{test_settings['port_a']}/_cluster/health",
-        {
-          :basic_auth => [
-            test_settings['security_user'],
-            test_settings['security_password']
-          ]
-        }
+        :basic_auth => [
+          test_settings['security_user'],
+          test_settings['security_password']
+        ]
       ) do
         it 'permits health API access', :with_retries do
           expect(response.status).to eq(200)
@@ -250,13 +240,11 @@ describe 'elasticsearch x-pack security',
       # Index creation permission
       describe http(
         "http://localhost:#{test_settings['port_a']}/#{test_settings['index']}",
-        {
-          :basic_auth => [
-            test_settings['security_user'],
-            test_settings['security_password']
-          ],
-          :method => :put
-        }
+        :basic_auth => [
+          test_settings['security_user'],
+          test_settings['security_password']
+        ],
+        :method => :put
       ) do
         it 'permits index creation', :with_retries do
           expect(response.status).to eq(200)
@@ -266,14 +254,12 @@ describe 'elasticsearch x-pack security',
       # Document indexing denial
       describe http(
         "http://localhost:#{test_settings['port_a']}/#{test_settings['index']}/a/b",
-        {
-          :basic_auth => [
-            test_settings['security_user'],
-            test_settings['security_password']
-          ],
-          :method => :put,
-          :body => '{ "foo" => "bar" }'
-        }
+        :basic_auth => [
+          test_settings['security_user'],
+          test_settings['security_password']
+        ],
+        :method => :put,
+        :body => '{ "foo" => "bar" }'
       ) do
         it 'denies indexing', :with_retries do
           expect(response.status).to eq(403)
@@ -283,13 +269,11 @@ describe 'elasticsearch x-pack security',
       # Index deletion permission
       describe http(
         "http://localhost:#{test_settings['port_a']}/#{test_settings['index']}",
-        {
-          :basic_auth => [
-            test_settings['security_user'],
-            test_settings['security_password']
-          ],
-          :method => :delete,
-        }
+        :basic_auth => [
+          test_settings['security_user'],
+          test_settings['security_password']
+        ],
+        :method => :delete
       ) do
         it 'denies indexing', :with_retries do
           expect(response.status).to eq(200)
@@ -299,11 +283,8 @@ describe 'elasticsearch x-pack security',
   end
 
   describe 'tls' do
-
     describe 'single instance' do
-
       describe 'manifest' do
-
         let :single_manifest do
           base_manifest + <<-EOF
             elasticsearch::instance { 'es-01':
@@ -336,19 +317,19 @@ describe 'elasticsearch x-pack security',
       end
 
       describe port(test_settings['port_a']) do
-        it 'open', :with_retries do should be_listening end
+        it 'open', :with_retries do
+          should be_listening
+        end
       end
 
       describe server :container do
         describe http(
           "https://localhost:#{test_settings['port_a']}/_cluster/health",
-          {
-            :basic_auth => [
-              test_settings['security_user'],
-              test_settings['security_password']
-            ],
-            :ssl => {:verify => false}
-          }
+          :basic_auth => [
+            test_settings['security_user'],
+            test_settings['security_password']
+          ],
+          :ssl => { :verify => false }
         ) do
           it 'permits TLS health API access', :with_retries do
             expect(response.status).to eq(200)
@@ -358,17 +339,15 @@ describe 'elasticsearch x-pack security',
     end
 
     describe 'multi-instance' do
-
       describe 'manifest' do
-
         let :multi_manifest do
-          base_manifest + %Q{
+          base_manifest + %(
             elasticsearch::user { '#{test_settings['security_user']}':
               password => '#{test_settings['security_password']}',
               roles => ['superuser'],
             }
-          } + @tls[:clients].each_with_index.map do |cert, i|
-            %Q{
+          ) + @tls[:clients].each_with_index.map do |cert, i|
+            format(%(
               elasticsearch::instance { 'es-%02d':
                 ssl                  => true,
                 ca_certificate       => '#{@tls[:ca][:cert][:path]}',
@@ -381,10 +360,12 @@ describe 'elasticsearch x-pack security',
                   'http.port' => '92%02d',
                 }
               }
-            } % [i+1, @tls[:clients].length, i]
-          end.join("\n") + %Q{
+            ), i + 1, @tls[:clients].length, i)
+          end.join("\n") + format(%(
             Elasticsearch::Plugin { instances => %s, }
-          } % @tls[:clients].each_with_index.map { |_, i| "es-%02d" % (i+1)}.to_s
+          ), @tls[:clients].each_with_index.map do |_, i|
+            format('es-%02d', (i + 1))
+          end.to_s)
         end
 
         it 'should apply cleanly' do
@@ -400,23 +381,25 @@ describe 'elasticsearch x-pack security',
       end
 
       describe port(test_settings['port_a']) do
-        it 'open', :with_retries do should be_listening end
+        it 'open', :with_retries do
+          should be_listening
+        end
       end
 
       describe port(test_settings['port_b']) do
-        it 'open', :with_retries do should be_listening end
+        it 'open', :with_retries do
+          should be_listening
+        end
       end
 
       describe server :container do
         describe http(
           "https://localhost:#{test_settings['port_a']}/_nodes",
-          {
-            :basic_auth => [
-              test_settings['security_user'],
-              test_settings['security_password']
-            ],
-            :ssl => {:verify => false}
-          }
+          :basic_auth => [
+            test_settings['security_user'],
+            test_settings['security_password']
+          ],
+          :ssl => { :verify => false }
         ) do
           it 'clusters over TLS', :with_generous_retries do
             expect(
@@ -429,18 +412,16 @@ describe 'elasticsearch x-pack security',
   end
 
   describe 'module removal' do
-
     describe 'manifest' do
-
       let :removal_manifest do
-        %Q{
+        format(%(
           class { 'elasticsearch' : ensure => absent, }
 
           Elasticsearch::Instance { ensure => absent, }
           elasticsearch::instance { %s : }
-        } % @tls[:clients].each_with_index.map do |_, i|
-          "es-%02d" % (i+1)
-        end.to_s
+        ), @tls[:clients].each_with_index.map do |_, i|
+          format('es-%02d', (i + 1))
+        end.to_s)
       end
 
       it 'should apply cleanly' do

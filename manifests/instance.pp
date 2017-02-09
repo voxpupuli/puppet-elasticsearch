@@ -475,8 +475,7 @@ define elasticsearch::instance(
 
     $instance_init_defaults_main = {
       'CONF_DIR'  => $instance_configdir,
-      'CONF_FILE' => "${instance_configdir}/elasticsearch.yml",
-      'ES_HOME'   => '/usr/share/elasticsearch',
+      'ES_HOME'   => $elasticsearch::params::homedir,
       'LOG_DIR'   => $instance_logdir,
     }
 
