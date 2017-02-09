@@ -1,6 +1,19 @@
-## x.x.x (Month Day, Year)
+## 5.0.0 (February 9, 2017)
+
+Going forward, This module will follow Elasticsearch's upstream major version to indicate compatability.
+That is, version 5.x of this module supports version 5 of Elasticsearch, and version 6.x of this module will be released once Elasticsearch 6 support is added.
 
 ### Summary
+Note that this is a **major version release**!
+Please read the release notes carefully before upgrading to avoid downtime/unexpected behavior.
+Remember to restart any puppetmaster servers to clear provider caches and pull in updated code.
+
+### Backwards-Incompatible Changes
+* The `elasticsearch::shield::user` and `elasticsearch::shield::role` resources have been renamed to `elasticsearch::user` and `elasticsearch::role` since the resource now handles both Shield and X-Pack.
+* Both Shield and X-Pack configuration files are kept in `/etc/elasticsearch/shield` and `/etc/elasticsearch/x-pack`, respectively. If you previously managed Shield resources with version 0.x of this module, you may need to migrate files from `/usr/share/elasticsearch/shield`.
+* The default data directory has been changed to `/var/lib/elasticsearch`. If you used the previous default (the Elasticsearch home directory, `/usr/share/elasticsearch/data`), you may need to migrate your data.
+* The first changes that may be Elasticsearch 1.x-incompatible have been introduced (see the [elasticsearch support lifecycle](https://www.elastic.co/support/eol)). This only impacts version 1.x running on systemd-based distributions.
+* sysctl management has been removed (and the module removed as a dependency for this module), and puppet/yum is used in lieu of ceritsc/yum.
 
 #### Features
 * Support management of the global jvm.options configuration file.

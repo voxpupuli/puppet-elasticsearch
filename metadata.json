@@ -1,8 +1,8 @@
 {
-  "name": "elasticsearch-elasticsearch",
-  "version": "0.15.1",
+  "name": "elastic-elasticsearch",
+  "version": "5.0.0",
   "source": "https://github.com/elastic/puppet-elasticsearch",
-  "author": "elasticsearch",
+  "author": "elastic",
   "license": "Apache-2.0",
   "summary": "Module for managing and configuring Elasticsearch nodes",
   "description": "Module for managing and configuring Elasticsearch nodes",
