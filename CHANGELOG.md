@@ -1,3 +1,10 @@
+## 0.16.1 (February 9, 2017)
+
+### Summary
+With this release, the 0.x series of the module is deprecated.
+Future updates will be released under the Puppet Forge namespace [elastic/elasticsearch](https://forge.puppet.com/elastic/elasticsearch).
+Note that upgrading from this version is a major release and the update documentation should be reviewed for breaking changes.
+
 ## 0.16.0 (January 26, 2017)
 
 ### Summary

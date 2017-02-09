@@ -418,6 +418,7 @@ class elasticsearch(
 
   anchor {'elasticsearch::begin': }
 
+  warning('The 0.x series of this module is deprecated. Future updates will follow major upstream versioning (starting with 5.x) at the Puppet forge namespace elastic/elasticsearch.')
 
   #### Validate parameters
 
