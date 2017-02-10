@@ -1,8 +1,8 @@
 # Elasticsearch Puppet Module
 
 [![Puppet Forge endorsed](https://img.shields.io/puppetforge/e/elasticsearch/elasticsearch.svg)](https://forge.puppetlabs.com/elasticsearch/elasticsearch)
-[![Puppet Forge Version](https://img.shields.io/puppetforge/v/elasticsearch/elasticsearch.svg)](https://forge.puppetlabs.com/elasticsearch/elasticsearch)
-[![Puppet Forge Downloads](https://img.shields.io/puppetforge/dt/elasticsearch/elasticsearch.svg)](https://forge.puppetlabs.com/elasticsearch/elasticsearch)
+[![Puppet Forge Version](https://img.shields.io/puppetforge/v/elastic/elasticsearch.svg)](https://forge.puppetlabs.com/elastic/elasticsearch)
+[![Puppet Forge Downloads](https://img.shields.io/puppetforge/dt/elastic/elasticsearch.svg)](https://forge.puppetlabs.com/elastic/elasticsearch)
 
 #### Table of Contents
 
