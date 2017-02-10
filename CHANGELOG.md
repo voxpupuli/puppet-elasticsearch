@@ -1,3 +1,15 @@
+## x.x.x (Month Day, Year)
+
+### Summary
+
+#### Features
+
+#### Bugfixes
+
+#### Changes
+
+#### Testing changes
+
 ## 5.0.0 (February 9, 2017)
 
 Going forward, This module will follow Elasticsearch's upstream major version to indicate compatability.
