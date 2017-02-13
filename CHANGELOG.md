@@ -7,6 +7,7 @@
 #### Bugfixes
 
 #### Changes
+* `Accept` and `Content-Type` headers properly set for providers (to support ES 6.x)
 
 #### Testing changes
 
