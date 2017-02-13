@@ -1,3 +1,4 @@
+require 'json'
 require 'spec_helper'
 require 'webmock/rspec'
 
@@ -160,6 +161,42 @@ describe Puppet::Type.type(:elasticsearch_template).provider(:ruby) do
           'order' => 10,
         }
       })
+    end
+  end
+
+  describe 'flush' do
+    let(:resource) { Puppet::Type::Elasticsearch_template.new props }
+    let(:provider) { described_class.new resource }
+    let(:props) do
+      {
+        :name => 'foo',
+        :content => {
+          'template' => 'fooindex-*'
+        }
+      }
+    end
+
+    before :all do
+      stub_request(:put, 'http://localhost:9200/_template/foo').
+        with(
+          :headers => {
+            'Accept' => 'application/json',
+            'Content-Type' => 'application/json'
+          },
+          :body => JSON.dump({
+            'order' => 0,
+            'aliases' => {},
+            'mappings' => {},
+            'template' => 'fooindex-*'
+          })
+        )
+      stub_request(:get, 'http://localhost:9200/_template').
+        with(:headers => { 'Accept' => 'application/json' }).
+        to_return(:status => 200, :body => '{}')
+    end
+
+    it 'creates templates' do
+      provider.flush
     end
   end
 

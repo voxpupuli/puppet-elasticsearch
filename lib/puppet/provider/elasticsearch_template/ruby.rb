@@ -146,6 +146,9 @@ Puppet::Type.type(:elasticsearch_template).provide(:ruby) do
     else
       req = Net::HTTP::Put.new uri.request_uri
       req.body = JSON.generate(resource[:content])
+      # As of Elasticsearch 6.x, required when requesting with a payload (so we
+      # set it always to be safe)
+      req['Content-Type'] = 'application/json' if req['Content-Type'].nil?
     end
 
     response = self.class.rest(
