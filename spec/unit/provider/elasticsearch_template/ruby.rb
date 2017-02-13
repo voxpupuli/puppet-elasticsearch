@@ -7,6 +7,7 @@ describe Puppet::Type.type(:elasticsearch_template).provider(:ruby) do
     context 'with no templates' do
       before :all do
         stub_request(:get, 'http://localhost:9200/_template').
+          with(:headers => { 'Accept' => 'application/json' }).
           to_return(
             :status => 200,
             :body => '{}'
@@ -22,6 +23,7 @@ describe Puppet::Type.type(:elasticsearch_template).provider(:ruby) do
   describe 'multiple templates' do
     before :all do
       stub_request(:get, 'http://localhost:9200/_template').
+        with(:headers => { 'Accept' => 'application/json' }).
         to_return(
           :status => 200,
           :body => <<-EOS
@@ -77,7 +79,10 @@ describe Puppet::Type.type(:elasticsearch_template).provider(:ruby) do
   describe 'basic authentication' do
     before :all do
       stub_request(:get, 'http://localhost:9200/_template').
-        with(:basic_auth => ['elastic', 'password']).
+        with(
+          :basic_auth => ['elastic', 'password'],
+          :headers => { 'Accept' => 'application/json' }
+        ).
         to_return(
           :status => 200,
           :body => <<-EOS
@@ -119,6 +124,7 @@ describe Puppet::Type.type(:elasticsearch_template).provider(:ruby) do
   describe 'https' do
     before :all do
       stub_request(:get, 'https://localhost:9200/_template').
+        with(:headers => { 'Accept' => 'application/json' }).
         to_return(
           :status => 200,
           :body => <<-EOS

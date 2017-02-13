@@ -28,6 +28,8 @@ Puppet::Type.type(:elasticsearch_template).provide(:ruby) do
       )
     end
 
+    req['Accept'] = 'application/json'
+
     http.read_timeout = timeout
     http.open_timeout = timeout
     http.verify_mode = OpenSSL::SSL::VERIFY_NONE if not validate_tls
