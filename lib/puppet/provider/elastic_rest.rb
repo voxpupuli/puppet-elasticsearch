@@ -127,18 +127,20 @@ class Puppet::Provider::ElasticREST < Puppet::Provider
 
   def flush
     uri = URI(
-      "%s://%s:%d/%s/%s" % [
-      resource[:protocol],
-      resource[:host],
-      resource[:port],
-      self.class.api_uri,
-      resource[:name]
-    ])
+      format(
+        '%s://%s:%d/%s/%s',
+        resource[:protocol],
+        resource[:host],
+        resource[:port],
+        self.class.api_uri,
+        resource[:name]
+      )
+    )
 
     http = Net::HTTP.new uri.host, uri.port
     http.use_ssl = uri.scheme == 'https'
     [:ca_file, :ca_path].each do |arg|
-      if not resource[arg].nil? and http.respond_to? arg
+      if !resource[arg].nil? and http.respond_to? arg
         http.send "#{arg}=".to_sym, resource[arg]
       end
     end
@@ -167,18 +169,19 @@ class Puppet::Provider::ElasticREST < Puppet::Provider
     unless response.code.to_i == 200
       json = JSON.parse(response.body)
 
-      if json.key? 'error'
-        if json['error'].is_a? Hash and json['error'].has_key? 'root_cause'
-          # Newer versions have useful output
-          err_msg = json['error']['root_cause'].first['reason']
-        else
-          # Otherwise fallback to old-style error messages
-          err_msg = json['error']
-        end
-      else
-        # As a last resort, return the response error code
-        err_msg = "HTTP #{response.code}"
-      end
+      err_msg = if json.key? 'error'
+                  if json['error'].is_a? Hash \
+                      and json['error'].key? 'root_cause'
+                    # Newer versions have useful output
+                    json['error']['root_cause'].first['reason']
+                  else
+                    # Otherwise fallback to old-style error messages
+                    json['error']
+                  end
+                else
+                  # As a last resort, return the response error code
+                  "HTTP #{response.code}"
+                end
 
       raise Puppet::Error, "Elasticsearch API responded with: #{err_msg}"
     end
