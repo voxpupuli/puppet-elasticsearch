@@ -101,7 +101,7 @@ describe Puppet::Type.type(:elasticsearch_template).provider(:ruby) do
     end
 
     it 'authenticates' do
-      expect(described_class.templates(
+      expect(described_class.resources(
         'http', true, 'localhost', '9200', 10, 'elastic', 'password'
       ).map { |provider|
         described_class.new(
@@ -143,7 +143,7 @@ describe Puppet::Type.type(:elasticsearch_template).provider(:ruby) do
     end
 
     it 'uses ssl' do
-      expect(described_class.templates(
+      expect(described_class.resources(
         'https', true, 'localhost', '9200', 10
       ).map { |provider|
         described_class.new(
@@ -199,5 +199,4 @@ describe Puppet::Type.type(:elasticsearch_template).provider(:ruby) do
       provider.flush
     end
   end
-
 end # of describe puppet type
