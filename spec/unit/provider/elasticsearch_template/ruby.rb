@@ -2,17 +2,17 @@ require 'json'
 require 'spec_helper'
 require 'webmock/rspec'
 
+# rubocop:disable Metrics/BlockLength
 describe Puppet::Type.type(:elasticsearch_template).provider(:ruby) do
-
   describe 'instances' do
     context 'with no templates' do
       before :all do
-        stub_request(:get, 'http://localhost:9200/_template').
-          with(:headers => { 'Accept' => 'application/json' }).
-          to_return(
+        stub_request(:get, 'http://localhost:9200/_template')
+          .with(:headers => { 'Accept' => 'application/json' })
+          .to_return(
             :status => 200,
             :body => '{}'
-        )
+          )
       end
 
       it 'returns an empty list' do
@@ -23,9 +23,9 @@ describe Puppet::Type.type(:elasticsearch_template).provider(:ruby) do
 
   describe 'multiple templates' do
     before :all do
-      stub_request(:get, 'http://localhost:9200/_template').
-        with(:headers => { 'Accept' => 'application/json' }).
-        to_return(
+      stub_request(:get, 'http://localhost:9200/_template')
+        .with(:headers => { 'Accept' => 'application/json' })
+        .to_return(
           :status => 200,
           :body => <<-EOS
             {
@@ -45,46 +45,49 @@ describe Puppet::Type.type(:elasticsearch_template).provider(:ruby) do
               }
             }
           EOS
-      )
+        )
     end
 
     it 'returns two templates' do
-      expect(described_class.instances.map { |provider|
+      expect(described_class.instances.map do |provider|
         provider.instance_variable_get(:@property_hash)
-      }).to contain_exactly({
-        :name => 'foobar1',
-        :ensure => :present,
-        :provider => :ruby,
-        :content => {
-          'aliases' => {},
-          'mappings' => {},
-          'settings' => {},
-          'template' => 'foobar1-*',
-          'order' => 1,
+      end).to contain_exactly(
+        {
+          :name => 'foobar1',
+          :ensure => :present,
+          :provider => :ruby,
+          :content => {
+            'aliases' => {},
+            'mappings' => {},
+            'settings' => {},
+            'template' => 'foobar1-*',
+            'order' => 1
+          }
+        },
+        {
+          :name => 'foobar2',
+          :ensure => :present,
+          :provider => :ruby,
+          :content => {
+            'aliases' => {},
+            'mappings' => {},
+            'settings' => {},
+            'template' => 'foobar2-*',
+            'order' => 2
+          }
         }
-      },{
-        :name => 'foobar2',
-        :ensure => :present,
-        :provider => :ruby,
-        :content => {
-          'aliases' => {},
-          'mappings' => {},
-          'settings' => {},
-          'template' => 'foobar2-*',
-          'order' => 2,
-        }
-      })
+      )
     end
   end
 
   describe 'basic authentication' do
     before :all do
-      stub_request(:get, 'http://localhost:9200/_template').
-        with(
-          :basic_auth => ['elastic', 'password'],
+      stub_request(:get, 'http://localhost:9200/_template')
+        .with(
+          :basic_auth => %w(elastic password),
           :headers => { 'Accept' => 'application/json' }
-        ).
-        to_return(
+        )
+        .to_return(
           :status => 200,
           :body => <<-EOS
             {
@@ -97,17 +100,17 @@ describe Puppet::Type.type(:elasticsearch_template).provider(:ruby) do
               }
             }
           EOS
-      )
+        )
     end
 
     it 'authenticates' do
       expect(described_class.resources(
         'http', true, 'localhost', '9200', 10, 'elastic', 'password'
-      ).map { |provider|
+      ).map do |provider|
         described_class.new(
           provider
         ).instance_variable_get(:@property_hash)
-      }).to contain_exactly({
+      end).to contain_exactly(
         :name => 'foobar3',
         :ensure => :present,
         :provider => :ruby,
@@ -116,17 +119,17 @@ describe Puppet::Type.type(:elasticsearch_template).provider(:ruby) do
           'mappings' => {},
           'settings' => {},
           'template' => 'foobar3-*',
-          'order' => 3,
+          'order' => 3
         }
-      })
+      )
     end
   end
 
   describe 'https' do
     before :all do
-      stub_request(:get, 'https://localhost:9200/_template').
-        with(:headers => { 'Accept' => 'application/json' }).
-        to_return(
+      stub_request(:get, 'https://localhost:9200/_template')
+        .with(:headers => { 'Accept' => 'application/json' })
+        .to_return(
           :status => 200,
           :body => <<-EOS
             {
@@ -139,17 +142,17 @@ describe Puppet::Type.type(:elasticsearch_template).provider(:ruby) do
               }
             }
           EOS
-      )
+        )
     end
 
     it 'uses ssl' do
       expect(described_class.resources(
         'https', true, 'localhost', '9200', 10
-      ).map { |provider|
+      ).map do |provider|
         described_class.new(
           provider
         ).instance_variable_get(:@property_hash)
-      }).to contain_exactly({
+      end).to contain_exactly(
         :name => 'foobar-ssl',
         :ensure => :present,
         :provider => :ruby,
@@ -158,9 +161,9 @@ describe Puppet::Type.type(:elasticsearch_template).provider(:ruby) do
           'mappings' => {},
           'settings' => {},
           'template' => 'foobar-ssl-*',
-          'order' => 10,
+          'order' => 10
         }
-      })
+      )
     end
   end
 
@@ -177,22 +180,22 @@ describe Puppet::Type.type(:elasticsearch_template).provider(:ruby) do
     end
 
     before :all do
-      stub_request(:put, 'http://localhost:9200/_template/foo').
-        with(
+      stub_request(:put, 'http://localhost:9200/_template/foo')
+        .with(
           :headers => {
             'Accept' => 'application/json',
             'Content-Type' => 'application/json'
           },
-          :body => JSON.dump({
+          :body => JSON.dump(
             'order' => 0,
             'aliases' => {},
             'mappings' => {},
             'template' => 'fooindex-*'
-          })
+          )
         )
-      stub_request(:get, 'http://localhost:9200/_template').
-        with(:headers => { 'Accept' => 'application/json' }).
-        to_return(:status => 200, :body => '{}')
+      stub_request(:get, 'http://localhost:9200/_template')
+        .with(:headers => { 'Accept' => 'application/json' })
+        .to_return(:status => 200, :body => '{}')
     end
 
     it 'creates templates' do
