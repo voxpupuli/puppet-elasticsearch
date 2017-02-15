@@ -22,7 +22,7 @@ module EsFacts
       Dir.foreach(dir_prefix) do |dir|
         next if dir == '.'
 
-        if File.exists?("#{dir_prefix}/#{dir}/elasticsearch.yml")
+        if File.readable?("#{dir_prefix}/#{dir}/elasticsearch.yml")
           config_data = YAML.load_file("#{dir_prefix}/#{dir}/elasticsearch.yml")
 
           if not config_data['http.enabled'].nil? and \

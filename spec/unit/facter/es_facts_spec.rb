@@ -59,8 +59,8 @@ describe 'Facter::Util::Fact' do
         .and_return(true)
       allow(Dir).to receive(:foreach)
         .and_yield('.').and_yield('..').and_yield('es-01').and_yield('scripts')
-      allow(File).to receive(:exists?).and_call_original
-      allow(File).to receive(:exists?)
+      allow(File).to receive(:readable?).and_call_original
+      allow(File).to receive(:readable?)
         .with('/etc/elasticsearch/es-01/elasticsearch.yml')
         .and_return(true)
       allow(YAML).to receive(:load_file)
