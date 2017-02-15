@@ -34,18 +34,20 @@ shared_examples 'REST API types' do |resource_type|
       it 'should support present as a value for ensure' do
         expect do
           described_class.new(
-            :name => resource_name,
-            :ensure => :present,
-            :content => {}
-          )
+            default_params.merge(
+              :name => resource_name,
+              :ensure => :present
+          ))
         end.to_not raise_error
       end
 
       it 'should support absent as a value for ensure' do
         expect do
           described_class.new(
-            :name => resource_name,
-            :ensure => :absent
+            default_params.merge(
+              :name => resource_name,
+              :ensure => :absent
+            )
           )
         end.to_not raise_error
       end
@@ -53,9 +55,10 @@ shared_examples 'REST API types' do |resource_type|
       it 'should not support other values' do
         expect do
           described_class.new(
-            :name => resource_name,
-            :ensure => :foo,
-            :content => {}
+            default_params.merge(
+              :name => resource_name,
+              :ensure => :foo,
+            )
           )
         end.to raise_error(Puppet::Error, /Invalid value/)
       end
@@ -65,9 +68,10 @@ shared_examples 'REST API types' do |resource_type|
       it 'should accept IP addresses' do
         expect do
           described_class.new(
-            :name => resource_name,
-            :content => {},
-            :host => '127.0.0.1'
+            default_params.merge(
+              :name => resource_name,
+              :host => '127.0.0.1'
+            )
           )
         end.not_to raise_error
       end
@@ -78,9 +82,10 @@ shared_examples 'REST API types' do |resource_type|
         it "should reject invalid port value #{value}" do
           expect do
             described_class.new(
-              :name => resource_name,
-              :content => {},
-              :port => value
+              default_params.merge(
+                :name => resource_name,
+                :port => value
+              )
             )
           end.to raise_error(Puppet::Error, /invalid port/i)
         end
@@ -92,9 +97,10 @@ shared_examples 'REST API types' do |resource_type|
         it "should reject invalid ssl_verify value #{value}" do
           expect do
             described_class.new(
-              :name => resource_name,
-              :content => {},
-              :validate_tls => value
+              default_params.merge(
+                :name => resource_name,
+                :validate_tls => value
+              )
             )
           end.to raise_error(Puppet::Error, /invalid value/i)
         end
@@ -104,9 +110,10 @@ shared_examples 'REST API types' do |resource_type|
         it "should accept validate_tls value #{value}" do
           expect do
             described_class.new(
-              :name => resource_name,
-              :content => {},
-              :validate_tls => value
+              default_params.merge(
+                :name => resource_name,
+                :validate_tls => value
+              )
             )
           end.not_to raise_error
         end
@@ -117,9 +124,10 @@ shared_examples 'REST API types' do |resource_type|
       it 'should reject string values' do
         expect do
           described_class.new(
-            :name => resource_name,
-            :content => {},
-            :timeout => 'foo'
+            default_params.merge(
+              :name => resource_name,
+              :timeout => 'foo'
+            )
           )
         end.to raise_error(Puppet::Error, /must be a/)
       end
@@ -127,9 +135,10 @@ shared_examples 'REST API types' do |resource_type|
       it 'should reject negative integers' do
         expect do
           described_class.new(
-            :name => resource_name,
-            :content => {},
-            :timeout => -10
+            default_params.merge(
+              :name => resource_name,
+              :timeout => -10
+            )
           )
         end.to raise_error(Puppet::Error, /must be a/)
       end
@@ -137,9 +146,10 @@ shared_examples 'REST API types' do |resource_type|
       it 'should accept integers' do
         expect do
           described_class.new(
-            :name => resource_name,
-            :content => {},
-            :timeout => 10
+            default_params.merge(
+              :name => resource_name,
+              :timeout => 10
+            )
           )
         end.to_not raise_error
       end
@@ -147,9 +157,10 @@ shared_examples 'REST API types' do |resource_type|
       it 'should accept quoted integers' do
         expect do
           described_class.new(
-            :name => resource_name,
-            :content => {},
-            :timeout => '10'
+            default_params.merge(
+              :name => resource_name,
+              :timeout => '10'
+            )
           )
         end.to_not raise_error
       end

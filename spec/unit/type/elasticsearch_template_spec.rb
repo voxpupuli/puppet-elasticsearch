@@ -5,6 +5,9 @@ require_relative 'elasticsearch_rest_shared_examples'
 # rubocop:disable Metrics/BlockLength
 describe Puppet::Type.type(:elasticsearch_template) do
   let(:resource_name) { 'test_template' }
+  let(:default_params) do
+    { :content => {} }
+  end
 
   include_examples 'REST API types', 'template'
 
