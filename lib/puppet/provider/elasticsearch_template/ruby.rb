@@ -14,4 +14,6 @@ Puppet::Type.type(:elasticsearch_template).provide(
   ]
 ) do
   desc 'A REST API based provider to manage Elasticsearch templates.'
+
+  mk_resource_methods
 end
