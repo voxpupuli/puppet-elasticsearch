@@ -46,7 +46,7 @@ shared_examples 'REST API' do |resource_type|
           :body => JSON.dump(json_1)
         )
 
-      expect(described_class.resources(
+      expect(described_class.api_objects(
         'http', true, 'localhost', '9200', 10, 'elastic', 'password'
       ).map do |provider|
         described_class.new(
@@ -65,7 +65,7 @@ shared_examples 'REST API' do |resource_type|
           :body => JSON.dump(json_2)
         )
 
-      expect(described_class.resources(
+      expect(described_class.api_objects(
         'https', true, 'localhost', '9200', 10
       ).map do |provider|
         described_class.new(

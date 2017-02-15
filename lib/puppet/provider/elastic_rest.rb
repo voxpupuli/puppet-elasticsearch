@@ -40,15 +40,15 @@ class Puppet::Provider::ElasticREST < Puppet::Provider
     end
   end
 
-  def self.resources protocol = 'http', \
-                     validate_tls = true, \
-                     host = 'localhost', \
-                     port = 9200, \
-                     timeout = 10, \
-                     username = nil, \
-                     password = nil, \
-                     ca_file = nil, \
-                     ca_path = nil
+  def self.api_objects protocol = 'http', \
+                       validate_tls = true, \
+                       host = 'localhost', \
+                       port = 9200, \
+                       timeout = 10, \
+                       username = nil, \
+                       password = nil, \
+                       ca_file = nil, \
+                       ca_path = nil
 
     uri = URI("#{protocol}://#{host}:#{port}/#{api_uri}")
     http = Net::HTTP.new uri.host, uri.port
@@ -86,7 +86,7 @@ class Puppet::Provider::ElasticREST < Puppet::Provider
   end
 
   def self.instances
-    resources.map { |resource| new resource }
+    api_objects.map { |resource| new resource }
   end
 
   # Unlike a typical #prefetch, which just ties discovered #instances to the
@@ -110,7 +110,7 @@ class Puppet::Provider::ElasticREST < Puppet::Provider
       ]
       # Deduplicate identical settings, and fetch templates
     end.uniq.map do |api|
-      resources(*api)
+      api_objects(*api)
       # Flatten and deduplicate the array, instantiate providers, and do the
       # typical association dance
     end.flatten.uniq.map { |resource| new resource }.each do |prov|
@@ -186,7 +186,7 @@ class Puppet::Provider::ElasticREST < Puppet::Provider
       raise Puppet::Error, "Elasticsearch API responded with: #{err_msg}"
     end
 
-    @property_hash = self.class.resources(
+    @property_hash = self.class.api_objects(
       resource[:protocol],
       resource[:validate_tls],
       resource[:host],
