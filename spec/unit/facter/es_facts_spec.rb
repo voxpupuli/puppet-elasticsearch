@@ -1,90 +1,118 @@
-require 'json'
 require 'spec_helper'
 require 'webmock/rspec'
-require 'yaml'
 
-def es_uuid
-  [('a'..'b'), ('A'..'Z'), (0..9)].flat_map(&:to_a).sample(22).join
-end
+describe 'elasticsearch facts' do
 
-# rubocop:disable Metrics/BlockLength
-describe 'Facter::Util::Fact' do
-  before do
-    allow(Facter.fact(:kernel)).to receive(:value).and_return('Linux')
-  end
-
-  let(:cluster_name) { 'elasticsearch' }
-  let(:cluster_uuid) { es_uuid }
-  let(:config) { { 'http.port' => '9201' } }
-  let(:mlockall) { false }
-  let(:node_id) { es_uuid }
-  let(:node_name) { 'centos-7-x64-es-01' }
-  let(:version) { '5.2.1' }
-
-  let(:node_response) do
-    JSON.dump(
-      'cluster_name' => 'elasticsearch',
-      'nodes' => {
-        node_id => {
-          'name' => 'centos-7-x64-es-01',
-          'plugins' => [],
-          'process' => {
-            'mlockall' => mlockall
-          }
-        }
-      }
-    )
-  end
-
-  let(:root_response) do
-    JSON.dump(
-      'name' => node_name,
-      'cluster_name' => cluster_name,
-      'cluster_uuid' => cluster_uuid,
-      'version' => {
-        'number' => version,
-        'build_hash' => 'db0d481',
-        'build_date' => '2017-02-09T22:05:32.386Z',
-        'build_snapshot' => false,
-        'lucene_version' => '6.4.1'
-      },
-      'tagline' => 'You Know, for Search'
-    )
-  end
-
-  describe 'elasticsearch' do
-    it 'discovers REST facts' do
-      allow(File).to receive(:directory?).and_call_original
-      allow(File).to receive(:directory?).with('/etc/elasticsearch')
-        .and_return(true)
-      allow(Dir).to receive(:foreach)
-        .and_yield('.').and_yield('..').and_yield('es-01').and_yield('scripts')
-      allow(File).to receive(:readable?).and_call_original
-      allow(File).to receive(:readable?)
-        .with('/etc/elasticsearch/es-01/elasticsearch.yml')
-        .and_return(true)
-      allow(YAML).to receive(:load_file)
-        .with('/etc/elasticsearch/es-01/elasticsearch.yml')
-        .and_return(config)
-      stub_request(:get, 'http://localhost:9201')
+  before(:each) do
+    ['Warlock', 'Zom'].each_with_index do |instance, n|
+      stub_request(:get, "http://localhost:920#{n}/")
+        .with(:headers => {'Accept'=>'*/*', 'User-Agent'=>'Ruby'})
         .to_return(
           :status => 200,
-          :body => root_response
-        )
-      stub_request(:get, "http://localhost:9201/_nodes/#{node_name}")
-        .to_return(
-          :status => 200,
-          :body => node_response
+          :body => File.read(File.join(
+            fixture_path, "facts/#{instance}-root.json"))
         )
 
-      expect(Facter.fact(:elasticsearch_9201_cluster_name).value)
-        .to eql(cluster_name)
-      expect(Facter.fact(:elasticsearch_9201_mlockall).value).to eql(mlockall)
-      expect(Facter.fact(:elasticsearch_9201_name).value).to eql(node_name)
-      expect(Facter.fact(:elasticsearch_9201_node_id).value).to eql(node_id)
-      expect(Facter.fact(:elasticsearch_9201_plugins).value).to be_empty
-      expect(Facter.fact(:elasticsearch_9201_version).value).to eql(version)
-      expect(Facter.fact(:elasticsearch_ports).value).to eql('9201')
+      stub_request(:get, "http://localhost:920#{n}/_nodes/#{instance}")
+        .with(:headers => {'Accept'=>'*/*', 'User-Agent'=>'Ruby'})
+        .to_return(
+          :status => 200,
+          :body => File.read(File.join(
+            fixture_path, "facts/#{instance}-nodes.json"))
+        )
+    end
+
+    allow(File)
+      .to receive(:directory?)
+      .with('/etc/elasticsearch')
+      .and_return(true)
+
+    allow(Dir)
+      .to receive(:foreach)
+      .and_yield('es01').and_yield('es02')
+
+    ['es01', 'es02'].each do |instance|
+      allow(File)
+        .to receive(:exists?)
+        .with("/etc/elasticsearch/#{instance}/elasticsearch.yml")
+        .and_return(true)
+    end
+
+    allow(YAML)
+      .to receive(:load_file)
+      .with('/etc/elasticsearch/es01/elasticsearch.yml', any_args)
+      .and_return({})
+
+    allow(YAML)
+      .to receive(:load_file)
+      .with('/etc/elasticsearch/es02/elasticsearch.yml', any_args)
+      .and_return({'http.port' => '9201'})
+
+    require 'lib/facter/es_facts'
+  end
+
+  describe 'elasticsearch_ports' do
+    it 'finds listening ports' do
+      expect(Facter.fact(:elasticsearch_ports).value.split(','))
+        .to contain_exactly('9200', '9201')
     end
   end
-end
+
+  describe 'instance' do
+
+    it 'returns the node name' do
+      expect(Facter.fact(:elasticsearch_9200_name).value).to eq('Warlock')
+    end
+
+    it 'returns the node version' do
+      expect(Facter.fact(:elasticsearch_9200_version).value).to eq('1.4.2')
+    end
+
+    it 'returns the cluster name' do
+      expect(Facter.fact(:elasticsearch_9200_cluster_name).value)
+        .to eq('elasticsearch')
+    end
+
+    it 'returns the node ID' do
+      expect(Facter.fact(:elasticsearch_9200_node_id).value)
+        .to eq('yQAWBO3FS8CupZnSvAVziQ')
+    end
+
+    it 'returns the mlockall boolean' do
+      expect(Facter.fact(:elasticsearch_9200_mlockall).value).to be_falsy
+    end
+
+    it 'returns installed plugins' do
+      expect(Facter.fact(:elasticsearch_9200_plugins).value).to eq('kopf')
+    end
+
+    describe 'kopf plugin' do
+
+      it 'returns the correct version' do
+        expect(Facter.fact(:elasticsearch_9200_plugin_kopf_version).value)
+          .to eq('1.4.3')
+      end
+
+      it 'returns the correct description' do
+        expect(Facter.fact(:elasticsearch_9200_plugin_kopf_description).value)
+          .to eq('kopf - simple web administration tool for ElasticSearch')
+      end
+
+      it 'returns the plugin URL' do
+        expect(Facter.fact(:elasticsearch_9200_plugin_kopf_url).value)
+          .to eq('/_plugin/kopf/')
+      end
+
+      it 'returns the plugin JVM boolean' do
+        expect(Facter.fact(:elasticsearch_9200_plugin_kopf_jvm).value)
+          .to be_falsy
+      end
+
+      it 'returns the plugin _site boolean' do
+        expect(Facter.fact(:elasticsearch_9200_plugin_kopf_site).value)
+          .to be_truthy
+      end
+
+    end # of describe plugin
+  end # of describe instance
+end # of describe elasticsearch facts
