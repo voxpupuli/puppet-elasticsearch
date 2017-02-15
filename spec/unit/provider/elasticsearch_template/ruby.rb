@@ -67,5 +67,16 @@ describe Puppet::Type.type(:elasticsearch_template).provider(:ruby) do
     )
   end
 
+  let(:resource) { Puppet::Type::Elasticsearch_template.new props }
+  let(:provider) { described_class.new resource }
+  let(:props) do
+    {
+      :name => 'foo',
+      :content => {
+        'template' => 'fooindex-*'
+      }
+    }
+  end
+
   include_examples 'REST API', 'template'
 end

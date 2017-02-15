@@ -20,7 +20,7 @@ shared_examples 'REST API' do |resource_type|
   end
 
   describe "multiple #{resource_type}s" do
-    it 'returns two templates' do
+    it "returns two #{resource_type}s" do
       stub_request(:get, "http://localhost:9200/_#{resource_type}")
         .with(:headers => { 'Accept' => 'application/json' })
         .to_return(
@@ -76,18 +76,7 @@ shared_examples 'REST API' do |resource_type|
   end
 
   describe 'flush' do
-    let(:resource) { Puppet::Type::Elasticsearch_template.new props }
-    let(:provider) { described_class.new resource }
-    let(:props) do
-      {
-        :name => 'foo',
-        :content => {
-          'template' => 'fooindex-*'
-        }
-      }
-    end
-
-    it 'creates templates' do
+    it "creates #{resource_type}s" do
       stub_request(:put, "http://localhost:9200/_#{resource_type}/foo")
         .with(
           :headers => {
