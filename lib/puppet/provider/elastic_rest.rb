@@ -110,7 +110,7 @@ class Puppet::Provider::ElasticREST < Puppet::Provider
       ]
       # Deduplicate identical settings, and fetch templates
     end.uniq.map do |api|
-      templates(*api)
+      resources(*api)
       # Flatten and deduplicate the array, instantiate providers, and do the
       # typical association dance
     end.flatten.uniq.map { |resource| new resource }.each do |prov|
