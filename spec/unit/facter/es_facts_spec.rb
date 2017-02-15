@@ -1,24 +1,32 @@
 require 'spec_helper'
 require 'webmock/rspec'
 
+# rubocop:disable Metric/BlockLength
 describe 'elasticsearch facts' do
-
   before(:each) do
-    ['Warlock', 'Zom'].each_with_index do |instance, n|
+    %w(Warlock Zom).each_with_index do |instance, n|
       stub_request(:get, "http://localhost:920#{n}/")
-        .with(:headers => {'Accept'=>'*/*', 'User-Agent'=>'Ruby'})
+        .with(:headers => { 'Accept' => '*/*', 'User-Agent' => 'Ruby' })
         .to_return(
           :status => 200,
-          :body => File.read(File.join(
-            fixture_path, "facts/#{instance}-root.json"))
+          :body => File.read(
+            File.join(
+              fixture_path,
+              "facts/#{instance}-root.json"
+            )
+          )
         )
 
       stub_request(:get, "http://localhost:920#{n}/_nodes/#{instance}")
-        .with(:headers => {'Accept'=>'*/*', 'User-Agent'=>'Ruby'})
+        .with(:headers => { 'Accept' => '*/*', 'User-Agent' => 'Ruby' })
         .to_return(
           :status => 200,
-          :body => File.read(File.join(
-            fixture_path, "facts/#{instance}-nodes.json"))
+          :body => File.read(
+            File.join(
+              fixture_path,
+              "facts/#{instance}-nodes.json"
+            )
+          )
         )
     end
 
@@ -31,7 +39,7 @@ describe 'elasticsearch facts' do
       .to receive(:foreach)
       .and_yield('es01').and_yield('es02')
 
-    ['es01', 'es02'].each do |instance|
+    %w(es01 es02).each do |instance|
       allow(File)
         .to receive(:readable?)
         .with("/etc/elasticsearch/#{instance}/elasticsearch.yml")
@@ -46,7 +54,7 @@ describe 'elasticsearch facts' do
     allow(YAML)
       .to receive(:load_file)
       .with('/etc/elasticsearch/es02/elasticsearch.yml', any_args)
-      .and_return({'http.port' => '9201'})
+      .and_return('http.port' => '9201')
 
     require 'lib/facter/es_facts'
   end
@@ -59,7 +67,6 @@ describe 'elasticsearch facts' do
   end
 
   describe 'instance' do
-
     it 'returns the node name' do
       expect(Facter.fact(:elasticsearch_9200_name).value).to eq('Warlock')
     end
@@ -87,7 +94,6 @@ describe 'elasticsearch facts' do
     end
 
     describe 'kopf plugin' do
-
       it 'returns the correct version' do
         expect(Facter.fact(:elasticsearch_9200_plugin_kopf_version).value)
           .to eq('1.4.3')
@@ -112,7 +118,6 @@ describe 'elasticsearch facts' do
         expect(Facter.fact(:elasticsearch_9200_plugin_kopf_site).value)
           .to be_truthy
       end
-
     end # of describe plugin
   end # of describe instance
 end # of describe elasticsearch facts
