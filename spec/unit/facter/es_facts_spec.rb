@@ -33,7 +33,7 @@ describe 'elasticsearch facts' do
 
     ['es01', 'es02'].each do |instance|
       allow(File)
-        .to receive(:exists?)
+        .to receive(:readable?)
         .with("/etc/elasticsearch/#{instance}/elasticsearch.yml")
         .and_return(true)
     end
