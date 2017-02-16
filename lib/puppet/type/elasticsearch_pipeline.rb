@@ -1,11 +1,13 @@
 $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', '..', '..'))
 
+require 'puppet_x/elastic/deep_to_i'
+require 'puppet_x/elastic/deep_implode'
 require 'puppet_x/elastic/elasticsearch_rest_resource'
 
 Puppet::Type.newtype(:elasticsearch_pipeline) do
   extend ElasticsearchRESTResource
 
-  desc 'Manages Elasticsearch indexing pipelines.'
+  desc 'Manages Elasticsearch ingest pipelines.'
 
   ensurable do
     defaultvalues
@@ -16,19 +18,15 @@ Puppet::Type.newtype(:elasticsearch_pipeline) do
     desc 'Pipeline name.'
   end
 
-  newproperty(:description) do
-    desc 'Description of the pipeline.'
+  newproperty(:content) do
+    desc 'Structured content of pipeline.'
 
     validate do |value|
-      raise Puppet::Error, 'string expected' unless value.is_a? String
+      raise Puppet::Error, 'hash expected' unless value.is_a? Hash
     end
-  end
 
-  newproperty(:processors) do
-    desc 'Array of processors for the pipeline.'
-
-    validate do |value|
-      raise Puppet::Error, 'array expected' unless value.is_a? Array
+    munge do |value|
+      Puppet_X::Elastic.deep_to_i(value)
     end
   end
 end # of newtype
