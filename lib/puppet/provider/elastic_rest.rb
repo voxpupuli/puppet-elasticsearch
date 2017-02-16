@@ -4,7 +4,7 @@ require 'openssl'
 
 class Puppet::Provider::ElasticREST < Puppet::Provider
   class << self
-    attr_accessor :api_uri, :metadata, :metadata_pipeline
+    attr_accessor :api_uri, :metadata_pipeline
   end
 
   def self.rest http, \
@@ -66,7 +66,7 @@ class Puppet::Provider::ElasticREST < Puppet::Provider
         {
           :name => object_name,
           :ensure => :present,
-          metadata => process_metadata(api_object),
+          :content => process_metadata(api_object),
           :provider => name
         }
       end

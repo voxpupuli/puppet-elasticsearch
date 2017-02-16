@@ -2,6 +2,10 @@ require 'spec_helper'
 
 # rubocop:disable Metrics/BlockLength
 shared_examples 'REST API types' do |resource_type|
+  let(:default_params) do
+    { :content => {} }
+  end
+
   describe "attribute validation for #{resource_type}s" do
     [
       :name,
@@ -20,13 +24,53 @@ shared_examples 'REST API types' do |resource_type|
       end
     end
 
-    it 'should have an ensure property' do
-      expect(described_class.attrtype(:ensure)).to eq(:property)
+    [
+      :content,
+      :ensure
+    ].each do |prop|
+      it "should have a #{prop} property" do
+        expect(described_class.attrtype(prop)).to eq(:property)
+      end
     end
 
     describe 'namevar validation' do
       it 'should have :name as its namevar' do
         expect(described_class.key_attributes).to eq([:name])
+      end
+    end
+
+    describe 'content' do
+      it 'should reject non-hash values' do
+        expect do
+          described_class.new(
+            :name => resource_name,
+            :content => '{"foo":}'
+          )
+        end.to raise_error(Puppet::Error, /hash expected/i)
+
+        expect do
+          described_class.new(
+            :name => resource_name,
+            :content => 0
+          )
+        end.to raise_error(Puppet::Error, /hash expected/i)
+
+        expect do
+          described_class.new(
+            default_params.merge(
+              :name => resource_name
+            )
+          )
+        end.not_to raise_error
+      end
+
+      it 'should deeply parse PSON-like values' do
+        expect(described_class.new(
+          :name => resource_name,
+          :content => { 'key' => { 'value' => '0' } }
+        )[:content]).to include(
+          'key' => { 'value' => 0 }
+        )
       end
     end
 
@@ -37,7 +81,8 @@ shared_examples 'REST API types' do |resource_type|
             default_params.merge(
               :name => resource_name,
               :ensure => :present
-          ))
+            )
+          )
         end.to_not raise_error
       end
 
@@ -57,7 +102,7 @@ shared_examples 'REST API types' do |resource_type|
           described_class.new(
             default_params.merge(
               :name => resource_name,
-              :ensure => :foo,
+              :ensure => :foo
             )
           )
         end.to raise_error(Puppet::Error, /Invalid value/)
