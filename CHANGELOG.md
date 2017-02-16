@@ -5,6 +5,7 @@
 #### Features
 
 #### Bugfixes
+* Custom facts no longer fail when trying to read unreadable elasticsearch config files.
 
 #### Changes
 * `Accept` and `Content-Type` headers properly set for providers (to support ES 6.x)
