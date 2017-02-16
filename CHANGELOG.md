@@ -3,6 +3,7 @@
 ### Summary
 
 #### Features
+* Ingestion pipelines supported via custom resources.
 
 #### Bugfixes
 
