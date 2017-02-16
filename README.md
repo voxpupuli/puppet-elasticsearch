@@ -305,6 +305,40 @@ elasticsearch::template { 'templatename':
 }
 ```
 
+### Ingestion Pipelines
+
+Pipelines behave similar to templates in that their contents can be controlled
+over the Elasticsearch REST API with a custom Puppet resource.
+API parameters follow the same rules as templates (those settings can either be
+controlled at the top-level in the `elasticsearch` class or set per-resource).
+
+#### Adding a new pipeline
+
+This will install and/or replace an ingestion pipeline in Elasticsearch
+(ingestion settings are compared against the present configuration):
+
+```puppet
+elasticsearch::pipeline { 'addfoo':
+  content => {
+    'description' => 'Add the foo field',
+    'processors' => [{
+      'set' => {
+        'field' => 'foo',
+        'value' => 'bar'
+      }
+    }]
+  }
+}
+```
+
+#### Delete a pipeline
+
+```puppet
+elasticsearch::pipeline { 'addfoo':
+  ensure => 'absent'
+}
+```
+
 ### Bindings/Clients
 
 Install a variety of [clients/bindings](http://www.elasticsearch.org/guide/en/elasticsearch/client/community/current/clients.html):
