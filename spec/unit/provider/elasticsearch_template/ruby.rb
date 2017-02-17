@@ -1,6 +1,6 @@
 require 'json'
 
-require_relative '../elasticsearch_rest'
+require_relative '../../../helpers/unit/provider/elasticsearch_rest_shared_examples'
 
 # rubocop:disable Metrics/BlockLength
 describe Puppet::Type.type(:elasticsearch_template).provider(:ruby) do
