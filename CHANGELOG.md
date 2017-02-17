@@ -3,6 +3,7 @@
 ### Summary
 
 #### Features
+* Ingestion pipelines supported via custom resources.
 
 #### Bugfixes
 * Custom facts no longer fail when trying to read unreadable elasticsearch config files.

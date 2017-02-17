@@ -628,6 +628,8 @@ class elasticsearch(
     -> Elasticsearch::Role <| |>
     Class['elasticsearch::config']
     -> Elasticsearch::Template <| |>
+    Class['elasticsearch::config']
+    -> Elasticsearch::Pipeline <| |>
 
   } else {
 
@@ -651,6 +653,9 @@ class elasticsearch(
     -> Class['elasticsearch::config']
     Anchor['elasticsearch::begin']
     -> Elasticsearch::Template <| |>
+    -> Class['elasticsearch::config']
+    Anchor['elasticsearch::begin']
+    -> Elasticsearch::Pipeline <| |>
     -> Class['elasticsearch::config']
 
   }
@@ -676,11 +681,15 @@ class elasticsearch(
   Elasticsearch::User <| ensure == 'absent' |>
   -> Elasticsearch::Role <| |>
 
-  # Ensure users and roles are managed before calling out to templates
+  # Ensure users and roles are managed before calling out to REST resources
   Elasticsearch::Role <| |>
   -> Elasticsearch::Template <| |>
   Elasticsearch::User <| |>
   -> Elasticsearch::Template <| |>
+  Elasticsearch::Role <| |>
+  -> Elasticsearch::Pipeline <| |>
+  Elasticsearch::User <| |>
+  -> Elasticsearch::Pipeline <| |>
 
   # Manage users/roles before instances (req'd to keep dir in sync)
   Elasticsearch::Role <| |>
@@ -688,10 +697,14 @@ class elasticsearch(
   Elasticsearch::User <| |>
   -> Elasticsearch::Instance <| |>
 
-  # Ensure instances are started before managing templates
+  # Ensure instances are started before managing REST resources
   Elasticsearch::Instance <| ensure == 'present' |>
   -> Elasticsearch::Template <| |>
-  # Ensure instances are stopped after managing templates
+  Elasticsearch::Instance <| ensure == 'present' |>
+  -> Elasticsearch::Pipeline <| |>
+  # Ensure instances are stopped after managing REST resources
   Elasticsearch::Template <| |>
+  -> Elasticsearch::Instance <| ensure == 'absent' |>
+  Elasticsearch::Pipeline <| |>
   -> Elasticsearch::Instance <| ensure == 'absent' |>
 }
