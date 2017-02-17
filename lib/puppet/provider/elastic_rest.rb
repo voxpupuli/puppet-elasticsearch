@@ -4,7 +4,15 @@ require 'openssl'
 
 class Puppet::Provider::ElasticREST < Puppet::Provider
   class << self
-    attr_accessor :api_uri, :metadata_pipeline
+    attr_accessor :api_discovery_uri
+    attr_accessor :api_resource_style
+    attr_accessor :api_uri
+    attr_accessor :metadata
+    attr_accessor :metadata_pipeline
+  end
+
+  def metadata
+    self.class.metadata
   end
 
   def self.rest http, \
@@ -40,6 +48,16 @@ class Puppet::Provider::ElasticREST < Puppet::Provider
     end
   end
 
+  def self.format_uri(resource_path)
+    api_uri unless resource_path
+    case api_resource_style
+    when :prefix
+      resource_path + '/' + api_uri
+    else
+      api_uri + '/' + resource_path
+    end
+  end
+
   def self.api_objects protocol = 'http', \
                        validate_tls = true, \
                        host = 'localhost', \
@@ -50,7 +68,7 @@ class Puppet::Provider::ElasticREST < Puppet::Provider
                        ca_file = nil, \
                        ca_path = nil
 
-    uri = URI("#{protocol}://#{host}:#{port}/#{api_uri}")
+    uri = URI("#{protocol}://#{host}:#{port}/#{format_uri(api_discovery_uri)}")
     http = Net::HTTP.new uri.host, uri.port
     req = Net::HTTP::Get.new uri.request_uri
 
@@ -66,7 +84,7 @@ class Puppet::Provider::ElasticREST < Puppet::Provider
         {
           :name => object_name,
           :ensure => :present,
-          :content => process_metadata(api_object),
+          metadata => process_metadata(api_object),
           :provider => name
         }
       end
@@ -128,12 +146,11 @@ class Puppet::Provider::ElasticREST < Puppet::Provider
   def flush
     uri = URI(
       format(
-        '%s://%s:%d/%s/%s',
+        '%s://%s:%d/%s',
         resource[:protocol],
         resource[:host],
         resource[:port],
-        self.class.api_uri,
-        resource[:name]
+        self.class.format_uri(resource[:name])
       )
     )
 
@@ -150,7 +167,7 @@ class Puppet::Provider::ElasticREST < Puppet::Provider
       req = Net::HTTP::Delete.new uri.request_uri
     else
       req = Net::HTTP::Put.new uri.request_uri
-      req.body = JSON.generate(resource[:content])
+      req.body = JSON.generate(resource[metadata])
       # As of Elasticsearch 6.x, required when requesting with a payload (so we
       # set it always to be safe)
       req['Content-Type'] = 'application/json' if req['Content-Type'].nil?
