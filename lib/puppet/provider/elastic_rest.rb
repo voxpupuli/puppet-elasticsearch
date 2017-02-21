@@ -7,6 +7,7 @@ class Puppet::Provider::ElasticREST < Puppet::Provider
     attr_accessor :api_discovery_uri
     attr_accessor :api_resource_style
     attr_accessor :api_uri
+    attr_accessor :discrete_resource_creation
     attr_accessor :metadata
     attr_accessor :metadata_pipeline
   end
@@ -48,13 +49,17 @@ class Puppet::Provider::ElasticREST < Puppet::Provider
     end
   end
 
-  def self.format_uri(resource_path)
+  def self.format_uri(resource_path, property_flush = {})
     return api_uri if resource_path.nil?
-    case api_resource_style
-    when :prefix
-      resource_path + '/' + api_uri
+    if discrete_resource_creation and not property_flush[:ensure].nil?
+      resource_path
     else
-      api_uri + '/' + resource_path
+      case api_resource_style
+      when :prefix
+        resource_path + '/' + api_uri
+      else
+        api_uri + '/' + resource_path
+      end
     end
   end
 
@@ -150,7 +155,7 @@ class Puppet::Provider::ElasticREST < Puppet::Provider
         resource[:protocol],
         resource[:host],
         resource[:port],
-        self.class.format_uri(resource[:name])
+        self.class.format_uri(resource[:name], @property_flush)
       )
     )
 
