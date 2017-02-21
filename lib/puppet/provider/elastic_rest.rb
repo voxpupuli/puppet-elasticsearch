@@ -49,7 +49,7 @@ class Puppet::Provider::ElasticREST < Puppet::Provider
   end
 
   def self.format_uri(resource_path)
-    api_uri unless resource_path
+    return api_uri if resource_path.nil?
     case api_resource_style
     when :prefix
       resource_path + '/' + api_uri
