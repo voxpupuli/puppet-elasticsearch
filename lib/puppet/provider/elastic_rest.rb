@@ -154,23 +154,29 @@ class Puppet::Provider::ElasticREST < Puppet::Provider
       )
     )
 
+    case @property_flush[:ensure]
+    when :absent
+      req = Net::HTTP::Delete.new uri.request_uri
+    else
+      req = Net::HTTP::Put.new uri.request_uri
+      req.body = JSON.generate(
+        if metadata != :content and @property_flush[:ensure] == :present
+          { metadata.to_s => resource[metadata] }
+        else
+          resource[metadata]
+        end
+      )
+      # As of Elasticsearch 6.x, required when requesting with a payload (so we
+      # set it always to be safe)
+      req['Content-Type'] = 'application/json' if req['Content-Type'].nil?
+    end
+
     http = Net::HTTP.new uri.host, uri.port
     http.use_ssl = uri.scheme == 'https'
     [:ca_file, :ca_path].each do |arg|
       if !resource[arg].nil? and http.respond_to? arg
         http.send "#{arg}=".to_sym, resource[arg]
       end
-    end
-
-    case @property_flush[:ensure]
-    when :absent
-      req = Net::HTTP::Delete.new uri.request_uri
-    else
-      req = Net::HTTP::Put.new uri.request_uri
-      req.body = JSON.generate(resource[metadata])
-      # As of Elasticsearch 6.x, required when requesting with a payload (so we
-      # set it always to be safe)
-      req['Content-Type'] = 'application/json' if req['Content-Type'].nil?
     end
 
     response = self.class.rest(
