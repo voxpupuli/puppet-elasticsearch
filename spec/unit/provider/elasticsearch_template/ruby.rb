@@ -78,5 +78,5 @@ describe Puppet::Type.type(:elasticsearch_template).provider(:ruby) do
     }
   end
 
-  include_examples 'REST API', 'template'
+  include_examples 'REST API', 'template', '_template/foo'
 end

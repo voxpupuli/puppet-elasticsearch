@@ -95,5 +95,5 @@ describe Puppet::Type.type(:elasticsearch_pipeline).provider(:ruby) do
     }
   end
 
-  include_examples 'REST API', 'ingest/pipeline'
+  include_examples 'REST API', 'ingest/pipeline', '_ingest/pipeline/foo'
 end
