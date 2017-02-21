@@ -4,6 +4,7 @@
 
 #### Features
 * Ingestion pipelines supported via custom resources.
+* Index settings support.
 
 #### Bugfixes
 * Custom facts no longer fail when trying to read unreadable elasticsearch config files.
