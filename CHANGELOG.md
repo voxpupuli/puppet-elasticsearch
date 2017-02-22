@@ -1,3 +1,8 @@
+## 0.16.2 (February 22, 2017)
+
+Clarified supported versions in the README and added official deprecation
+notice to the module summary.
+
 ## 0.16.1 (February 9, 2017)
 
 ### Summary
