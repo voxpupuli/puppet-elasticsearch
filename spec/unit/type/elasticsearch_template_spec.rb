@@ -1,12 +1,12 @@
 require 'spec_helper'
 
-require_relative 'elasticsearch_rest_shared_examples'
+require_relative '../../helpers/unit/type/elasticsearch_rest_shared_examples'
 
 # rubocop:disable Metrics/BlockLength
 describe Puppet::Type.type(:elasticsearch_template) do
   let(:resource_name) { 'test_template' }
 
-  include_examples 'REST API types', 'template'
+  include_examples 'REST API types', 'template', :content
 
   describe 'template attribute validation' do
     it 'should have a source parameter' do
