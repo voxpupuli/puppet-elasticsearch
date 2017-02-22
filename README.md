@@ -33,6 +33,8 @@ This module is actively tested against Elasticsearch 2.x and 5.x.
 * Elasticsearch service.
 * Elasticsearch plugins.
 * Elasticsearch templates.
+* Elasticsearch ingest pipelines.
+* Elasticsearch index settings.
 * Elasticsearch Shield/X-Pack users, roles, and certificates.
 
 ### Requirements
@@ -335,6 +337,37 @@ elasticsearch::pipeline { 'addfoo':
 
 ```puppet
 elasticsearch::pipeline { 'addfoo':
+  ensure => 'absent'
+}
+```
+
+
+### Index Settings
+
+This module includes basic support for ensuring an index is present or absent
+with optional index settings.
+API access settings follow the pattern previously mentioned for templates.
+
+#### Creating an index
+
+At the time of this writing, only index settings are supported.
+Note that some settings (such as `number_of_shards`) can only be set at index
+creation time.
+
+```puppet
+elasticsearch::index { 'foo':
+  settings => {
+    'index' => {
+      'number_of_replicas' => 0
+    }
+  }
+}
+```
+
+#### Delete an index
+
+```puppet
+elasticsearch::index { 'foo':
   ensure => 'absent'
 }
 ```

@@ -3,7 +3,7 @@ require 'spec_helper'
 require 'webmock/rspec'
 
 # rubocop:disable Metrics/BlockLength
-shared_examples 'REST API' do |resource_type|
+shared_examples 'REST API' do |resource_type, create_uri|
   describe 'instances' do
     context "with no #{resource_type}s" do
       it 'returns an empty list' do
@@ -77,7 +77,7 @@ shared_examples 'REST API' do |resource_type|
 
   describe 'flush' do
     it "creates #{resource_type}s" do
-      stub_request(:put, "http://localhost:9200/_#{resource_type}/foo")
+      stub_request(:put, "http://localhost:9200/#{create_uri}")
         .with(
           :headers => {
             'Accept' => 'application/json',

@@ -8,6 +8,7 @@ Puppet::Type.type(:elasticsearch_template).provide(
   :ruby,
   :parent => Puppet::Provider::ElasticREST,
   :api_uri => '_template',
+  :metadata => :content,
   :metadata_pipeline => [
     lambda { |data| Puppet_X::Elastic.deep_to_i data }
   ]

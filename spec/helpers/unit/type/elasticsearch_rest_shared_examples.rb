@@ -1,9 +1,9 @@
 require 'spec_helper'
 
 # rubocop:disable Metrics/BlockLength
-shared_examples 'REST API types' do |resource_type|
+shared_examples 'REST API types' do |resource_type, meta_property|
   let(:default_params) do
-    { :content => {} }
+    { meta_property => {} }
   end
 
   describe "attribute validation for #{resource_type}s" do
@@ -25,8 +25,8 @@ shared_examples 'REST API types' do |resource_type|
     end
 
     [
-      :content,
-      :ensure
+      :ensure,
+      meta_property
     ].each do |prop|
       it "should have a #{prop} property" do
         expect(described_class.attrtype(prop)).to eq(:property)
@@ -39,19 +39,19 @@ shared_examples 'REST API types' do |resource_type|
       end
     end
 
-    describe 'content' do
+    describe meta_property.to_s do
       it 'should reject non-hash values' do
         expect do
           described_class.new(
             :name => resource_name,
-            :content => '{"foo":}'
+            meta_property => '{"foo":}'
           )
         end.to raise_error(Puppet::Error, /hash expected/i)
 
         expect do
           described_class.new(
             :name => resource_name,
-            :content => 0
+            meta_property => 0
           )
         end.to raise_error(Puppet::Error, /hash expected/i)
 
@@ -67,8 +67,8 @@ shared_examples 'REST API types' do |resource_type|
       it 'should deeply parse PSON-like values' do
         expect(described_class.new(
           :name => resource_name,
-          :content => { 'key' => { 'value' => '0' } }
-        )[:content]).to include(
+          meta_property => { 'key' => { 'value' => '0' } }
+        )[meta_property]).to include(
           'key' => { 'value' => 0 }
         )
       end
