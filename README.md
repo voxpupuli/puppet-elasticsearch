@@ -785,15 +785,17 @@ class { 'elasticsearch':
 
 ## Limitations
 
-This module has been built on and tested against Puppet 3.2 and higher.
+This module is built upon and tested against the versions of Puppet listed in
+the metadata.json file (i.e. the listed compatible versions on the Puppet
+Forge).
 
 The module has been tested on:
 
-* Debian 6/7/8
+* Debian 7/8
 * CentOS 6/7
 * OracleLinux 6/7
-* Ubuntu 12.04, 14.04
-* OpenSuSE 13.x
+* Ubuntu 12.04, 14.04, 16.04
+* OpenSuSE 42.x
 * SLES 12
 
 Other distro's that have been reported to work:
