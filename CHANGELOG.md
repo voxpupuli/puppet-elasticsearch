@@ -1,18 +1,16 @@
-## x.x.x (Month Day, Year)
+## 5.1.0 (February 28, 2017)
 
 ### Summary
+Ingest pipeline and index settings support.
+Minor bugfixes.
 
 #### Features
 * Ingestion pipelines supported via custom resources.
 * Index settings support.
 
-#### Bugfixes
+#### Fixes
 * Custom facts no longer fail when trying to read unreadable elasticsearch config files.
-
-#### Changes
 * `Accept` and `Content-Type` headers properly set for providers (to support ES 6.x)
-
-#### Testing changes
 
 ## 5.0.0 (February 9, 2017)
 
