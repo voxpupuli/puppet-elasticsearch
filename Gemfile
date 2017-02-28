@@ -11,6 +11,7 @@ gem 'metadata-json-lint'
 gem 'rspec-puppet', '~> 2.4'
 gem 'specinfra', '~> 2.60'
 gem 'infrataster'
+gem 'puppet-blacksmith'
 
 gem 'pry'
 gem 'docker-api', '~> 1.0'
