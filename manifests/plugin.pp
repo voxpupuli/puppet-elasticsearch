@@ -55,7 +55,7 @@
 #   This variable is optional
 #
 # [*proxy_password*]
-#   Proxy auth username to use when installing the plugin
+#   Proxy auth password to use when installing the plugin
 #   Value type is string
 #   Default value: None
 #   This variable is optional
