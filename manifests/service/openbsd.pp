@@ -123,8 +123,8 @@ define elasticsearch::service::openbsd(
         instance     => $name,
         notify       => $notify_service,
         package_name => $elasticsearch::package_name,
-      } ->
-      file { "/etc/rc.d/elasticsearch_${name}":
+      }
+      -> file { "/etc/rc.d/elasticsearch_${name}":
         ensure => $ensure,
         owner  => 'root',
         group  => '0',

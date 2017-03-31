@@ -117,8 +117,8 @@ define elasticsearch::pipeline (
   es_instance_conn_validator { "${name}-ingest-pipeline":
     server => $api_host,
     port   => $api_port,
-  } ->
-  elasticsearch_pipeline { $name:
+  }
+  -> elasticsearch_pipeline { $name:
     ensure       => $ensure,
     content      => $content,
     protocol     => $api_protocol,

@@ -114,8 +114,8 @@ define elasticsearch::index (
   es_instance_conn_validator { "${name}-index-conn-validator":
     server => $api_host,
     port   => $api_port,
-  } ->
-  elasticsearch_index { $name:
+  }
+  -> elasticsearch_index { $name:
     ensure       => $ensure,
     settings     => $settings,
     protocol     => $api_protocol,
