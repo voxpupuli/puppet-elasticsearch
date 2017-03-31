@@ -166,8 +166,8 @@ define elasticsearch::plugin(
     proxy                      => $_proxy,
     plugin_dir                 => $::elasticsearch::plugindir,
     plugin_path                => $module_dir,
-  } ->
-  file { "${elasticsearch::plugindir}/${_module_dir}":
+  }
+  -> file { "${elasticsearch::plugindir}/${_module_dir}":
     ensure  => $_file_ensure,
     mode    => 'o+Xr',
     recurse => true,

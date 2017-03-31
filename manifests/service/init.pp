@@ -163,8 +163,8 @@ define elasticsearch::service::init(
         instance     => $name,
         notify       => $notify_service,
         package_name => $elasticsearch::package_name,
-      } ->
-      file { "/etc/init.d/elasticsearch-${name}":
+      }
+      -> file { "/etc/init.d/elasticsearch-${name}":
         ensure => $ensure,
         owner  => 'root',
         group  => '0',

@@ -102,8 +102,8 @@ class elasticsearch::repo {
         enabled  => 1,
         proxy    => $::elasticsearch::repo_proxy,
         priority => $elasticsearch::repo_priority,
-      } ~>
-      exec { 'elasticsearch_yumrepo_yum_clean':
+      }
+      ~> exec { 'elasticsearch_yumrepo_yum_clean':
         command     => 'yum clean metadata expire-cache --disablerepo="*" --enablerepo="elasticsearch"',
         refreshonly => true,
         returns     => [0, 1],
@@ -132,8 +132,8 @@ class elasticsearch::repo {
         gpgcheck    => 1,
         gpgkey      => $::elasticsearch::repo_key_source,
         type        => 'yum',
-      } ~>
-      exec { 'elasticsearch_zypper_refresh_elasticsearch':
+      }
+      ~> exec { 'elasticsearch_zypper_refresh_elasticsearch':
         command     => 'zypper refresh elasticsearch',
         refreshonly => true,
       }
