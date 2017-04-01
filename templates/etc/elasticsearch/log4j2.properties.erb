@@ -21,7 +21,7 @@ appender.rolling.policies.time.type = TimeBasedTriggeringPolicy
 appender.rolling.policies.time.interval = 1
 appender.rolling.policies.time.modulate = true
 <%- elsif @file_rolling_type == 'rollingFile' -%>
-appender.rolling.filePattern = ${sys:es.logs}-%d{yyyy-MM-dd}-%i.log
+appender.rolling.filePattern = ${sys:es.logs}-%i.log
 appender.rolling.policies.type = Policies
 appender.rolling.policies.size.type = SizeBasedTriggeringPolicy
 appender.rolling.policies.size.size = <%= @rolling_file_max_file_size %>
