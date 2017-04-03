@@ -84,6 +84,10 @@ class elasticsearch::params {
       $elasticsearch_user  = '_elasticsearch'
       $elasticsearch_group = '_elasticsearch'
     }
+    'FreeBSD': {
+      $elasticsearch_user  = 'elasticsearch'
+      $elasticsearch_group = 'elasticsearch'
+    }
     default: {
       fail("\"${module_name}\" provides no user/group default value
            for \"${::kernel}\"")
@@ -101,6 +105,9 @@ class elasticsearch::params {
     }
     'OpenBSD': {
       $download_tool = 'ftp -o'
+    }
+    'FreeBSD': {
+      $download_tool = 'fetch -o'
     }
     default: {
       fail("\"${module_name}\" provides no download tool default value
@@ -128,6 +135,15 @@ class elasticsearch::params {
       $plugindir   = "${homedir}/plugins"
       $datadir     = '/var/elasticsearch/data'
     }
+    'FreeBSD': {
+      $configdir   = '/usr/local/etc/elasticsearch'
+      $logdir      = '/var/log/elasticsearch'
+      $package_dir = '/var/cache/elasticsearch'
+      $installpath = undef
+      $homedir     = '/usr/local/lib/elasticsearch'
+      $plugindir   = "${homedir}/plugins"
+      $datadir     = '/var/db/elasticsearch'
+    }
     default: {
       fail("\"${module_name}\" provides no config directory default value
            for \"${::kernel}\"")
@@ -137,7 +153,7 @@ class elasticsearch::params {
   # packages
   case $::operatingsystem {
     'RedHat', 'CentOS', 'Fedora', 'Scientific', 'Amazon', 'OracleLinux', 'SLC',
-    'Debian', 'Ubuntu', 'OpenSuSE', 'SLES', 'OpenBSD': {
+    'Debian', 'Ubuntu', 'OpenSuSE', 'SLES', 'OpenBSD', 'FreeBSD': {
       $package = 'elasticsearch'
     }
     'Gentoo': {
@@ -282,6 +298,17 @@ class elasticsearch::params {
       $systemd_service_path = undef
       $defaults_location    = undef
       $init_template        = 'elasticsearch.OpenBSD.erb'
+      $pid_dir              = '/var/run/elasticsearch'
+    }
+    'FreeBSD': {
+      $service_name         = 'elasticsearch'
+      $service_hasrestart   = true
+      $service_hasstatus    = true
+      $service_pattern      = undef
+      $service_providers    = 'freebsd'
+      $systemd_service_path = undef
+      $defaults_location    = undef
+      $init_template        = 'elasticsearch.FreeBSD.erb'
       $pid_dir              = '/var/run/elasticsearch'
     }
     default: {

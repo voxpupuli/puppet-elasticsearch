@@ -85,6 +85,14 @@ define elasticsearch::service(
         service_flags => $service_flags,
       }
     }
+    'freebsd': {
+      elasticsearch::service::freebsd { $name:
+        ensure        => $ensure,
+        status        => $status,
+        init_template => $init_template,
+        service_flags => $service_flags,
+      }
+    }
     'systemd': {
       elasticsearch::service::systemd { $name:
         ensure             => $ensure,
