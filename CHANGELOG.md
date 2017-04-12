@@ -3,6 +3,8 @@
 ### Summary
 
 #### Features
+* Instance configs now have highest precedence when constructing the final yaml
+    config file.
 
 #### Fixes
 

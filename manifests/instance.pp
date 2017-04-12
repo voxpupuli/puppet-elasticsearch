@@ -455,10 +455,10 @@ define elasticsearch::instance(
     $instance_conf = merge(
       $main_config,
       $instance_node_name,
-      $instance_config,
       $instance_datadir_config,
       $instance_logdir_config,
-      $tls_config
+      $tls_config,
+      $instance_config
     )
 
     # defaults file content
