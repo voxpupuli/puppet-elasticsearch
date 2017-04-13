@@ -1,4 +1,4 @@
-## x.x.x (Month Day, Year)
+## 5.1.1 (April 13, 2017)
 
 ### Summary
 
@@ -7,6 +7,9 @@
     config file.
 
 #### Fixes
+This is a hotfix release to support users affected by [an upstream Elasticsearch issue](https://github.com/elastic/elasticsearch/issues/6887).
+See the [associated issue](https://github.com/elastic/puppet-elasticsearch/issues/802#issuecomment-293295930) for details regarding the workaround.
+The change implemented in this release is to place the `elasticsearch::instance` `config` parameter at the highest precedence when merging the final config yaml which permits users manually override `path.data` values.
 
 ## 5.1.0 (February 28, 2017)
 
