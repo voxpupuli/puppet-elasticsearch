@@ -128,6 +128,29 @@ class elasticsearch::config {
       group   => $elasticsearch::elasticsearch_group,
     }
 
+    if $::elasticsearch::security_plugin != undef and ($::elasticsearch::security_plugin in ['shield', 'x-pack']) {
+      file { "/etc/elasticsearch/${::elasticsearch::security_plugin}" :
+        ensure => 'directory',
+      }
+    }
+
+    # Define logging config file for the in-use security plugin
+    if $::elasticsearch::security_logging_config != undef or $::elasticsearch::security_logging_content != undef or $::elasticsearch::security_logging_source != undef {
+      if $::elasticsearch::security_plugin == undef or ! ($::elasticsearch::security_plugin in ['shield', 'x-pack']) {
+        fail("\"${security_plugin}\" is not a valid security_plugin parameter value")
+      }
+
+      $_security_logging_file = $::elasticsearch::security_plugin ? {
+        'shield' => 'logging.yml',
+        default => 'log4j2.properties'
+      }
+
+      file { "/etc/elasticsearch/${::elasticsearch::security_plugin}/${_security_logging_file}" :
+        content => $::elasticsearch::security_logging_content,
+        source  => $::elasticsearch::security_logging_source,
+      }
+    }
+
   } elsif ( $elasticsearch::ensure == 'absent' ) {
 
     file { $elasticsearch::plugindir:

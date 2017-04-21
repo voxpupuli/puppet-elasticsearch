@@ -438,6 +438,7 @@ define elasticsearch::instance(
         owner   => 'root',
         group   => '0',
         before  => Elasticsearch::Service[$name],
+        notify  => $notify_service,
       }
     }
 

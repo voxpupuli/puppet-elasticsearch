@@ -549,4 +549,64 @@ describe 'elasticsearch::instance', :type => 'define' do
       end
     end
   end
+
+  describe 'recursive configuration directory management' do
+    ['shield', 'x-pack'].each do |plugin|
+      context 'shield' do
+        context 'without resource notifications' do
+          let(:pre_condition) do
+            %(
+            class { 'elasticsearch':
+              security_plugin => '#{plugin}',
+            }
+          )
+          end
+
+          it "copies the #{plugin} directory from the source" do
+            should(
+              contain_file(
+                "/etc/elasticsearch/es-01/#{plugin}"
+              ).with(
+                :ensure  => 'directory',
+                :mode    => '0644',
+                :source  => "/etc/elasticsearch/#{plugin}",
+                :recurse => 'remote',
+                :owner   => 'root',
+                :group   => '0',
+                :before  => 'Elasticsearch::Service[es-01]'
+              )
+            )
+          end
+        end
+
+        context 'with resource notifications' do
+          let(:pre_condition) do
+            %(
+            class { 'elasticsearch':
+              security_plugin => '#{plugin}',
+              restart_on_change => true,
+            }
+          )
+          end
+
+          it "copies the #{plugin} directory from the source" do
+            should(
+              contain_file(
+                "/etc/elasticsearch/es-01/#{plugin}"
+              ).with(
+                :ensure  => 'directory',
+                :mode    => '0644',
+                :source  => "/etc/elasticsearch/#{plugin}",
+                :recurse => 'remote',
+                :owner   => 'root',
+                :group   => '0',
+                :before  => 'Elasticsearch::Service[es-01]',
+                :notify  => 'Elasticsearch::Service[es-01]'
+              )
+            )
+          end
+        end
+      end
+    end
+  end
 end
