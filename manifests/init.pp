@@ -306,6 +306,16 @@
 #   Value type is string
 #   Default value: undef
 #
+# [*security_logging_content*]
+#   File content for shield/x-pack logging configuration file (will be placed
+#   into logging.yml or log4j2.properties file as appropriate).
+#   Default value: undef
+#
+# [*security_logging_source*]
+#   File source for shield/x-pack logging configuration file (will be placed
+#   into logging.yml or log4j2.properties file as appropriate).
+#   Default value: undef
+#
 # The default values for the parameters are set in elasticsearch::params. Have
 # a look at the corresponding <tt>params.pp</tt> manifest file if you need more
 # technical information about them.
