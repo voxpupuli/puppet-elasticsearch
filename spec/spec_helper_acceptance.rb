@@ -70,6 +70,8 @@ hosts.each do |host|
   host[:type] = ENV['PUPPET_INSTALL_TYPE'].dup
   host[:type] = 'aio' if host[:type] == 'agent'
 
+  configure_defaults_on hosts, 'foss' unless ENV['PUPPET_INSTALL_TYPE'] == 'agent'
+
   # Install Puppet
   #
   # We spawn a thread to print dots periodically while installing puppet to
