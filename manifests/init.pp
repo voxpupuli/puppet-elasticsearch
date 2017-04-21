@@ -204,7 +204,7 @@
 #   Instead of a hash you can supply a puppet:// file source for the logging.yml file
 #
 # [*logging_template*]
-#  Use a custom logging template - just supply the reative path ie ${module}/elasticsearch/logging.yml.erb
+#  Use a custom logging template - just supply the relative path ie ${module}/elasticsearch/logging.yml.erb
 #
 # [*default_logging_level*]
 #   Default logging level for Elasticsearch.
