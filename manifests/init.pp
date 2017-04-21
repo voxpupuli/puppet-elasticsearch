@@ -403,7 +403,6 @@ class elasticsearch(
   $rolling_file_max_backup_index  = $elasticsearch::params::rolling_file_max_backup_index,
   $rolling_file_max_file_size     = $elasticsearch::params::rolling_file_max_file_size,
   $security_plugin                = undef,
-  $security_logging_config        = undef,
   $security_logging_content       = undef,
   $security_logging_source        = undef,
 ) inherits elasticsearch::params {
