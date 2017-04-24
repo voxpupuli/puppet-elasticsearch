@@ -3,6 +3,7 @@
 ### Summary
 
 #### Features
+* Support for Shield/X-Pack logging configuration file added.
 
 #### Fixes
 
