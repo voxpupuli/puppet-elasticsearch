@@ -12,5 +12,3 @@ HOSTS:
     docker_image_commands:
       - apt-get update
       - apt-get install -yq libssl-dev puppet apt-transport-https
-      - locale-gen en_US en_US.UTF-8
-      - dpkg-reconfigure locales
