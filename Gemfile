@@ -6,7 +6,8 @@ gem 'puppet', puppetversion, :require => false
 gem 'beaker', '~> 3.7'
 gem 'beaker-pe', '~> 1.8'
 gem 'beaker-rspec', '~> 6.0'
-gem 'beaker-puppet_install_helper'
+# 0.7.0 breaks 3.8, see https://github.com/puppetlabs/beaker-puppet_install_helper/issues/27
+gem 'beaker-puppet_install_helper', '0.6.0'
 gem 'metadata-json-lint'
 gem 'rspec-puppet', '~> 2.4'
 gem 'specinfra', '~> 2.60'

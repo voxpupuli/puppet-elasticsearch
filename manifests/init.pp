@@ -204,7 +204,7 @@
 #   Instead of a hash you can supply a puppet:// file source for the logging.yml file
 #
 # [*logging_template*]
-#  Use a custom logging template - just supply the reative path ie ${module}/elasticsearch/logging.yml.erb
+#  Use a custom logging template - just supply the relative path ie ${module}/elasticsearch/logging.yml.erb
 #
 # [*default_logging_level*]
 #   Default logging level for Elasticsearch.
@@ -306,6 +306,16 @@
 #   Value type is string
 #   Default value: undef
 #
+# [*security_logging_content*]
+#   File content for shield/x-pack logging configuration file (will be placed
+#   into logging.yml or log4j2.properties file as appropriate).
+#   Default value: undef
+#
+# [*security_logging_source*]
+#   File source for shield/x-pack logging configuration file (will be placed
+#   into logging.yml or log4j2.properties file as appropriate).
+#   Default value: undef
+#
 # The default values for the parameters are set in elasticsearch::params. Have
 # a look at the corresponding <tt>params.pp</tt> manifest file if you need more
 # technical information about them.
@@ -393,6 +403,8 @@ class elasticsearch(
   $rolling_file_max_backup_index  = $elasticsearch::params::rolling_file_max_backup_index,
   $rolling_file_max_file_size     = $elasticsearch::params::rolling_file_max_file_size,
   $security_plugin                = undef,
+  $security_logging_content       = undef,
+  $security_logging_source        = undef,
 ) inherits elasticsearch::params {
 
   anchor {'elasticsearch::begin': }
