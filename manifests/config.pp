@@ -135,9 +135,9 @@ class elasticsearch::config {
     }
 
     # Define logging config file for the in-use security plugin
-    if $::elasticsearch::security_logging_config != undef or $::elasticsearch::security_logging_content != undef or $::elasticsearch::security_logging_source != undef {
+    if $::elasticsearch::security_logging_content != undef or $::elasticsearch::security_logging_source != undef {
       if $::elasticsearch::security_plugin == undef or ! ($::elasticsearch::security_plugin in ['shield', 'x-pack']) {
-        fail("\"${security_plugin}\" is not a valid security_plugin parameter value")
+        fail("\"${::elasticsearch::security_plugin}\" is not a valid security_plugin parameter value")
       }
 
       $_security_logging_file = $::elasticsearch::security_plugin ? {
