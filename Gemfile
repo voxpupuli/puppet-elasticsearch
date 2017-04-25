@@ -4,7 +4,6 @@ puppetversion = ENV['PUPPET_VERSION'] || '~> 3.8.0'
 gem 'puppet', puppetversion, :require => false
 
 gem 'beaker', '~> 3.7'
-gem 'beaker-pe', '~> 1.8'
 gem 'beaker-rspec', '~> 6.0'
 # 0.7.0 breaks 3.8, see https://github.com/puppetlabs/beaker-puppet_install_helper/issues/27
 gem 'beaker-puppet_install_helper', '0.6.0'

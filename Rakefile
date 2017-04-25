@@ -100,13 +100,6 @@ RSpec::Core::RakeTask.new('beaker:acceptance') do |c|
 end
 task 'beaker:acceptance' => [:spec_prep, 'artifacts:prep']
 
-if !ENV['BEAKER_IS_PE'].nil? and ENV['BEAKER_IS_PE'] == 'true'
-  task :beaker => 'artifacts:pe'
-  task 'beaker:integration' => 'artifacts:pe'
-  task 'beaker:acceptance' => 'artifacts:pe'
-end
-
-# rubocop:disable Metrics/BlockLength
 namespace :artifacts do
   desc 'Fetch artifacts for tests'
   task :prep do
@@ -117,40 +110,6 @@ namespace :artifacts do
       "#{dl_base}/elasticsearch-2.3.5.deb" => 'elasticsearch-2.3.5.deb',
       "#{dl_base}/elasticsearch-2.3.5.rpm" => 'elasticsearch-2.3.5.rpm'
     )
-  end
-
-  desc 'Retrieve PE archives'
-  task :pe do
-    if !ENV['BEAKER_set'].nil?
-      case ENV['BEAKER_set']
-      when /centos-(?<release>\d)/
-        distro = 'el'
-        version = Regexp.last_match(:release)
-        arch = 'x86_64'
-      when /(?<distro>debian)-(?<release>\d)/
-        distro = Regexp.last_match(:distro)
-        version = Regexp.last_match(:release)
-        arch = 'amd64'
-      when /(?<distro>sles)-(?<release>\d+)/
-        distro = Regexp.last_match(:distro)
-        version = Regexp.last_match(:release)
-        arch = 'x86_64'
-      when /(?<distro>ubuntu)-server-(?<release>12|14)/
-        distro = Regexp.last_match(:distro)
-        version = "#{Regexp.last_match(:release)}.04"
-        arch = 'amd64'
-      else
-        puts "Could not find PE version for #{ENV['BEAKER_set']}"
-        return
-      end
-      pe_ver = ENV['BEAKER_PE_VER']
-      file = "puppet-enterprise-#{pe_ver}-#{distro}-#{version}-#{arch}.tar.gz"
-      fetch_archives(
-        "https://s3.amazonaws.com/pe-builds/released/#{pe_ver}/#{file}" => file
-      )
-    else
-      puts 'No nodeset set, skipping PE artifact retrieval'
-    end
   end
 
   desc 'Purge fetched artifacts'

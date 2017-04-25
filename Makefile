@@ -6,18 +6,8 @@ export BEAKER_set
 # Default to installing agent (version 4.x)
 PUPPET_INSTALL_TYPE ?= agent
 
-# Set Puppet Enterprise defaults
-ifeq ($(PUPPET_INSTALL_TYPE), pe)
-	PUPPET_INSTALL_VERSION ?= 2016.1.2
-	BEAKER_PE_VER ?= $(PUPPET_INSTALL_VERSION)
-	export BEAKER_PE_VER
-	BEAKER_IS_PE := true
-	export BEAKER_IS_PE
-endif
-
 # Export potentially set variables for rake/rspec/beaker
 export PUPPET_INSTALL_TYPE
-export BEAKER_PE_DIR=spec/fixtures/artifacts
 export STRICT_VARIABLES=yes
 
 .DEFAULT_GOAL := .vendor
