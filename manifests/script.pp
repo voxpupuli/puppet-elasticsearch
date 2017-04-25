@@ -5,18 +5,10 @@
 # === Parameters
 #
 # [*ensure*]
-#   String. Controls if the managed resources shall be <tt>present</tt> or
-#   <tt>absent</tt>. If set to <tt>absent</tt>:
-#   * The managed software packages are being uninstalled.
-#   * Any traces of the packages will be purged as good as possible. This may
-#     include existing configuration files. The exact behavior is provider
-#     dependent. Q.v.:
-#     * Puppet type reference: {package, "purgeable"}[http://j.mp/xbxmNP]
-#     * {Puppet's package provider source code}[http://j.mp/wtVCaL]
-#   * System modifications (if any) will be reverted as good as possible
-#     (e.g. removal of created users, services, changed log settings, ...).
-#   * This is thus destructive and should be used with care.
-#   Defaults to <tt>present</tt>.
+#   Controls the state of the script file resource to manage.
+#   Values are simply passed through to the `file` resource.
+#   Value type is string
+#   Default value: present
 #
 # [*source*]
 #   Puppet source of the script
@@ -24,32 +16,33 @@
 #   Default value: undef
 #   This variable is mandatory
 #
+# [*recurse*]
+#   `recurse` parameter that will be passed through to the script file
+#   resource.
+#   Default value: undef
+#
 # === Authors
 #
 # * Richard Pijnenburg <mailto:richard.pijnenburg@elasticsearch.com>
+# * Tyler Langlois <mailto:tyler@elastic.co>
 #
-define elasticsearch::script(
+define elasticsearch::script (
   $source,
   $ensure  = 'present',
+  $recurse = undef,
 ) {
 
   require elasticsearch
-
-  # ensure
-  if ! ($ensure in [ 'present', 'absent' ]) {
-    fail("\"${ensure}\" is not a valid ensure parameter value")
-  }
-
-  validate_re($source, '^(puppet|file)://')
 
   $filename_array = split($source, '/')
   $basefilename = $filename_array[-1]
 
   file { "${elasticsearch::params::homedir}/scripts/${basefilename}":
-    ensure => $ensure,
-    source => $source,
-    owner  => $elasticsearch::elasticsearch_user,
-    group  => $elasticsearch::elasticsearch_group,
-    mode   => '0644',
+    ensure  => $ensure,
+    source  => $source,
+    owner   => $elasticsearch::elasticsearch_user,
+    group   => $elasticsearch::elasticsearch_group,
+    recurse => $recurse,
+    mode    => '0644',
   }
 }

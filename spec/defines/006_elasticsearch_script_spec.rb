@@ -34,13 +34,19 @@ describe 'elasticsearch::script', :type => 'define' do
 
   describe 'adding script directories' do
     let(:params) do {
-      :ensure => 'present',
-      :source => 'puppet:///path/to/foo.groovy'
+      :ensure  => 'directory',
+      :source  => 'puppet:///path/to/my_scripts',
+      :recurse => 'remote'
     } end
 
     it { should contain_elasticsearch__script('foo') }
-    it { should contain_file('/usr/share/elasticsearch/scripts/foo.groovy')
-      .with(:source => 'puppet:///path/to/foo.groovy', :ensure => 'present') }
+    it { should contain_file(
+      '/usr/share/elasticsearch/scripts/my_scripts'
+    ).with(
+      :ensure  => 'directory',
+      :source  => 'puppet:///path/to/my_scripts',
+      :recurse => 'remote'
+    ) }
   end
 
   describe 'removing scripts' do
