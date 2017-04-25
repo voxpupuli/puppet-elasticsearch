@@ -213,6 +213,14 @@
 # [*repo_stage*]
 #   Use stdlib stage setup for managing the repo, instead of anchoring
 #
+# [*indices*]
+#   Define indices via a hash. This is mainly used with Hiera's auto binding
+#   Defaults to: undef
+#
+# [*indices_hiera_merge*]
+#   Enable Hiera's merging function for indices
+#   Defaults to: false
+#
 # [*instances*]
 #   Define instances via a hash. This is mainly used with Hiera's auto binding
 #   Defaults to: undef
@@ -221,12 +229,52 @@
 #   Enable Hiera's merging function for the instances
 #   Defaults to: false
 #
+# [*pipelines*]
+#   Define pipelines via a hash. This is mainly used with Hiera's auto binding
+#   Defaults to: undef
+#
+# [*pipelines_hiera_merge*]
+#   Enable Hiera's merging function for pipelines
+#   Defaults to: false
+#
 # [*plugins*]
 #   Define plugins via a hash. This is mainly used with Hiera's auto binding
 #   Defaults to: undef
 #
 # [*plugins_hiera_merge*]
 #   Enable Hiera's merging function for the plugins
+#   Defaults to: false
+#
+# [*roles*]
+#   Define roles via a hash. This is mainly used with Hiera's auto binding
+#   Defaults to: undef
+#
+# [*roles_hiera_merge*]
+#   Enable Hiera's merging function for roles
+#   Defaults to: false
+#
+# [*scripts*]
+#   Define scripts via a hash. This is mainly used with Hiera's auto binding
+#   Defaults to: undef
+#
+# [*scripts_hiera_merge*]
+#   Enable Hiera's merging function for scripts
+#   Defaults to: false
+#
+# [*templates*]
+#   Define templates via a hash. This is mainly used with Hiera's auto binding
+#   Defaults to: undef
+#
+# [*templates_hiera_merge*]
+#   Enable Hiera's merging function for templates
+#   Defaults to: false
+#
+# [*users*]
+#   Define templates via a hash. This is mainly used with Hiera's auto binding
+#   Defaults to: undef
+#
+# [*users_hiera_merge*]
+#   Enable Hiera's merging function for users
 #   Defaults to: false
 #
 # [*package_pin*]
@@ -384,10 +432,22 @@ class elasticsearch(
   $logging_template               = undef,
   $default_logging_level          = $elasticsearch::params::default_logging_level,
   $repo_stage                     = false,
+  $indices                        = undef,
+  $indices_hiera_merge            = false,
   $instances                      = undef,
   $instances_hiera_merge          = false,
+  $pipelines                      = undef,
+  $pipelines_hiera_merge          = false,
   $plugins                        = undef,
   $plugins_hiera_merge            = false,
+  $roles                          = undef,
+  $roles_hiera_merge              = false,
+  $scripts                        = undef,
+  $scripts_hiera_merge            = false,
+  $templates                      = undef,
+  $templates_hiera_merge          = false,
+  $users                          = undef,
+  $users_hiera_merge              = false,
   $api_protocol                   = 'http',
   $api_host                       = 'localhost',
   $api_port                       = 9200,
@@ -535,6 +595,20 @@ class elasticsearch(
     $x_config = $config
   }
 
+  # Hiera support for indices
+  validate_bool($indices_hiera_merge)
+
+  if $indices_hiera_merge == true {
+    $x_indices = hiera_hash('elasticsearch::indices', $::elasticsearch::indices)
+  } else {
+    $x_indices = $indices
+  }
+
+  if $x_indices {
+    validate_hash($x_indices)
+    create_resources('elasticsearch::index', $x_indices)
+  }
+
   # Hiera support for instances
   validate_bool($instances_hiera_merge)
 
@@ -547,6 +621,20 @@ class elasticsearch(
   if $x_instances {
     validate_hash($x_instances)
     create_resources('elasticsearch::instance', $x_instances)
+  }
+
+  # Hiera support for pipelines
+  validate_bool($pipelines_hiera_merge)
+
+  if $pipelines_hiera_merge == true {
+    $x_pipelines = hiera_hash('elasticsearch::pipelines', $::elasticsearch::pipelines)
+  } else {
+    $x_pipelines = $pipelines
+  }
+
+  if $x_pipelines {
+    validate_hash($x_pipelines)
+    create_resources('elasticsearch::pipeline', $x_pipelines)
   }
 
   # Hiera support for plugins
@@ -563,6 +651,61 @@ class elasticsearch(
     create_resources('elasticsearch::plugin', $x_plugins)
   }
 
+  # Hiera support for roles
+  validate_bool($roles_hiera_merge)
+
+  if $roles_hiera_merge == true {
+    $x_roles = hiera_hash('elasticsearch::roles', $::elasticsearch::roles)
+  } else {
+    $x_roles = $roles
+  }
+
+  if $x_roles {
+    validate_hash($x_roles)
+    create_resources('elasticsearch::role', $x_roles)
+  }
+
+  # Hiera support for scripts
+  validate_bool($scripts_hiera_merge)
+
+  if $scripts_hiera_merge == true {
+    $x_scripts = hiera_hash('elasticsearch::scripts', $::elasticsearch::scripts)
+  } else {
+    $x_scripts = $scripts
+  }
+
+  if $x_scripts {
+    validate_hash($x_scripts)
+    create_resources('elasticsearch::script', $x_scripts)
+  }
+
+  # Hiera support for templates
+  validate_bool($templates_hiera_merge)
+
+  if $templates_hiera_merge == true {
+    $x_templates = hiera_hash('elasticsearch::templates', $::elasticsearch::templates)
+  } else {
+    $x_templates = $templates
+  }
+
+  if $x_templates {
+    validate_hash($x_templates)
+    create_resources('elasticsearch::template', $x_templates)
+  }
+
+  # Hiera support for users
+  validate_bool($users_hiera_merge)
+
+  if $users_hiera_merge == true {
+    $x_users = hiera_hash('elasticsearch::users', $::elasticsearch::users)
+  } else {
+    $x_users = $users
+  }
+
+  if $x_users {
+    validate_hash($x_users)
+    create_resources('elasticsearch::user', $x_users)
+  }
 
   if $java_install == true {
     # Install java
