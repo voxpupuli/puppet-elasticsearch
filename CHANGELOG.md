@@ -4,6 +4,7 @@
 
 #### Features
 * Support for Shield/X-Pack logging configuration file added.
+* The `elasticsearch::script` type now supports recursively managing directories of scripts.
 
 #### Fixes
 * Fixed a bug that prevented plugins from being updated properly.

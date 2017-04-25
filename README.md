@@ -246,6 +246,16 @@ elasticsearch::script { 'myscript':
 }
 ```
 
+Script directories can also be recursively managed for large collections of scripts:
+
+```puppet
+elasticsearch::script { 'myscripts_dir':
+  ensure  => 'directory,
+  source  => 'puppet:///path/to/myscripts_dir'
+  recurse => 'remote',
+}
+```
+
 ### Templates
 
 By default templates use the top-level `elasticsearch::api_*` settings to communicate with Elasticsearch.
