@@ -1,4 +1,9 @@
 ---
+elasticsearch::instances:
+  es-01:
+    config:
+      node.name: 'es-01'
+      network.host: '0.0.0.0'
 elasticsearch::plugins:
   'mobz/elasticsearch-head':
     ensure: 'present'
