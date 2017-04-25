@@ -6,6 +6,7 @@
 * Support for Shield/X-Pack logging configuration file added.
 
 #### Fixes
+* Fixed a bug that prevented plugins from being updated properly.
 
 ## 5.1.1 (April 13, 2017)
 

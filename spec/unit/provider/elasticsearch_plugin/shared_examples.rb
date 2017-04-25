@@ -124,7 +124,9 @@ shared_examples 'plugin provider' do |version|
 
     describe 'removal' do
       it 'uninstalls the plugin' do
-        provider.expects(:plugin).with(['remove', resource_name])
+        provider.expects(:plugin).with(
+          ['remove', resource_name.split('-').last]
+        )
         provider.destroy
       end
     end

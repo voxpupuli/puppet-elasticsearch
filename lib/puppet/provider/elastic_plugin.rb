@@ -140,7 +140,7 @@ class Puppet::Provider::ElasticPlugin < Puppet::Provider
 
   def destroy
     with_environment do
-      plugin(['remove', @resource[:name]])
+      plugin(['remove', Puppet_X::Elastic::plugin_name(@resource[:name])])
     end
   end
 
