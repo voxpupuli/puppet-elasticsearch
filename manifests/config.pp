@@ -88,6 +88,7 @@ class elasticsearch::config {
         ensure  => 'directory',
         group   => undef,
         owner   => $elasticsearch::elasticsearch_user,
+        mode    => '0755',
         recurse => true,
       }
 
