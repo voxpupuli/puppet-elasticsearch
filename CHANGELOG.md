@@ -5,6 +5,7 @@
 #### Features
 * Support for Shield/X-Pack logging configuration file added.
 * The `elasticsearch::script` type now supports recursively managing directories of scripts.
+* All module defined types can now be managed as top-level hash parameters to the `elasticsearch` class (primarily for hiera and PE)
 
 #### Fixes
 * Fixed a bug that prevented plugins from being updated properly.

@@ -146,6 +146,33 @@ class { 'elasticsearch':
 
 Each of these can be set at the top-level `elasticsearch` class and inherited for each resource or overridden on a per-resource basis.
 
+#### Dynamically Created Resources
+
+This module supports managing all of its defined types through top-level parameters to better support Hiera and Puppet Enterprise.
+For example, to manage an instance and index template directly from the `elasticsearch` class:
+
+```puppet
+class { 'elasticsearch':
+  instances => {
+    'es-01' => {
+      'config' => {
+        'network.host' => '0.0.0.0'
+      }
+    }
+  },
+  templates => {
+    'logstash' => {
+      'content' => {
+        'template' => 'logstash-*',
+        'settings' => {
+          'number_of_replicas' => 0
+        }
+      }
+    }
+  }
+}
+```
+
 ### Instances
 
 This module works with the concept of instances. For service to start you need to specify at least one instance.
@@ -900,7 +927,7 @@ The module has been tested on:
 * Debian 7/8
 * CentOS 6/7
 * OracleLinux 6/7
-* Ubuntu 12.04, 14.04, 16.04
+* Ubuntu 14.04, 16.04
 * OpenSuSE 42.x
 * SLES 12
 
