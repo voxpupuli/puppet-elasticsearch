@@ -38,7 +38,7 @@ class elasticsearch::config {
         ensure => 'directory',
         group  => $elasticsearch::elasticsearch_group,
         owner  => $elasticsearch::elasticsearch_user,
-        mode   => '0644';
+        mode   => '0755';
       $elasticsearch::datadir:
         ensure => 'directory',
         group  => $elasticsearch::elasticsearch_group,
@@ -47,7 +47,7 @@ class elasticsearch::config {
         ensure  => 'directory',
         group   => undef,
         owner   => $elasticsearch::elasticsearch_user,
-        mode    => '0644',
+        mode    => '0755',
         recurse => true;
       $elasticsearch::plugindir:
         ensure => 'directory',
@@ -67,12 +67,12 @@ class elasticsearch::config {
         ensure => 'directory',
         group  => $elasticsearch::elasticsearch_group,
         owner  => $elasticsearch::elasticsearch_user,
-        mode   => '0644';
+        mode   => '0755';
       "${elasticsearch::params::homedir}/scripts":
         ensure => 'directory',
         group  => $elasticsearch::elasticsearch_group,
         owner  => $elasticsearch::elasticsearch_user,
-        mode   => '0644';
+        mode   => '0755';
       '/etc/elasticsearch/elasticsearch.yml':
         ensure => 'absent';
       '/etc/elasticsearch/logging.yml':
