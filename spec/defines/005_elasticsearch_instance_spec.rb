@@ -1,10 +1,9 @@
 require 'spec_helper'
 
+# rubocop:disable Metrics/LineLength
 describe 'elasticsearch::instance', :type => 'define' do
   let(:title) { 'es-01' }
-  let(:pre_condition) { %q{
-    class { "elasticsearch": }
-  } }
+  let(:pre_condition) { 'class { "elasticsearch": }' }
 
   on_supported_os.each do |os, facts|
     context "on #{os}" do
@@ -59,7 +58,6 @@ describe 'elasticsearch::instance', :type => 'define' do
           'ES_HOME'  => '/usr/share/elasticsearch'
         }
       )}
-
     end # of on os context
   end # of on supported OSes loop
 
@@ -98,7 +96,9 @@ describe 'elasticsearch::instance', :type => 'define' do
     end
 
     context 'happen when restart_on_change is true' do
-      let(:pre_condition) { 'class { "elasticsearch": restart_on_change => true }' }
+      let(:pre_condition) do
+        'class { "elasticsearch": restart_on_change => true }'
+      end
 
       it { should contain_datacat(
         '/etc/elasticsearch/es-01/elasticsearch.yml'
@@ -109,9 +109,9 @@ describe 'elasticsearch::instance', :type => 'define' do
     end
 
     context 'on package change' do
-      let(:pre_condition) { %q{
-        class { "elasticsearch": restart_package_change => true }
-      }}
+      let(:pre_condition) do
+        'class { "elasticsearch": restart_package_change => true }'
+      end
 
       it { should_not contain_datacat(
         '/etc/elasticsearch/es-01/elasticsearch.yml'
@@ -122,9 +122,9 @@ describe 'elasticsearch::instance', :type => 'define' do
     end
 
     context 'on config change' do
-      let(:pre_condition) { %q{
-        class { "elasticsearch": restart_config_change => true }
-      }}
+      let(:pre_condition) do
+        'class { "elasticsearch": restart_config_change => true }'
+      end
 
       it { should contain_datacat(
         '/etc/elasticsearch/es-01/elasticsearch.yml'
@@ -171,7 +171,7 @@ describe 'elasticsearch::instance', :type => 'define' do
     end
 
     context 'set in instance' do
-      let :params do {
+      let(:params) do {
         :configdir => '/etc/elasticsearch-config/es-01'
       } end
 
@@ -186,9 +186,7 @@ describe 'elasticsearch::instance', :type => 'define' do
       it { should contain_file('/usr/share/elasticsearch/scripts') }
       it { should contain_file('/etc/elasticsearch-config/es-01/scripts').with(:target => '/usr/share/elasticsearch/scripts') }
     end
-
   end
-
 
   context 'data directory' do
     context 'default' do
@@ -213,14 +211,13 @@ describe 'elasticsearch::instance', :type => 'define' do
     end
 
     context 'single from instance config' do
-      let :params do {
+      let(:params) do {
         :datadir => '/var/lib/elasticsearch/data'
       } end
 
       it { should contain_exec('mkdir_logdir_elasticsearch_es-01') }
       it { should contain_exec('mkdir_datadir_elasticsearch_es-01') }
       it { should contain_file('/var/lib/elasticsearch/data').with(:ensure => 'directory') }
-
     end
 
     context 'multiple from main config' do
@@ -243,7 +240,7 @@ describe 'elasticsearch::instance', :type => 'define' do
     end
 
     context 'multiple from instance config' do
-      let :params do {
+      let(:params) do {
         :datadir => [
           '/var/lib/elasticsearch-data/01',
           '/var/lib/elasticsearch-data/02'
@@ -256,42 +253,42 @@ describe 'elasticsearch::instance', :type => 'define' do
       it { should contain_file('/var/lib/elasticsearch-data/02').with(:ensure => 'directory') }
     end
 
-   context 'conflicting setting path.data' do
-     let :params do {
-       :datadir => '/var/lib/elasticsearch/data',
-       :config  => { 'path.data' => '/var/lib/elasticsearch/otherdata' }
-     } end
+    context 'conflicting setting path.data' do
+      let(:params) do {
+        :datadir => '/var/lib/elasticsearch/data',
+        :config  => { 'path.data' => '/var/lib/elasticsearch/otherdata' }
+      } end
 
-     it { should contain_exec('mkdir_logdir_elasticsearch_es-01') }
-     it { should contain_exec('mkdir_datadir_elasticsearch_es-01') }
-     it { should contain_file('/var/lib/elasticsearch/data').with(:ensure => 'directory') }
-     it { should_not contain_file('/var/lib/elasticsearch/otherdata').with(:ensure => 'directory') }
-   end
+      it { should contain_exec('mkdir_logdir_elasticsearch_es-01') }
+      it { should contain_exec('mkdir_datadir_elasticsearch_es-01') }
+      it { should contain_file('/var/lib/elasticsearch/data').with(:ensure => 'directory') }
+      it { should_not contain_file('/var/lib/elasticsearch/otherdata').with(:ensure => 'directory') }
+    end
 
-   context 'conflicting setting path => data' do
-     let :params do {
-       :datadir => '/var/lib/elasticsearch/data',
-       :config  => {
-         'path' => { 'data' => '/var/lib/elasticsearch/otherdata' }
-       }
-     } end
+    context 'conflicting setting path => data' do
+      let(:params) do {
+        :datadir => '/var/lib/elasticsearch/data',
+        :config  => {
+          'path' => { 'data' => '/var/lib/elasticsearch/otherdata' }
+        }
+      } end
 
-     it { should contain_exec('mkdir_logdir_elasticsearch_es-01') }
-     it { should contain_exec('mkdir_datadir_elasticsearch_es-01') }
-     it { should contain_file('/var/lib/elasticsearch/data').with(:ensure => 'directory') }
-     it { should_not contain_file('/var/lib/elasticsearch/otherdata').with(:ensure => 'directory') }
-   end
+      it { should contain_exec('mkdir_logdir_elasticsearch_es-01') }
+      it { should contain_exec('mkdir_datadir_elasticsearch_es-01') }
+      it { should contain_file('/var/lib/elasticsearch/data').with(:ensure => 'directory') }
+      it { should_not contain_file('/var/lib/elasticsearch/otherdata').with(:ensure => 'directory') }
+    end
 
-   context 'with other path options defined' do
-     let :params do {
-       :datadir => '/var/lib/elasticsearch/data',
-       :config  => { 'path' => { 'home' => '/var/lib/elasticsearch' } }
-     } end
+    context 'with other path options defined' do
+      let(:params) do {
+        :datadir => '/var/lib/elasticsearch/data',
+        :config  => { 'path' => { 'home' => '/var/lib/elasticsearch' } }
+      } end
 
-     it { should contain_exec('mkdir_logdir_elasticsearch_es-01') }
-     it { should contain_exec('mkdir_datadir_elasticsearch_es-01') }
-     it { should contain_file('/var/lib/elasticsearch/data').with(:ensure => 'directory') }
-   end
+      it { should contain_exec('mkdir_logdir_elasticsearch_es-01') }
+      it { should contain_exec('mkdir_datadir_elasticsearch_es-01') }
+      it { should contain_file('/var/lib/elasticsearch/data').with(:ensure => 'directory') }
+    end
   end
 
   context 'logs directory' do
@@ -317,45 +314,45 @@ describe 'elasticsearch::instance', :type => 'define' do
     end
 
     context 'single from instance config' do
-      let :params do {
+      let(:params) do {
         :logdir => '/var/log/elasticsearch/logs-a'
       } end
 
       it { should contain_file('/var/log/elasticsearch/logs-a').with(:ensure => 'directory') }
     end
 
-   context 'Conflicting setting path.logs' do
-     let :params do {
-       :logdir => '/var/log/elasticsearch/logs-a',
-       :config => { 'path.logs' => '/var/log/elasticsearch/otherlogs' }
-     } end
+    context 'Conflicting setting path.logs' do
+      let(:params) do {
+        :logdir => '/var/log/elasticsearch/logs-a',
+        :config => { 'path.logs' => '/var/log/elasticsearch/otherlogs' }
+      } end
 
-     it { should contain_file('/var/log/elasticsearch/logs-a')
-       .with(:ensure => 'directory') }
-     it { should_not contain_file('/var/log/elasticsearch/otherlogs')
-       .with(:ensure => 'directory') }
-   end
+      it { should contain_file('/var/log/elasticsearch/logs-a')
+        .with(:ensure => 'directory') }
+      it { should_not contain_file('/var/log/elasticsearch/otherlogs')
+        .with(:ensure => 'directory') }
+    end
 
-   context 'Conflicting setting path => logs' do
-     let :params do {
-       :logdir => '/var/log/elasticsearch/logs-a',
-       :config => { 'path' => { 'logs' => '/var/log/elasticsearch/otherlogs' } }
-     } end
+    context 'Conflicting setting path => logs' do
+      let(:params) do {
+        :logdir => '/var/log/elasticsearch/logs-a',
+        :config => { 'path' => { 'logs' => '/var/log/elasticsearch/otherlogs' } }
+      } end
 
-     it { should contain_file('/var/log/elasticsearch/logs-a')
-       .with(:ensure => 'directory') }
-     it { should_not contain_file('/var/log/elasticsearch/otherlogs')
-       .with(:ensure => 'directory') }
-   end
+      it { should contain_file('/var/log/elasticsearch/logs-a')
+        .with(:ensure => 'directory') }
+      it { should_not contain_file('/var/log/elasticsearch/otherlogs')
+        .with(:ensure => 'directory') }
+    end
 
-   context 'With other path options defined' do
-     let :params do {
-       :logdir => '/var/log/elasticsearch/logs-a',
-       :config => { 'path' => { 'home' => '/var/log/elasticsearch' } }
-     } end
+    context 'With other path options defined' do
+      let(:params) do {
+        :logdir => '/var/log/elasticsearch/logs-a',
+        :config => { 'path' => { 'home' => '/var/log/elasticsearch' } }
+      } end
 
-      it { should contain_file('/var/log/elasticsearch/logs-a').with( :ensure => 'directory') }
-   end
+      it { should contain_file('/var/log/elasticsearch/logs-a').with(:ensure => 'directory') }
+    end
   end
 
   context 'logging' do
@@ -380,7 +377,12 @@ describe 'elasticsearch::instance', :type => 'define' do
         EOS
         }
 
-        it { should contain_file('/etc/elasticsearch/es-01/logging.yml').with_content(/^logger.index.search.slowlog: DEBUG, index_search_slow_log_file$/).with(:source => nil) }
+        it 'writes correct yaml' do
+          should contain_file('/etc/elasticsearch/es-01/logging.yml')
+            .with_content(
+              /^logger.index.search.slowlog: DEBUG, index_search_slow_log_file$/
+            ).with(:source => nil)
+        end
       end
 
       context 'logging file ' do
@@ -391,74 +393,101 @@ describe 'elasticsearch::instance', :type => 'define' do
         EOS
         }
 
-        it { should contain_file('/etc/elasticsearch/es-01/logging.yml').with(:source => 'puppet:///path/to/logging.yml', :content => nil) }
+        it 'sets the right source' do
+          should contain_file('/etc/elasticsearch/es-01/logging.yml')
+            .with(
+              :source => 'puppet:///path/to/logging.yml',
+              :content => nil
+            )
+        end
       end
-
     end
 
     context 'from instance' do
       context 'config' do
-        let :params do {
+        let(:params) do {
           :logging_config => {
             'index.search.slowlog' => 'INFO, index_search_slow_log_file'
           }
         } end
 
-        it { should contain_file('/etc/elasticsearch/es-01/logging.yml').with_content(/^logger.index.search.slowlog: INFO, index_search_slow_log_file$/).with(:source => nil) }
+        it 'writes correct yaml' do
+          should contain_file('/etc/elasticsearch/es-01/logging.yml')
+            .with_content(/^logger.index.search.slowlog: INFO, index_search_slow_log_file$/)
+            .with(:source => nil)
+        end
       end
 
       context 'logging file' do
-        let :params do {
+        let(:params) do {
           :logging_file => 'puppet:///path/to/logging.yml'
         } end
 
-        it { should contain_file('/etc/elasticsearch/es-01/logging.yml').with(:source => 'puppet:///path/to/logging.yml', :content => nil) }
+        it 'sets the right source' do
+          should contain_file('/etc/elasticsearch/es-01/logging.yml')
+            .with(
+              :source => 'puppet:///path/to/logging.yml',
+              :content => nil
+            )
+        end
       end
 
       context 'deprecation logging' do
-        let :params do {
+        let(:params) do {
           :deprecation_logging => true
         } end
 
-        it { should contain_file('/etc/elasticsearch/es-01/logging.yml').with_content(/^logger.deprecation: DEBUG, deprecation_log_file$/).with(:source=> nil) }
-        it { should contain_file('/etc/elasticsearch/es-01/logging.yml')
-          .with_content(
-            /deprecation_log_file:$/,
-            /type: dailyRollingFile$/,
-            /file: ${path.logs}\/\${cluster.name}_deprecation.log$/,
-            /datePattern: "'.'yyyy-MM-dd"$/,
-            /layout:$/,
-            /type: pattern$/,
-            /conversionPattern: "[%d{ISO8601}][%-5p][%-25c] %m%n"$/
-          ).with(:source=>nil)
-        }
+        it 'writes correct yaml' do
+          should contain_file('/etc/elasticsearch/es-01/logging.yml')
+            .with_content(/^logger.deprecation: DEBUG, deprecation_log_file$/)
+            .with(:source => nil)
+        end
+        it 'configures the deprecation log' do
+          should contain_file('/etc/elasticsearch/es-01/logging.yml')
+            .with_content(
+              /deprecation_log_file:$/,
+              /type: dailyRollingFile$/,
+              %r(file: ${path.logs}/${cluster.name}_deprecation.log$),
+              /datePattern: "'.'yyyy-MM-dd"$/,
+              /layout:$/,
+              /type: pattern$/,
+              /conversionPattern: "[%d{ISO8601}][%-5p][%-25c] %m%n"$/
+            ).with(:source => nil)
+        end
       end
 
       context 'deprecation logging level' do
-        let :params do {
+        let(:params) do {
           :deprecation_logging => true,
           :deprecation_logging_level => 'INFO'
         } end
 
-        it { should contain_file('/etc/elasticsearch/es-01/logging.yml').with_content(/^logger.deprecation: INFO, deprecation_log_file$/).with(:source=> nil) }
+        it 'writes correct yaml' do
+          should contain_file('/etc/elasticsearch/es-01/logging.yml')
+            .with_content(/^logger.deprecation: INFO, deprecation_log_file$/)
+            .with(:source => nil)
+        end
       end
     end
 
     describe 'rollingFile apender' do
-      let(:pre_condition) {%q{
-        class { 'elasticsearch':
-          file_rolling_type             => 'rollingFile',
-          rolling_file_max_backup_index => 10,
-          rolling_file_max_file_size    => '100MB',
-        }
-      }}
+      let(:pre_condition) do
+        %(
+          class { 'elasticsearch':
+            file_rolling_type             => 'rollingFile',
+            rolling_file_max_backup_index => 10,
+            rolling_file_max_file_size    => '100MB',
+          }
+        )
+      end
 
       it { should contain_file('/etc/elasticsearch/es-01/logging.yml')
         .with_content(
           /type: rollingFile/,
           /maxBackupIndex: 10/,
           /maxBackupIndex: 10/,
-          /maxFileSize: 100MB/)
+          /maxFileSize: 100MB/
+        )
       }
     end
   end
@@ -481,10 +510,10 @@ describe 'elasticsearch::instance', :type => 'define' do
   end
 
   context 'setting different service status then main class' do
-    let(:pre_condition) { 'class {"elasticsearch": status => "enabled" }'  }
+    let(:pre_condition) { 'class {"elasticsearch": status => "enabled" }' }
 
     context 'status option' do
-      let :params do {
+      let(:params) do {
         :status => 'running'
       } end
 
@@ -493,9 +522,9 @@ describe 'elasticsearch::instance', :type => 'define' do
   end
 
   context 'init_template' do
-
     context 'default' do
-      it { should contain_elasticsearch__service('es-01').with(:init_template => 'elasticsearch/etc/init.d/elasticsearch.RedHat.erb') }
+      it { should contain_elasticsearch__service('es-01')
+        .with(:init_template => 'elasticsearch/etc/init.d/elasticsearch.RedHat.erb') }
     end
 
     context 'override in main class' do
@@ -514,12 +543,14 @@ describe 'elasticsearch::instance', :type => 'define' do
   describe 'security plugins' do
     describe 'system_key' do
       context 'inherited' do
-        let(:pre_condition) {%q{
-          class { 'elasticsearch':
-            security_plugin => 'shield',
-            system_key => '/tmp/key'
-          }
-        }}
+        let(:pre_condition) do
+          %(
+            class { 'elasticsearch':
+              security_plugin => 'shield',
+              system_key => '/tmp/key'
+            }
+          )
+        end
 
         it { should contain_file('/etc/elasticsearch/es-01/shield') }
         it { should contain_file(
@@ -530,13 +561,9 @@ describe 'elasticsearch::instance', :type => 'define' do
       end
 
       context 'from instance' do
-        let(:pre_condition) {%q{
-          class { 'elasticsearch':
-            security_plugin => 'x-pack',
-          }
-        }}
+        let(:pre_condition) { "class { 'elasticsearch': security_plugin => 'x-pack' }" }
 
-        let :params do {
+        let(:params) do {
           :system_key => 'puppet:///test/key'
         } end
 
