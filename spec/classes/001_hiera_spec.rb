@@ -67,6 +67,9 @@ describe 'elasticsearch', :type => 'class' do
             }
           ) }
         it { should contain_elasticsearch_index('baz') }
+        it { should contain_es_instance_conn_validator(
+          'baz-index-conn-validator'
+        ) }
       end
 
       context 'no indices' do
@@ -184,6 +187,7 @@ describe 'elasticsearch', :type => 'class' do
             ]
           ) }
         it { should contain_elasticsearch_role('admin') }
+        it { should contain_elasticsearch_role_mapping('admin') }
       end
 
       context 'no roles' do
@@ -202,6 +206,7 @@ describe 'elasticsearch', :type => 'class' do
             :ensure => 'present',
             :source => 'puppet:///file/here'
           ) }
+        it { should contain_file('/usr/share/elasticsearch/scripts/here') }
       end
 
       context 'no roles' do

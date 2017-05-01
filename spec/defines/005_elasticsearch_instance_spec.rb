@@ -209,7 +209,8 @@ describe 'elasticsearch::instance', :type => 'define' do
       EOS
       }
 
-      include_examples 'data directories', ['elasticsearch-data/es-01']
+      include_examples 'data directories',
+                       ['elasticsearch-data', 'elasticsearch-data/es-01']
     end
 
     context 'single from instance config' do
@@ -233,7 +234,10 @@ describe 'elasticsearch::instance', :type => 'define' do
 
       include_examples(
         'data directories',
-        (1..2).map { |n| "elasticsearch-data#{n.to_s.rjust(2, '0')}/es-01" }
+        (1..2).map do |n|
+          dir = "elasticsearch-data#{n.to_s.rjust(2, '0')}"
+          [dir, "#{dir}/es-01"]
+        end.flatten
       )
     end
 
