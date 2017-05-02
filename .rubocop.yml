@@ -13,6 +13,9 @@ Style/BlockEndNewline:
 Style/HashSyntax:
   Enabled: false
 
+Style/MultilineBlockChain:
+  Enabled: false
+
 Style/MultilineBlockLayout:
   Enabled: false
 
