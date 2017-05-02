@@ -16,8 +16,8 @@ fixtures:
       repo: puppetlabs/apt
       ref: 2.2.2
     yum:
-      repo: ceritsc/yum
-      ref: 0.9.6
+      repo: puppet/yum
+      ref: 0.9.14
     zypprepo:
       repo: darin/zypprepo
       ref: 1.0.2
