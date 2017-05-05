@@ -1,5 +1,5 @@
 # Set the Linux distribution w/defaults (see spec/acceptance/nodesets)
-DISTRO ?= ubuntu-server-1404-x64
+DISTRO ?= ubuntu-server-1604-x64
 BEAKER_set ?= $(DISTRO)
 export BEAKER_set
 
