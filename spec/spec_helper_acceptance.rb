@@ -90,9 +90,9 @@ hosts.each do |host|
 
   package_name = case fact('osfamily')
                  when 'Debian'
-                   'elasticsearch-2.3.5.deb'
+                   'elasticsearch-5.4.0.deb'
                  else
-                   'elasticsearch-2.3.5.rpm'
+                   'elasticsearch-5.4.0.rpm'
                  end
 
   snapshot_package = {
