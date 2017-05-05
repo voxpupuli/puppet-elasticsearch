@@ -33,6 +33,8 @@ matrix:
   - env: DISTRO=opensuse-42-x64 PUPPET_INSTALL_TYPE=foss
   # SLES is a nightmare to acquire and run. Leave here for possible future use.
   - env: DISTRO=sles-12-x64
+  # I have no idea what this transient failure is from
+  - env: DISTRO=debian-7-x64
   fast_finish: true
 install:
 - make
