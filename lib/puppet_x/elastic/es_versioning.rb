@@ -11,10 +11,10 @@ module Puppet_X
       }
 
       def self.opt_flags(package_name, catalog, opts=DEFAULT_OPTS)
-        is_post_v5 = post_5? package_name, catalog
-        opt_flag = opt_flag is_post_v5
+        opt_flag = opt_flag(min_version('5.0.0', package_name, catalog))
 
-        opts.delete 'work' if is_post_v5
+        opts.delete 'work' if min_version '5.0.0', package_name, catalog
+        opts.delete 'home' if min_version '5.4.0', package_name, catalog
 
         [opt_flag, opts.map{ |k, v| "-#{opt_flag}default.path.#{k}=${#{v}}" }.sort]
       end
@@ -23,9 +23,9 @@ module Puppet_X
         v5_or_later ? 'E' : 'Des.'
       end
 
-      def self.post_5?(package_name, catalog)
+      def self.min_version(ver, package_name, catalog)
         Puppet::Util::Package.versioncmp(
-          version(package_name, catalog), '5.0.0'
+          version(package_name, catalog), ver
         ) >= 0
       end
 
