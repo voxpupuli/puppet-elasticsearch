@@ -1,9 +1,12 @@
 require 'spec_helper_acceptance'
 require 'json'
 
-# rubocop:disable Metrics/BlockLength
 describe 'Integration testing' do
   before :all do
+    scp_to default,
+           test_settings['integration_package'][:src],
+           test_settings['integration_package'][:dst]
+
     shell "mkdir -p #{default['distmoduledir']}/another/files"
 
     create_remote_file default,
@@ -24,7 +27,7 @@ describe 'Integration testing' do
             'network.host' => '0.0.0.0',
           },
           java_install => true,
-          package_url => '#{test_settings['snapshot_package']}'
+          package_url => '#{test_settings['integration_package'][:file]}'
         }
 
         elasticsearch::instance { 'es-01':
@@ -86,7 +89,7 @@ describe 'Integration testing' do
               'network.host' => '0.0.0.0',
             },
             java_install => true,
-            package_url => '#{test_settings['snapshot_package']}'
+            package_url => '#{test_settings['integration_package'][:file]}'
           }
 
           elasticsearch::instance { 'es-01':
@@ -135,7 +138,7 @@ describe 'Integration testing' do
               'network.host' => '0.0.0.0',
             },
             java_install => true,
-            package_url => '#{test_settings['snapshot_package']}'
+            package_url => '#{test_settings['integration_package'][:file]}'
           }
 
           elasticsearch::instance { 'es-01':
