@@ -103,12 +103,15 @@ task 'beaker:acceptance' => [:spec_prep, 'artifacts:prep']
 namespace :artifacts do
   desc 'Fetch artifacts for tests'
   task :prep do
-    dl_base = 'https://artifacts.elastic.co/downloads/elasticsearch'
+    artifacts_base = 'https://artifacts.elastic.co/downloads/elasticsearch'
+    dl_base = 'https://download.elastic.co/elasticsearch/elasticsearch'
     fetch_archives(
       'https://github.com/lmenezes/elasticsearch-kopf/archive/v2.1.1.zip' => \
       'elasticsearch-kopf.zip',
-      "#{dl_base}/elasticsearch-5.4.0.deb" => 'elasticsearch-5.4.0.deb',
-      "#{dl_base}/elasticsearch-5.4.0.rpm" => 'elasticsearch-5.4.0.rpm'
+      "#{artifacts_base}/elasticsearch-5.4.0.deb" => 'elasticsearch-5.4.0.deb',
+      "#{artifacts_base}/elasticsearch-5.4.0.rpm" => 'elasticsearch-5.4.0.rpm',
+      "#{dl_base}/elasticsearch-2.3.5.deb" => 'elasticsearch-2.3.5.deb',
+      "#{dl_base}/elasticsearch-2.3.5.rpm" => 'elasticsearch-2.3.5.rpm'
     )
   end
 
