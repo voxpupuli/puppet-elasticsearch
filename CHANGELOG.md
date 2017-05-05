@@ -9,6 +9,7 @@
 
 #### Fixes
 * Fixed a bug that prevented plugins from being updated properly.
+* Fixed deprecated `default.path` options introduced in Elasticsearch 5.4.0.
 
 ## 5.1.1 (April 13, 2017)
 
