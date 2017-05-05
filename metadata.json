@@ -1,6 +1,6 @@
 {
   "name": "elastic-elasticsearch",
-  "version": "5.1.1",
+  "version": "5.2.0",
   "source": "https://github.com/elastic/puppet-elasticsearch",
   "author": "elastic",
   "license": "Apache-2.0",

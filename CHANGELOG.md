@@ -1,6 +1,7 @@
-## x.x.x (Month Day, Year)
+## 5.2.0 (May 5, 2017)
 
 ### Summary
+Release supporting several new features and bugfixes for 5.4.0 users and users who need the ability to update plugins.
 
 #### Features
 * Support for Shield/X-Pack logging configuration file added.
