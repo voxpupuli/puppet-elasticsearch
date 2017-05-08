@@ -1,3 +1,12 @@
+## x.x.x (Month Day, Year)
+
+### Summary
+
+#### Features
+* Failures are no longer raised when no instances are defined for a plugin and service restarts are not requested.
+
+#### Fixes
+
 ## 5.2.0 (May 5, 2017)
 
 ### Summary
