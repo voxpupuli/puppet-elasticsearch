@@ -1,3 +1,5 @@
+$LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', '..'))
+
 require 'uri'
 require 'puppet_x/elastic/es_versioning'
 require 'puppet_x/elastic/plugin_name'
