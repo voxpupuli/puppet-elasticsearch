@@ -1,4 +1,4 @@
-$LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', '..', '..'))
+$LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', '..'))
 
 require 'puppet_x/elastic/deep_to_i'
 require 'puppet_x/elastic/deep_implode'
