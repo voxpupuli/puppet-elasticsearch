@@ -1,170 +1,173 @@
 require 'spec_helper'
 
 describe 'elasticsearch', :type => 'class' do
+  let(:repo_version) { '1.7' }
+  let(:version) { '1.7.6' }
+  let(:default_params) do
+    {
+      :config => {},
+      :manage_repo => true,
+      :repo_version => repo_version,
+      :version => version
+    }
+  end
 
-  default_params = {
-    :config => {},
-    :manage_repo => true,
-    :repo_version => '1.3',
-    :version => '1.6.0'
-  }
+  let(:params) { default_params }
+  let(:key_source) do
+    'https://artifacts.elastic.co/GPG-KEY-elasticsearch'
+  end
 
-  on_supported_os.each do |os, facts|
-
+  # First, randomly select one of our supported OSes to run tests that apply
+  # to any distro
+  on_supported_os.to_a.sample(1).to_h.each do |os, facts|
     context "on #{os}" do
-
       let(:facts) do
-        facts.merge({ 'scenario' => '', 'common' => '' })
+        facts.merge('scenario' => '', 'common' => '')
       end
 
-      let (:params) do
-        default_params
-      end
-
-      context "Use anchor type for ordering" do
-
-        let :params do
-          default_params
+      describe 'resource ordering' do
+        context 'Use anchor type for ordering' do
+          it { should contain_class('elasticsearch::repo')
+            .that_requires('Anchor[elasticsearch::begin]') }
         end
 
-        it { should contain_class('elasticsearch::repo').that_requires('Anchor[elasticsearch::begin]') }
-      end
+        context 'Use stage type for ordering' do
+          let(:params) { default_params.merge(:repo_stage => 'setup') }
 
-
-      context "Use stage type for ordering" do
-
-        let :params do
-          default_params.merge({
-            :repo_stage => 'setup'
-          })
-        end
-
-        it { should contain_stage('setup') }
-        it { should contain_class('elasticsearch::repo').with(:stage => 'setup') }
-
-      end
-
-      case facts[:osfamily]
-      when 'Debian'
-        context 'has apt repo parts' do
-          it { should contain_apt__source('elasticsearch').with(:location => 'http://packages.elastic.co/elasticsearch/1.3/debian') }
-        end
-      when 'RedHat'
-        context 'has yum repo parts' do
-          it { should contain_yumrepo('elasticsearch').with(:baseurl => 'http://packages.elastic.co/elasticsearch/1.3/centos') }
-        end
-      when 'Suse'
-        context 'has zypper repo parts' do
-          it { should contain_exec('elasticsearch_suse_import_gpg')
-            .with(:command => 'rpmkeys --import https://artifacts.elastic.co/GPG-KEY-elasticsearch') }
-          it { should contain_zypprepo('elasticsearch').with(:baseurl => 'http://packages.elastic.co/elasticsearch/1.3/centos') }
-          it { should contain_exec('elasticsearch_zypper_refresh_elasticsearch') }
+          it { should contain_stage('setup') }
+          it { should contain_class('elasticsearch::repo')
+            .with(:stage => 'setup')}
         end
       end
+    end
+  end
 
-      context "Override repo key ID" do
-
-        let :params do
-          default_params.merge({
-            :repo_key_id => '46095ACC8548582C1A2699A9D27D666CD88E42B4'
-          })
-        end
-
-        case facts[:osfamily]
-        when 'Debian'
-          context 'has override apt key' do
-            it { is_expected.to contain_apt__source('elasticsearch').with({
-              :key => {
-                'id' => '46095ACC8548582C1A2699A9D27D666CD88E42B4',
-                'source' => 'https://artifacts.elastic.co/GPG-KEY-elasticsearch'
-              }
-            })}
-          end
-        when 'Suse'
-          context 'has override yum key' do
-            it { is_expected.to contain_exec(
-              'elasticsearch_suse_import_gpg'
-            ).with_unless(
-              "test $(rpm -qa gpg-pubkey | grep -i 'D88E42B4' | wc -l) -eq 1"
-            )}
-          end
-        end
-
+  # The rest of the tests vary across distributions
+  on_supported_os.each do |os, facts|
+    context "on #{os}" do
+      let(:facts) do
+        facts.merge('scenario' => '', 'common' => '')
       end
 
-      context "Override repo source URL" do
-
-        let :params do
-          default_params.merge({
-            :repo_key_source => 'http://artifacts.elastic.co/GPG-KEY-elasticsearch'
-          })
-        end
-
-        case facts[:osfamily]
-        when 'Debian'
-          context 'has override apt key source' do
-            it { is_expected.to contain_apt__source('elasticsearch').with({
-              :key => {
-                'id' => '46095ACC8548582C1A2699A9D27D666CD88E42B4',
-                'source' => 'http://artifacts.elastic.co/GPG-KEY-elasticsearch'
-              }
-            })}
-          end
-        when 'RedHat'
-          context 'has override yum key source' do
-            it { should contain_yumrepo('elasticsearch')
-              .with(:gpgkey => 'http://artifacts.elastic.co/GPG-KEY-elasticsearch') }
-          end
-        when 'Suse'
-          context 'has override yum key source' do
-            it { should contain_exec('elasticsearch_suse_import_gpg')
-              .with(:command => 'rpmkeys --import http://artifacts.elastic.co/GPG-KEY-elasticsearch') }
-          end
-        end
-
-      end
-
-      context "Override repo proxy" do
-
-        let :params do
-          default_params.merge({
-              :repo_proxy => 'http://proxy.com:8080'
-          })
-        end
-
-        case facts[:osfamily]
-        when 'RedHat'
-          context 'has override repo proxy' do
-            it { is_expected.to contain_yumrepo('elasticsearch').with_proxy('http://proxy.com:8080') }
-          end
-        end
-
-      end
-
-      describe 'unified release repositories' do
-
-        let :params do
-          default_params.merge({
-            :repo_version => '5.x',
-            :version => '5.0.0'
-          })
-        end
-
+      describe 'distro-specific package repositories' do
         case facts[:osfamily]
         when 'Debian'
           it { should contain_apt__source('elasticsearch')
-            .with_location('https://artifacts.elastic.co/packages/5.x/apt') }
+            .with(
+              :location => 'http://packages.elastic.co/elasticsearch/1.7/debian'
+            ) }
         when 'RedHat'
-          it { should contain_yum__versionlock('0:elasticsearch-5.0.0-1.noarch') }
           it { should contain_yumrepo('elasticsearch')
-            .with_baseurl('https://artifacts.elastic.co/packages/5.x/yum') }
+            .with(
+              :baseurl => 'http://packages.elastic.co/elasticsearch/1.7/centos'
+            ) }
         when 'Suse'
+          it { should contain_exec('elasticsearch_suse_import_gpg')
+            .with(:command => "rpmkeys --import #{key_source}") }
           it { should contain_zypprepo('elasticsearch')
-            .with_baseurl('https://artifacts.elastic.co/packages/5.x/yum') }
+            .with(:baseurl => 'http://packages.elastic.co/elasticsearch/1.7/centos') }
+          it { should contain_exec(
+            'elasticsearch_zypper_refresh_elasticsearch'
+          ) }
         end
-
       end
 
+      describe 'overriding the repo key ID' do
+        let(:params) do
+          default_params.merge(
+            :repo_key_id => '46095ACC8548582C1A2699A9D27D666CD88E42B4'
+          )
+        end
+
+        case facts[:osfamily]
+        when 'Debian'
+          it { is_expected.to contain_apt__source('elasticsearch').with(
+            :key => {
+              'id' => '46095ACC8548582C1A2699A9D27D666CD88E42B4',
+              'source' => key_source
+            }
+          )}
+        when 'Suse'
+          it { is_expected.to contain_exec(
+            'elasticsearch_suse_import_gpg'
+          ).with_unless(
+            "test $(rpm -qa gpg-pubkey | grep -i 'D88E42B4' | wc -l) -eq 1"
+          )}
+        end
+      end
+
+      describe 'overriding the repo source URL' do
+        let(:key_source) do
+          'http://artifacts.elastic.co/GPG-KEY-elasticsearch'
+        end
+        let(:params) do
+          default_params.merge(
+            :repo_key_source => key_source
+          )
+        end
+
+        case facts[:osfamily]
+        when 'Debian'
+          it { is_expected.to contain_apt__source('elasticsearch').with(
+            :key => {
+              'id' => '46095ACC8548582C1A2699A9D27D666CD88E42B4',
+              'source' => key_source
+            }
+          )}
+        when 'RedHat'
+          it { should contain_yumrepo('elasticsearch')
+            .with(:gpgkey => key_source) }
+        when 'Suse'
+          it { should contain_exec('elasticsearch_suse_import_gpg')
+            .with(:command => "rpmkeys --import #{key_source}") }
+        end
+      end
+
+      describe 'overriding repo_proxy' do
+        let(:params) do
+          default_params.merge(:repo_proxy => 'http://proxy.com:8080')
+        end
+
+        case facts[:osfamily]
+        when 'RedHat'
+          it { is_expected.to contain_yumrepo('elasticsearch')
+            .with_proxy('http://proxy.com:8080') }
+        end
+      end
+
+      describe 'unified release repositories' do
+        ['2.x', '5.x'].each do |major_release|
+          context "version #{major_release}" do
+            let(:repo_version) { major_release }
+            let(:version) { "#{major_release[0]}.0.0" }
+            let(:post_5?) do
+              Gem::Version.new(major_release[0]) >= Gem::Version.new('5.0')
+            end
+            let(:repo_base) do
+              if post_5?
+                "https://artifacts.elastic.co/packages/#{repo_version}"
+              else
+                "http://packages.elastic.co/elasticsearch/#{repo_version}"
+              end
+            end
+
+            case facts[:osfamily]
+            when 'Debian'
+              it { should contain_apt__source('elasticsearch')
+                .with_location("#{repo_base}/#{post_5? ? 'apt' : 'debian'}") }
+            when 'RedHat'
+              it { should contain_yum__versionlock(
+                "0:elasticsearch-#{version}-1.noarch"
+              ) }
+              it { should contain_yumrepo('elasticsearch')
+                .with_baseurl("#{repo_base}/#{post_5? ? 'yum' : 'centos'}") }
+            when 'Suse'
+              it { should contain_zypprepo('elasticsearch')
+                .with_baseurl("#{repo_base}/#{post_5? ? 'yum' : 'centos'}") }
+            end
+          end
+        end
+      end
     end
   end
 end
