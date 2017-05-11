@@ -4,6 +4,7 @@
 
 #### Features
 * Failures are no longer raised when no instances are defined for a plugin and service restarts are not requested.
+* The `datadir` for instances can now be shared among multiple instances by using the `datadir_instance_directories` parameter.
 
 #### Fixes
 
