@@ -160,6 +160,12 @@
 # [*datadir*]
 #   Allows you to set the data directory of Elasticsearch
 #
+# [*datadir_instance_directories*]
+#   Control whether individual directories for instances will be created within
+#   each instance's data directorry.
+#   Value type is Boolean
+#   Defaults to: true
+#
 # [*logdir*]
 #   Use different directory for logging
 #
@@ -416,6 +422,7 @@ class elasticsearch(
   $config                         = undef,
   $config_hiera_merge             = false,
   $datadir                        = $elasticsearch::params::datadir,
+  $datadir_instance_directories   = true,
   $logdir                         = $elasticsearch::params::logdir,
   $plugindir                      = $elasticsearch::params::plugindir,
   $java_install                   = false,
@@ -535,6 +542,7 @@ class elasticsearch(
   validate_bool($java_install)
 
   validate_bool(
+    $datadir_instance_directories,
     $manage_repo,
     $package_pin
   )

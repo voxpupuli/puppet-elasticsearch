@@ -771,10 +771,11 @@ In this example we pin the package version to 1.5.2.
 
 ### Data directories
 
-There are 4 different ways of setting data directories for Elasticsearch.
+There are several different ways of setting data directories for Elasticsearch.
 In every case the required configuration options are placed in the `elasticsearch.yml` file.
 
 #### Default
+
 By default we use:
 
     /usr/share/elasticsearch/data/$instance_name
@@ -834,6 +835,28 @@ Creates the following for this instance:
 and
 `/var/lib/es-data2-es01`.
 
+#### Shared global data directories
+
+In some cases, you may want to share a top-level data directory among multiple instances.
+
+```puppet
+class { 'elasticsearch':
+  datadir_instance_directories => false,
+  config => {
+    'node.max_local_storage_nodes' => 2
+  }
+}
+
+elasticsearch::instance { 'es-01': }
+elasticsearch::instance { 'es-02': }
+```
+
+Will result in the following directories created by Elasticsearch at runtime:
+
+    /var/lib/elasticsearch/nodes/0
+    /var/lib/elasticsearch/nodes/1
+
+See [the Elasticsearch documentation](https://www.elastic.co/guide/en/elasticsearch/reference/current/modules-node.html#max-local-storage-nodes) for additional information regarding this configuration.
 
 ### Main and instance configurations
 
