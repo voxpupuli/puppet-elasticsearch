@@ -168,6 +168,36 @@ describe 'elasticsearch', :type => 'class' do
           end
         end
       end
+
+      describe 'repo_baseurl' do
+        let(:params) { default_params.merge(:repo_baseurl => repo_baseurl) }
+
+        context 'invalid parameter' do
+          [true, [1], { :key => :val }].each do |invalid_value|
+            describe invalid_value do
+              let(:repo_baseurl) { invalid_value }
+
+              it { should_not compile }
+            end
+          end
+        end
+
+        context 'local repository' do
+          let(:repo_baseurl) { 'https://repo.local/path' }
+
+          case facts[:osfamily]
+          when 'Debian'
+            it { should contain_apt__source('elasticsearch')
+              .with_location(repo_baseurl) }
+          when 'RedHat'
+            it { should contain_yumrepo('elasticsearch')
+              .with_baseurl(repo_baseurl) }
+          when 'Suse'
+            it { should contain_zypprepo('elasticsearch')
+              .with_baseurl(repo_baseurl) }
+          end
+        end
+      end
     end
   end
 end

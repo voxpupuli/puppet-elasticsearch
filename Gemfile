@@ -26,6 +26,7 @@ gem 'puppet-syntax'
 gem 'rspec-puppet-facts'
 gem 'rspec-puppet-utils'
 gem 'rspec-retry'
+gem 'rubocop'
 gem 'webmock'
 
 # Extra Puppet-lint gems

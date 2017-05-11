@@ -469,6 +469,15 @@ class { 'elasticsearch':
 }
 ```
 
+For users who may wish to install via a local repository (for example, through a mirror), the `repo_baseurl` parameter is available:
+
+```puppet
+class { 'elasticsearch':
+  manage_repo => true,
+  repo_baseurl => 'https://repo.local/yum'
+}
+```
+
 #### Remote package source
 
 When a repository is not available or preferred you can install the packages from a remote source:
