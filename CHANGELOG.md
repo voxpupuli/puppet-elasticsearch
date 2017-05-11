@@ -4,6 +4,7 @@
 
 #### Features
 * Failures are no longer raised when no instances are defined for a plugin and service restarts are not requested.
+* `repo_baseurl` is now exposed as a top-level parameter for users who wish to control custom repositories.
 
 #### Fixes
 

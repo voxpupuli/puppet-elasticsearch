@@ -22,6 +22,7 @@
 #
 # * Phil Fenstermacher <mailto:phillip.fenstermacher@gmail.com>
 # * Richard Pijnenburg <mailto:richard.pijnenburg@elasticsearch.com>
+# * Tyler Langlois <mailto:tyler.langlois@elastic.co>
 #
 class elasticsearch::repo {
 
@@ -31,29 +32,33 @@ class elasticsearch::repo {
   }
 
   if $elasticsearch::ensure == 'present' {
-    if versioncmp($elasticsearch::repo_version, '5.0') >= 0 {
-      $_repo_url = 'https://artifacts.elastic.co/packages'
-      case $::osfamily {
-        'Debian': {
-          $_repo_path = 'apt'
-        }
-        default: {
-          $_repo_path = 'yum'
-        }
-      }
+    if $::elasticsearch::repo_baseurl != undef {
+      $_baseurl = $::elasticsearch::repo_baseurl
     } else {
-      $_repo_url = 'http://packages.elastic.co/elasticsearch'
-      case $::osfamily {
-        'Debian': {
-          $_repo_path = 'debian'
+      if versioncmp($elasticsearch::repo_version, '5.0') >= 0 {
+        $_repo_url = 'https://artifacts.elastic.co/packages'
+        case $::osfamily {
+          'Debian': {
+            $_repo_path = 'apt'
+          }
+          default: {
+            $_repo_path = 'yum'
+          }
         }
-        default: {
-          $_repo_path = 'centos'
+      } else {
+        $_repo_url = 'http://packages.elastic.co/elasticsearch'
+        case $::osfamily {
+          'Debian': {
+            $_repo_path = 'debian'
+          }
+          default: {
+            $_repo_path = 'centos'
+          }
         }
       }
-    }
 
-    $_baseurl = "${_repo_url}/${elasticsearch::repo_version}/${_repo_path}"
+      $_baseurl = "${_repo_url}/${elasticsearch::repo_version}/${_repo_path}"
+    }
   } else {
     case $::osfamily {
       'Debian': {
