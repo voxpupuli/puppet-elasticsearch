@@ -184,6 +184,14 @@
 # [*manage_repo*]
 #   Enable repo management by enabling our official repositories
 #
+# [*repo_baseurl*]
+#   If a custom repository URL is needed (such as for installations behind
+#   restrictive firewalls), this parameter overrides the upstream repository
+#   URL. Note that any additional changes to the repository metdata (such as
+#   signing keys and so on) will need to be handled appropriately.
+#   Value type is String
+#   Default value: undef
+#
 # [*repo_version*]
 #   Our repositories are versioned per major version (0.90, 1.0) select here which version you want
 #
@@ -429,6 +437,7 @@ class elasticsearch(
   $java_package                   = undef,
   $jvm_options                    = [],
   $manage_repo                    = false,
+  $repo_baseurl                   = undef,
   $repo_version                   = undef,
   $repo_priority                  = undef,
   $repo_key_id                    = '46095ACC8548582C1A2699A9D27D666CD88E42B4',
@@ -548,7 +557,9 @@ class elasticsearch(
   )
 
   if ($manage_repo == true and $ensure == 'present') {
-    if $repo_version == undef {
+    if $repo_baseurl != undef {
+      validate_string($repo_baseurl)
+    } elsif $repo_version == undef {
       fail('Please fill in a repository version at $repo_version')
     } else {
       validate_string($repo_version)
