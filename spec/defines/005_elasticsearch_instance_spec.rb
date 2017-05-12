@@ -198,6 +198,21 @@ describe 'elasticsearch::instance', :type => 'define' do
       it { should contain_file('/var/lib/elasticsearch').with(:ensure => 'directory') }
     end
 
+    context 'datadir_instance_directories' do
+      let(:pre_condition) do
+        <<-EOS
+          class { "elasticsearch":
+            datadir_instance_directories => false
+          }
+        EOS
+      end
+
+      it { should contain_exec('mkdir_logdir_elasticsearch_es-01') }
+      it { should_not contain_exec('mkdir_datadir_elasticsearch_es-01') }
+      it { should_not contain_file('/var/lib/elasticsearch/es-01').with(:ensure => 'directory') }
+      it { should contain_file('/var/lib/elasticsearch').with(:ensure => 'directory') }
+    end
+
     context 'single from main config ' do
       let(:pre_condition) { <<-EOS
         class { "elasticsearch":

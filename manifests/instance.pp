@@ -45,6 +45,12 @@
 # [*datadir*]
 #   Allows you to set the data directory of Elasticsearch
 #
+# [*datadir_instance_directories*]
+#   Control whether individual directories for instances will be created within
+#   each instance's data directorry.
+#   Value type is Boolean
+#   Defaults to: true
+#
 # [*logging_file*]
 #   Instead of a hash you can supply a puppet:// file source for the logging.yml file
 #
@@ -156,6 +162,7 @@ define elasticsearch::instance(
   $config                        = undef,
   $configdir                     = undef,
   $datadir                       = undef,
+  $datadir_instance_directories  = $elasticsearch::datadir_instance_directories,
   $logdir                        = undef,
   $logging_file                  = undef,
   $logging_config                = undef,
@@ -234,10 +241,15 @@ define elasticsearch::instance(
 
     # String or array for data dir(s)
     if ($datadir == undef) {
-      if (is_array($elasticsearch::datadir)) {
-        $instance_datadir = array_suffix($elasticsearch::datadir, "/${name}")
+      validate_bool($datadir_instance_directories)
+      if ($datadir_instance_directories) {
+        if (is_array($elasticsearch::datadir)) {
+          $instance_datadir = array_suffix($elasticsearch::datadir, "/${name}")
+        } else {
+          $instance_datadir = "${elasticsearch::datadir}/${name}"
+        }
       } else {
-        $instance_datadir = "${elasticsearch::datadir}/${name}"
+        $instance_datadir = $elasticsearch::datadir
       }
     } else {
       $instance_datadir = $datadir
@@ -373,20 +385,21 @@ define elasticsearch::instance(
       before  => Elasticsearch::Service[$name],
     }
 
-    exec { "mkdir_datadir_elasticsearch_${name}":
-      command => "mkdir -p ${dirs}",
-      creates => $instance_datadir,
-      require => Class['elasticsearch::package'],
-      before  => Elasticsearch::Service[$name],
-    }
-
-    file { $instance_datadir:
-      ensure  => 'directory',
-      owner   => $elasticsearch::elasticsearch_user,
-      group   => undef,
-      mode    => '0644',
-      require => [ Exec["mkdir_datadir_elasticsearch_${name}"], Class['elasticsearch::package'] ],
-      before  => Elasticsearch::Service[$name],
+    if ($datadir_instance_directories) {
+      exec { "mkdir_datadir_elasticsearch_${name}":
+        command => "mkdir -p ${dirs}",
+        creates => $instance_datadir,
+        require => Class['elasticsearch::package'],
+        before  => Elasticsearch::Service[$name],
+      }
+      -> file { $instance_datadir:
+        ensure  => 'directory',
+        owner   => $elasticsearch::elasticsearch_user,
+        group   => undef,
+        mode    => '0644',
+        require => Class['elasticsearch::package'],
+        before  => Elasticsearch::Service[$name],
+      }
     }
 
     exec { "mkdir_configdir_elasticsearch_${name}":
