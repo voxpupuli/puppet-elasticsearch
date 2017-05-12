@@ -1,3 +1,5 @@
+require 'json'
+
 test_settings['cluster_name'] = SecureRandom.hex(10)
 
 test_settings['repo_version2x']          = '2.x'
@@ -79,64 +81,7 @@ test_settings['datadir_1'] = '/var/lib/elasticsearch-data/1/'
 test_settings['datadir_2'] = '/var/lib/elasticsearch-data/2/'
 test_settings['datadir_3'] = '/var/lib/elasticsearch-data/3/'
 
-test_settings['template'] = {
-  'template' => 'logstash-*',
-  'settings' => {
-    'index' => {
-      'refresh_interval' => '5s',
-      'analysis' => {
-        'analyzer' => {
-          'default' => {
-            'type' => 'standard',
-            'stopwords' => '_none_'
-          }
-        }
-      }
-    }
-  },
-  'mappings' => {
-    '_default_' => {
-      '_all' => { 'enabled' => true },
-      'dynamic_templates' => [{
-        'string_fields' => {
-          'match' => '*',
-          'match_mapping_type' => 'string',
-          'mapping' => {
-            'type' => 'multi_field',
-            'fields' => {
-              '{name}' => {
-                'type' => 'string', 'index' => 'analyzed', 'omit_norms' => true
-              },
-              'raw' => {
-                'type ' => 'string',
-                'index' => 'not_analyzed',
-                'ignore_above' => 256
-              }
-            }
-          }
-        }
-      }],
-      'properties' => {
-        '@version' => { 'type' => 'string', 'index' => 'not_analyzed' },
-        'geoip'  => {
-          'type' => 'object',
-          'dynamic' => true,
-          'properties' => {
-            'location' => { 'type' => 'geo_point' }
-          }
-        }
-      }
-    }
-  }
-}
-
-test_settings['template_snapshot'] = test_settings['template'].dup
-test_settings['template_snapshot'].delete 'template'
-test_settings['template_snapshot']['index_patterns'] = ['logstash-*']
-test_settings['template_snapshot']['mappings']['_default_'].delete '_all'
-test_settings['template_snapshot']['mappings']['_default_']['properties']['@version']['type'] = 'text'
-test_settings['template_snapshot']['mappings']['_default_']['properties']['@version']['index'] = false
-test_settings['template_snapshot']['mappings']['_default_']['dynamic_templates'].first['string_fields']['mapping']['fields']['{name}']['type'] = 'text'
-test_settings['template_snapshot']['mappings']['_default_']['dynamic_templates'].first['string_fields']['mapping']['fields']['raw']['type'] = 'text'
+test_settings['template'] = JSON.load(File.new('spec/fixtures/templates/pre_6.0.json'))
+test_settings['template_snapshot'] = JSON.load(File.new('spec/fixtures/templates/post_6.0.json'))
 
 RSpec.configuration.test_settings = test_settings
