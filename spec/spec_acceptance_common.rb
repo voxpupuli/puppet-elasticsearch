@@ -130,4 +130,13 @@ test_settings['template'] = {
   }
 }
 
+test_settings['template_snapshot'] = test_settings['template'].dup
+test_settings['template_snapshot'].delete 'template'
+test_settings['template_snapshot']['index_patterns'] = ['logstash-*']
+test_settings['template_snapshot']['mappings']['_default_'].delete '_all'
+test_settings['template_snapshot']['mappings']['_default_']['properties']['@version']['type'] = 'text'
+test_settings['template_snapshot']['mappings']['_default_']['properties']['@version']['index'] = false
+test_settings['template_snapshot']['mappings']['_default_']['dynamic_templates'].first['string_fields']['mapping']['fields']['{name}']['type'] = 'text'
+test_settings['template_snapshot']['mappings']['_default_']['dynamic_templates'].first['string_fields']['mapping']['fields']['raw']['type'] = 'text'
+
 RSpec.configuration.test_settings = test_settings
