@@ -1,4 +1,5 @@
 # rubocop:disable Style/FileName
+require 'digest/sha1'
 require 'rubygems'
 require 'puppetlabs_spec_helper/rake_tasks'
 require 'puppet_blacksmith/rake_tasks'
@@ -92,7 +93,7 @@ desc 'Run integration tests'
 RSpec::Core::RakeTask.new('beaker:integration') do |c|
   c.pattern = 'spec/integration/integration*.rb'
 end
-task 'beaker:integration' => [:spec_prep, 'artifacts:prep']
+task 'beaker:integration' => [:spec_prep, 'artifacts:snapshot:fetch']
 
 desc 'Run acceptance tests'
 RSpec::Core::RakeTask.new('beaker:acceptance') do |c|
@@ -103,16 +104,52 @@ task 'beaker:acceptance' => [:spec_prep, 'artifacts:prep']
 namespace :artifacts do
   desc 'Fetch artifacts for tests'
   task :prep do
-    artifacts_base = 'https://artifacts.elastic.co/downloads/elasticsearch'
     dl_base = 'https://download.elastic.co/elasticsearch/elasticsearch'
     fetch_archives(
       'https://github.com/lmenezes/elasticsearch-kopf/archive/v2.1.1.zip' => \
       'elasticsearch-kopf.zip',
-      "#{artifacts_base}/elasticsearch-5.4.0.deb" => 'elasticsearch-5.4.0.deb',
-      "#{artifacts_base}/elasticsearch-5.4.0.rpm" => 'elasticsearch-5.4.0.rpm',
       "#{dl_base}/elasticsearch-2.3.5.deb" => 'elasticsearch-2.3.5.deb',
       "#{dl_base}/elasticsearch-2.3.5.rpm" => 'elasticsearch-2.3.5.rpm'
     )
+  end
+
+  namespace :snapshot do
+    snapshots = 'https://snapshots.elastic.co/downloads/elasticsearch'
+    artifacts = 'spec/fixtures/artifacts'
+    build = 'elasticsearch-6.0.0-alpha1-SNAPSHOT'
+    %w[deb rpm].each do |ext|
+      package = "#{build}.#{ext}"
+      local = "#{artifacts}/#{package}"
+      checksum = "#{artifacts}/#{package}.sha1"
+      link = "#{artifacts}/elasticsearch-snapshot.#{ext}"
+
+      task :fetch => link
+
+      desc "Symlink #{ext} latest snapshot build."
+      file link => local do
+        unless File.exist?(link) and File.symlink?(link) \
+              and File.readlink(link) == package
+          File.delete link if File.exist? link
+          File.symlink package, link
+        end
+      end
+
+      desc "Retrieve #{ext} snapshot build."
+      file local => checksum do
+        if File.exist?(local) and \
+           Digest::SHA1.hexdigest(File.read(local)) == File.read(checksum)
+          puts "Artifact #{package} already fetched and up-to-date"
+        else
+          fetch_archives "#{snapshots}/#{package}" => package
+        end
+      end
+
+      desc "Retrieve #{ext} checksums."
+      task checksum do
+        File.delete checksum if File.exist? checksum
+        fetch_archives "#{snapshots}/#{package}.sha1" => "#{package}.sha1"
+      end
+    end
   end
 
   desc 'Purge fetched artifacts'

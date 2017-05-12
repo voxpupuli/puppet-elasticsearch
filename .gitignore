@@ -13,3 +13,4 @@ log
 *.rpm
 *.deb
 *.tar.gz
+*.sha1

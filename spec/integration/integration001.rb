@@ -11,11 +11,11 @@ describe 'Integration testing' do
 
     create_remote_file default,
                        "#{default['distmoduledir']}/another/files/good.json",
-                       JSON.dump(test_settings['template'])
+                       JSON.dump(test_settings['template_snapshot'])
 
     create_remote_file default,
                        "#{default['distmoduledir']}/another/files/bad.json",
-                       JSON.dump(test_settings['template'])[0..-5]
+                       JSON.dump(test_settings['template_snapshot'])[0..-5]
   end
 
   describe 'Setup Elasticsearch', :main => true do
@@ -123,7 +123,7 @@ describe 'Integration testing' do
         ) do
           it 'returns the installed template', :with_retries do
             expect(JSON.parse(response.body)['foo'])
-              .to include(test_settings['template'])
+              .to include(test_settings['template_snapshot'])
           end
         end
       end

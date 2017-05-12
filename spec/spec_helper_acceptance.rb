@@ -112,9 +112,9 @@ hosts.each do |host|
     "file:#{snapshot_package[:dst]}"
 
   test_settings['integration_package'] = {
-    :src => "#{files_dir}/elasticsearch-5.4.0.#{ext}",
-    :dst => "/tmp/elasticsearch-5.4.0.#{ext}",
-    :file => "file:/tmp/elasticsearch-5.4.0.#{ext}"
+    :src => "#{files_dir}/elasticsearch-snapshot.#{ext}",
+    :dst => "/tmp/elasticsearch-snapshot.#{ext}",
+    :file => "file:/tmp/elasticsearch-snapshot.#{ext}"
   }
 
   Infrataster::Server.define(:docker) do |server|
