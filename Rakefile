@@ -122,8 +122,8 @@ namespace :artifacts do
 end
 
 def fetch_archives(archives)
-  archives.each do |url, fp|
-    fp.replace "spec/fixtures/artifacts/#{fp}"
+  archives.each do |url, orig_fp|
+    fp = "spec/fixtures/artifacts/#{orig_fp}"
     if File.exist? fp
       if fp.end_with? 'tar.gz' and !system("tar -tzf #{fp} &>/dev/null")
         puts "Archive #{fp} corrupt, re-fetching..."
