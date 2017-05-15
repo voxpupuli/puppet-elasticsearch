@@ -73,6 +73,12 @@ class elasticsearch::config {
         group  => $elasticsearch::elasticsearch_group,
         owner  => $elasticsearch::elasticsearch_user,
         mode   => '0644';
+      "${elasticsearch::params::homedir}/bin/elasticsearch.in.sh":
+        ensure => file,
+        group  => $elasticsearch::elasticsearch_group,
+        owner  => $elasticsearch::elasticsearch_user,
+        mode   => '0755',
+        source => 'puppet:///modules/elasticsearch/usr/share/elasticsearch/bin/elasticsearch.in.sh';
       '/etc/elasticsearch/elasticsearch.yml':
         ensure => 'absent';
       '/etc/elasticsearch/logging.yml':
