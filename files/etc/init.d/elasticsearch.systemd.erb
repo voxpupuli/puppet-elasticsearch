@@ -1,8 +1,14 @@
+<%-
+order = ["network-online.target"]
+if @resource[:service_order]
+   order.push(@resource[:service_order])
+end
+-%>
 [Unit]
 Description=Elasticsearch instance <%= @resource[:instance] %>
 Documentation=http://www.elastic.co
 Wants=network-online.target
-After=network-online.target
+After=<%= order.join(" ") %>
 
 [Service]
 EnvironmentFile=<%= @resource[:defaults_location] %>/elasticsearch-<%= @resource[:instance] %>

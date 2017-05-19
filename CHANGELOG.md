@@ -109,22 +109,39 @@ Note updated minimum required puppet versions as well.
 
 ## 0.15.0 (November 17, 2016)
 
-### Summary
+ ### Summary
 * Support for Ubuntu Xenial (16.04) formally declared.
 * Initial support for running Elasticsearch 5.x series.
 
-#### Features
+ #### Features
 * Support management of 5.x-style Elastic yum/apt package repositories.
 * Support service scripts for 5.x series of Elasticsearch
 
-#### Bugfixes
+ #### Bugfixes
 * Update the apt::source call to not cause deprecation warnings
 * Updated module metadata to correctly require puppet-stdlib with validate_integer()
 
+ #### Changes
+
+ #### Testing changes
+* Ubuntu Xenial (16.04) added to the test matrix.
+
+## 0.15.1 (November 11, 2016)
+
+### Summary
+* adding support to control the boot sequence for systemd
+
+#### Features
+* add a new parameter service_order which controls the contents of the "After" field in the elasticsearch init script for systemd
+
+#### Bugfixes
+
 #### Changes
+* introduced an additional parameter :service_order in elasticsearch_service_file.rb
+* updated the service systemd service template to support the new field
+* ensure that the new parameter is passed on
 
 #### Testing changes
-* Ubuntu Xenial (16.04) added to the test matrix.
 
 ## 0.14.0 (October 12, 2016)
 

@@ -77,4 +77,8 @@ Puppet::Type.newtype(:elasticsearch_service_file) do
   newparam(:user) do
     desc 'User to run service under.'
   end
+
+  newparam(:service_order) do
+    desc 'Service should be started after these.'
+  end
 end

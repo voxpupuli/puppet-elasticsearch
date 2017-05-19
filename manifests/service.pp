@@ -53,6 +53,9 @@
 # [*service_flags*]
 #   Service flags, used on OpenBSD for service configuration
 #
+# [*service_order*]
+#   space separated string naming services to be started before Elasticsearch
+#
 # === Authors
 #
 # * Richard Pijnenburg <mailto:richard.pijnenburg@elasticsearch.com>
@@ -64,6 +67,7 @@ define elasticsearch::service(
   $init_defaults      = undef,
   $init_template      = undef,
   $service_flags      = undef,
+  $service_order      = undef,
 ) {
 
   case $elasticsearch::real_service_provider {
@@ -92,6 +96,7 @@ define elasticsearch::service(
         init_defaults_file => $init_defaults_file,
         init_defaults      => $init_defaults,
         init_template      => $init_template,
+        service_order      => $service_order,
       }
     }
     'openrc': {

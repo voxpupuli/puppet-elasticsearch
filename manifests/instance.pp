@@ -82,6 +82,9 @@
 # [*service_flags*]
 #   Service flags used for the OpenBSD service configuration, defaults to undef.
 #
+# [*service_order*]
+#   space separated string naming services to be started before Elasticsearch
+#
 # [*init_template*]
 #   Service file as a template
 #
@@ -171,6 +174,7 @@ define elasticsearch::instance(
   $deprecation_logging           = false,
   $deprecation_logging_level     = 'DEBUG',
   $service_flags                 = undef,
+  $service_order                 = undef,
   $init_defaults                 = undef,
   $init_defaults_file            = undef,
   $init_template                 = $elasticsearch::init_template,
@@ -543,6 +547,7 @@ define elasticsearch::instance(
     ensure             => $ensure,
     status             => $status,
     service_flags      => $service_flags,
+    service_order      => $service_order,
     init_defaults      => $init_defaults_new,
     init_defaults_file => $init_defaults_file,
     init_template      => $init_template,

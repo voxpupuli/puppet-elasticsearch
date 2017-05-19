@@ -50,6 +50,9 @@
 # [*init_template*]
 #   Service file as a template
 #
+# [*service_order*]
+#   space separated string naming services to be started before Elasticsearch
+#
 # === Authors
 #
 # * Richard Pijnenburg <mailto:richard.pijnenburg@elasticsearch.com>
@@ -60,6 +63,7 @@ define elasticsearch::service::systemd(
   $init_defaults_file = undef,
   $init_defaults      = undef,
   $init_template      = undef,
+  $service_order      = undef,
 ) {
 
   #### Service management
@@ -174,6 +178,7 @@ define elasticsearch::service::systemd(
         package_name      => $elasticsearch::package_name,
         pid_dir           => $elasticsearch::pid_dir,
         user              => $elasticsearch::elasticsearch_user,
+        service_order     => $service_order,
         notify            => $notify_service,
       }
       -> file { "${elasticsearch::params::systemd_service_path}/elasticsearch-${name}.service":
