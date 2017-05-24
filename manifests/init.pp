@@ -378,6 +378,18 @@
 #   into logging.yml or log4j2.properties file as appropriate).
 #   Default value: undef
 #
+# [*secrets*]
+#   Optional default configuration hash of key/value pairs to store in the
+#   Elasticsearch keystore file. If unset, the keystore is left unmanaged.
+#   Value type is hash
+#   Default value: undef
+#
+# [*purge_secrets*]
+#   Whether or not keys present in the keystore will be removed if they are not
+#   present in the specified secrets hash.
+#   Value type is Boolean
+#   Default value: false
+#
 # The default values for the parameters are set in elasticsearch::params. Have
 # a look at the corresponding <tt>params.pp</tt> manifest file if you need more
 # technical information about them.
@@ -481,6 +493,8 @@ class elasticsearch(
   $security_plugin                = undef,
   $security_logging_content       = undef,
   $security_logging_source        = undef,
+  $secrets                        = undef,
+  $purge_secrets                  = false,
 ) inherits elasticsearch::params {
 
   anchor {'elasticsearch::begin': }
@@ -544,6 +558,10 @@ class elasticsearch(
 
     if ($logging_config != undef) {
       validate_hash($logging_config)
+    }
+
+    if ($secrets != undef) {
+      validate_hash($secrets)
     }
   }
 
