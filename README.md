@@ -36,6 +36,7 @@ This module is actively tested against Elasticsearch 2.x and 5.x.
 * Elasticsearch ingest pipelines.
 * Elasticsearch index settings.
 * Elasticsearch Shield/X-Pack users, roles, and certificates.
+* Elasticsearch keystores.
 
 ### Requirements
 
@@ -947,6 +948,45 @@ class { 'elasticsearch':
   }
 }
 ```
+
+#### Keystore Settings
+
+Recent versions of Elasticsearch include the [elasticsearch-keystore](https://www.elastic.co/guide/en/elasticsearch/reference/current/secure-settings.html) utility to create and manage the `elasticsearch.keystore` file which can store sensitive values for certain settings.
+The settings and values for this file can be controlled by this module.
+Settings follow the behavior of the `config` parameter for the top-level Elasticsearch class and `elasticsearch::instance` defined types.
+That is, you may define keystore settings globally, and all values will be merged with instance-specific settings for final inclusion in the `elasticsearch.keystore` file.
+Note that each hash key is passed to the `elasticsearch-keystore` utility in a straightforward manner, so you should specify the hash passed to `secrets` in flattened form (that is, without full nested hash representation).
+
+For example, to define cloud plugin credentials for all instances:
+
+```puppet
+class { 'elasticsearch':
+  secrets => {
+    'cloud.aws.access_key' => 'AKIA....',
+    'cloud.aws.secret_key' => 'AKIA....',
+  }
+}
+```
+
+Or, to instead control these settings for a single instance:
+
+```puppet
+elasticsearch::instance { 'es-01':
+  secrets => {
+    'cloud.aws.access_key' => 'AKIA....',
+    'cloud.aws.secret_key' => 'AKIA....',
+  }
+}
+```
+
+##### Purging Secrets
+
+By default, if a secret setting exists on-disk that is not present in the `secrets` hash, this module will leave it intact.
+If you prefer to keep only secrets in the keystore that are specified in the `secrets` hash, use the `purge_secrets` boolean parameter either on the `elasticsearch` class to set it globally or per-instance.
+
+##### Notifying Services
+
+Any changes to keystore secrets will notify running elasticsearch services by respecting the `restart_on_change` and `restart_config_change` parameters.
 
 ## Limitations
 
