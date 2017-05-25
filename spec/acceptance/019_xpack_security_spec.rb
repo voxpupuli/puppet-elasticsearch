@@ -1,53 +1,33 @@
 require 'spec_helper_acceptance'
 require 'json'
 
-# rubocop:disable Metrics/BlockLength
 describe 'elasticsearch x-pack security',
          :if => is_5x_capable?,
          :with_certificates => true,
          :then_purge => true do
-  if fact('operatingsystemmajrelease') == '6'
-    # Otherwise, grab the Oracle JRE 8 package
-    java_install = false
-    java_snippet = <<-EOS
-      package { 'java-1.7.0-openjdk' :
-        ensure => absent
-      } ->
-      java::oracle { 'jre8':
-        java_se => 'jre',
-      }
-    EOS
-  else
-    # Otherwise the distro should be recent enough to have JRE 1.8
-    java_install = true
-  end
-
   # Template manifest
   let :base_manifest do
-    manifest = <<-EOF
-    class { 'elasticsearch' :
-      java_install => #{java_install},
-      manage_repo  => true,
-      repo_version => '#{test_settings['repo_version5x']}',
-      config => {
-        'cluster.name' => '#{test_settings['cluster_name']}',
-        'http.port' => #{test_settings['port_a']},
-        'network.host' => '0.0.0.0',
-      },
-      restart_on_change => true,
-      security_plugin => 'x-pack',
-      jvm_options => [
-        '-Xms256m',
-        '-Xmx256m',
-      ],
-    }
+    <<-EOF
+      class { 'elasticsearch' :
+        java_install => true,
+        #{fact('operatingsystemmajrelease') == '6' ? "java_package => 'java-1.8.0-openjdk-headless'," : ''}
+        manage_repo  => true,
+        repo_version => '#{test_settings['repo_version5x']}',
+        config => {
+          'cluster.name' => '#{test_settings['cluster_name']}',
+          'http.port' => #{test_settings['port_a']},
+          'network.host' => '0.0.0.0',
+        },
+        restart_on_change => true,
+        security_plugin => 'x-pack',
+        jvm_options => [
+          '-Xms256m',
+          '-Xmx256m',
+        ],
+      }
 
-    elasticsearch::plugin { 'x-pack' :  }
+      elasticsearch::plugin { 'x-pack' :  }
     EOF
-
-    manifest = java_snippet + "->\n" + manifest unless java_install
-
-    manifest
   end
 
   describe 'user authentication' do

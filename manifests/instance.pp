@@ -151,6 +151,18 @@
 #   Which security plugin will be used to manage users, roles, and
 #   certificates. Inherited from top-level Elasticsearch class.
 #
+# [*secrets*]
+#   Optional configuration hash of key/value pairs to store in the instance's
+#   Elasticsearch keystore file. If unset, the keystore is left unmanaged.
+#   Value type is hash
+#   Default value: undef
+#
+# [*purge_secrets*]
+#   Whether or not keys present in the keystore will be removed if they are not
+#   present in the specified secrets hash.
+#   Value type is Boolean
+#   Default value: false
+#
 # === Authors
 #
 # * Tyler Langlois <mailto:tyler@elastic.co>
@@ -186,6 +198,8 @@ define elasticsearch::instance(
   $rolling_file_max_backup_index = $elasticsearch::rolling_file_max_backup_index,
   $rolling_file_max_file_size    = $elasticsearch::rolling_file_max_file_size,
   $security_plugin               = $elasticsearch::security_plugin,
+  $secrets                       = undef,
+  $purge_secrets                 = $elasticsearch::purge_secrets,
 ) {
 
   require elasticsearch::params
@@ -520,6 +534,28 @@ define elasticsearch::instance(
       owner    => $elasticsearch::elasticsearch_user,
       group    => $elasticsearch::elasticsearch_group,
       mode     => '0440',
+    }
+
+    if ($elasticsearch::secrets != undef or $secrets != undef) {
+      if ($elasticsearch::secrets != undef) {
+        $main_secrets = $elasticsearch::secrets
+      } else {
+        $main_secrets = {}
+      }
+
+      if ($secrets != undef) {
+        $instance_secrets = $secrets
+      } else {
+        $instance_secrets = {}
+      }
+
+      validate_bool($purge_secrets)
+
+      elasticsearch_keystore { $name :
+        purge    => $purge_secrets,
+        settings => merge($main_secrets, $instance_secrets),
+        notify   => $notify_service,
+      }
     }
 
     $require_service = Class['elasticsearch::package']

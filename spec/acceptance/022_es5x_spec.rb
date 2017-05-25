@@ -1,24 +1,7 @@
 require 'spec_helper_acceptance'
 
-# rubocop:disable Metrics/BlockLength
 describe 'elasticsearch 5.x', :if => is_5x_capable? do
   # On earlier versions of CentOS/RedHat 7, manually get JRE 1.8
-  if fact('operatingsystemmajrelease') == '6'
-    # Otherwise, grab the Oracle JRE 8 package
-    java_install = false
-    java_snippet = <<-EOS
-      package { 'java-1.7.0-openjdk' :
-        ensure => absent
-      } ->
-      java::oracle { 'jre8':
-        java_se => 'jre',
-      }
-    EOS
-  else
-    # Otherwise the distro should be recent enough to have JRE 1.8
-    java_install = true
-  end
-
   describe 'basic installation', :with_cleanup do
     describe 'manifest' do
       pp = <<-EOS
@@ -30,7 +13,8 @@ describe 'elasticsearch 5.x', :if => is_5x_capable? do
           },
           manage_repo => true,
           repo_version => '#{test_settings['repo_version5x']}',
-          java_install => #{java_install},
+          java_install => true,
+          #{fact('operatingsystemmajrelease') == '6' ? "java_package => 'java-1.8.0-openjdk-headless'," : ''}
           restart_on_change => true,
         }
 
@@ -41,7 +25,6 @@ describe 'elasticsearch 5.x', :if => is_5x_capable? do
           }
         }
       EOS
-      pp = java_snippet + "->\n" + pp unless java_install
 
       it 'applies cleanly' do
         apply_manifest pp, :catch_failures => true
