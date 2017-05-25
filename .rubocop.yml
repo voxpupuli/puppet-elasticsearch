@@ -10,11 +10,20 @@ Style/BlockDelimiters:
 Style/BlockEndNewline:
   Enabled: false
 
+Style/FirstParameterIndentation:
+  Enabled: false
+
 Style/HashSyntax:
+  Enabled: false
+
+Style/IndentArray:
   Enabled: false
 
 Style/MultilineBlockLayout:
   Enabled: false
 
 Style/MultilineIfModifier:
+  Enabled: false
+
+Style/Not:
   Enabled: false

@@ -624,4 +624,81 @@ describe 'elasticsearch::instance', :type => 'define' do
       end
     end
   end
+
+  describe 'keystore' do
+    let(:settings) do {
+      'cloud.aws.access_key' => 'AKIA...',
+      'cloud.aws.secret_key' => 'AKIA...'
+    } end
+
+    describe 'secrets' do
+      context 'inherited' do
+        let(:pre_condition) do
+          <<-EOS
+            class { 'elasticsearch':
+              secrets => #{settings}
+            }
+          EOS
+        end
+
+        it { should contain_elasticsearch_keystore('es-01').with_settings(settings) }
+      end
+
+      context 'from instance' do
+        let :params do {
+          :secrets => settings
+        } end
+
+        it { should contain_elasticsearch_keystore('es-01').with_settings(settings) }
+      end
+
+      context 'notify events' do
+        let(:pre_condition) do
+          <<-EOS
+            class { 'elasticsearch':
+              restart_on_change => true
+            }
+          EOS
+        end
+
+        let :params do {
+          :secrets => {}
+        } end
+
+        it { should contain_elasticsearch_keystore('es-01').that_notifies('Elasticsearch::Service[es-01]') }
+      end
+    end
+
+    describe 'purge_secrets' do
+      context 'default' do
+        let :params do {
+          :secrets => settings
+        } end
+
+        it { should contain_elasticsearch_keystore('es-01').with_purge(false) }
+      end
+
+      context 'inherited' do
+        let(:pre_condition) do
+          <<-EOS
+            class { 'elasticsearch':
+              purge_secrets => true,
+              secrets => #{settings}
+            }
+          EOS
+        end
+
+        it { should contain_elasticsearch_keystore('es-01').with_purge(true) }
+      end
+
+      context 'from instance' do
+        let :params do {
+          :purge_secrets => true,
+          :secrets       => settings
+        } end
+
+        it { should contain_elasticsearch_keystore('es-01').with_purge(true) }
+      end
+    end
+  end
 end
