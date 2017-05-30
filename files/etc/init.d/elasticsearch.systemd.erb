@@ -30,7 +30,7 @@ StandardError=inherit
 # Specifies the maximum file descriptor number that can be opened by this process
 LimitNOFILE=<%= @resource[:nofile] %>
 
-# Specifies the maximum number of threads that can be opened by this process
+# Specifies the maximum number of processes
 LimitNPROC=<%= @resource[:nproc] %>
 
 # Specifies the maximum number of bytes of memory that may be locked into RAM
