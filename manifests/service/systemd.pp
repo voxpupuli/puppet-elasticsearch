@@ -135,7 +135,7 @@ define elasticsearch::service::systemd(
         'ES_USER'        => $elasticsearch::elasticsearch_user,
         'ES_GROUP'       => $elasticsearch::elasticsearch_group,
         'MAX_OPEN_FILES' => '65536',
-        'MAX_THREADS'    => '2048',
+        'MAX_THREADS'    => '4096',
       }
       $new_init_defaults = merge($init_defaults_pre_hash, $init_defaults)
 
@@ -166,7 +166,7 @@ define elasticsearch::service::systemd(
       if ($new_init_defaults != undef and is_hash($new_init_defaults) and has_key($new_init_defaults, 'MAX_THREADS')) {
         $nproc = $new_init_defaults['MAX_THREADS']
       }else{
-        $nproc = '2048'
+        $nproc = '4096'
       }
 
       elasticsearch_service_file { "${elasticsearch::params::systemd_service_path}/elasticsearch-${name}.service":
