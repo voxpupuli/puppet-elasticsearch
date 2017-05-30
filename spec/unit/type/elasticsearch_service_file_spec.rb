@@ -13,6 +13,7 @@ describe Puppet::Type.type(:elasticsearch_service_file) do
       :homedir,
       :memlock,
       :nofile,
+      :nproc,
       :package_name,
       :pid_dir,
       :user
