@@ -2,7 +2,6 @@ require 'json'
 
 require_relative '../../../helpers/unit/provider/elasticsearch_rest_shared_examples'
 
-# rubocop:disable Metrics/BlockLength
 describe Puppet::Type.type(:elasticsearch_index).provider(:ruby) do
   let(:name) { 'test-index' }
 
@@ -13,7 +12,7 @@ describe Puppet::Type.type(:elasticsearch_index).provider(:ruby) do
       :provider => :ruby,
       :settings => {
         'index' => {
-          'creation_date' => '1487354196301',
+          'creation_date' => 1_487_354_196_301,
           'number_of_replicas' => 1,
           'number_of_shards' => 5,
           'provided_name' => 'a',
@@ -29,7 +28,7 @@ describe Puppet::Type.type(:elasticsearch_index).provider(:ruby) do
           },
           'uuid' => 'vtJrcgyeRviqllRakSlrSw',
           'version' => {
-            'created' => '5020199'
+            'created' => 5_020_199
           }
         }
       }
@@ -38,10 +37,10 @@ describe Puppet::Type.type(:elasticsearch_index).provider(:ruby) do
 
   let(:json_1) do
     {
-      'index-one': {
+      'index-one' => {
         'settings' => {
           'index' => {
-            'creation_date' => '1487354196301',
+            'creation_date' => 1_487_354_196_301,
             'number_of_replicas' => 1,
             'number_of_shards' => 5,
             'provided_name' => 'a',
@@ -57,7 +56,7 @@ describe Puppet::Type.type(:elasticsearch_index).provider(:ruby) do
             },
             'uuid' => 'vtJrcgyeRviqllRakSlrSw',
             'version' => {
-              'created' => '5020199'
+              'created' => 5_020_199
             }
           }
         }
@@ -72,13 +71,13 @@ describe Puppet::Type.type(:elasticsearch_index).provider(:ruby) do
       :provider => :ruby,
       :settings => {
         'index' => {
-          'creation_date' => '1487354196301',
+          'creation_date' => 1_487_354_196_301,
           'number_of_replicas' => 1,
           'number_of_shards' => 5,
           'provided_name' => 'a',
           'uuid' => 'vtJrcgyeRviqllRakSlrSw',
           'version' => {
-            'created' => '5020199'
+            'created' => 5_020_199
           }
         }
       }
@@ -87,7 +86,7 @@ describe Puppet::Type.type(:elasticsearch_index).provider(:ruby) do
 
   let(:json_2) do
     {
-      'index-two': {
+      'index-two' => {
         'settings' => {
           'index' => {
             'creation_date' => '1487354196301',
