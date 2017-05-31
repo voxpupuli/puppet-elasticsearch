@@ -66,6 +66,10 @@ Puppet::Type.newtype(:elasticsearch_service_file) do
     desc 'Service NOFILE ulimit.'
   end
 
+  newparam(:nproc) do
+    desc 'Service NPROC ulimit.'
+  end
+
   newparam(:package_name) do
     desc 'Name of the system Elasticsearch package.'
   end
