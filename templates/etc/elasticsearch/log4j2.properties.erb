@@ -14,11 +14,20 @@ appender.rolling.name = rolling
 appender.rolling.fileName = ${sys:es.logs}.log
 appender.rolling.layout.type = PatternLayout
 appender.rolling.layout.pattern = [%d{ISO8601}][%-5p][%-25c{1.}] %marker%.10000m%n
+<%- if @file_rolling_type == 'dailyRollingFile' -%>
 appender.rolling.filePattern = ${sys:es.logs}-%d{yyyy-MM-dd}.log
 appender.rolling.policies.type = Policies
 appender.rolling.policies.time.type = TimeBasedTriggeringPolicy
 appender.rolling.policies.time.interval = 1
 appender.rolling.policies.time.modulate = true
+<%- elsif @file_rolling_type == 'rollingFile' -%>
+appender.rolling.filePattern = ${sys:es.logs}-%i.log
+appender.rolling.policies.type = Policies
+appender.rolling.policies.size.type = SizeBasedTriggeringPolicy
+appender.rolling.policies.size.size = <%= @rolling_file_max_file_size %>
+appender.rolling.strategy.type = DefaultRolloverStrategy
+appender.rolling.strategy.max = <%= @rolling_file_max_backup_index %>
+<%- end -%>
 
 rootLogger.level = <%= @logging_level.downcase %>
 rootLogger.appenderRef.console.ref = console
@@ -37,7 +46,11 @@ appender.deprecation_rolling.strategy.type = DefaultRolloverStrategy
 appender.deprecation_rolling.strategy.max = 4
 
 logger.deprecation.name = org.elasticsearch.deprecation
-logger.deprecation.level = warn
+<%- if @deprecation_logging -%>
+logger.deprecation.level = <%= @deprecation_logging_level.downcase %>
+<%- else -%>
+logger.deprecation.level = error
+<%- end -%>
 logger.deprecation.appenderRef.deprecation_rolling.ref = deprecation_rolling
 logger.deprecation.additivity = false
 
