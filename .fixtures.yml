@@ -11,7 +11,7 @@ fixtures:
       ref: 1.6.0
     concat:
       repo: puppetlabs/concat
-      ref: 3.0.0
+      ref: 2.2.1
     datacat:
       repo: richardc/datacat
       ref: 0.6.2
@@ -20,7 +20,7 @@ fixtures:
       ref: 2.2.2
     yum:
       repo: puppet/yum
-      ref: 1.0.0
+      ref: 0.10.0
     zypprepo:
       repo: darin/zypprepo
       ref: 1.0.2
