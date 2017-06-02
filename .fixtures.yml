@@ -5,10 +5,13 @@ fixtures:
       ref: 0.5.1
     stdlib:
       repo: puppetlabs/stdlib
-      ref: 4.11.0
+      ref: 4.13.1
     java:
       repo: puppetlabs/java
       ref: 1.6.0
+    concat:
+      repo: puppetlabs/concat
+      ref: 3.0.0
     datacat:
       repo: richardc/datacat
       ref: 0.6.2
@@ -17,7 +20,7 @@ fixtures:
       ref: 2.2.2
     yum:
       repo: puppet/yum
-      ref: 0.9.14
+      ref: 1.0.0
     zypprepo:
       repo: darin/zypprepo
       ref: 1.0.2

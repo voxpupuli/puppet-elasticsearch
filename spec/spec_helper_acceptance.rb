@@ -145,12 +145,12 @@ RSpec.configure do |c|
       modules = %w(archive stdlib java datacat java_ks)
 
       dist_module = {
-        'Debian' => 'apt',
-        'Suse'   => 'zypprepo',
-        'RedHat' => 'yum'
+        'Debian' => ['apt'],
+        'Suse'   => ['zypprepo'],
+        'RedHat' => ['yum', 'concat']
       }[fact('osfamily')]
 
-      modules << dist_module unless dist_module.nil?
+      modules += dist_module unless dist_module.nil?
 
       modules.each do |mod|
         copy_module_to host,
