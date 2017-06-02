@@ -9,6 +9,7 @@
 * `elasticsearch-keystore` values can now be managed via native Puppet resources.
 
 #### Fixes
+* log4j template now properly respects deprecation logging settings.
 
 ## 5.2.0 (May 5, 2017)
 
