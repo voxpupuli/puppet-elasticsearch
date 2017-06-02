@@ -49,7 +49,7 @@ logger.deprecation.name = org.elasticsearch.deprecation
 <%- if @deprecation_logging -%>
 logger.deprecation.level = <%= @deprecation_logging_level.downcase %>
 <%- else -%>
-logger.deprecation.level = error
+logger.deprecation.level = warn
 <%- end -%>
 logger.deprecation.appenderRef.deprecation_rolling.ref = deprecation_rolling
 logger.deprecation.additivity = false
