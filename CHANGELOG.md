@@ -1,6 +1,7 @@
-## x.x.x (Month Day, Year)
+## 5.3.0 (June 5, 2017)
 
 ### Summary
+Minor bugfix release with added support for managing Elasticsearch keystores, custom repository URLs, and more.
 
 #### Features
 * Failures are no longer raised when no instances are defined for a plugin and service restarts are not requested.
