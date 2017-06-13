@@ -17,7 +17,8 @@ describe Puppet::Type.type(:elasticsearch_template) do
       it 'should require either "content" or "source"' do
         expect do
           described_class.new(
-            :name => resource_name
+            :name => resource_name,
+            :ensure => :present
           )
         end.to raise_error(Puppet::Error, /content.*or.*source.*required/)
       end

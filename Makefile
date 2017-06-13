@@ -32,7 +32,8 @@ release: clean-logs
 	bundle exec puppet module build
 
 .PHONY: test-intake
-test-intake: test-docs test-rspec
+test-intake: .vendor
+	bundle exec rake intake
 
 .PHONY: test-acceptance
 test-acceptance: .vendor
@@ -41,13 +42,3 @@ test-acceptance: .vendor
 .PHONY: test-integration
 test-integration: .vendor
 	bundle exec rake beaker:integration
-
-.PHONY: test-docs
-test-docs: .vendor
-	bundle exec rake docs:coverage
-
-.PHONY: test-rspec
-test-rspec: .vendor
-	bundle exec rake lint
-	bundle exec rake validate
-	bundle exec rake spec_unit
