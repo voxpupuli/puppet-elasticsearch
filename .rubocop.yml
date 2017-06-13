@@ -19,6 +19,9 @@ Style/HashSyntax:
 Style/IndentArray:
   Enabled: false
 
+Style/MultilineBlockChain:
+  Enabled: false
+
 Style/MultilineBlockLayout:
   Enabled: false
 
