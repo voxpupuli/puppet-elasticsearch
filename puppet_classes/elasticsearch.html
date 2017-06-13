@@ -1,0 +1,2696 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>
+  Puppet Class: elasticsearch
+  
+    &mdash; Documentation by YARD 0.9.9
+  
+</title>
+
+  <link rel="stylesheet" href="../css/style.css" type="text/css" charset="utf-8" />
+
+  <link rel="stylesheet" href="../css/common.css" type="text/css" charset="utf-8" />
+
+<script type="text/javascript" charset="utf-8">
+  pathId = "puppet_classes::elasticsearch";
+  relpath = '../';
+</script>
+
+
+  <script type="text/javascript" charset="utf-8" src="../js/jquery.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="../js/app.js"></script>
+
+
+  </head>
+  <body>
+    <div class="nav_wrap">
+      <iframe id="nav" src="../puppet_class_list.html?1"></iframe>
+      <div id="resizer"></div>
+    </div>
+
+    <div id="main" tabindex="-1">
+      <div id="header">
+        <div id="menu">
+  
+    <a href="../_index.html">Index (e)</a> &raquo;
+    <span class='title'><span class='object_link'>Puppet Classes</span></span>
+     &raquo; 
+    <span class="title">elasticsearch</span>
+  
+</div>
+
+        <div id="search">
+  
+    <a class="full_list_link" id="puppet_class_list_link"
+        href="../puppet_class_list.html">
+
+        <svg width="24" height="24">
+          <rect x="0" y="4" width="24" height="4" rx="1" ry="1"></rect>
+          <rect x="0" y="12" width="24" height="4" rx="1" ry="1"></rect>
+          <rect x="0" y="20" width="24" height="4" rx="1" ry="1"></rect>
+        </svg>
+    </a>
+  
+</div>
+        <div class="clear"></div>
+      </div>
+
+      <div id="content"><h1>Puppet Class: elasticsearch</h1>
+<div class="box_info">
+  
+  <dl>
+    <dt>Inherits:</dt>
+    <dd><span class='object_link'><a href="elasticsearch_3A_3Aparams.html" title="puppet_classes::elasticsearch::params (puppet_class)">elasticsearch::params</a></span></dd>
+  </dl>
+  
+  
+  <dl>
+    <dt>Defined in:</dt>
+    <dd>
+      manifests/init.pp
+    </dd>
+  </dl>
+</div>
+
+  <h2>Summary</h2>
+  Manages the installation of Elasticsearch and related options.
+
+<h2>Overview</h2>
+<div class="docstring">
+  <div class="discussion">
+    
+<p>Top-level Elasticsearch class which may manage installation of the
+Elasticsearch package, package repository, java package, and other global
+options and parameters.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+  <div class="examples">
+    <p class="tag_title">Examples:</p>
+    
+      
+        <p class="example_title"><div class='inline'>
+<p>install Elasticsearch</p>
+</div></p>
+      
+      <pre class="example code"><code>class { &#39;elasticsearch&#39;: }</code></pre>
+    
+      
+        <p class="example_title"><div class='inline'>
+<p>removal and decommissioning</p>
+</div></p>
+      
+      <pre class="example code"><code>class { &#39;elasticsearch&#39;:
+  ensure =&gt; &#39;absent&#39;,
+}</code></pre>
+    
+      
+        <p class="example_title"><div class='inline'>
+<p>install everything but disable service(s) afterwards</p>
+</div></p>
+      
+      <pre class="example code"><code>class { &#39;elasticsearch&#39;:
+  status =&gt; &#39;disabled&#39;,
+}</code></pre>
+    
+  </div>
+<p class="tag_title">Parameters:</p>
+<ul class="param">
+  
+    <li>
+      
+        <span class='name'>ensure</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>&#39;present&#39;</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>Controls if the managed resources shall be <code>present</code> or
+<code>absent</code>. If set to <code>absent</code>, the managed software
+packages will be uninstalled, and any traces of the packages will be purged
+as well as possible, possibly including existing configuration files.
+System modifications (if any) will be reverted as well as possible (e.g.
+removal of created users, services, changed log settings, and so on). This
+is a destructive parameter and should be used with care.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>api_basic_auth_password</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>Defines the default REST basic auth password for API authentication.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>api_basic_auth_username</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>Defines the default REST basic auth username for API authentication.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>api_ca_file</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>Path to a CA file which will be used to validate server certs when
+communicating with the Elasticsearch API over HTTPS.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>api_ca_path</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>Path to a directory with CA files which will be used to validate server
+certs when communicating with the Elasticsearch API over HTTPS.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>api_host</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>&#39;localhost&#39;</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>Default host to use when accessing Elasticsearch APIs.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>api_port</span>
+      
+      
+        <span class='type'>(<tt>Integer</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>9200</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>Default port to use when accessing Elasticsearch APIs.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>api_protocol</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>&#39;http&#39;</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>Default protocol to use when accessing Elasticsearch APIs.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>api_timeout</span>
+      
+      
+        <span class='type'>(<tt>Integer</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>10</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>Default timeout (in seconds) to use when accessing Elasticsearch APIs.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>autoupgrade</span>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>false</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>If set to <code>true</code>, any managed package will be upgraded on each
+Puppet run when the package provider is able to find a newer version than
+the present one. The exact behavior is provider dependent (see <a
+href="http://j.mp/xbxmNP">package, “upgradeable”</a> in the Puppet
+documentation).</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>config</span>
+      
+      
+        <span class='type'>(<tt>Hash</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>Elasticsearch configuration hash.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>config_hiera_merge</span>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>false</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>Enable Hiera merging for the config hash.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>configdir</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>$elasticsearch::params::configdir</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>Directory containing the elasticsearch configuration. Use this setting if
+your packages deviate from the norm (<code>/etc/elasticsearch</code>)</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>daily_rolling_date_pattern</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>&#39;&quot;\&#39;.\&#39;yyyy-MM-dd&quot;&#39;</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>File pattern for the file appender log when file_rolling_type is
+&#39;dailyRollingFile&#39;.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>datadir</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>$elasticsearch::params::datadir</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>Allows you to set the data directory of Elasticsearch.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>datadir_instance_directories</span>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>true</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>Control whether individual directories for instances will be created within
+each instance&#39;s data directorry.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>default_logging_level</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>&#39;INFO&#39;</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>Default logging level for Elasticsearch.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>elasticsearch_group</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>$elasticsearch::params::elasticsearch_group</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>The group Elasticsearch should run as. This also sets file group
+permissions.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>elasticsearch_user</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>$elasticsearch::params::elasticsearch_user</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>The user Elasticsearch should run as. This also sets file ownership.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>file_rolling_type</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>&#39;dailyRollingFile&#39;</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>Configuration for the file appender rotation. It can be
+&#39;dailyRollingFile&#39; or &#39;rollingFile&#39;. The first rotates by
+name, and the second one by size.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>indices</span>
+      
+      
+        <span class='type'>(<tt>Hash</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>Define indices via a hash. This is mainly used with Hiera&#39;s auto
+binding.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>indices_hiera_merge</span>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>false</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>Enable Hiera&#39;s merging function for indices.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>init_defaults</span>
+      
+      
+        <span class='type'>(<tt>Hash</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>Defaults file content in hash representation.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>init_defaults_file</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>Defaults file as puppet resource.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>init_template</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>&quot;${module_name}/etc/init.d/${elasticsearch::params::init_template}&quot;</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>Service file as a template.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>instances</span>
+      
+      
+        <span class='type'>(<tt>Hash</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>Define instances via a hash. This is mainly used with Hiera&#39;s auto
+binding.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>instances_hiera_merge</span>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>false</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>Enable Hiera&#39;s merging function for the instances.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>java_install</span>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>false</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>Install java which is required for Elasticsearch.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>java_package</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>Custom java package to be used when managing Java with
+<code>java_install</code>.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>jvm_options</span>
+      
+      
+        <span class='type'>(<tt>Array</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>[]</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>Array of options to set in jvm_options.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>logdir</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>&#39;/var/log/elasticsearch&#39;</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>Directory that will be used for Elasticsearch logging.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>logging_config</span>
+      
+      
+        <span class='type'>(<tt>Hash</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>Representation of information to be included in the logging.yml file.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>logging_file</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>Instead of a hash, you may supply a <code>puppet://</code> file source for
+the logging.yml file.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>logging_template</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>Use a custom logging template - just supply the relative path, i.e.
+<code>$module/elasticsearch/logging.yml.erb</code></p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>manage_repo</span>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>false</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>Enable repo management by enabling official Elastic repositories.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>package_dir</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>$elasticsearch::params::package_dir</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>Directory where packages are downloaded to.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>package_dl_timeout</span>
+      
+      
+        <span class='type'>(<tt>Integer</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>600</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>For http, https, and ftp downloads, you may set how long the exec resource
+may take.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>package_name</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>$elasticsearch::params::package</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>Name Of the package to install.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>package_pin</span>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>true</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>Enables package version pinning. This pins the package version to the set
+version number and avoids package upgrades.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>package_provider</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>&#39;package&#39;</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>Method to install the packages, currently only <code>package</code> is
+supported.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>package_url</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>URL of the package to download. This can be an http, https, or ftp resource
+for remote packages, or a <code>puppet://</code> resource or
+<code>file:/</code> for local packages</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>pipelines</span>
+      
+      
+        <span class='type'>(<tt>Hash</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>Define pipelines via a hash. This is mainly used with Hiera&#39;s auto
+binding.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>pipelines_hiera_merge</span>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>false</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>Enable Hiera&#39;s merging function for pipelines.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>plugindir</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>$elasticsearch::params::plugindir</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>Directory containing elasticsearch plugins. Use this setting if your
+packages deviate from the norm (/usr/share/elasticsearch/plugins)</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>plugins</span>
+      
+      
+        <span class='type'>(<tt>Hash</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>Define plugins via a hash. This is mainly used with Hiera&#39;s auto
+binding.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>plugins_hiera_merge</span>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>false</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>Enable Hiera&#39;s merging function for the plugins.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>proxy_url</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>For http and https downloads, you may set a proxy server to use. By
+default, no proxy is used. Format:
+<code>proto://[user:pass@]server[:port]/</code></p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>purge_configdir</span>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>false</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>Purge the config directory of any unmanaged files.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>purge_package_dir</span>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>false</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>Purge package directory on removal</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>purge_secrets</span>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>false</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>Whether or not keys present in the keystore will be removed if they are not
+present in the specified secrets hash.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>repo_baseurl</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>If a custom repository URL is needed (such as for installations behind
+restrictive firewalls), this parameter overrides the upstream repository
+URL. Note that any additional changes to the repository metdata (such as
+signing keys and so on) will need to be handled appropriately.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>repo_key_id</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>&#39;46095ACC8548582C1A2699A9D27D666CD88E42B4&#39;</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>The apt GPG key id.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>repo_key_source</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>&#39;https://artifacts.elastic.co/GPG-KEY-elasticsearch&#39;</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>URL of the repository GPG key.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>repo_priority</span>
+      
+      
+        <span class='type'>(<tt>Integer</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>Repository priority. yum and apt supported.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>repo_proxy</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>URL for repository proxy.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>repo_stage</span>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>false</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>Use stdlib stage setup for managing the repo instead of anchoring.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>repo_version</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>Elastic repositories are versioned per major version (0.90, 1.0). This
+parameter controls which version to use.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>restart_on_change</span>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>$elasticsearch::params::restart_on_change</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>Determines if the application should be automatically restarted whenever
+the configuration, package, or plugins change. Enabling this setting will
+cause Elasticsearch to restart whenever there is cause to re-read
+configuration files, load new plugins, or start the service using an
+updated/changed executable. This may be undesireable in highly available
+environments. If all other restart<em>* parameters are left unset, the
+value of <code>restart_on_change</code> is used for all other
+restart</em>*_change defaults.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>restart_config_change</span>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>$elasticsearch::restart_on_change</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>Determines if the application should be automatically restarted whenever
+the configuration changes. This includes the Elasticsearch configuration
+file, any service files, and defaults files. Disabling automatic restarts
+on config changes may be desired in an environment where you need to ensure
+restarts occur in a controlled/rolling manner rather than during a Puppet
+run.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>restart_package_change</span>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>$elasticsearch::restart_on_change</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>Determines if the application should be automatically restarted whenever
+the package (or package version) for Elasticsearch changes. Disabling
+automatic restarts on package changes may be desired in an environment
+where you need to ensure restarts occur in a controlled/rolling manner
+rather than during a Puppet run.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>restart_plugin_change</span>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>$elasticsearch::restart_on_change</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>Determines if the application should be automatically restarted whenever
+plugins are installed or removed. Disabling automatic restarts on plugin
+changes may be desired in an environment where you need to ensure restarts
+occur in a controlled/rolling manner rather than during a Puppet run.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>roles</span>
+      
+      
+        <span class='type'>(<tt>Hash</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>Define roles via a hash. This is mainly used with Hiera&#39;s auto binding.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>roles_hiera_merge</span>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>false</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>Enable Hiera&#39;s merging function for roles.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>rolling_file_max_backup_index</span>
+      
+      
+        <span class='type'>(<tt>Integer</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>1</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>Max number of logs to store whern file_rolling_type is
+&#39;rollingFile&#39;</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>rolling_file_max_file_size</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>&#39;10MB&#39;</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>Max log file size when file_rolling_type is &#39;rollingFile&#39;</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>scripts</span>
+      
+      
+        <span class='type'>(<tt>Hash</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>Define scripts via a hash. This is mainly used with Hiera&#39;s auto
+binding.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>scripts_hiera_merge</span>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>false</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>Enable Hiera&#39;s merging function for scripts.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>secrets</span>
+      
+      
+        <span class='type'>(<tt>Hash</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>Optional default configuration hash of key/value pairs to store in the
+Elasticsearch keystore file. If unset, the keystore is left unmanaged.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>security_logging_content</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>File content for shield/x-pack logging configuration file (will be placed
+into logging.yml or log4j2.properties file as appropriate).</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>security_logging_source</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>File source for shield/x-pack logging configuration file (will be placed
+into logging.yml or log4j2.properties file as appropriate).</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>security_plugin</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>Which security plugin will be used to manage users, roles, and
+certificates. Valid values are &#39;shield&#39; and &#39;x-pack&#39;.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>service_provider</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>&#39;init&#39;</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>Service provider to use. By Default when a single service provider is
+possible, that one is selected.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>status</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>&#39;enabled&#39;</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>To define the status of the service. If set to <code>enabled</code>, the
+service will be run and will be started at boot time. If set to
+<code>disabled</code>, the service is stopped and will not be started at
+boot time. If set to <code>running</code>, the service will be run but will
+not be started at boot time. You may use this to start a service on the
+first Puppet run instead of the system startup. If set to
+<code>unmanaged</code>, the service will not be started at boot time and
+Puppet does not care whether the service is running or not. For example,
+this may be useful if a cluster management software is used to decide when
+to start the service plus assuring it is running on the desired node.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>system_key</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>Source for the Shield/x-pack system key. Valid values are any that are
+supported for the file resource <code>source</code> parameter.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>templates</span>
+      
+      
+        <span class='type'>(<tt>Hash</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>Define templates via a hash. This is mainly used with Hiera&#39;s auto
+binding.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>templates_hiera_merge</span>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>false</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>Enable Hiera&#39;s merging function for templates.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>users</span>
+      
+      
+        <span class='type'>(<tt>Hash</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>Define templates via a hash. This is mainly used with Hiera&#39;s auto
+binding.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>users_hiera_merge</span>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>false</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>Enable Hiera&#39;s merging function for users.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>validate_tls</span>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>true</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>Enable TLS/SSL validation on API calls.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>version</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>false</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>To set the specific version you want to install.</p>
+</div>
+      
+    </li>
+  
+</ul>
+
+<p class="tag_title">Author:</p>
+<ul class="author">
+  
+    <li>
+      
+      
+      
+      
+        
+        <div class='inline'>
+<p>Richard Pijnenburg <a
+href="mailto:richard.pijnenburg@elasticsearch.com">richard.pijnenburg@elasticsearch.com</a></p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+      
+      
+      
+        
+        <div class='inline'>
+<p>Tyler Langlois <a
+href="mailto:tyler.langlois@elastic.co">tyler.langlois@elastic.co</a></p>
+</div>
+      
+    </li>
+  
+</ul>
+
+</div><div class="method_details_list">
+  <table class="source_code">
+    <tr>
+      <td>
+        <pre class="lines">
+
+
+326
+327
+328
+329
+330
+331
+332
+333
+334
+335
+336
+337
+338
+339
+340
+341
+342
+343
+344
+345
+346
+347
+348
+349
+350
+351
+352
+353
+354
+355
+356
+357
+358
+359
+360
+361
+362
+363
+364
+365
+366
+367
+368
+369
+370
+371
+372
+373
+374
+375
+376
+377
+378
+379
+380
+381
+382
+383
+384
+385
+386
+387
+388
+389
+390
+391
+392
+393
+394
+395
+396
+397
+398
+399
+400
+401
+402
+403
+404
+405
+406
+407
+408
+409
+410
+411
+412
+413
+414
+415
+416
+417
+418
+419
+420
+421
+422
+423
+424
+425
+426
+427
+428
+429
+430
+431
+432
+433
+434
+435
+436
+437
+438
+439
+440
+441
+442
+443
+444
+445
+446
+447
+448
+449
+450
+451
+452
+453
+454
+455
+456
+457
+458
+459
+460
+461
+462
+463
+464
+465
+466
+467
+468
+469
+470
+471
+472
+473
+474
+475
+476
+477
+478
+479
+480
+481
+482
+483
+484
+485
+486
+487
+488
+489
+490
+491
+492
+493
+494
+495
+496
+497
+498
+499
+500
+501
+502
+503
+504
+505
+506
+507
+508
+509
+510
+511
+512
+513
+514
+515
+516
+517
+518
+519
+520
+521
+522
+523
+524
+525
+526
+527
+528
+529
+530
+531
+532
+533
+534
+535
+536
+537
+538
+539
+540
+541
+542
+543
+544
+545
+546
+547
+548
+549
+550
+551
+552
+553
+554
+555
+556
+557
+558
+559
+560
+561
+562
+563
+564
+565
+566
+567
+568
+569
+570
+571
+572
+573
+574
+575
+576
+577
+578
+579
+580
+581
+582
+583
+584
+585
+586
+587
+588
+589
+590
+591
+592
+593
+594
+595
+596
+597
+598
+599
+600
+601
+602
+603
+604
+605
+606
+607
+608
+609
+610
+611
+612
+613
+614
+615
+616
+617
+618
+619
+620
+621
+622
+623
+624
+625
+626
+627
+628
+629
+630
+631
+632
+633
+634
+635
+636
+637
+638
+639
+640
+641
+642
+643
+644
+645
+646
+647
+648
+649
+650
+651
+652
+653
+654
+655
+656
+657
+658
+659
+660
+661
+662
+663
+664
+665
+666
+667
+668
+669
+670
+671
+672
+673
+674
+675
+676
+677
+678
+679
+680
+681
+682
+683
+684
+685
+686
+687
+688
+689
+690
+691
+692
+693
+694
+695
+696
+697
+698
+699
+700
+701
+702
+703
+704
+705
+706
+707
+708
+709
+710
+711
+712
+713
+714
+715
+716
+717
+718
+719
+720
+721
+722
+723
+724
+725
+726
+727
+728
+729
+730
+731
+732
+733
+734
+735
+736
+737
+738
+739
+740
+741
+742
+743
+744
+745
+746
+747
+748
+749
+750
+751
+752
+753
+754
+755
+756
+757
+758
+759
+760
+761
+762
+763
+764
+765
+766
+767
+768
+769
+770
+771
+772
+773
+774
+775
+776
+777
+778
+779
+780
+781
+782
+783
+784
+785
+786
+787
+788
+789
+790
+791
+792
+793
+794
+795
+796
+797
+798
+799
+800
+801
+802
+803
+804
+805
+806
+807
+808
+809
+810
+811
+812
+813
+814
+815
+816
+817
+818
+819
+820
+821
+822
+823</pre>
+      </td>
+      <td>
+        <pre class="code"><span class="info file"># File 'manifests/init.pp', line 326</span>
+
+class elasticsearch(
+  $ensure                         = &#39;present&#39;,
+  $api_basic_auth_password        = undef,
+  $api_basic_auth_username        = undef,
+  $api_ca_file                    = undef,
+  $api_ca_path                    = undef,
+  $api_host                       = &#39;localhost&#39;,
+  $api_port                       = 9200,
+  $api_protocol                   = &#39;http&#39;,
+  $api_timeout                    = 10,
+  $autoupgrade                    = false,
+  $config                         = undef,
+  $config_hiera_merge             = false,
+  $configdir                      = $elasticsearch::params::configdir,
+  $daily_rolling_date_pattern     = &#39;&quot;\&#39;.\&#39;yyyy-MM-dd&quot;&#39;,
+  $datadir                        = $elasticsearch::params::datadir,
+  $datadir_instance_directories   = true,
+  $default_logging_level          = &#39;INFO&#39;,
+  $elasticsearch_group            = $elasticsearch::params::elasticsearch_group,
+  $elasticsearch_user             = $elasticsearch::params::elasticsearch_user,
+  $file_rolling_type              = &#39;dailyRollingFile&#39;,
+  $indices                        = undef,
+  $indices_hiera_merge            = false,
+  $init_defaults                  = undef,
+  $init_defaults_file             = undef,
+  $init_template                  = &quot;${module_name}/etc/init.d/${elasticsearch::params::init_template}&quot;,
+  $instances                      = undef,
+  $instances_hiera_merge          = false,
+  $java_install                   = false,
+  $java_package                   = undef,
+  $jvm_options                    = [],
+  $logdir                         = &#39;/var/log/elasticsearch&#39;,
+  $logging_config                 = undef,
+  $logging_file                   = undef,
+  $logging_template               = undef,
+  $manage_repo                    = false,
+  $package_dir                    = $elasticsearch::params::package_dir,
+  $package_dl_timeout             = 600,
+  $package_name                   = $elasticsearch::params::package,
+  $package_pin                    = true,
+  $package_provider               = &#39;package&#39;,
+  $package_url                    = undef,
+  $pipelines                      = undef,
+  $pipelines_hiera_merge          = false,
+  $plugindir                      = $elasticsearch::params::plugindir,
+  $plugins                        = undef,
+  $plugins_hiera_merge            = false,
+  $proxy_url                      = undef,
+  $purge_configdir                = false,
+  $purge_package_dir              = false,
+  $purge_secrets                  = false,
+  $repo_baseurl                   = undef,
+  $repo_key_id                    = &#39;46095ACC8548582C1A2699A9D27D666CD88E42B4&#39;,
+  $repo_key_source                = &#39;https://artifacts.elastic.co/GPG-KEY-elasticsearch&#39;,
+  $repo_priority                  = undef,
+  $repo_proxy                     = undef,
+  $repo_stage                     = false,
+  $repo_version                   = undef,
+  $restart_on_change              = $elasticsearch::params::restart_on_change,
+  $restart_config_change          = $elasticsearch::restart_on_change,
+  $restart_package_change         = $elasticsearch::restart_on_change,
+  $restart_plugin_change          = $elasticsearch::restart_on_change,
+  $roles                          = undef,
+  $roles_hiera_merge              = false,
+  $rolling_file_max_backup_index  = 1,
+  $rolling_file_max_file_size     =&#39;10MB&#39;,
+  $scripts                        = undef,
+  $scripts_hiera_merge            = false,
+  $secrets                        = undef,
+  $security_logging_content       = undef,
+  $security_logging_source        = undef,
+  $security_plugin                = undef,
+  $service_provider               = &#39;init&#39;,
+  $status                         = &#39;enabled&#39;,
+  $system_key                     = undef,
+  $templates                      = undef,
+  $templates_hiera_merge          = false,
+  $users                          = undef,
+  $users_hiera_merge              = false,
+  $validate_tls                   = true,
+  $version                        = false,
+) inherits elasticsearch::params {
+
+  anchor {&#39;elasticsearch::begin&#39;: }
+
+  #### Validate parameters
+
+  # ensure
+  if ! ($ensure in [ &#39;present&#39;, &#39;absent&#39; ]) {
+    fail(&quot;\&quot;${ensure}\&quot; is not a valid ensure parameter value&quot;)
+  }
+
+  # autoupgrade
+  validate_bool($autoupgrade)
+
+  # service status
+  if ! ($status in [ &#39;enabled&#39;, &#39;disabled&#39;, &#39;running&#39;, &#39;unmanaged&#39; ]) {
+    fail(&quot;\&quot;${status}\&quot; is not a valid status parameter value&quot;)
+  }
+
+  if ! ($file_rolling_type in [ &#39;dailyRollingFile&#39;, &#39;rollingFile&#39;]) {
+    fail(&quot;\&quot;${file_rolling_type}\&quot; is not a valid type&quot;)
+  }
+
+  validate_array($jvm_options)
+  validate_integer($rolling_file_max_backup_index)
+  validate_string($daily_rolling_date_pattern)
+  validate_string($rolling_file_max_file_size)
+
+  # restart on change
+  validate_bool(
+    $restart_on_change,
+    $restart_config_change,
+    $restart_package_change,
+    $restart_plugin_change
+  )
+
+  # purge conf dir
+  validate_bool($purge_configdir)
+
+  if is_array($elasticsearch::params::service_providers) {
+    # Verify the service provider given is in the array
+    if ! ($service_provider in $elasticsearch::params::service_providers) {
+      fail(&quot;\&quot;${service_provider}\&quot; is not a valid provider for \&quot;${::operatingsystem}\&quot;&quot;)
+    }
+    $real_service_provider = $service_provider
+  } else {
+    # There is only one option so simply set it
+    $real_service_provider = $elasticsearch::params::service_providers
+  }
+
+  if ($package_url != undef and $version != false) {
+    fail(&#39;Unable to set the version number when using package_url option.&#39;)
+  }
+
+  if $ensure == &#39;present&#39; {
+    # validate config hash
+    if ($config != undef) {
+      validate_hash($config)
+    }
+
+    if ($logging_config != undef) {
+      validate_hash($logging_config)
+    }
+
+    if ($secrets != undef) {
+      validate_hash($secrets)
+    }
+  }
+
+  # java install validation
+  validate_bool($java_install)
+
+  validate_bool(
+    $datadir_instance_directories,
+    $manage_repo,
+    $package_pin
+  )
+
+  if ($manage_repo == true and $ensure == &#39;present&#39;) {
+    if $repo_baseurl != undef {
+      validate_string($repo_baseurl)
+    } elsif $repo_version == undef {
+      fail(&#39;Please fill in a repository version at $repo_version&#39;)
+    } else {
+      validate_string($repo_version)
+    }
+  }
+
+  if ($version != false) {
+    case $::osfamily {
+      &#39;RedHat&#39;, &#39;Linux&#39;, &#39;Suse&#39;: {
+        if ($version =~ /.+-\d/) {
+          $pkg_version = $version
+        } else {
+          $pkg_version = &quot;${version}-1&quot;
+        }
+      }
+      default: {
+        $pkg_version = $version
+      }
+    }
+  }
+
+  # Various parameters governing API access to Elasticsearch
+  validate_string($api_protocol, $api_host)
+  validate_bool($validate_tls)
+  if $api_basic_auth_username { validate_string($api_basic_auth_username) }
+  if $api_basic_auth_password { validate_string($api_basic_auth_password) }
+
+  if ! is_integer($api_timeout) {
+    fail(&quot;&#39;${api_timeout}&#39; is not an integer&quot;)
+  }
+
+  if ! is_integer($api_port) {
+    fail(&quot;&#39;${api_port}&#39; is not an integer&quot;)
+  }
+
+  if $system_key != undef { validate_string($system_key) }
+
+  #### Manage actions
+
+  # package(s)
+  class { &#39;elasticsearch::package&#39;: }
+
+  # configuration
+  class { &#39;elasticsearch::config&#39;: }
+
+  # Hiera support for configuration hash
+  validate_bool($config_hiera_merge)
+
+  if $config_hiera_merge == true {
+    $x_config = hiera_hash(&#39;elasticsearch::config&#39;, $config)
+  } else {
+    $x_config = $config
+  }
+
+  # Hiera support for indices
+  validate_bool($indices_hiera_merge)
+
+  if $indices_hiera_merge == true {
+    $x_indices = hiera_hash(&#39;elasticsearch::indices&#39;, $::elasticsearch::indices)
+  } else {
+    $x_indices = $indices
+  }
+
+  if $x_indices {
+    validate_hash($x_indices)
+    create_resources(&#39;elasticsearch::index&#39;, $x_indices)
+  }
+
+  # Hiera support for instances
+  validate_bool($instances_hiera_merge)
+
+  if $instances_hiera_merge == true {
+    $x_instances = hiera_hash(&#39;elasticsearch::instances&#39;, $::elasticsearch::instances)
+  } else {
+    $x_instances = $instances
+  }
+
+  if $x_instances {
+    validate_hash($x_instances)
+    create_resources(&#39;elasticsearch::instance&#39;, $x_instances)
+  }
+
+  # Hiera support for pipelines
+  validate_bool($pipelines_hiera_merge)
+
+  if $pipelines_hiera_merge == true {
+    $x_pipelines = hiera_hash(&#39;elasticsearch::pipelines&#39;, $::elasticsearch::pipelines)
+  } else {
+    $x_pipelines = $pipelines
+  }
+
+  if $x_pipelines {
+    validate_hash($x_pipelines)
+    create_resources(&#39;elasticsearch::pipeline&#39;, $x_pipelines)
+  }
+
+  # Hiera support for plugins
+  validate_bool($plugins_hiera_merge)
+
+  if $plugins_hiera_merge == true {
+    $x_plugins = hiera_hash(&#39;elasticsearch::plugins&#39;, $::elasticsearch::plugins)
+  } else {
+    $x_plugins = $plugins
+  }
+
+  if $x_plugins {
+    validate_hash($x_plugins)
+    create_resources(&#39;elasticsearch::plugin&#39;, $x_plugins)
+  }
+
+  # Hiera support for roles
+  validate_bool($roles_hiera_merge)
+
+  if $roles_hiera_merge == true {
+    $x_roles = hiera_hash(&#39;elasticsearch::roles&#39;, $::elasticsearch::roles)
+  } else {
+    $x_roles = $roles
+  }
+
+  if $x_roles {
+    validate_hash($x_roles)
+    create_resources(&#39;elasticsearch::role&#39;, $x_roles)
+  }
+
+  # Hiera support for scripts
+  validate_bool($scripts_hiera_merge)
+
+  if $scripts_hiera_merge == true {
+    $x_scripts = hiera_hash(&#39;elasticsearch::scripts&#39;, $::elasticsearch::scripts)
+  } else {
+    $x_scripts = $scripts
+  }
+
+  if $x_scripts {
+    validate_hash($x_scripts)
+    create_resources(&#39;elasticsearch::script&#39;, $x_scripts)
+  }
+
+  # Hiera support for templates
+  validate_bool($templates_hiera_merge)
+
+  if $templates_hiera_merge == true {
+    $x_templates = hiera_hash(&#39;elasticsearch::templates&#39;, $::elasticsearch::templates)
+  } else {
+    $x_templates = $templates
+  }
+
+  if $x_templates {
+    validate_hash($x_templates)
+    create_resources(&#39;elasticsearch::template&#39;, $x_templates)
+  }
+
+  # Hiera support for users
+  validate_bool($users_hiera_merge)
+
+  if $users_hiera_merge == true {
+    $x_users = hiera_hash(&#39;elasticsearch::users&#39;, $::elasticsearch::users)
+  } else {
+    $x_users = $users
+  }
+
+  if $x_users {
+    validate_hash($x_users)
+    create_resources(&#39;elasticsearch::user&#39;, $x_users)
+  }
+
+  if $java_install == true {
+    # Install java
+    class { &#39;::java&#39;:
+      package      =&gt; $java_package,
+      distribution =&gt; &#39;jre&#39;,
+    }
+
+    # ensure we first install java, the package and then the rest
+    Anchor[&#39;elasticsearch::begin&#39;]
+    -&gt; Class[&#39;::java&#39;]
+    -&gt; Class[&#39;elasticsearch::package&#39;]
+  }
+
+  if $package_pin {
+    class { &#39;elasticsearch::package::pin&#39;:
+      before =&gt; Class[&#39;elasticsearch::package&#39;],
+    }
+  }
+
+  if ($manage_repo == true) {
+
+    if ($repo_stage == false) {
+      # use anchor for ordering
+
+      # Set up repositories
+      class { &#39;elasticsearch::repo&#39;: }
+
+      # Ensure that we set up the repositories before trying to install
+      # the packages
+      Anchor[&#39;elasticsearch::begin&#39;]
+      -&gt; Class[&#39;elasticsearch::repo&#39;]
+      -&gt; Class[&#39;elasticsearch::package&#39;]
+
+    } else {
+      # use staging for ordering
+
+      if !(defined(Stage[$repo_stage])) {
+        stage { $repo_stage:  before =&gt; Stage[&#39;main&#39;] }
+      }
+
+      class { &#39;elasticsearch::repo&#39;:
+        stage =&gt; $repo_stage,
+      }
+    }
+
+  }
+
+  #### Manage relationships
+  #
+  # Note that many of these overly verbose declarations work around
+  # https://tickets.puppetlabs.com/browse/PUP-1410
+  # which means clean arrow order chaining won&#39;t work if someone, say,
+  # doesn&#39;t declare any plugins.
+  #
+  # forgive me for what you&#39;re about to see
+
+  if $ensure == &#39;present&#39; {
+
+    # Anchor, installation, and configuration
+    Anchor[&#39;elasticsearch::begin&#39;]
+    -&gt; Class[&#39;elasticsearch::package&#39;]
+    -&gt; Class[&#39;elasticsearch::config&#39;]
+
+    # Top-level ordering bindings for resources.
+    Class[&#39;elasticsearch::config&#39;]
+    -&gt; Elasticsearch::Plugin &lt;| ensure == &#39;present&#39; or ensure == &#39;installed&#39; |&gt;
+    Elasticsearch::Plugin &lt;| ensure == &#39;absent&#39; |&gt;
+    -&gt; Class[&#39;elasticsearch::config&#39;]
+    Class[&#39;elasticsearch::config&#39;]
+    -&gt; Elasticsearch::Instance &lt;| |&gt;
+    Class[&#39;elasticsearch::config&#39;]
+    -&gt; Elasticsearch::User &lt;| |&gt;
+    Class[&#39;elasticsearch::config&#39;]
+    -&gt; Elasticsearch::Role &lt;| |&gt;
+    Class[&#39;elasticsearch::config&#39;]
+    -&gt; Elasticsearch::Template &lt;| |&gt;
+    Class[&#39;elasticsearch::config&#39;]
+    -&gt; Elasticsearch::Pipeline &lt;| |&gt;
+    Class[&#39;elasticsearch::config&#39;]
+    -&gt; Elasticsearch::Index &lt;| |&gt;
+
+  } else {
+
+    # Main anchor and included classes
+    Anchor[&#39;elasticsearch::begin&#39;]
+    -&gt; Class[&#39;elasticsearch::config&#39;]
+    -&gt; Class[&#39;elasticsearch::package&#39;]
+
+    # Top-level ordering bindings for resources.
+    Anchor[&#39;elasticsearch::begin&#39;]
+    -&gt; Elasticsearch::Plugin &lt;| |&gt;
+    -&gt; Class[&#39;elasticsearch::config&#39;]
+    Anchor[&#39;elasticsearch::begin&#39;]
+    -&gt; Elasticsearch::Instance &lt;| |&gt;
+    -&gt; Class[&#39;elasticsearch::config&#39;]
+    Anchor[&#39;elasticsearch::begin&#39;]
+    -&gt; Elasticsearch::User &lt;| |&gt;
+    -&gt; Class[&#39;elasticsearch::config&#39;]
+    Anchor[&#39;elasticsearch::begin&#39;]
+    -&gt; Elasticsearch::Role &lt;| |&gt;
+    -&gt; Class[&#39;elasticsearch::config&#39;]
+    Anchor[&#39;elasticsearch::begin&#39;]
+    -&gt; Elasticsearch::Template &lt;| |&gt;
+    -&gt; Class[&#39;elasticsearch::config&#39;]
+    Anchor[&#39;elasticsearch::begin&#39;]
+    -&gt; Elasticsearch::Pipeline &lt;| |&gt;
+    -&gt; Class[&#39;elasticsearch::config&#39;]
+    Anchor[&#39;elasticsearch::begin&#39;]
+    -&gt; Elasticsearch::Index &lt;| |&gt;
+    -&gt; Class[&#39;elasticsearch::config&#39;]
+
+  }
+
+  # Install plugins before managing instances or users/roles
+  Elasticsearch::Plugin &lt;| ensure == &#39;present&#39; or ensure == &#39;installed&#39; |&gt;
+  -&gt; Elasticsearch::Instance &lt;| |&gt;
+  Elasticsearch::Plugin &lt;| ensure == &#39;present&#39; or ensure == &#39;installed&#39; |&gt;
+  -&gt; Elasticsearch::User &lt;| |&gt;
+  Elasticsearch::Plugin &lt;| ensure == &#39;present&#39; or ensure == &#39;installed&#39; |&gt;
+  -&gt; Elasticsearch::Role &lt;| |&gt;
+
+  # Remove plugins after managing users/roles
+  Elasticsearch::User &lt;| |&gt;
+  -&gt; Elasticsearch::Plugin &lt;| ensure == &#39;absent&#39; |&gt;
+  Elasticsearch::Role &lt;| |&gt;
+  -&gt; Elasticsearch::Plugin &lt;| ensure == &#39;absent&#39; |&gt;
+
+  # Ensure roles are defined before managing users that reference roles
+  Elasticsearch::Role &lt;| |&gt;
+  -&gt; Elasticsearch::User &lt;| ensure == &#39;present&#39; |&gt;
+  # Ensure users are removed before referenced roles are managed
+  Elasticsearch::User &lt;| ensure == &#39;absent&#39; |&gt;
+  -&gt; Elasticsearch::Role &lt;| |&gt;
+
+  # Ensure users and roles are managed before calling out to REST resources
+  Elasticsearch::Role &lt;| |&gt;
+  -&gt; Elasticsearch::Template &lt;| |&gt;
+  Elasticsearch::User &lt;| |&gt;
+  -&gt; Elasticsearch::Template &lt;| |&gt;
+  Elasticsearch::Role &lt;| |&gt;
+  -&gt; Elasticsearch::Pipeline &lt;| |&gt;
+  Elasticsearch::User &lt;| |&gt;
+  -&gt; Elasticsearch::Pipeline &lt;| |&gt;
+  Elasticsearch::Role &lt;| |&gt;
+  -&gt; Elasticsearch::Index &lt;| |&gt;
+  Elasticsearch::User &lt;| |&gt;
+  -&gt; Elasticsearch::Index &lt;| |&gt;
+
+  # Manage users/roles before instances (req&#39;d to keep dir in sync)
+  Elasticsearch::Role &lt;| |&gt;
+  -&gt; Elasticsearch::Instance &lt;| |&gt;
+  Elasticsearch::User &lt;| |&gt;
+  -&gt; Elasticsearch::Instance &lt;| |&gt;
+
+  # Ensure instances are started before managing REST resources
+  Elasticsearch::Instance &lt;| ensure == &#39;present&#39; |&gt;
+  -&gt; Elasticsearch::Template &lt;| |&gt;
+  Elasticsearch::Instance &lt;| ensure == &#39;present&#39; |&gt;
+  -&gt; Elasticsearch::Pipeline &lt;| |&gt;
+  Elasticsearch::Instance &lt;| ensure == &#39;present&#39; |&gt;
+  -&gt; Elasticsearch::Index &lt;| |&gt;
+  # Ensure instances are stopped after managing REST resources
+  Elasticsearch::Template &lt;| |&gt;
+  -&gt; Elasticsearch::Instance &lt;| ensure == &#39;absent&#39; |&gt;
+  Elasticsearch::Pipeline &lt;| |&gt;
+  -&gt; Elasticsearch::Instance &lt;| ensure == &#39;absent&#39; |&gt;
+  Elasticsearch::Index &lt;| |&gt;
+  -&gt; Elasticsearch::Instance &lt;| ensure == &#39;absent&#39; |&gt;
+}</pre>
+      </td>
+    </tr>
+  </table>
+</div>
+</div>
+
+      <div id="footer">
+  Generated on Tue Jun 13 16:54:52 2017 by
+  <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
+  0.9.9 (ruby-2.3.1).
+</div>
+
+    </div>
+  </body>
+</html>

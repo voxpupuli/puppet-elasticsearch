@@ -1,0 +1,1570 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>
+  Defined Type: elasticsearch::instance
+  
+    &mdash; Documentation by YARD 0.9.9
+  
+</title>
+
+  <link rel="stylesheet" href="../css/style.css" type="text/css" charset="utf-8" />
+
+  <link rel="stylesheet" href="../css/common.css" type="text/css" charset="utf-8" />
+
+<script type="text/javascript" charset="utf-8">
+  pathId = "puppet_defined_types::elasticsearch::instance";
+  relpath = '../';
+</script>
+
+
+  <script type="text/javascript" charset="utf-8" src="../js/jquery.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="../js/app.js"></script>
+
+
+  </head>
+  <body>
+    <div class="nav_wrap">
+      <iframe id="nav" src="../puppet_defined_type_list.html?1"></iframe>
+      <div id="resizer"></div>
+    </div>
+
+    <div id="main" tabindex="-1">
+      <div id="header">
+        <div id="menu">
+  
+    <a href="../_index.html">Index (e)</a> &raquo;
+    <span class='title'><span class='object_link'>Defined Types</span></span>
+     &raquo; 
+    <span class="title">elasticsearch::instance</span>
+  
+</div>
+
+        <div id="search">
+  
+    <a class="full_list_link" id="puppet_class_list_link"
+        href="../puppet_class_list.html">
+
+        <svg width="24" height="24">
+          <rect x="0" y="4" width="24" height="4" rx="1" ry="1"></rect>
+          <rect x="0" y="12" width="24" height="4" rx="1" ry="1"></rect>
+          <rect x="0" y="20" width="24" height="4" rx="1" ry="1"></rect>
+        </svg>
+    </a>
+  
+</div>
+        <div class="clear"></div>
+      </div>
+
+      <div id="content"><h1>Defined Type: elasticsearch::instance</h1>
+<div class="box_info">
+  <dl>
+    <dt>Defined in:</dt>
+    <dd>
+      manifests/instance.pp
+    </dd>
+  </dl>
+</div>
+
+<h2>Overview</h2>
+<div class="docstring">
+  <div class="discussion">
+    
+<p>This define allows you to create or remove an elasticsearch instance</p>
+
+  </div>
+</div>
+<div class="tags">
+  <p class="tag_title">Parameters:</p>
+<ul class="param">
+  
+    <li>
+      
+        <span class='name'>ensure</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>$elasticsearch::ensure</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>Controls if the managed resources shall be <code>present</code> or
+<code>absent</code>. If set to <code>absent</code>, the managed software
+packages will be uninstalled, and any traces of the packages will be purged
+as well as possible, possibly including existing configuration files.
+System modifications (if any) will be reverted as well as possible (e.g.
+removal of created users, services, changed log settings, and so on). This
+is a destructive parameter and should be used with care.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>ca_certificate</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>Path to the trusted CA certificate to add to this node&#39;s java keystore.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>certificate</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>Path to the certificate for this node signed by the CA listed in
+ca_certificate.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>config</span>
+      
+      
+        <span class='type'>(<tt>Hash</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>Elasticsearch configuration hash.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>configdir</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>Path to directory containing the elasticsearch configuration. Use this
+setting if your packages deviate from the norm (/etc/elasticsearch).</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>daily_rolling_date_pattern</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>$elasticsearch::daily_rolling_date_pattern</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>File pattern for the file appender log when file_rolling_type is
+<code>dailyRollingFile</code></p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>datadir</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>Allows you to set the data directory of Elasticsearch</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>datadir_instance_directories</span>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>$elasticsearch::datadir_instance_directories</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>Control whether individual directories for instances will be created within
+each instance&#39;s data directory.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>deprecation_logging</span>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>false</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>Wheter to enable deprecation logging. If enabled, deprecation logs will be
+saved to $clustercluster.name_deprecation.log in the elastic search log folder.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>deprecation_logging_level</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>&#39;DEBUG&#39;</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>Default deprecation logging level for Elasticsearch.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>file_rolling_type</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>$elasticsearch::file_rolling_type</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>Configuration for the file appender rotation. It can be
+<code>dailyRollingFile</code> or <code>rollingFile</code>. The first
+rotates by name, and the second one by size.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>init_defaults</span>
+      
+      
+        <span class='type'>(<tt>Hash</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>Defaults file content in hash representation.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>init_defaults_file</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>Defaults file as puppet resource.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>init_template</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>$elasticsearch::init_template</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>Service file as a template</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>keystore_password</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>Password to encrypt this node&#39;s Java keystore.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>keystore_path</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>Custom path to the java keystore file. This parameter is optional.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>logdir</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>Log directory for this instance.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>logging_config</span>
+      
+      
+        <span class='type'>(<tt>Hash</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>Hash representation of information you want in the logging.yml file.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>logging_file</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>Instead of a hash you can supply a puppet:// file source for the
+logging.yml file</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>logging_level</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>$elasticsearch::default_logging_level</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>Default logging level for Elasticsearch.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>logging_template</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>Use a custom logging template - just supply the reative path, ie
+$module_name/elasticsearch/logging.yml.erb</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>private_key</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>Path to the key associated with this node&#39;s certificate.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>purge_secrets</span>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>$elasticsearch::purge_secrets</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>Whether or not keys present in the keystore will be removed if they are not
+present in the specified secrets hash.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>rolling_file_max_backup_index</span>
+      
+      
+        <span class='type'>(<tt>Integer</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>$elasticsearch::rolling_file_max_backup_index</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>Max number of logs to store whern file_rolling_type is
+<code>rollingFile</code></p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>rolling_file_max_file_size</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>$elasticsearch::rolling_file_max_file_size</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>Max log file size when file_rolling_type is <code>rollingFile</code></p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>secrets</span>
+      
+      
+        <span class='type'>(<tt>Hash</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>Optional configuration hash of key/value pairs to store in the
+instance&#39;s Elasticsearch keystore file. If unset, the keystore is left
+unmanaged.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>security_plugin</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>$elasticsearch::security_plugin</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>Which security plugin will be used to manage users, roles, and
+certificates. Inherited from top-level Elasticsearch class.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>service_flags</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>Service flags used for the OpenBSD service configuration, defaults to
+undef.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>ssl</span>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>false</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>Whether to manage TLS certificates for Shield. Requires the ca_certificate,
+certificate, private_key and keystore_password parameters to be set.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>status</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>$elasticsearch::status</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>To define the status of the service. If set to <code>enabled</code>, the
+service will be run and will be started at boot time. If set to
+<code>disabled</code>, the service is stopped and will not be started at
+boot time. If set to <code>running</code>, the service will be run but will
+not be started at boot time. You may use this to start a service on the
+first Puppet run instead of the system startup. If set to
+<code>unmanaged</code>, the service will not be started at boot time and
+Puppet does not care whether the service is running or not. For example,
+this may be useful if a cluster management software is used to decide when
+to start the service plus assuring it is running on the desired node.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>system_key</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>$elasticsearch::system_key</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>Source for the Shield system key. Valid values are any that are supported
+for the file resource <code>source</code> parameter.</p>
+</div>
+      
+    </li>
+  
+</ul>
+
+<p class="tag_title">Author:</p>
+<ul class="author">
+  
+    <li>
+      
+      
+      
+      
+        
+        <div class='inline'>
+<p>Richard Pijnenburg <a
+href="mailto:richard.pijnenburg@elasticsearch.com">richard.pijnenburg@elasticsearch.com</a></p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+      
+      
+      
+        
+        <div class='inline'>
+<p>Tyler Langlois <a
+href="mailto:tyler.langlois@elastic.co">tyler.langlois@elastic.co</a></p>
+</div>
+      
+    </li>
+  
+</ul>
+
+</div><div class="method_details_list">
+  <table class="source_code">
+    <tr>
+      <td>
+        <pre class="lines">
+
+
+124
+125
+126
+127
+128
+129
+130
+131
+132
+133
+134
+135
+136
+137
+138
+139
+140
+141
+142
+143
+144
+145
+146
+147
+148
+149
+150
+151
+152
+153
+154
+155
+156
+157
+158
+159
+160
+161
+162
+163
+164
+165
+166
+167
+168
+169
+170
+171
+172
+173
+174
+175
+176
+177
+178
+179
+180
+181
+182
+183
+184
+185
+186
+187
+188
+189
+190
+191
+192
+193
+194
+195
+196
+197
+198
+199
+200
+201
+202
+203
+204
+205
+206
+207
+208
+209
+210
+211
+212
+213
+214
+215
+216
+217
+218
+219
+220
+221
+222
+223
+224
+225
+226
+227
+228
+229
+230
+231
+232
+233
+234
+235
+236
+237
+238
+239
+240
+241
+242
+243
+244
+245
+246
+247
+248
+249
+250
+251
+252
+253
+254
+255
+256
+257
+258
+259
+260
+261
+262
+263
+264
+265
+266
+267
+268
+269
+270
+271
+272
+273
+274
+275
+276
+277
+278
+279
+280
+281
+282
+283
+284
+285
+286
+287
+288
+289
+290
+291
+292
+293
+294
+295
+296
+297
+298
+299
+300
+301
+302
+303
+304
+305
+306
+307
+308
+309
+310
+311
+312
+313
+314
+315
+316
+317
+318
+319
+320
+321
+322
+323
+324
+325
+326
+327
+328
+329
+330
+331
+332
+333
+334
+335
+336
+337
+338
+339
+340
+341
+342
+343
+344
+345
+346
+347
+348
+349
+350
+351
+352
+353
+354
+355
+356
+357
+358
+359
+360
+361
+362
+363
+364
+365
+366
+367
+368
+369
+370
+371
+372
+373
+374
+375
+376
+377
+378
+379
+380
+381
+382
+383
+384
+385
+386
+387
+388
+389
+390
+391
+392
+393
+394
+395
+396
+397
+398
+399
+400
+401
+402
+403
+404
+405
+406
+407
+408
+409
+410
+411
+412
+413
+414
+415
+416
+417
+418
+419
+420
+421
+422
+423
+424
+425
+426
+427
+428
+429
+430
+431
+432
+433
+434
+435
+436
+437
+438
+439
+440
+441
+442
+443
+444
+445
+446
+447
+448
+449
+450
+451
+452
+453
+454
+455
+456
+457
+458
+459
+460
+461
+462
+463
+464
+465
+466
+467
+468
+469
+470
+471
+472
+473
+474
+475
+476
+477
+478
+479
+480
+481
+482
+483
+484
+485
+486
+487
+488
+489
+490
+491
+492
+493
+494
+495
+496
+497
+498
+499
+500
+501
+502
+503
+504
+505
+506
+507
+508
+509
+510
+511
+512
+513
+514
+515
+516
+517
+518
+519
+520
+521
+522
+523
+524
+525
+526
+527
+528
+529
+530
+531
+532
+533
+534
+535
+536
+537
+538
+539
+540
+541
+542</pre>
+      </td>
+      <td>
+        <pre class="code"><span class="info file"># File 'manifests/instance.pp', line 124</span>
+
+define elasticsearch::instance (
+  $ensure                        = $elasticsearch::ensure,
+  $ca_certificate                = undef,
+  $certificate                   = undef,
+  $config                        = undef,
+  $configdir                     = undef,
+  $daily_rolling_date_pattern    = $elasticsearch::daily_rolling_date_pattern,
+  $datadir                       = undef,
+  $datadir_instance_directories  = $elasticsearch::datadir_instance_directories,
+  $deprecation_logging           = false,
+  $deprecation_logging_level     = &#39;DEBUG&#39;,
+  $file_rolling_type             = $elasticsearch::file_rolling_type,
+  $init_defaults                 = undef,
+  $init_defaults_file            = undef,
+  $init_template                 = $elasticsearch::init_template,
+  $keystore_password             = undef,
+  $keystore_path                 = undef,
+  $logdir                        = undef,
+  $logging_config                = undef,
+  $logging_file                  = undef,
+  $logging_level                 = $elasticsearch::default_logging_level,
+  $logging_template              = undef,
+  $private_key                   = undef,
+  $purge_secrets                 = $elasticsearch::purge_secrets,
+  $rolling_file_max_backup_index = $elasticsearch::rolling_file_max_backup_index,
+  $rolling_file_max_file_size    = $elasticsearch::rolling_file_max_file_size,
+  $secrets                       = undef,
+  $security_plugin               = $elasticsearch::security_plugin,
+  $service_flags                 = undef,
+  $ssl                           = false,
+  $status                        = $elasticsearch::status,
+  $system_key                    = $elasticsearch::system_key,
+) {
+
+  require elasticsearch::params
+
+  File {
+    owner =&gt; $elasticsearch::elasticsearch_user,
+    group =&gt; $elasticsearch::elasticsearch_group,
+  }
+
+  Exec {
+    path =&gt; [ &#39;/bin&#39;, &#39;/usr/bin&#39;, &#39;/usr/local/bin&#39; ],
+    cwd  =&gt; &#39;/&#39;,
+  }
+
+  # ensure
+  if ! ($ensure in [ &#39;present&#39;, &#39;absent&#39; ]) {
+    fail(&quot;\&quot;${ensure}\&quot; is not a valid ensure parameter value&quot;)
+  }
+
+  if $ssl or ($system_key != undef) {
+    if $security_plugin == undef or ! ($security_plugin in [&#39;shield&#39;, &#39;x-pack&#39;]) {
+      fail(&quot;\&quot;${security_plugin}\&quot; is not a valid security_plugin parameter value&quot;)
+    }
+  }
+
+  $notify_service = $elasticsearch::restart_config_change ? {
+    true  =&gt; Elasticsearch::Service[$name],
+    false =&gt; undef,
+  }
+
+  # Instance config directory
+  if ($configdir == undef) {
+    $instance_configdir = &quot;${elasticsearch::configdir}/${name}&quot;
+  } else {
+    $instance_configdir = $configdir
+  }
+
+  if ($ensure == &#39;present&#39;) {
+
+    # Configuration hash
+    if ($config == undef) {
+      $instance_config = {}
+    } else {
+      validate_hash($config)
+      $instance_config = deep_implode($config)
+    }
+
+    if(has_key($instance_config, &#39;node.name&#39;)) {
+      $instance_node_name = {}
+    } else {
+      $instance_node_name = { &#39;node.name&#39; =&gt; &quot;${::hostname}-${name}&quot; }
+    }
+
+    # String or array for data dir(s)
+    if ($datadir == undef) {
+      validate_bool($datadir_instance_directories)
+      if ($datadir_instance_directories) {
+        if (is_array($elasticsearch::datadir)) {
+          $instance_datadir = array_suffix($elasticsearch::datadir, &quot;/${name}&quot;)
+        } else {
+          $instance_datadir = &quot;${elasticsearch::datadir}/${name}&quot;
+        }
+      } else {
+        $instance_datadir = $elasticsearch::datadir
+      }
+    } else {
+      $instance_datadir = $datadir
+    }
+
+    # Logging file or hash
+    if ($logging_file != undef) {
+      $logging_source = $logging_file
+      $logging_content = undef
+      $_log4j_content = undef
+    } elsif ($elasticsearch::logging_file != undef) {
+      $logging_source = $elasticsearch::logging_file
+      $logging_content = undef
+      $_log4j_content = undef
+    } else {
+
+      if(is_hash($elasticsearch::logging_config)) {
+        $main_logging_config = deep_implode($elasticsearch::logging_config)
+      } else {
+        $main_logging_config = { }
+      }
+
+      if(is_hash($logging_config)) {
+        $instance_logging_config = deep_implode($logging_config)
+      } else {
+        $instance_logging_config = { }
+      }
+      $logging_hash = merge(
+        $elasticsearch::params::logging_defaults,
+        $main_logging_config,
+        $instance_logging_config
+      )
+      if ($logging_template != undef ) {
+        $logging_content = template($logging_template)
+        $_log4j_content = template($logging_template)
+      } elsif ($elasticsearch::logging_template != undef) {
+        $logging_content = template($elasticsearch::logging_template)
+        $_log4j_content = template($elasticsearch::logging_template)
+      } else {
+        $logging_content = template(&quot;${module_name}/etc/elasticsearch/logging.yml.erb&quot;)
+        $_log4j_content = template(&quot;${module_name}/etc/elasticsearch/log4j2.properties.erb&quot;)
+      }
+      $logging_source = undef
+    }
+
+    if ($elasticsearch::x_config != undef) {
+      $main_config = deep_implode($elasticsearch::x_config)
+    } else {
+      $main_config = { }
+    }
+
+    $instance_datadir_config = { &#39;path.data&#39; =&gt; $instance_datadir }
+
+    if(is_array($instance_datadir)) {
+      $dirs = join($instance_datadir, &#39; &#39;)
+    } else {
+      $dirs = $instance_datadir
+    }
+
+    # Manage instance log directory
+    if ($logdir == undef) {
+      $instance_logdir = &quot;${elasticsearch::logdir}/${name}&quot;
+    } else {
+      $instance_logdir = $logdir
+    }
+
+    $instance_logdir_config = { &#39;path.logs&#39; =&gt; $instance_logdir }
+
+    validate_bool($ssl)
+    if $ssl {
+      validate_absolute_path($ca_certificate, $certificate, $private_key)
+      validate_string($keystore_password)
+
+      if ($keystore_path == undef) {
+        $_keystore_path = &quot;${instance_configdir}/${security_plugin}/${name}.ks&quot;
+      } else {
+        validate_absolute_path($keystore_path)
+        $_keystore_path = $keystore_path
+      }
+
+      if $security_plugin == &#39;shield&#39; {
+        $tls_config = {
+          &#39;shield.transport.ssl&#39;         =&gt; true,
+          &#39;shield.http.ssl&#39;              =&gt; true,
+          &#39;shield.ssl.keystore.path&#39;     =&gt; $_keystore_path,
+          &#39;shield.ssl.keystore.password&#39; =&gt; $keystore_password,
+        }
+      } elsif $security_plugin == &#39;x-pack&#39; {
+        $tls_config = {
+          &#39;xpack.security.transport.ssl.enabled&#39; =&gt; true,
+          &#39;xpack.security.http.ssl.enabled&#39;      =&gt; true,
+          &#39;xpack.ssl.keystore.path&#39;              =&gt; $_keystore_path,
+          &#39;xpack.ssl.keystore.password&#39;          =&gt; $keystore_password,
+        }
+      }
+
+      # Trust CA Certificate
+      java_ks { &quot;elasticsearch_instance_${name}_keystore_ca&quot;:
+        ensure       =&gt; &#39;latest&#39;,
+        certificate  =&gt; $ca_certificate,
+        target       =&gt; $_keystore_path,
+        password     =&gt; $keystore_password,
+        trustcacerts =&gt; true,
+      }
+
+      # Load node certificate and private key
+      java_ks { &quot;elasticsearch_instance_${name}_keystore_node&quot;:
+        ensure      =&gt; &#39;latest&#39;,
+        certificate =&gt; $certificate,
+        private_key =&gt; $private_key,
+        target      =&gt; $_keystore_path,
+        password    =&gt; $keystore_password,
+      }
+    } else { $tls_config = {} }
+
+    if $system_key != undef {
+      validate_string($system_key)
+    }
+
+    exec { &quot;mkdir_logdir_elasticsearch_${name}&quot;:
+      command =&gt; &quot;mkdir -p ${instance_logdir}&quot;,
+      creates =&gt; $instance_logdir,
+      require =&gt; Class[&#39;elasticsearch::package&#39;],
+      before  =&gt; File[$instance_logdir],
+    }
+
+    file { $instance_logdir:
+      ensure  =&gt; &#39;directory&#39;,
+      owner   =&gt; $elasticsearch::elasticsearch_user,
+      group   =&gt; undef,
+      mode    =&gt; &#39;0644&#39;,
+      require =&gt; Class[&#39;elasticsearch::package&#39;],
+      before  =&gt; Elasticsearch::Service[$name],
+    }
+
+    if ($datadir_instance_directories) {
+      exec { &quot;mkdir_datadir_elasticsearch_${name}&quot;:
+        command =&gt; &quot;mkdir -p ${dirs}&quot;,
+        creates =&gt; $instance_datadir,
+        require =&gt; Class[&#39;elasticsearch::package&#39;],
+        before  =&gt; Elasticsearch::Service[$name],
+      }
+      -&gt; file { $instance_datadir:
+        ensure  =&gt; &#39;directory&#39;,
+        owner   =&gt; $elasticsearch::elasticsearch_user,
+        group   =&gt; undef,
+        mode    =&gt; &#39;0644&#39;,
+        require =&gt; Class[&#39;elasticsearch::package&#39;],
+        before  =&gt; Elasticsearch::Service[$name],
+      }
+    }
+
+    exec { &quot;mkdir_configdir_elasticsearch_${name}&quot;:
+      command =&gt; &quot;mkdir -p ${instance_configdir}&quot;,
+      creates =&gt; $elasticsearch::configdir,
+      require =&gt; Class[&#39;elasticsearch::package&#39;],
+      before  =&gt; Elasticsearch::Service[$name],
+    }
+
+    file { $instance_configdir:
+      ensure  =&gt; &#39;directory&#39;,
+      mode    =&gt; &#39;0644&#39;,
+      purge   =&gt; $elasticsearch::purge_configdir,
+      force   =&gt; $elasticsearch::purge_configdir,
+      require =&gt; [ Exec[&quot;mkdir_configdir_elasticsearch_${name}&quot;], Class[&#39;elasticsearch::package&#39;] ],
+      before  =&gt; Elasticsearch::Service[$name],
+    }
+
+    file {
+      &quot;${instance_configdir}/logging.yml&quot;:
+        ensure  =&gt; file,
+        content =&gt; $logging_content,
+        source  =&gt; $logging_source,
+        mode    =&gt; &#39;0644&#39;,
+        notify  =&gt; $notify_service,
+        require =&gt; Class[&#39;elasticsearch::package&#39;],
+        before  =&gt; Elasticsearch::Service[$name];
+      &quot;${instance_configdir}/log4j2.properties&quot;:
+        ensure  =&gt; file,
+        content =&gt; $_log4j_content,
+        source  =&gt; $logging_source,
+        mode    =&gt; &#39;0644&#39;,
+        notify  =&gt; $notify_service,
+        require =&gt; Class[&#39;elasticsearch::package&#39;],
+        before  =&gt; Elasticsearch::Service[$name];
+    }
+
+    file { &quot;${instance_configdir}/scripts&quot;:
+      ensure =&gt; &#39;link&#39;,
+      target =&gt; &quot;${elasticsearch::params::homedir}/scripts&quot;,
+    }
+
+    if $security_plugin != undef {
+      file { &quot;${instance_configdir}/${security_plugin}&quot;:
+        ensure  =&gt; &#39;directory&#39;,
+        mode    =&gt; &#39;0644&#39;,
+        source  =&gt; &quot;${elasticsearch::configdir}/${security_plugin}&quot;,
+        recurse =&gt; &#39;remote&#39;,
+        owner   =&gt; &#39;root&#39;,
+        group   =&gt; &#39;0&#39;,
+        before  =&gt; Elasticsearch::Service[$name],
+        notify  =&gt; $notify_service,
+      }
+    }
+
+    if $system_key != undef {
+      file { &quot;${instance_configdir}/${security_plugin}/system_key&quot;:
+        ensure  =&gt; &#39;file&#39;,
+        source  =&gt; $system_key,
+        mode    =&gt; &#39;0400&#39;,
+        before  =&gt; Elasticsearch::Service[$name],
+        require =&gt; File[&quot;${instance_configdir}/${security_plugin}&quot;],
+      }
+    }
+
+    # build up new config
+    $instance_conf = merge(
+      $main_config,
+      $instance_node_name,
+      $instance_datadir_config,
+      $instance_logdir_config,
+      $tls_config,
+      $instance_config
+    )
+
+    # defaults file content
+    # ensure user did not provide both init_defaults and init_defaults_file
+    if (($init_defaults != undef) and ($init_defaults_file != undef)) {
+      fail (&#39;Only one of $init_defaults and $init_defaults_file should be defined&#39;)
+    }
+
+    if (is_hash($elasticsearch::init_defaults)) {
+      $global_init_defaults = $elasticsearch::init_defaults
+    } else {
+      $global_init_defaults = { }
+    }
+
+    $instance_init_defaults_main = {
+      &#39;CONF_DIR&#39;  =&gt; $instance_configdir,
+      &#39;ES_HOME&#39;   =&gt; $elasticsearch::params::homedir,
+      &#39;LOG_DIR&#39;   =&gt; $instance_logdir,
+    }
+
+    if (is_hash($init_defaults)) {
+      $instance_init_defaults = $init_defaults
+    } else {
+      $instance_init_defaults = { }
+    }
+    $init_defaults_new = merge(
+      { &#39;DATA_DIR&#39;  =&gt; $elasticsearch::params::datadir },
+      $global_init_defaults,
+      $instance_init_defaults_main,
+      $instance_init_defaults
+    )
+
+    $user = $elasticsearch::elasticsearch_user
+    $group = $elasticsearch::elasticsearch_group
+
+    datacat_fragment { &quot;main_config_${name}&quot;:
+      target =&gt; &quot;${instance_configdir}/elasticsearch.yml&quot;,
+      data   =&gt; $instance_conf,
+    }
+
+    datacat { &quot;${instance_configdir}/elasticsearch.yml&quot;:
+      template =&gt; &quot;${module_name}/etc/elasticsearch/elasticsearch.yml.erb&quot;,
+      notify   =&gt; $notify_service,
+      require  =&gt; Class[&#39;elasticsearch::package&#39;],
+      owner    =&gt; $elasticsearch::elasticsearch_user,
+      group    =&gt; $elasticsearch::elasticsearch_group,
+      mode     =&gt; &#39;0440&#39;,
+    }
+
+    if ($elasticsearch::secrets != undef or $secrets != undef) {
+      if ($elasticsearch::secrets != undef) {
+        $main_secrets = $elasticsearch::secrets
+      } else {
+        $main_secrets = {}
+      }
+
+      if ($secrets != undef) {
+        $instance_secrets = $secrets
+      } else {
+        $instance_secrets = {}
+      }
+
+      validate_bool($purge_secrets)
+
+      elasticsearch_keystore { $name :
+        purge    =&gt; $purge_secrets,
+        settings =&gt; merge($main_secrets, $instance_secrets),
+        notify   =&gt; $notify_service,
+      }
+    }
+
+    $require_service = Class[&#39;elasticsearch::package&#39;]
+    $before_service  = undef
+
+  } else {
+
+    file { $instance_configdir:
+      ensure  =&gt; &#39;absent&#39;,
+      recurse =&gt; true,
+      force   =&gt; true,
+    }
+
+    $require_service = undef
+    $before_service  = File[$instance_configdir]
+
+    $init_defaults_new = {}
+  }
+
+  elasticsearch::service { $name:
+    ensure             =&gt; $ensure,
+    status             =&gt; $status,
+    service_flags      =&gt; $service_flags,
+    init_defaults      =&gt; $init_defaults_new,
+    init_defaults_file =&gt; $init_defaults_file,
+    init_template      =&gt; $init_template,
+    require            =&gt; $require_service,
+    before             =&gt; $before_service,
+  }
+
+}</pre>
+      </td>
+    </tr>
+  </table>
+</div>
+</div>
+
+      <div id="footer">
+  Generated on Tue Jun 13 16:54:53 2017 by
+  <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
+  0.9.9 (ruby-2.3.1).
+</div>
+
+    </div>
+  </body>
+</html>

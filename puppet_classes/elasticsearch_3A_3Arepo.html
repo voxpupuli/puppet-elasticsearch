@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>
+  Puppet Class: elasticsearch::repo
+  
+    &mdash; Documentation by YARD 0.9.9
+  
+</title>
+
+  <link rel="stylesheet" href="../css/style.css" type="text/css" charset="utf-8" />
+
+  <link rel="stylesheet" href="../css/common.css" type="text/css" charset="utf-8" />
+
+<script type="text/javascript" charset="utf-8">
+  pathId = "puppet_classes::elasticsearch::repo";
+  relpath = '../';
+</script>
+
+
+  <script type="text/javascript" charset="utf-8" src="../js/jquery.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="../js/app.js"></script>
+
+
+  </head>
+  <body>
+    <div class="nav_wrap">
+      <iframe id="nav" src="../puppet_class_list.html?1"></iframe>
+      <div id="resizer"></div>
+    </div>
+
+    <div id="main" tabindex="-1">
+      <div id="header">
+        <div id="menu">
+  
+    <a href="../_index.html">Index (e)</a> &raquo;
+    <span class='title'><span class='object_link'>Puppet Classes</span></span>
+     &raquo; 
+    <span class="title">elasticsearch::repo</span>
+  
+</div>
+
+        <div id="search">
+  
+    <a class="full_list_link" id="puppet_class_list_link"
+        href="../puppet_class_list.html">
+
+        <svg width="24" height="24">
+          <rect x="0" y="4" width="24" height="4" rx="1" ry="1"></rect>
+          <rect x="0" y="12" width="24" height="4" rx="1" ry="1"></rect>
+          <rect x="0" y="20" width="24" height="4" rx="1" ry="1"></rect>
+        </svg>
+    </a>
+  
+</div>
+        <div class="clear"></div>
+      </div>
+
+      <div id="content"><h1>Puppet Class: elasticsearch::repo</h1>
+<div class="box_info">
+  
+  
+  <dl>
+    <dt>Defined in:</dt>
+    <dd>
+      manifests/repo.pp
+    </dd>
+  </dl>
+</div>
+
+<h2>Overview</h2>
+<div class="docstring">
+  <div class="discussion">
+    
+<p>This class exists to install and manage yum and apt repositories that
+contain elasticsearch official elasticsearch packages.</p>
+
+<p>It is not intended to be used directly by external resources like node
+definitions or other modules.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+  <div class="examples">
+    <p class="tag_title">Examples:</p>
+    
+      
+        <p class="example_title"><div class='inline'>
+<p>importing this class to be used by other classes to use its functionality:</p>
+</div></p>
+      
+      <pre class="example code"><code>class { &#39;elasticsearch::repo&#39;: }</code></pre>
+    
+  </div>
+
+<p class="tag_title">Author:</p>
+<ul class="author">
+  
+    <li>
+      
+      
+      
+      
+        
+        <div class='inline'>
+<p>Richard Pijnenburg <a
+href="mailto:richard.pijnenburg@elasticsearch.com">richard.pijnenburg@elasticsearch.com</a></p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+      
+      
+      
+        
+        <div class='inline'>
+<p>Phil Fenstermacher <a
+href="mailto:phillip.fenstermacher@gmail.com">phillip.fenstermacher@gmail.com</a></p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+      
+      
+      
+        
+        <div class='inline'>
+<p>Tyler Langlois <a
+href="mailto:tyler.langlois@elastic.co">tyler.langlois@elastic.co</a></p>
+</div>
+      
+    </li>
+  
+</ul>
+
+</div><div class="method_details_list">
+  <table class="source_code">
+    <tr>
+      <td>
+        <pre class="lines">
+
+
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+131
+132
+133
+134
+135
+136
+137
+138</pre>
+      </td>
+      <td>
+        <pre class="code"><span class="info file"># File 'manifests/repo.pp', line 14</span>
+
+class elasticsearch::repo {
+
+  Exec {
+    path =&gt; [ &#39;/bin&#39;, &#39;/usr/bin&#39;, &#39;/usr/local/bin&#39; ],
+    cwd  =&gt; &#39;/&#39;,
+  }
+
+  if $elasticsearch::ensure == &#39;present&#39; {
+    if $::elasticsearch::repo_baseurl != undef {
+      $_baseurl = $::elasticsearch::repo_baseurl
+    } else {
+      if versioncmp($elasticsearch::repo_version, &#39;5.0&#39;) &gt;= 0 {
+        $_repo_url = &#39;https://artifacts.elastic.co/packages&#39;
+        case $::osfamily {
+          &#39;Debian&#39;: {
+            $_repo_path = &#39;apt&#39;
+          }
+          default: {
+            $_repo_path = &#39;yum&#39;
+          }
+        }
+      } else {
+        $_repo_url = &#39;http://packages.elastic.co/elasticsearch&#39;
+        case $::osfamily {
+          &#39;Debian&#39;: {
+            $_repo_path = &#39;debian&#39;
+          }
+          default: {
+            $_repo_path = &#39;centos&#39;
+          }
+        }
+      }
+
+      $_baseurl = &quot;${_repo_url}/${elasticsearch::repo_version}/${_repo_path}&quot;
+    }
+  } else {
+    case $::osfamily {
+      &#39;Debian&#39;: {
+        $_baseurl = undef
+      }
+      default: {
+        $_baseurl = &#39;absent&#39;
+      }
+    }
+  }
+
+  case $::osfamily {
+    &#39;Debian&#39;: {
+      include ::apt
+      Class[&#39;apt::update&#39;] -&gt; Package[$elasticsearch::package_name]
+
+      apt::source { &#39;elasticsearch&#39;:
+        ensure   =&gt; $elasticsearch::ensure,
+        location =&gt; $_baseurl,
+        release  =&gt; &#39;stable&#39;,
+        repos    =&gt; &#39;main&#39;,
+        key      =&gt; {
+          &#39;id&#39;     =&gt; $::elasticsearch::repo_key_id,
+          &#39;source&#39; =&gt; $::elasticsearch::repo_key_source,
+        },
+        include  =&gt; {
+          &#39;src&#39; =&gt; false,
+          &#39;deb&#39; =&gt; true,
+        },
+        pin      =&gt; $elasticsearch::repo_priority,
+      }
+    }
+    &#39;RedHat&#39;, &#39;Linux&#39;: {
+      # Versions prior to 3.5.1 have issues with this param
+      # See: https://tickets.puppetlabs.com/browse/PUP-2163
+      if versioncmp($::puppetversion, &#39;3.5.1&#39;) &gt;= 0 {
+        Yumrepo[&#39;elasticsearch&#39;] {
+          ensure =&gt; $elasticsearch::ensure,
+        }
+      }
+      yumrepo { &#39;elasticsearch&#39;:
+        descr    =&gt; &#39;elasticsearch repo&#39;,
+        baseurl  =&gt; $_baseurl,
+        gpgcheck =&gt; 1,
+        gpgkey   =&gt; $::elasticsearch::repo_key_source,
+        enabled  =&gt; 1,
+        proxy    =&gt; $::elasticsearch::repo_proxy,
+        priority =&gt; $elasticsearch::repo_priority,
+      }
+      ~&gt; exec { &#39;elasticsearch_yumrepo_yum_clean&#39;:
+        command     =&gt; &#39;yum clean metadata expire-cache --disablerepo=&quot;*&quot; --enablerepo=&quot;elasticsearch&quot;&#39;,
+        refreshonly =&gt; true,
+        returns     =&gt; [0, 1],
+      }
+    }
+    &#39;Suse&#39;: {
+      if $::operatingsystem == &#39;SLES&#39; and versioncmp($::operatingsystemmajrelease, &#39;11&#39;) &lt;= 0 {
+        # Older versions of SLES do not ship with rpmkeys
+        $_import_cmd = &quot;rpm --import ${::elasticsearch::repo_key_source}&quot;
+      } else {
+        $_import_cmd = &quot;rpmkeys --import ${::elasticsearch::repo_key_source}&quot;
+      }
+
+      exec { &#39;elasticsearch_suse_import_gpg&#39;:
+        command =&gt; $_import_cmd,
+        unless  =&gt;
+          &quot;test $(rpm -qa gpg-pubkey | grep -i &#39;D88E42B4&#39; | wc -l) -eq 1&quot;,
+        notify  =&gt; Zypprepo[&#39;elasticsearch&#39;],
+      }
+
+      zypprepo { &#39;elasticsearch&#39;:
+        baseurl     =&gt; $_baseurl,
+        enabled     =&gt; 1,
+        autorefresh =&gt; 1,
+        name        =&gt; &#39;elasticsearch&#39;,
+        gpgcheck    =&gt; 1,
+        gpgkey      =&gt; $::elasticsearch::repo_key_source,
+        type        =&gt; &#39;yum&#39;,
+      }
+      ~&gt; exec { &#39;elasticsearch_zypper_refresh_elasticsearch&#39;:
+        command     =&gt; &#39;zypper refresh elasticsearch&#39;,
+        refreshonly =&gt; true,
+      }
+    }
+    default: {
+      fail(&quot;\&quot;${module_name}\&quot; provides no repository information for OSfamily \&quot;${::osfamily}\&quot;&quot;)
+    }
+  }
+
+}</pre>
+      </td>
+    </tr>
+  </table>
+</div>
+</div>
+
+      <div id="footer">
+  Generated on Tue Jun 13 16:54:52 2017 by
+  <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
+  0.9.9 (ruby-2.3.1).
+</div>
+
+    </div>
+  </body>
+</html>

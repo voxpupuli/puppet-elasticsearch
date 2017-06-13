@@ -1,0 +1,1148 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>
+  File: README
+  
+    &mdash; Documentation by YARD 0.9.9
+  
+</title>
+
+  <link rel="stylesheet" href="css/style.css" type="text/css" charset="utf-8" />
+
+  <link rel="stylesheet" href="css/common.css" type="text/css" charset="utf-8" />
+
+<script type="text/javascript" charset="utf-8">
+  pathId = "";
+  relpath = '';
+</script>
+
+
+  <script type="text/javascript" charset="utf-8" src="js/jquery.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="js/app.js"></script>
+
+
+  </head>
+  <body>
+    <div class="nav_wrap">
+      <iframe id="nav" src="file_list.html?1"></iframe>
+      <div id="resizer"></div>
+    </div>
+
+    <div id="main" tabindex="-1">
+      <div id="header">
+        <div id="menu">
+  
+    <a href="_index.html">Index</a> &raquo; 
+    <span class="title">File: README</span>
+  
+</div>
+
+        <div id="search">
+  
+    <a class="full_list_link" id="puppet_class_list_link"
+        href="puppet_class_list.html">
+
+        <svg width="24" height="24">
+          <rect x="0" y="4" width="24" height="4" rx="1" ry="1"></rect>
+          <rect x="0" y="12" width="24" height="4" rx="1" ry="1"></rect>
+          <rect x="0" y="20" width="24" height="4" rx="1" ry="1"></rect>
+        </svg>
+    </a>
+  
+</div>
+        <div class="clear"></div>
+      </div>
+
+      <div id="content"><div id='filecontents'>
+<h1 id="label-Elasticsearch+Puppet+Module">Elasticsearch Puppet Module</h1>
+
+<p><a href="https://forge.puppetlabs.com/elastic/elasticsearch"><img
+src="https://img.shields.io/puppetforge/e/elastic/elasticsearch.svg"></a>
+<a href="https://forge.puppetlabs.com/elastic/elasticsearch"><img
+src="https://img.shields.io/puppetforge/v/elastic/elasticsearch.svg"></a>
+<a href="https://forge.puppetlabs.com/elastic/elasticsearch"><img
+src="https://img.shields.io/puppetforge/dt/elastic/elasticsearch.svg"></a></p>
+
+<h4 id="label-Table+of+Contents">Table of Contents</h4>
+<ol><li>
+<p><a href="#module-description">Module description - What the module does and
+why it is useful</a></p>
+</li><li>
+<p><a href="#setup">Setup - The basics of getting started with
+Elasticsearch</a></p>
+</li><li>
+<p><a href="#the-module-manages-the-following">The module manages the
+following</a></p>
+</li><li>
+<p><a href="#requirements">Requirements</a></p>
+</li><li>
+<p><a href="#usage">Usage - Configuration options and additional
+functionality</a></p>
+</li><li>
+<p><a href="#advanced-features">Advanced features - Extra information on
+advanced usage</a></p>
+</li><li>
+<p><a href="#reference">Reference - An under-the-hood peek at what the module
+is doing and how</a></p>
+</li><li>
+<p><a href="#limitations">Limitations - OS compatibility, etc.</a></p>
+</li><li>
+<p><a href="#development">Development - Guide for contributing to the
+module</a></p>
+</li><li>
+<p><a href="#support">Support - When you need help with this module</a></p>
+</li></ol>
+
+<h2 id="label-Module+description">Module description</h2>
+
+<p>This module sets up <a
+href="https://www.elastic.co/overview/elasticsearch/">Elasticsearch</a>
+instances with additional resource for plugins, templates, and more.</p>
+
+<p>This module is actively tested against Elasticsearch 2.x and 5.x.</p>
+
+<h2 id="label-Setup">Setup</h2>
+
+<h3 id="label-The+module+manages+the+following">The module manages the following</h3>
+<ul><li>
+<p>Elasticsearch repository files.</p>
+</li><li>
+<p>Elasticsearch package.</p>
+</li><li>
+<p>Elasticsearch configuration file.</p>
+</li><li>
+<p>Elasticsearch service.</p>
+</li><li>
+<p>Elasticsearch plugins.</p>
+</li><li>
+<p>Elasticsearch templates.</p>
+</li><li>
+<p>Elasticsearch ingest pipelines.</p>
+</li><li>
+<p>Elasticsearch index settings.</p>
+</li><li>
+<p>Elasticsearch Shield/X-Pack users, roles, and certificates.</p>
+</li><li>
+<p>Elasticsearch keystores.</p>
+</li></ul>
+
+<h3 id="label-Requirements">Requirements</h3>
+<ul><li>
+<p>The <a href="https://forge.puppetlabs.com/puppetlabs/stdlib">stdlib</a>
+Puppet library.</p>
+</li><li>
+<p><a href="https://forge.puppetlabs.com/puppet/yum">puppet/yum</a> For yum
+version lock.</p>
+</li><li>
+<p><a
+href="https://forge.puppetlabs.com/richardc/datacat">richardc/datacat</a></p>
+</li><li>
+<p><a href="http://augeas.net/">Augeas</a></p>
+</li><li>
+<p><a href="https://forge.puppetlabs.com/puppetlabs/java">puppetlabs-java</a>
+for Java installation (optional).</p>
+</li><li>
+<p><a
+href="https://forge.puppetlabs.com/puppetlabs/java_ks">puppetlabs-java_ks</a>
+for Shield/X-Pack certificate management (optional).</p>
+</li></ul>
+
+<h4 id="label-Repository+management">Repository management</h4>
+
+<p>When using the repository management, the following module dependencies are
+required:</p>
+<ul><li>
+<p>Debian/Ubuntu: <a
+href="http://forge.puppetlabs.com/puppetlabs/apt">Puppetlabs/apt</a></p>
+</li><li>
+<p>OpenSuSE/SLES: <a
+href="https://forge.puppetlabs.com/darin/zypprepo">Darin/zypprepo</a></p>
+</li></ul>
+
+<h3 id="label-Beginning+with+Elasticsearch">Beginning with Elasticsearch</h3>
+
+<p>Declare the top-level <code>elasticsearch</code> class (managing
+repositories) and set up an instance:</p>
+
+<pre class="code ruby"><code class="ruby">class { &#39;elasticsearch&#39;:
+  java_install =&gt; true,
+  manage_repo  =&gt; true,
+  repo_version =&gt; &#39;5.x&#39;,
+}
+
+elasticsearch::instance { &#39;es-01&#39;: }</code></pre>
+
+<p><strong>Note</strong>: Elasticsearch 5.x requires a recent version of the
+JVM. If you are on a recent version of your distribution of choice (such as
+Ubuntu 16.04 or CentOS 7), setting <code>java_install =&gt; true</code>
+will work out-of-the-box. If you are on an earlier distribution, you may
+need to take additional measures to install Java 1.8.</p>
+
+<h2 id="label-Usage">Usage</h2>
+
+<h3 id="label-Main+class">Main class</h3>
+
+<p>Most top-level parameters in the <code>elasticsearch</code> class are set
+to reasonable defaults. The following are some parameters that may be
+useful to override:</p>
+
+<h4 id="label-Install+a+specific+version">Install a specific version</h4>
+
+<pre class="code ruby"><code class="ruby">class { &#39;elasticsearch&#39;:
+  version =&gt; &#39;1.4.2&#39;
+}</code></pre>
+
+<p>Note: This will only work when using the repository.</p>
+
+<h4 id="label-Automatically+restarting+the+service+-28default+set+to+false-29">Automatically restarting the service (default set to false)</h4>
+
+<p>By default, the module will not restart Elasticsearch when the
+configuration file, package, or plugins change. This can be overridden
+globally with the following option:</p>
+
+<pre class="code ruby"><code class="ruby">class { &#39;elasticsearch&#39;:
+  restart_on_change =&gt; true
+}</code></pre>
+
+<p>Or controlled with the more granular options:
+<code>restart_config_change</code>, <code>restart_package_change</code>,
+and <code>restart_plugin_change.</code></p>
+
+<h4 id="label-Automatic+upgrades+-28default+set+to+false-29">Automatic upgrades (default set to false)</h4>
+
+<pre class="code ruby"><code class="ruby">class { &#39;elasticsearch&#39;:
+  autoupgrade =&gt; true
+}</code></pre>
+
+<h4 id="label-Removal-2FDecommissioning">Removal/Decommissioning</h4>
+
+<pre class="code ruby"><code class="ruby">class { &#39;elasticsearch&#39;:
+  ensure =&gt; &#39;absent&#39;
+}</code></pre>
+
+<h4 id="label-Install+everything+but+disable+service-28s-29+afterwards">Install everything but disable service(s) afterwards</h4>
+
+<pre class="code ruby"><code class="ruby">class { &#39;elasticsearch&#39;:
+  status =&gt; &#39;disabled&#39;
+}</code></pre>
+
+<h4 id="label-API+Settings">API Settings</h4>
+
+<p>Some resources, such as <code>elasticsearch::template</code>, require
+communicating with the Elasticsearch REST API. By default, these API
+settings are set to:</p>
+
+<pre class="code ruby"><code class="ruby">class { &#39;elasticsearch&#39;:
+  api_protocol            =&gt; &#39;http&#39;,
+  api_host                =&gt; &#39;localhost&#39;,
+  api_port                =&gt; 9200,
+  api_timeout             =&gt; 10,
+  api_basic_auth_username =&gt; undef,
+  api_basic_auth_password =&gt; undef,
+  api_ca_file             =&gt; undef,
+  api_ca_path             =&gt; undef,
+  validate_tls            =&gt; true,
+}</code></pre>
+
+<p>Each of these can be set at the top-level <code>elasticsearch</code> class
+and inherited for each resource or overridden on a per-resource basis.</p>
+
+<h4 id="label-Dynamically+Created+Resources">Dynamically Created Resources</h4>
+
+<p>This module supports managing all of its defined types through top-level
+parameters to better support Hiera and Puppet Enterprise. For example, to
+manage an instance and index template directly from the
+<code>elasticsearch</code> class:</p>
+
+<pre class="code ruby"><code class="ruby">class { &#39;elasticsearch&#39;:
+  instances =&gt; {
+    &#39;es-01&#39; =&gt; {
+      &#39;config&#39; =&gt; {
+        &#39;network.host&#39; =&gt; &#39;0.0.0.0&#39;
+      }
+    }
+  },
+  templates =&gt; {
+    &#39;logstash&#39; =&gt; {
+      &#39;content&#39; =&gt; {
+        &#39;template&#39; =&gt; &#39;logstash-*&#39;,
+        &#39;settings&#39; =&gt; {
+          &#39;number_of_replicas&#39; =&gt; 0
+        }
+      }
+    }
+  }
+}</code></pre>
+
+<h3 id="label-Instances">Instances</h3>
+
+<p>This module works with the concept of instances. For service to start you
+need to specify at least one instance.</p>
+
+<h4 id="label-Quick+setup">Quick setup</h4>
+
+<pre class="code ruby"><code class="ruby">elasticsearch::instance { &#39;es-01&#39;: }</code></pre>
+
+<p>This will set up its own data directory and set the node name to
+<code>$hostname-$instance_name</code></p>
+
+<h4 id="label-Advanced+options">Advanced options</h4>
+
+<p>Instance specific options can be given:</p>
+
+<pre class="code ruby"><code class="ruby">elasticsearch::instance { &#39;es-01&#39;:
+  config        =&gt; { }, # Configuration hash
+  init_defaults =&gt; { }, # Init defaults hash
+  datadir       =&gt; [ ], # Data directory
+}</code></pre>
+
+<p>See <a href="#advanced-features">Advanced features</a> for more
+information.</p>
+
+<h3 id="label-Plugins">Plugins</h3>
+
+<p>This module can help manage <a
+href="http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/modules-plugins.html#known-plugins">a
+variety of plugins</a>. Note that <code>module_dir</code> is where the
+plugin will install itself to and must match that published by the plugin
+author; it is not where you would like to install it yourself.</p>
+
+<h4 id="label-From+an+official+repository">From an official repository</h4>
+
+<pre class="code ruby"><code class="ruby">elasticsearch::plugin { &#39;lmenezes/elasticsearch-kopf&#39;:
+  instances =&gt; &#39;instance_name&#39;
+}</code></pre>
+
+<h4 id="label-From+a+custom+url">From a custom url</h4>
+
+<pre class="code ruby"><code class="ruby">elasticsearch::plugin { &#39;jetty&#39;:
+  url        =&gt; &#39;https://oss-es-plugins.s3.amazonaws.com/elasticsearch-jetty/elasticsearch-jetty-1.2.1.zip&#39;,
+  instances  =&gt; &#39;instance_name&#39;
+}</code></pre>
+
+<h4 id="label-Using+a+proxy">Using a proxy</h4>
+
+<p>You can also use a proxy if required by setting the <code>proxy_host</code>
+and <code>proxy_port</code> options: <code>puppet elasticsearch::plugin {
+&#39;lmenezes/elasticsearch-kopf&#39;,   instances  =&gt;
+&#39;instance_name&#39;,   proxy_host =&gt; &#39;proxy.host.com&#39;,  
+proxy_port =&gt; 3128 } </code></p>
+
+<p>Proxies that require usernames and passwords are similarly supported with
+the <code>proxy_username</code> and <code>proxy_password</code> parameters.</p>
+
+<p>Plugin name formats that are supported include:</p>
+<ul><li>
+<p><code>elasticsearch/plugin/version</code> (for official elasticsearch
+plugins downloaded from download.elastic.co)</p>
+</li><li>
+<p><code>groupId/artifactId/version</code> (for community plugins downloaded
+from maven central or OSS Sonatype)</p>
+</li><li>
+<p><code>username/repository</code> (for site plugins downloaded from github
+master)</p>
+</li></ul>
+
+<h4 id="label-Upgrading+plugins">Upgrading plugins</h4>
+
+<p>When you specify a certain plugin version, you can upgrade that plugin by
+specifying the new version.</p>
+
+<pre class="code ruby"><code class="ruby">elasticsearch::plugin { &#39;elasticsearch/elasticsearch-cloud-aws/2.1.1&#39;: }</code></pre>
+
+<p>And to upgrade, you would simply change it to</p>
+
+<pre class="code ruby"><code class="ruby">elasticsearch::plugin { &#39;elasticsearch/elasticsearch-cloud-aws/2.4.1&#39;: }</code></pre>
+
+<p>Please note that this does not work when you specify &#39;latest&#39; as a
+version number.</p>
+
+<h4 id="label-ES+2.x+official+plugins">ES 2.x official plugins</h4>
+
+<p>For the Elasticsearch commercial plugins you can refer them to the simple
+name.</p>
+
+<p>See <a
+href="https://www.elastic.co/guide/en/elasticsearch/plugins/current/installation.html">Plugin
+installation</a> for more details.</p>
+
+<h3 id="label-Scripts">Scripts</h3>
+
+<p>Installs <a
+href="http://www.elastic.co/guide/en/elasticsearch/reference/current/modules-scripting.html">scripts</a>
+to be used by Elasticsearch. These scripts are shared across all defined
+instances on the same host.</p>
+
+<pre class="code ruby"><code class="ruby">elasticsearch::script { &#39;myscript&#39;:
+  ensure =&gt; &#39;present&#39;,
+  source =&gt; &#39;puppet:///path/to/my/script.groovy&#39;
+}</code></pre>
+
+<p>Script directories can also be recursively managed for large collections of
+scripts:</p>
+
+<pre class="code ruby"><code class="ruby">elasticsearch::script { &#39;myscripts_dir&#39;:
+  ensure  =&gt; &#39;directory,
+  source  =&gt; &#39;puppet:///path/to/myscripts_dir&#39;
+  recurse =&gt; &#39;remote&#39;,
+}</code></pre>
+
+<h3 id="label-Templates">Templates</h3>
+
+<p>By default templates use the top-level <code>elasticsearch::api_*</code>
+settings to communicate with Elasticsearch. The following is an example of
+how to override these settings:</p>
+
+<pre class="code ruby"><code class="ruby">elasticsearch::template { &#39;templatename&#39;:
+  api_protocol            =&gt; &#39;https&#39;,
+  api_host                =&gt; $::ipaddress,
+  api_port                =&gt; 9201,
+  api_timeout             =&gt; 60,
+  api_basic_auth_username =&gt; &#39;admin&#39;,
+  api_basic_auth_password =&gt; &#39;adminpassword&#39;,
+  api_ca_file             =&gt; &#39;/etc/ssl/certs&#39;,
+  api_ca_path             =&gt; &#39;/etc/pki/certs&#39;,
+  validate_tls            =&gt; false,
+  source                  =&gt; &#39;puppet:///path/to/template.json&#39;,
+}</code></pre>
+
+<h4 id="label-Add+a+new+template+using+a+file">Add a new template using a file</h4>
+
+<p>This will install and/or replace the template in Elasticsearch:</p>
+
+<pre class="code ruby"><code class="ruby">elasticsearch::template { &#39;templatename&#39;:
+  source =&gt; &#39;puppet:///path/to/template.json&#39;,
+}</code></pre>
+
+<h4 id="label-Add+a+new+template+using+content">Add a new template using content</h4>
+
+<p>This will install and/or replace the template in Elasticsearch:</p>
+
+<pre class="code ruby"><code class="ruby">elasticsearch::template { &#39;templatename&#39;:
+  content =&gt; {
+    &#39;template&#39; =&gt; &quot;*&quot;,
+    &#39;settings&#39; =&gt; {
+      &#39;number_of_replicas&#39; =&gt; 0
+    }
+  }
+}</code></pre>
+
+<p>Plain JSON strings are also supported.</p>
+
+<pre class="code ruby"><code class="ruby">elasticsearch::template { &#39;templatename&#39;:
+  content =&gt; &#39;{&quot;template&quot;:&quot;*&quot;,&quot;settings&quot;:{&quot;number_of_replicas&quot;:0}}&#39;
+}</code></pre>
+
+<h4 id="label-Delete+a+template">Delete a template</h4>
+
+<pre class="code ruby"><code class="ruby">elasticsearch::template { &#39;templatename&#39;:
+  ensure =&gt; &#39;absent&#39;
+}</code></pre>
+
+<h3 id="label-Ingestion+Pipelines">Ingestion Pipelines</h3>
+
+<p>Pipelines behave similar to templates in that their contents can be
+controlled over the Elasticsearch REST API with a custom Puppet resource.
+API parameters follow the same rules as templates (those settings can
+either be controlled at the top-level in the <code>elasticsearch</code>
+class or set per-resource).</p>
+
+<h4 id="label-Adding+a+new+pipeline">Adding a new pipeline</h4>
+
+<p>This will install and/or replace an ingestion pipeline in Elasticsearch
+(ingestion settings are compared against the present configuration):</p>
+
+<pre class="code ruby"><code class="ruby">elasticsearch::pipeline { &#39;addfoo&#39;:
+  content =&gt; {
+    &#39;description&#39; =&gt; &#39;Add the foo field&#39;,
+    &#39;processors&#39; =&gt; [{
+      &#39;set&#39; =&gt; {
+        &#39;field&#39; =&gt; &#39;foo&#39;,
+        &#39;value&#39; =&gt; &#39;bar&#39;
+      }
+    }]
+  }
+}</code></pre>
+
+<h4 id="label-Delete+a+pipeline">Delete a pipeline</h4>
+
+<pre class="code ruby"><code class="ruby">elasticsearch::pipeline { &#39;addfoo&#39;:
+  ensure =&gt; &#39;absent&#39;
+}</code></pre>
+
+<h3 id="label-Index+Settings">Index Settings</h3>
+
+<p>This module includes basic support for ensuring an index is present or
+absent with optional index settings. API access settings follow the pattern
+previously mentioned for templates.</p>
+
+<h4 id="label-Creating+an+index">Creating an index</h4>
+
+<p>At the time of this writing, only index settings are supported. Note that
+some settings (such as <code>number_of_shards</code>) can only be set at
+index creation time.</p>
+
+<pre class="code ruby"><code class="ruby">elasticsearch::index { &#39;foo&#39;:
+  settings =&gt; {
+    &#39;index&#39; =&gt; {
+      &#39;number_of_replicas&#39; =&gt; 0
+    }
+  }
+}</code></pre>
+
+<h4 id="label-Delete+an+index">Delete an index</h4>
+
+<pre class="code ruby"><code class="ruby">elasticsearch::index { &#39;foo&#39;:
+  ensure =&gt; &#39;absent&#39;
+}</code></pre>
+
+<h3 id="label-Bindings-2FClients">Bindings/Clients</h3>
+
+<p>Install a variety of <a
+href="http://www.elasticsearch.org/guide/en/elasticsearch/client/community/current/clients.html">clients/bindings</a>:</p>
+
+<h4 id="label-Python">Python</h4>
+
+<pre class="code ruby"><code class="ruby">elasticsearch::python { &#39;rawes&#39;: }</code></pre>
+
+<h4 id="label-Ruby">Ruby</h4>
+
+<pre class="code ruby"><code class="ruby">elasticsearch::ruby { &#39;elasticsearch&#39;: }</code></pre>
+
+<h3 id="label-Connection+Validator">Connection Validator</h3>
+
+<p>This module offers a way to make sure an instance has been started and is
+up and running before doing a next action. This is done via the use of the
+<code>es_instance_conn_validator</code> resource. <code>puppet
+es_instance_conn_validator { &#39;myinstance&#39; :   server =&gt;
+&#39;es.example.com&#39;,   port   =&gt; &#39;9200&#39;, } </code></p>
+
+<p>A common use would be for example :</p>
+
+<pre class="code ruby"><code class="ruby">class { &#39;kibana4&#39; :
+  require =&gt; Es_Instance_Conn_Validator[&#39;myinstance&#39;],
+}</code></pre>
+
+<h3 id="label-Package+installation">Package installation</h3>
+
+<p>There are two different ways of installing Elasticsearch:</p>
+
+<h4 id="label-Repository">Repository</h4>
+
+<p>This option allows you to use an existing repository for package
+installation. The <code>repo_version</code> corresponds with the
+<code>major.minor</code> version of Elasticsearch for versions before 2.x.</p>
+
+<pre class="code ruby"><code class="ruby">class { &#39;elasticsearch&#39;:
+  manage_repo  =&gt; true,
+  repo_version =&gt; &#39;1.4&#39;,
+}</code></pre>
+
+<p>For 2.x versions of Elasticsearch, use <code>repo_version =&gt;
+&#39;2.x&#39;</code>.</p>
+
+<pre class="code ruby"><code class="ruby">class { &#39;elasticsearch&#39;:
+  manage_repo  =&gt; true,
+  repo_version =&gt; &#39;2.x&#39;,
+}</code></pre>
+
+<p>For users who may wish to install via a local repository (for example,
+through a mirror), the <code>repo_baseurl</code> parameter is available:</p>
+
+<pre class="code ruby"><code class="ruby">class { &#39;elasticsearch&#39;:
+  manage_repo =&gt; true,
+  repo_baseurl =&gt; &#39;https://repo.local/yum&#39;
+}</code></pre>
+
+<h4 id="label-Remote+package+source">Remote package source</h4>
+
+<p>When a repository is not available or preferred you can install the
+packages from a remote source:</p>
+
+<h5 id="label-http-2Fhttps-2Fftp">http/https/ftp</h5>
+
+<pre class="code ruby"><code class="ruby">class { &#39;elasticsearch&#39;:
+  package_url =&gt; &#39;https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-1.4.2.deb&#39;,
+  proxy_url   =&gt; &#39;http://proxy.example.com:8080/&#39;,
+}</code></pre>
+
+<p>Setting <code>proxy_url</code> to a location will enable download using the
+provided proxy server. This parameter is also used by
+<code>elasticsearch::plugin</code>. Setting the port in the
+<code>proxy_url</code> is mandatory. <code>proxy_url</code> defaults to
+<code>undef</code> (proxy disabled).</p>
+
+<h5 id="label-puppet-3A-2F-2F">puppet://</h5>
+
+<pre class="code ruby"><code class="ruby">class { &#39;elasticsearch&#39;:
+  package_url =&gt; &#39;puppet:///path/to/elasticsearch-1.4.2.deb&#39;
+}</code></pre>
+
+<h5 id="label-Local+file">Local file</h5>
+
+<pre class="code ruby"><code class="ruby">class { &#39;elasticsearch&#39;:
+  package_url =&gt; &#39;file:/path/to/elasticsearch-1.4.2.deb&#39;
+}</code></pre>
+
+<h3 id="label-Java+installation">Java installation</h3>
+
+<p>Most sites will manage Java separately; however, this module can attempt to
+install Java as well. This is done by using the <a
+href="https://forge.puppetlabs.com/puppetlabs/java">puppetlabs-java</a>
+module.</p>
+
+<pre class="code ruby"><code class="ruby">class { &#39;elasticsearch&#39;:
+  java_install =&gt; true
+}</code></pre>
+
+<p>Specify a particular Java package/version to be installed:</p>
+
+<pre class="code ruby"><code class="ruby">class { &#39;elasticsearch&#39;:
+  java_install =&gt; true,
+  java_package =&gt; &#39;packagename&#39;
+}</code></pre>
+
+<p>When configuring Elasticsearch&#39;s memory usage, you can do so by either
+changing init defaults for Elasticsearch 1.x/2.x (see the <a
+href="#hash-representation">following example</a>), or modify it globally
+in 5.x using <code>jvm.options</code>:</p>
+
+<pre class="code ruby"><code class="ruby">class { &#39;elasticsearch&#39;:
+  jvm_options =&gt; [
+    &#39;-Xms4g&#39;,
+    &#39;-Xmx4g&#39;
+  ]
+}</code></pre>
+
+<h3 id="label-Service+management">Service management</h3>
+
+<p>Currently only the basic SysV-style <a
+href="https://en.wikipedia.org/wiki/Init">init</a> and <a
+href="http://en.wikipedia.org/wiki/Systemd">Systemd</a> service providers
+are supported, but other systems could be implemented as necessary (pull
+requests welcome).</p>
+
+<h4 id="label-Defaults+File">Defaults File</h4>
+
+<p>The <em>defaults</em> file (<code>/etc/defaults/elasticsearch</code> or
+<code>/etc/sysconfig/elasticsearch</code>) for the Elasticsearch service
+can be populated as necessary. This can either be a static file resource or
+a simple key value-style <a
+href="http://docs.puppetlabs.com/puppet/latest/reference/lang_datatypes.html#hashes">hash</a>
+object, the latter being particularly well-suited to pulling out of a data
+source such as Hiera.</p>
+
+<h5 id="label-File+source">File source</h5>
+
+<pre class="code ruby"><code class="ruby">class { &#39;elasticsearch&#39;:
+  init_defaults_file =&gt; &#39;puppet:///path/to/defaults&#39;
+}</code></pre>
+
+<h5 id="label-Hash+representation">Hash representation</h5>
+
+<pre class="code ruby"><code class="ruby">$config_hash = {
+  &#39;ES_HEAP_SIZE&#39; =&gt; &#39;30g&#39;,
+}
+
+class { &#39;elasticsearch&#39;:
+  init_defaults =&gt; $config_hash
+}</code></pre>
+
+<p>Note: <code>init_defaults</code> hash can be passed to the main class and
+to the instance.</p>
+
+<h2 id="label-Advanced+features">Advanced features</h2>
+
+<h3 id="label-X-Pack-2FShield">X-Pack/Shield</h3>
+
+<p><a href="https://www.elastic.co/products/x-pack">X-Pack</a> and <a
+href="https://www.elastic.co/products/shield">Shield</a> file-based users,
+roles, and certificates can be managed by this module.</p>
+
+<p><strong>Note</strong>: If you are planning to use these features, it is
+<em>highly recommended</em> you read the following documentation to
+understand the caveats and extent of the resources available to you.</p>
+
+<h4 id="label-Getting+Started">Getting Started</h4>
+
+<p>Although this module can handle several types of Shield/X-Pack resources,
+you are expected to manage the plugin installation and versions for your
+deployment. For example, the following manifest will install Elasticseach
+with a single instance running X-Pack:</p>
+
+<pre class="code ruby"><code class="ruby">class { &#39;elasticsearch&#39;:
+  java_install    =&gt; true,
+  manage_repo     =&gt; true,
+  repo_version    =&gt; &#39;5.x&#39;,
+  security_plugin =&gt; &#39;x-pack&#39;,
+}
+
+elasticsearch::instance { &#39;es-01&#39;: }
+elasticsearch::plugin { &#39;x-pack&#39;: instances =&gt; &#39;es-01&#39; }</code></pre>
+
+<p>The following manifest will do the same, but with Shield:</p>
+
+<pre class="code ruby"><code class="ruby">class { &#39;elasticsearch&#39;:
+  java_install    =&gt; true,
+  manage_repo     =&gt; true,
+  repo_version    =&gt; &#39;2.x&#39;,
+  security_plugin =&gt; &#39;shield&#39;,
+}
+
+elasticsearch::instance { &#39;es-01&#39;: }
+
+Elasticsearch::Plugin { instances =&gt; [&#39;es-01&#39;], }
+elasticsearch::plugin { &#39;license&#39;: }
+elasticsearch::plugin { &#39;shield&#39;: }</code></pre>
+
+<p>The following examples will assume the preceding resources are part of your
+puppet manifest.</p>
+
+<h4 id="label-Roles">Roles</h4>
+
+<p>Roles in the file realm (the <code>esusers</code> realm in Shield) can be
+managed using the <code>elasticsearch::role</code> type. For example, to
+create a role called <code>myrole</code>, you could use the following
+resource in X-Pack:</p>
+
+<pre class="code ruby"><code class="ruby">elasticsearch::role { &#39;myrole&#39;:
+  privileges =&gt; {
+    &#39;cluster&#39; =&gt; [ &#39;monitor&#39; ],
+    &#39;indices&#39; =&gt; [{
+      &#39;names&#39;      =&gt; [ &#39;*&#39; ],
+      &#39;privileges&#39; =&gt; [ &#39;read&#39; ],
+    }]
+  }
+}</code></pre>
+
+<p>And in Shield:</p>
+
+<pre class="code ruby"><code class="ruby">elasticsearch::role { &#39;myrole&#39;:
+  privileges =&gt; {
+    &#39;cluster&#39; =&gt; &#39;monitor&#39;,
+    &#39;indices&#39; =&gt; {
+      &#39;*&#39; =&gt; &#39;read&#39;
+    }
+  }
+}</code></pre>
+
+<p>This role would grant users access to cluster monitoring and read access to
+all indices. See the <a
+href="https://www.elastic.co/guide/en/shield/index.html">Shield</a> or <a
+href="https://www.elastic.co/guide/en/x-pack/current/xpack-security.html">X-Pack</a>
+documentation for your version to determine what <code>privileges</code> to
+use and how to format them (the Puppet hash representation will simply be
+translated into yaml.)</p>
+
+<p><strong>Note</strong>: The Puppet provider for
+<code>esusers</code>/<code>users</code> has fine-grained control over the
+<code>roles.yml</code> file and thus will leave the default roles Shield
+installs in-place. If you would like to explicitly purge the default roles
+(leaving only roles managed by puppet), you can do so by including the
+following in your manifest:</p>
+
+<pre class="code ruby"><code class="ruby">resources { &#39;elasticsearch_role&#39;:
+  purge =&gt; true,
+}</code></pre>
+
+<h5 id="label-Mappings">Mappings</h5>
+
+<p>Associating mappings with a role for file-based management is done by
+passing an array of strings to the <code>mappings</code> parameter of the
+<code>elasticsearch::role</code> type. For example, to define a role with
+mappings:</p>
+
+<pre class="code ruby"><code class="ruby">elasticsearch::role { &#39;logstash&#39;:
+  mappings   =&gt; [
+    &#39;cn=group,ou=devteam&#39;,
+  ],
+  privileges =&gt; {
+    &#39;cluster&#39; =&gt; &#39;manage_index_templates&#39;,
+    &#39;indices&#39; =&gt; [{
+      &#39;names&#39;      =&gt; [&#39;logstash-*&#39;],
+      &#39;privileges&#39; =&gt; [
+        &#39;write&#39;,
+        &#39;delete&#39;,
+        &#39;create_index&#39;,
+      ],
+    }],
+  },
+}</code></pre>
+
+<p><strong>Note</strong>: Observe the brackets around <code>indices</code> in
+the preceding role definition; which is an array of hashes per the format
+in Shield 2.3.x. Follow the documentation to determine the correct
+formatting for your version of Shield or X-Pack.</p>
+
+<p>If you&#39;d like to keep the mappings file purged of entries not under
+Puppet&#39;s control, you should use the following <code>resources</code>
+declaration because mappings are a separate low-level type:</p>
+
+<pre class="code ruby"><code class="ruby">resources { &#39;elasticsearch_role_mapping&#39;:
+  purge =&gt; true,
+}</code></pre>
+
+<h4 id="label-Users">Users</h4>
+
+<p>Users can be managed using the <code>elasticsearch::user</code> type. For
+example, to create a user <code>mysuser</code> with membership in
+<code>myrole</code>:</p>
+
+<pre class="code ruby"><code class="ruby">elasticsearch::user { &#39;myuser&#39;:
+  password =&gt; &#39;mypassword&#39;,
+  roles    =&gt; [&#39;myrole&#39;],
+}</code></pre>
+
+<p>The <code>password</code> parameter will also accept password hashes
+generated from the <code>esusers</code>/<code>users</code> utility and
+ensure the password is kept in-sync with the Shield <code>users</code> file
+for all Elasticsearch instances.</p>
+
+<pre class="code ruby"><code class="ruby">elasticsearch::user { &#39;myuser&#39;:
+  password =&gt; &#39;$2a$10$IZMnq6DF4DtQ9c4sVovgDubCbdeH62XncmcyD1sZ4WClzFuAdqspy&#39;,
+  roles    =&gt; [&#39;myrole&#39;],
+}</code></pre>
+
+<p><strong>Note</strong>: When using the
+<code>esusers</code>/<code>users</code> provider (the default for plaintext
+passwords), Puppet has no way to determine whether the given password is
+in-sync with the password hashed by Shield/X-Pack. In order to work around
+this, the <code>elasticsearch::user</code> resource has been designed to
+accept refresh events in order to update password values. This is not
+ideal, but allows you to instruct the resource to change the password when
+needed. For example, to update the aforementioned user&#39;s password, you
+could include the following your manifest:</p>
+
+<pre class="code ruby"><code class="ruby">notify { &#39;update password&#39;: } ~&gt;
+elasticsearch::user { &#39;myuser&#39;:
+  password =&gt; &#39;mynewpassword&#39;,
+  roles    =&gt; [&#39;myrole&#39;],
+}</code></pre>
+
+<h4 id="label-Certificates">Certificates</h4>
+
+<p>SSL/TLS can be enabled by providing an <code>elasticsearch::instance</code>
+type with paths to the certificate and private key files, and a password
+for the keystore.</p>
+
+<pre class="code ruby"><code class="ruby">elasticsearch::instance { &#39;es-01&#39;:
+  ssl                  =&gt; true,
+  ca_certificate       =&gt; &#39;/path/to/ca.pem&#39;,
+  certificate          =&gt; &#39;/path/to/cert.pem&#39;,
+  private_key          =&gt; &#39;/path/to/key.pem&#39;,
+  keystore_password    =&gt; &#39;keystorepassword&#39;,
+}</code></pre>
+
+<p><strong>Note</strong>: Setting up a proper CA and certificate
+infrastructure is outside the scope of this documentation, see the
+aforementioned Shield or X-Pack guide for more information regarding the
+generation of these certificate files.</p>
+
+<p>The module will set up a keystore file for the node to use and set the
+relevant options in <code>elasticsearch.yml</code> to enable TLS/SSL using
+the certificates and key provided.</p>
+
+<h4 id="label-System+Keys">System Keys</h4>
+
+<p>Shield/X-Pack system keys can be passed to the module, where they will be
+placed into individual instance configuration directories. This can be set
+at the <code>elasticsearch</code> class and inherited across all instances:</p>
+
+<pre class="code ruby"><code class="ruby">class { &#39;elasticsearch&#39;:
+  system_key =&gt; &#39;puppet:///path/to/key&#39;,
+}</code></pre>
+
+<p>Or set on a per-instance basis:</p>
+
+<pre class="code ruby"><code class="ruby">elasticsearch::instance { &#39;es-01&#39;:
+  system_key =&gt; &#39;/local/path/to/key&#39;,
+}</code></pre>
+
+<h3 id="label-Package+version+pinning">Package version pinning</h3>
+
+<p>The module supports pinning the package version to avoid accidental
+upgrades that are not done by Puppet. To enable this feature:</p>
+
+<pre class="code ruby"><code class="ruby">class { &#39;elasticsearch&#39;:
+  package_pin =&gt; true,
+  version     =&gt; &#39;1.5.2&#39;,
+}</code></pre>
+
+<p>In this example we pin the package version to 1.5.2.</p>
+
+<h3 id="label-Data+directories">Data directories</h3>
+
+<p>There are several different ways of setting data directories for
+Elasticsearch. In every case the required configuration options are placed
+in the <code>elasticsearch.yml</code> file.</p>
+
+<h4 id="label-Default">Default</h4>
+
+<p>By default we use:</p>
+
+<pre class="code ruby"><code class="ruby">/usr/share/elasticsearch/data/$instance_name</code></pre>
+
+<p>Which provides a data directory per instance.</p>
+
+<h4 id="label-Single+global+data+directory">Single global data directory</h4>
+
+<pre class="code ruby"><code class="ruby">class { &#39;elasticsearch&#39;:
+  datadir =&gt; &#39;/var/lib/elasticsearch-data&#39;
+}</code></pre>
+
+<p>Creates the following for each instance:</p>
+
+<pre class="code ruby"><code class="ruby">/var/lib/elasticsearch-data/$instance_name</code></pre>
+
+<h4 id="label-Multiple+Global+data+directories">Multiple Global data directories</h4>
+
+<pre class="code ruby"><code class="ruby">class { &#39;elasticsearch&#39;:
+  datadir =&gt; [ &#39;/var/lib/es-data1&#39;, &#39;/var/lib/es-data2&#39;]
+}</code></pre>
+
+<p>Creates the following for each instance:
+<code>/var/lib/es-data1/$instance_name</code> and
+<code>/var/lib/es-data2/$instance_name</code>.</p>
+
+<h4 id="label-Single+instance+data+directory">Single instance data directory</h4>
+
+<pre class="code ruby"><code class="ruby">class { &#39;elasticsearch&#39;: }
+
+elasticsearch::instance { &#39;es-01&#39;:
+  datadir =&gt; &#39;/var/lib/es-data-es01&#39;
+}</code></pre>
+
+<p>Creates the following for this instance:</p>
+
+<pre class="code ruby"><code class="ruby">/var/lib/es-data-es01</code></pre>
+
+<h4 id="label-Multiple+instance+data+directories">Multiple instance data directories</h4>
+
+<pre class="code ruby"><code class="ruby">class { &#39;elasticsearch&#39;: }
+
+elasticsearch::instance { &#39;es-01&#39;:
+  datadir =&gt; [&#39;/var/lib/es-data1-es01&#39;, &#39;/var/lib/es-data2-es01&#39;]
+}</code></pre>
+
+<p>Creates the following for this instance:
+<code>/var/lib/es-data1-es01</code> and
+<code>/var/lib/es-data2-es01</code>.</p>
+
+<h4 id="label-Shared+global+data+directories">Shared global data directories</h4>
+
+<p>In some cases, you may want to share a top-level data directory among
+multiple instances.</p>
+
+<pre class="code ruby"><code class="ruby">class { &#39;elasticsearch&#39;:
+  datadir_instance_directories =&gt; false,
+  config =&gt; {
+    &#39;node.max_local_storage_nodes&#39; =&gt; 2
+  }
+}
+
+elasticsearch::instance { &#39;es-01&#39;: }
+elasticsearch::instance { &#39;es-02&#39;: }</code></pre>
+
+<p>Will result in the following directories created by Elasticsearch at
+runtime:</p>
+
+<pre class="code ruby"><code class="ruby">/var/lib/elasticsearch/nodes/0
+/var/lib/elasticsearch/nodes/1</code></pre>
+
+<p>See <a
+href="https://www.elastic.co/guide/en/elasticsearch/reference/current/modules-node.html#max-local-storage-nodes">the
+Elasticsearch documentation</a> for additional information regarding this
+configuration.</p>
+
+<h3 id="label-Main+and+instance+configurations">Main and instance configurations</h3>
+
+<p>The <code>config</code> option in both the main class and the instances can
+be configured to work together.</p>
+
+<p>The options in the <code>instance</code> config hash will merged with the
+ones from the main class and override any duplicates.</p>
+
+<h4 id="label-Simple+merging">Simple merging</h4>
+
+<pre class="code ruby"><code class="ruby">class { &#39;elasticsearch&#39;:
+  config =&gt; { &#39;cluster.name&#39; =&gt; &#39;clustername&#39; }
+}
+
+elasticsearch::instance { &#39;es-01&#39;:
+  config =&gt; { &#39;node.name&#39; =&gt; &#39;nodename&#39; }
+}
+elasticsearch::instance { &#39;es-02&#39;:
+  config =&gt; { &#39;node.name&#39; =&gt; &#39;nodename2&#39; }
+}</code></pre>
+
+<p>This example merges the <code>cluster.name</code> together with the
+<code>node.name</code> option.</p>
+
+<h4 id="label-Overriding">Overriding</h4>
+
+<p>When duplicate options are provided, the option in the instance config
+overrides the ones from the main class.</p>
+
+<pre class="code ruby"><code class="ruby">class { &#39;elasticsearch&#39;:
+  config =&gt; { &#39;cluster.name&#39; =&gt; &#39;clustername&#39; }
+}
+
+elasticsearch::instance { &#39;es-01&#39;:
+  config =&gt; { &#39;node.name&#39; =&gt; &#39;nodename&#39;, &#39;cluster.name&#39; =&gt; &#39;otherclustername&#39; }
+}
+
+elasticsearch::instance { &#39;es-02&#39;:
+  config =&gt; { &#39;node.name&#39; =&gt; &#39;nodename2&#39; }
+}</code></pre>
+
+<p>This will set the cluster name to <code>otherclustername</code> for the
+instance <code>es-01</code> but will keep it to <code>clustername</code>
+for instance <code>es-02</code></p>
+
+<h4 id="label-Configuration+writeup">Configuration writeup</h4>
+
+<p>The <code>config</code> hash can be written in 2 different ways:</p>
+
+<h5 id="label-Full+hash+writeup">Full hash writeup</h5>
+
+<p>Instead of writing the full hash representation:</p>
+
+<pre class="code ruby"><code class="ruby">class { &#39;elasticsearch&#39;:
+  config                 =&gt; {
+   &#39;cluster&#39;             =&gt; {
+     &#39;name&#39;              =&gt; &#39;ClusterName&#39;,
+     &#39;routing&#39;           =&gt; {
+        &#39;allocation&#39;     =&gt; {
+          &#39;awareness&#39;    =&gt; {
+            &#39;attributes&#39; =&gt; &#39;rack&#39;
+          }
+        }
+      }
+    }
+  }
+}</code></pre>
+
+<h5 id="label-Short+hash+writeup">Short hash writeup</h5>
+
+<pre class="code ruby"><code class="ruby">class { &#39;elasticsearch&#39;:
+  config =&gt; {
+    &#39;cluster&#39; =&gt; {
+      &#39;name&#39; =&gt; &#39;ClusterName&#39;,
+      &#39;routing.allocation.awareness.attributes&#39; =&gt; &#39;rack&#39;
+    }
+  }
+}</code></pre>
+
+<h4 id="label-Keystore+Settings">Keystore Settings</h4>
+
+<p>Recent versions of Elasticsearch include the <a
+href="https://www.elastic.co/guide/en/elasticsearch/reference/current/secure-settings.html">elasticsearch-keystore</a>
+utility to create and manage the <code>elasticsearch.keystore</code> file
+which can store sensitive values for certain settings. The settings and
+values for this file can be controlled by this module. Settings follow the
+behavior of the <code>config</code> parameter for the top-level
+Elasticsearch class and <code>elasticsearch::instance</code> defined types.
+That is, you may define keystore settings globally, and all values will be
+merged with instance-specific settings for final inclusion in the
+<code>elasticsearch.keystore</code> file. Note that each hash key is passed
+to the <code>elasticsearch-keystore</code> utility in a straightforward
+manner, so you should specify the hash passed to <code>secrets</code> in
+flattened form (that is, without full nested hash representation).</p>
+
+<p>For example, to define cloud plugin credentials for all instances:</p>
+
+<pre class="code ruby"><code class="ruby">class { &#39;elasticsearch&#39;:
+  secrets =&gt; {
+    &#39;cloud.aws.access_key&#39; =&gt; &#39;AKIA....&#39;,
+    &#39;cloud.aws.secret_key&#39; =&gt; &#39;AKIA....&#39;,
+  }
+}</code></pre>
+
+<p>Or, to instead control these settings for a single instance:</p>
+
+<pre class="code ruby"><code class="ruby">elasticsearch::instance { &#39;es-01&#39;:
+  secrets =&gt; {
+    &#39;cloud.aws.access_key&#39; =&gt; &#39;AKIA....&#39;,
+    &#39;cloud.aws.secret_key&#39; =&gt; &#39;AKIA....&#39;,
+  }
+}</code></pre>
+
+<h5 id="label-Purging+Secrets">Purging Secrets</h5>
+
+<p>By default, if a secret setting exists on-disk that is not present in the
+<code>secrets</code> hash, this module will leave it intact. If you prefer
+to keep only secrets in the keystore that are specified in the
+<code>secrets</code> hash, use the <code>purge_secrets</code> boolean
+parameter either on the <code>elasticsearch</code> class to set it globally
+or per-instance.</p>
+
+<h5 id="label-Notifying+Services">Notifying Services</h5>
+
+<p>Any changes to keystore secrets will notify running elasticsearch services
+by respecting the <code>restart_on_change</code> and
+<code>restart_config_change</code> parameters.</p>
+
+<h2 id="label-Reference">Reference</h2>
+
+<p>Class parameters are available in <a
+href="https://elastic.github.io/puppet-elasticsearch/puppet_classes/elasticsearch.html">the
+auto-generated documentation pages</a>. Autogenerated documentation for
+types, providers, and ruby helpers is also available on the same
+documentation site.</p>
+
+<h2 id="label-Limitations">Limitations</h2>
+
+<p>This module is built upon and tested against the versions of Puppet listed
+in the metadata.json file (i.e. the listed compatible versions on the
+Puppet Forge).</p>
+
+<p>The module has been tested on:</p>
+<ul><li>
+<p>Debian 7/8</p>
+</li><li>
+<p>CentOS 6/7</p>
+</li><li>
+<p>OracleLinux 6/7</p>
+</li><li>
+<p>Ubuntu 14.04, 16.04</p>
+</li><li>
+<p>OpenSuSE 42.x</p>
+</li><li>
+<p>SLES 12</p>
+</li></ul>
+
+<p>Other distro&#39;s that have been reported to work:</p>
+<ul><li>
+<p>RHEL 6</p>
+</li><li>
+<p>Scientific 6</p>
+</li></ul>
+
+<p>Testing on other platforms has been light and cannot be guaranteed.</p>
+
+<h2 id="label-Development">Development</h2>
+
+<p>Please see the <a href="CONTRIBUTING.md">CONTRIBUTING.md</a> file for
+instructions regarding development environments and testing.</p>
+
+<h2 id="label-Support">Support</h2>
+
+<p>Need help? Join us in <a
+href="https://webchat.freenode.net?channels=%23elasticsearch">#elasticsearch</a>
+on Freenode IRC or on the <a href="https://discuss.elastic.co/">discussion
+forum</a>.</p>
+</div></div>
+
+      <div id="footer">
+  Generated on Tue Jun 13 16:54:46 2017 by
+  <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
+  0.9.9 (ruby-2.3.1).
+</div>
+
+    </div>
+  </body>
+</html>
