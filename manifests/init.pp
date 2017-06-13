@@ -381,7 +381,7 @@ class elasticsearch(
   $repo_proxy                     = undef,
   $repo_stage                     = false,
   $repo_version                   = undef,
-  $restart_on_change              = false,
+  $restart_on_change              = $elasticsearch::params::restart_on_change,
   $restart_config_change          = $elasticsearch::restart_on_change,
   $restart_package_change         = $elasticsearch::restart_on_change,
   $restart_plugin_change          = $elasticsearch::restart_on_change,
