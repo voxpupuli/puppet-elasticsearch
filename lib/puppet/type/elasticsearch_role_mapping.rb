@@ -1,10 +1,7 @@
 Puppet::Type.newtype(:elasticsearch_role_mapping) do
-  desc "Type to model Elasticsearch role mappings."
+  desc 'Type to model Elasticsearch role mappings.'
 
-  ensurable do
-    defaultvalues
-    defaultto :present
-  end
+  ensurable
 
   newparam(:name, :namevar => true) do
     desc 'Role name.'

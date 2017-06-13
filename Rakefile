@@ -7,7 +7,8 @@ require 'net/http'
 require 'uri'
 require 'fileutils'
 require 'rspec/core/rake_task'
-require 'puppet-doc-lint/rake_task'
+require 'puppet-strings'
+require 'puppet-strings/tasks'
 require 'yaml'
 require 'json'
 
@@ -45,6 +46,25 @@ PuppetLint.configuration.ignore_paths = exclude_paths
 PuppetLint.configuration.log_format = \
   '%{path}:%{line}:%{check}:%{KIND}:%{message}'
 
+require 'puppet-strings/yard'
+PuppetStrings::Yard.setup!
+
+namespace :docs do
+  desc 'Evaluation documentation coverage'
+  task :coverage do
+    require 'puppet-strings/yard'
+
+    PuppetStrings::Yard.setup!
+    YARD::CLI::Stats.run(
+      %w[
+        --list-undoc
+        lib/**/*.rb
+        manifests/**/*.pp
+      ]
+    )
+  end
+end
+
 desc 'remove outdated module fixtures'
 task :spec_prune do
   mods = 'spec/fixtures/modules'
@@ -59,16 +79,6 @@ task :spec_prune do
   end
 end
 task :spec_prep => [:spec_prune]
-
-desc 'Run documentation tests'
-task :spec_docs do
-  results = PuppetDocLint::Runner.new.run(
-    FileList['**/*.pp'].exclude(*exclude_paths)
-  )
-
-  results.each(&:result_report)
-  abort 'Issues found' if results.map(&:percent_documented).any? { |n| n < 100 }
-end
 
 RSpec::Core::RakeTask.new(:spec_verbose) do |t|
   t.pattern = 'spec/{classes,defines,unit,functions,templates}/**/*_spec.rb'

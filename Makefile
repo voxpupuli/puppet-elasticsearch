@@ -44,7 +44,7 @@ test-integration: .vendor
 
 .PHONY: test-docs
 test-docs: .vendor
-	bundle exec rake spec_docs
+	bundle exec rake docs:coverage
 
 .PHONY: test-rspec
 test-rspec: .vendor

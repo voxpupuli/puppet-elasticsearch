@@ -1,28 +1,15 @@
-# == Class: elasticsearch::repo
-#
 # This class exists to install and manage yum and apt repositories
-# that contain elasticsearch official elasticsearch packages
-#
-#
-# === Parameters
-#
-# This class does not provide any parameters.
-#
-#
-# === Examples
-#
-# This class may be imported by other classes to use its functionality:
-#   class { 'elasticsearch::repo': }
+# that contain elasticsearch official elasticsearch packages.
 #
 # It is not intended to be used directly by external resources like node
 # definitions or other modules.
 #
+# @example importing this class to be used by other classes to use its functionality:
+#   class { 'elasticsearch::repo': }
 #
-# === Authors
-#
-# * Phil Fenstermacher <mailto:phillip.fenstermacher@gmail.com>
-# * Richard Pijnenburg <mailto:richard.pijnenburg@elasticsearch.com>
-# * Tyler Langlois <mailto:tyler.langlois@elastic.co>
+# @author Richard Pijnenburg <richard.pijnenburg@elasticsearch.com>
+# @author Phil Fenstermacher <phillip.fenstermacher@gmail.com>
+# @author Tyler Langlois <tyler.langlois@elastic.co>
 #
 class elasticsearch::repo {
 

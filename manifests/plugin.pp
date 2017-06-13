@@ -1,96 +1,64 @@
-# == Define: elasticsearch::plugin
-#
 # This define allows you to install arbitrary Elasticsearch plugins
 # either by using the default repositories or by specifying an URL
 #
 # All default values are defined in the elasticsearch::params class.
 #
+# @example install from official repository
+#   elasticsearch::plugin {'mobz/elasticsearch-head': module_dir => 'head'}
 #
-# === Parameters
+# @example installation using a custom URL
+#   elasticsearch::plugin { 'elasticsearch-jetty':
+#    module_dir => 'elasticsearch-jetty',
+#    url        => 'https://oss-es-plugins.s3.amazonaws.com/elasticsearch-jetty/elasticsearch-jetty-0.90.0.zip',
+#   }
 #
-# [*module_dir*]
+# @param ensure [String]
+#   Whether the plugin will be installed or removed.
+#   Set to 'absent' to ensure a plugin is not installed
+#
+# @param instances [Enum[String, Array]]
+#   Specify all the instances related
+#
+# @param module_dir [String]
 #   Directory name where the module has been installed
 #   This is automatically generated based on the module name
 #   Specify a value here to override the auto generated value
-#   Value type is string
-#   Default value: None
-#   This variable is optional
 #
-# [*ensure*]
-#   Whether the plugin will be installed or removed.
-#   Set to 'absent' to ensure a plugin is not installed
-#   Value type is string
-#   Default value: present
-#   This variable is optional
+# @param proxy_host [String]
+#   Proxy host to use when installing the plugin
 #
-# [*url*]
-#   Specify an URL where to download the plugin from.
-#   Value type is string
-#   Default value: None
-#   This variable is optional
+# @param proxy_password [String]
+#   Proxy auth password to use when installing the plugin
 #
-# [*source*]
+# @param proxy_port [Integer]
+#   Proxy port to use when installing the plugin
+#
+# @param proxy_username [String]
+#   Proxy auth username to use when installing the plugin
+#
+# @param source [String]
 #   Specify the source of the plugin.
 #   This will copy over the plugin to the node and use it for installation.
 #   Useful for offline installation
-#   Value type is string
-#   This variable is optional
 #
-# [*proxy_host*]
-#   Proxy host to use when installing the plugin
-#   Value type is string
-#   Default value: None
-#   This variable is optional
+# @param url [String]
+#   Specify an URL where to download the plugin from.
 #
-# [*proxy_port*]
-#   Proxy port to use when installing the plugin
-#   Value type is number
-#   Default value: None
-#   This variable is optional
+# @author Richard Pijnenburg <richard.pijnenburg@elasticsearch.com>
+# @author Matteo Sessa <matteo.sessa@catchoftheday.com.au>
+# @author Dennis Konert <dkonert@gmail.com>
+# @author Tyler Langlois <tyler.langlois@elastic.co>
 #
-# [*proxy_username*]
-#   Proxy auth username to use when installing the plugin
-#   Value type is string
-#   Default value: None
-#   This variable is optional
-#
-# [*proxy_password*]
-#   Proxy auth password to use when installing the plugin
-#   Value type is string
-#   Default value: None
-#   This variable is optional
-#
-# [*instances*]
-#   Specify all the instances related
-#   value type is string or array
-#
-# === Examples
-#
-# # From official repository
-# elasticsearch::plugin{'mobz/elasticsearch-head': module_dir => 'head'}
-#
-# # From custom url
-# elasticsearch::plugin{ 'elasticsearch-jetty':
-#  module_dir => 'elasticsearch-jetty',
-#  url        => 'https://oss-es-plugins.s3.amazonaws.com/elasticsearch-jetty/elasticsearch-jetty-0.90.0.zip',
-# }
-#
-# === Authors
-#
-# * Matteo Sessa <mailto:matteo.sessa@catchoftheday.com.au>
-# * Dennis Konert <mailto:dkonert@gmail.com>
-# * Richard Pijnenburg <mailto:richard.pijnenburg@elasticsearch.com>
-#
-define elasticsearch::plugin(
+define elasticsearch::plugin (
+  $ensure         = 'present',
   $instances      = undef,
   $module_dir     = undef,
-  $ensure         = 'present',
-  $url            = undef,
-  $source         = undef,
   $proxy_host     = undef,
+  $proxy_password = undef,
   $proxy_port     = undef,
   $proxy_username = undef,
-  $proxy_password = undef,
+  $source         = undef,
+  $url            = undef,
 ) {
 
   include elasticsearch
