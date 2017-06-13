@@ -1,0 +1,37 @@
+# This file is managed by Puppet -- <%= @name %>
+#
+# Set the 'jvm_options' parameter on the elasticsearch class to change this file.
+<%
+def set_default(options, match_string, default)
+  options.detect {|o| o.include?(match_string)} || options.push(default)
+end
+
+defaults = {
+  '-Xms' => '-Xms2g',
+  '-Xmx' => '-Xmx2g',
+  'UseConcMarkSweepGC' => '-XX:+UseConcMarkSweepGC',
+  'CMSInitiatingOccupancyFraction=' => '-XX:CMSInitiatingOccupancyFraction=75',
+  'UseCMSInitiatingOccupancyOnly' => '-XX:+UseCMSInitiatingOccupancyOnly',
+  'DisableExplicitGC' => '-XX:+DisableExplicitGC',
+  'AlwaysPreTouch' => '-XX:+AlwaysPreTouch',
+  'server' => '-server',
+  '-Xss' => '-Xss1m',
+  '-Djava.aws.headless=' => '-Djava.awt.headless=true',
+  '-Dfile.encoding=' => '-Dfile.encoding=UTF-8',
+  '-Djna.nosys=' => '-Djna.nosys=true',
+  '-Djdk.io.permissionsUseCanonicalPath' => '-Djdk.io.permissionsUseCanonicalPath=true',
+  '-Dio.netty.noUnsafe' => '-Dio.netty.noUnsafe=true',
+  '-Dio.netty.noKeySetOptimization' => '-Dio.netty.noKeySetOptimization=true',
+  '-Dio.netty.recycler.maxCapacityPerThread' => '-Dio.netty.recycler.maxCapacityPerThread=0',
+  '-Dlog4j.shutdownHookEnabled' => '-Dlog4j.shutdownHookEnabled=false',
+  '-Dlog4j2.disable.jmx' => '-Dlog4j2.disable.jmx=true',
+  '-Dlog4j.skipJansi' => '-Dlog4j.skipJansi=true',
+  'HeapDumpOnOutOfMemoryError' => '-XX:+HeapDumpOnOutOfMemoryError'
+}
+defaults.each {|k,v| set_default(@jvm_options, k, v)}
+
+-%>
+
+<% @jvm_options.sort.each do |line| -%>
+<%= line %>
+<% end -%>
