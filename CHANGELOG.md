@@ -5,6 +5,7 @@
 #### Features
 
 #### Fixes
+* Fixed dependency order bug with the `elasticsearch_keystore` type and augeas defaults resource.
 
 ## 5.3.0 (June 5, 2017)
 
