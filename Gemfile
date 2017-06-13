@@ -38,3 +38,4 @@ gem 'puppet-lint-trailing_comma-check', :require => false
 gem 'puppet-lint-leading_zero-check', :require => false
 gem 'puppet-lint-file_ensure-check', :require => false
 gem 'puppet-lint-empty_string-check', :require => false
+gem 'puppet-lint-param-docs', :require => false
