@@ -18,6 +18,8 @@
 #
 class elasticsearch::params {
 
+  $restart_on_change = false
+
   $logging_defaults = {
     'action'                 => 'DEBUG',
     'com.amazonaws'          => 'WARN',
