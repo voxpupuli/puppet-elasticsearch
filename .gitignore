@@ -5,6 +5,7 @@ spec/fixtures/modules
 .vendor
 .vagrant
 .ruby-version
+.yardoc
 pkg/
 spec/reports/
 spec/logs

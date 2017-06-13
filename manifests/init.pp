@@ -1,504 +1,412 @@
-# == Class: elasticsearch
+# Top-level Elasticsearch class which may manage installation of the
+# Elasticsearch package, package repository, java package, and other
+# global options and parameters.
 #
-# This class is able to install or remove elasticsearch on a node.
-# It manages the status of the related service.
+# @summary Manages the installation of Elasticsearch and related options.
 #
-# === Parameters
+# @example install Elasticsearch
+#   class { 'elasticsearch': }
 #
-# [*ensure*]
-#   String. Controls if the managed resources shall be <tt>present</tt> or
-#   <tt>absent</tt>. If set to <tt>absent</tt>:
-#   * The managed software packages are being uninstalled.
-#   * Any traces of the packages will be purged as good as possible. This may
-#     include existing configuration files. The exact behavior is provider
-#     dependent. Q.v.:
-#     * Puppet type reference: {package, "purgeable"}[http://j.mp/xbxmNP]
-#     * {Puppet's package provider source code}[http://j.mp/wtVCaL]
-#   * System modifications (if any) will be reverted as good as possible
-#     (e.g. removal of created users, services, changed log settings, ...).
-#   * This is thus destructive and should be used with care.
-#   Defaults to <tt>present</tt>.
+# @example removal and decommissioning
+#   class { 'elasticsearch':
+#     ensure => 'absent',
+#   }
 #
-# [*autoupgrade*]
-#   Boolean. If set to <tt>true</tt>, any managed package gets upgraded
-#   on each Puppet run when the package provider is able to find a newer
-#   version than the present one. The exact behavior is provider dependent.
-#   Q.v.:
-#   * Puppet type reference: {package, "upgradeable"}[http://j.mp/xbxmNP]
-#   * {Puppet's package provider source code}[http://j.mp/wtVCaL]
-#   Defaults to <tt>false</tt>.
+# @example install everything but disable service(s) afterwards
+#   class { 'elasticsearch':
+#     status => 'disabled',
+#   }
 #
-# [*status*]
-#   String to define the status of the service. Possible values:
-#   * <tt>enabled</tt>: Service is running and will be started at boot time.
-#   * <tt>disabled</tt>: Service is stopped and will not be started at boot
-#     time.
-#   * <tt>running</tt>: Service is running but will not be started at boot time.
-#     You can use this to start a service on the first Puppet run instead of
-#     the system startup.
-#   * <tt>unmanaged</tt>: Service will not be started at boot time and Puppet
-#     does not care whether the service is running or not. For example, this may
-#     be useful if a cluster management software is used to decide when to start
-#     the service plus assuring it is running on the desired node.
-#   Defaults to <tt>enabled</tt>. The singular form ("service") is used for the
-#   sake of convenience. Of course, the defined status affects all services if
-#   more than one is managed (see <tt>service.pp</tt> to check if this is the
-#   case).
+# @param ensure [String]
+#   Controls if the managed resources shall be `present` or `absent`.
+#   If set to `absent`, the managed software packages will be uninstalled, and
+#   any traces of the packages will be purged as well as possible, possibly
+#   including existing configuration files.
+#   System modifications (if any) will be reverted as well as possible (e.g.
+#   removal of created users, services, changed log settings, and so on).
+#   This is a destructive parameter and should be used with care.
 #
-# [*version*]
-#   String to set the specific version you want to install.
-#   Defaults to <tt>false</tt>.
+# @param api_basic_auth_password [String]
+#   Defines the default REST basic auth password for API authentication.
 #
-# [*restart_on_change*]
-#   Boolean that determines if the application should be automatically restarted
+# @param api_basic_auth_username [String]
+#   Defines the default REST basic auth username for API authentication.
+#
+# @param api_ca_file [String]
+#   Path to a CA file which will be used to validate server certs when
+#   communicating with the Elasticsearch API over HTTPS.
+#
+# @param api_ca_path [String]
+#   Path to a directory with CA files which will be used to validate server
+#   certs when communicating with the Elasticsearch API over HTTPS.
+#
+# @param api_host [String]
+#   Default host to use when accessing Elasticsearch APIs.
+#
+# @param api_port [Integer]
+#   Default port to use when accessing Elasticsearch APIs.
+#
+# @param api_protocol [String]
+#   Default protocol to use when accessing Elasticsearch APIs.
+#
+# @param api_timeout [Integer]
+#   Default timeout (in seconds) to use when accessing Elasticsearch APIs.
+#
+# @param autoupgrade [Boolean]
+#   If set to `true`, any managed package will be upgraded on each Puppet run
+#   when the package provider is able to find a newer version than the present
+#   one. The exact behavior is provider dependent (see
+#   {package, "upgradeable"}[http://j.mp/xbxmNP] in the Puppet documentation).
+#
+# @param config [Hash]
+#   Elasticsearch configuration hash.
+#
+# @param config_hiera_merge [Boolean]
+#   Enable Hiera merging for the config hash.
+#
+# @param configdir [String]
+#   Directory containing the elasticsearch configuration.
+#   Use this setting if your packages deviate from the norm (`/etc/elasticsearch`)
+#
+# @param daily_rolling_date_pattern [String]
+#   File pattern for the file appender log when file_rolling_type is 'dailyRollingFile'.
+#
+# @param datadir [String]
+#   Allows you to set the data directory of Elasticsearch.
+#
+# @param datadir_instance_directories [Boolean]
+#   Control whether individual directories for instances will be created within
+#   each instance's data directorry.
+#
+# @param default_logging_level [String]
+#   Default logging level for Elasticsearch.
+#
+# @param elasticsearch_group [String]
+#   The group Elasticsearch should run as. This also sets file group
+#   permissions.
+#
+# @param elasticsearch_user [String]
+#   The user Elasticsearch should run as. This also sets file ownership.
+#
+# @param file_rolling_type [String]
+#   Configuration for the file appender rotation. It can be 'dailyRollingFile'
+#   or 'rollingFile'. The first rotates by name, and the second one by size.
+#
+# @param indices [Hash]
+#   Define indices via a hash. This is mainly used with Hiera's auto binding.
+#
+# @param indices_hiera_merge [Boolean]
+#   Enable Hiera's merging function for indices.
+#
+# @param init_defaults [Hash]
+#   Defaults file content in hash representation.
+#
+# @param init_defaults_file [String]
+#   Defaults file as puppet resource.
+#
+# @param init_template [String]
+#   Service file as a template.
+#
+# @param instances [Hash]
+#   Define instances via a hash. This is mainly used with Hiera's auto binding.
+#
+# @param instances_hiera_merge [Boolean]
+#   Enable Hiera's merging function for the instances.
+#
+# @param java_install [Boolean]
+#   Install java which is required for Elasticsearch.
+#
+# @param java_package [String]
+#   Custom java package to be used when managing Java with `java_install`.
+#
+# @param jvm_options [Array]
+#   Array of options to set in jvm_options.
+#
+# @param logdir [String]
+#   Directory that will be used for Elasticsearch logging.
+#
+# @param logging_config [Hash]
+#   Representation of information to be included in the logging.yml file.
+#
+# @param logging_file [String]
+#   Instead of a hash, you may supply a `puppet://` file source for the
+#   logging.yml file.
+#
+# @param logging_template [String]
+#   Use a custom logging template - just supply the relative path, i.e.
+#   `$module/elasticsearch/logging.yml.erb`
+#
+# @param manage_repo [Boolean]
+#   Enable repo management by enabling official Elastic repositories.
+#
+# @param package_dir [String]
+#   Directory where packages are downloaded to.
+#
+# @param package_dl_timeout [Integer]
+#   For http, https, and ftp downloads, you may set how long the exec resource
+#   may take.
+#
+# @param package_name [String]
+#   Name Of the package to install.
+#
+# @param package_pin [Boolean]
+#   Enables package version pinning.
+#   This pins the package version to the set version number and avoids
+#   package upgrades.
+#
+# @param package_provider [String]
+#   Method to install the packages, currently only `package` is supported.
+#
+# @param package_url [String]
+#   URL of the package to download.
+#   This can be an http, https, or ftp resource for remote packages, or a
+#   `puppet://` resource or `file:/` for local packages
+#
+# @param pipelines [Hash]
+#   Define pipelines via a hash. This is mainly used with Hiera's auto binding.
+#
+# @param pipelines_hiera_merge [Boolean]
+#   Enable Hiera's merging function for pipelines.
+#
+# @param plugindir [String]
+#   Directory containing elasticsearch plugins.
+#   Use this setting if your packages deviate from the norm (/usr/share/elasticsearch/plugins)
+#
+# @param plugins [Hash]
+#   Define plugins via a hash. This is mainly used with Hiera's auto binding.
+#
+# @param plugins_hiera_merge [Boolean]
+#   Enable Hiera's merging function for the plugins.
+#
+# @param proxy_url [String]
+#   For http and https downloads, you may set a proxy server to use. By default,
+#   no proxy is used.
+#   Format: `proto://[user:pass@]server[:port]/`
+#
+# @param purge_configdir [Boolean]
+#   Purge the config directory of any unmanaged files.
+#
+# @param purge_package_dir [Boolean]
+#   Purge package directory on removal
+#
+# @param purge_secrets [Boolean]
+#   Whether or not keys present in the keystore will be removed if they are not
+#   present in the specified secrets hash.
+#
+# @param repo_baseurl [String]
+#   If a custom repository URL is needed (such as for installations behind
+#   restrictive firewalls), this parameter overrides the upstream repository
+#   URL. Note that any additional changes to the repository metdata (such as
+#   signing keys and so on) will need to be handled appropriately.
+#
+# @param repo_key_id [String]
+#   The apt GPG key id.
+#
+# @param repo_key_source [String]
+#   URL of the repository GPG key.
+#
+# @param repo_priority [Integer]
+#   Repository priority. yum and apt supported.
+#
+# @param repo_proxy [String]
+#   URL for repository proxy.
+#
+# @param repo_stage [Boolean]
+#   Use stdlib stage setup for managing the repo instead of anchoring.
+#
+# @param repo_version [String]
+#   Elastic repositories are versioned per major version (0.90, 1.0). This
+#   parameter controls which version to use.
+#
+# @param restart_on_change [Boolean]
+#   Determines if the application should be automatically restarted
 #   whenever the configuration, package, or plugins change. Enabling this
 #   setting will cause Elasticsearch to restart whenever there is cause to
 #   re-read configuration files, load new plugins, or start the service using an
 #   updated/changed executable. This may be undesireable in highly available
-#   environments.
+#   environments. If all other restart_* parameters are left unset, the value of
+#   `restart_on_change` is used for all other restart_*_change defaults.
 #
-#   If all other restart_* parameters are left unset, the value of
-#   restart_on_change is used for all other restart_*_change defaults.
-#
-#   Defaults to <tt>false</tt>, which disables automatic restarts. Setting to
-#   <tt>true</tt> will restart the application on any config, plugin, or
-#   package change.
-#
-# [*restart_config_change*]
-#   Boolean that determines if the application should be automatically restarted
+# @param restart_config_change [Boolean]
+#   Determines if the application should be automatically restarted
 #   whenever the configuration changes. This includes the Elasticsearch
 #   configuration file, any service files, and defaults files.
 #   Disabling automatic restarts on config changes may be desired in an
 #   environment where you need to ensure restarts occur in a controlled/rolling
 #   manner rather than during a Puppet run.
 #
-#   Defaults to <tt>undef</tt>, in which case the default value of
-#   restart_on_change will be used (defaults to false).
-#
-# [*restart_package_change*]
-#   Boolean that determines if the application should be automatically restarted
+# @param restart_package_change [Boolean]
+#   Determines if the application should be automatically restarted
 #   whenever the package (or package version) for Elasticsearch changes.
 #   Disabling automatic restarts on package changes may be desired in an
 #   environment where you need to ensure restarts occur in a controlled/rolling
 #   manner rather than during a Puppet run.
 #
-#   Defaults to <tt>undef</tt>, in which case the default value of
-#   restart_on_change will be used (defaults to false).
-#
-# [*restart_plugin_change*]
-#   Boolean that determines if the application should be automatically restarted
-#   whenever plugins are installed or removed.
+# @param restart_plugin_change [Boolean]
+#   Determines if the application should be automatically restarted whenever
+#   plugins are installed or removed.
 #   Disabling automatic restarts on plugin changes may be desired in an
 #   environment where you need to ensure restarts occur in a controlled/rolling
 #   manner rather than during a Puppet run.
 #
-#   Defaults to <tt>undef</tt>, in which case the default value of
-#   restart_on_change will be used (defaults to false).
+# @param roles [Hash]
+#   Define roles via a hash. This is mainly used with Hiera's auto binding.
 #
-# [*configdir*]
-#   Path to directory containing the elasticsearch configuration.
-#   Use this setting if your packages deviate from the norm (/etc/elasticsearch)
+# @param roles_hiera_merge [Boolean]
+#   Enable Hiera's merging function for roles.
 #
-# [*plugindir*]
-#   Path to directory containing the elasticsearch plugins
-#   Use this setting if your packages deviate from the norm (/usr/share/elasticsearch/plugins)
-#
-# [*package_url*]
-#   Url to the package to download.
-#   This can be a http,https or ftp resource for remote packages
-#   puppet:// resource or file:/ for local packages
-#
-# [*package_provider*]
-#   Way to install the packages, currently only packages are supported.
-#
-# [*package_dir*]
-#   Directory where the packages are downloaded to
-#
-# [*package_name*]
-#   Name of the package to install
-#
-# [*purge_package_dir*]
-#   Purge package directory on removal
-#
-# [*package_dl_timeout*]
-#   For http,https and ftp downloads you can set howlong the exec resource may take.
-#   Defaults to: 600 seconds
-#
-# [*proxy_url*]
-#   For http and https downloads you can set a proxy server to use
-#   Format: proto://[user:pass@]server[:port]/
-#   Defaults to: undef (proxy disabled)
-#
-# [*elasticsearch_user*]
-#   The user Elasticsearch should run as. This also sets the file rights.
-#
-# [*elasticsearch_group*]
-#   The group Elasticsearch should run as. This also sets the file rights
-#
-# [*purge_configdir*]
-#   Purge the config directory for any unmanaged files
-#
-# [*service_provider*]
-#   Service provider to use. By Default when a single service provider is possibe that one is selected.
-#
-# [*init_defaults*]
-#   Defaults file content in hash representation
-#
-# [*init_defaults_file*]
-#   Defaults file as puppet resource
-#
-# [*init_template*]
-#   Service file as a template
-#
-# [*config*]
-#   Elasticsearch configuration hash
-#
-# [*config_hiera_merge*]
-#   Enable Hiera merging for the config hash
-#   Defaults to: false
-#
-# [*datadir*]
-#   Allows you to set the data directory of Elasticsearch
-#
-# [*datadir_instance_directories*]
-#   Control whether individual directories for instances will be created within
-#   each instance's data directorry.
-#   Value type is Boolean
-#   Defaults to: true
-#
-# [*logdir*]
-#   Use different directory for logging
-#
-# [*java_install*]
-#  Install java which is required for Elasticsearch.
-#  Defaults to: false
-#
-# [*java_package*]
-#   If you like to install a custom java package, put the name here.
-#
-# [*jvm_options*]
-#   Array of options to set in jvm_options.
-#   Value type is Array
-#   Default value: []
-#
-# [*manage_repo*]
-#   Enable repo management by enabling our official repositories
-#
-# [*repo_baseurl*]
-#   If a custom repository URL is needed (such as for installations behind
-#   restrictive firewalls), this parameter overrides the upstream repository
-#   URL. Note that any additional changes to the repository metdata (such as
-#   signing keys and so on) will need to be handled appropriately.
-#   Value type is String
-#   Default value: undef
-#
-# [*repo_version*]
-#   Our repositories are versioned per major version (0.90, 1.0) select here which version you want
-#
-# [*repo_priority*]
-#   Repository priority. yum and apt supported.
-#   Default: undef
-#
-# [*repo_key_id*]
-#   String.  The apt GPG key id
-#   Default: 46095ACC8548582C1A2699A9D27D666CD88E42B4
-#
-# [*repo_key_source*]
-#   String.  URL of the apt GPG key
-#   Default: http://packages.elastic.co/GPG-KEY-elasticsearch
-#
-# [*repo_proxy*]
-#   String.  URL for repository proxy
-#   Default: undef
-#
-# [*logging_config*]
-#   Hash representation of information you want in the logging.yml file
-#
-# [*logging_file*]
-#   Instead of a hash you can supply a puppet:// file source for the logging.yml file
-#
-# [*logging_template*]
-#  Use a custom logging template - just supply the relative path ie ${module}/elasticsearch/logging.yml.erb
-#
-# [*default_logging_level*]
-#   Default logging level for Elasticsearch.
-#   Defaults to: INFO
-#
-# [*repo_stage*]
-#   Use stdlib stage setup for managing the repo, instead of anchoring
-#
-# [*indices*]
-#   Define indices via a hash. This is mainly used with Hiera's auto binding
-#   Defaults to: undef
-#
-# [*indices_hiera_merge*]
-#   Enable Hiera's merging function for indices
-#   Defaults to: false
-#
-# [*instances*]
-#   Define instances via a hash. This is mainly used with Hiera's auto binding
-#   Defaults to: undef
-#
-# [*instances_hiera_merge*]
-#   Enable Hiera's merging function for the instances
-#   Defaults to: false
-#
-# [*pipelines*]
-#   Define pipelines via a hash. This is mainly used with Hiera's auto binding
-#   Defaults to: undef
-#
-# [*pipelines_hiera_merge*]
-#   Enable Hiera's merging function for pipelines
-#   Defaults to: false
-#
-# [*plugins*]
-#   Define plugins via a hash. This is mainly used with Hiera's auto binding
-#   Defaults to: undef
-#
-# [*plugins_hiera_merge*]
-#   Enable Hiera's merging function for the plugins
-#   Defaults to: false
-#
-# [*roles*]
-#   Define roles via a hash. This is mainly used with Hiera's auto binding
-#   Defaults to: undef
-#
-# [*roles_hiera_merge*]
-#   Enable Hiera's merging function for roles
-#   Defaults to: false
-#
-# [*scripts*]
-#   Define scripts via a hash. This is mainly used with Hiera's auto binding
-#   Defaults to: undef
-#
-# [*scripts_hiera_merge*]
-#   Enable Hiera's merging function for scripts
-#   Defaults to: false
-#
-# [*templates*]
-#   Define templates via a hash. This is mainly used with Hiera's auto binding
-#   Defaults to: undef
-#
-# [*templates_hiera_merge*]
-#   Enable Hiera's merging function for templates
-#   Defaults to: false
-#
-# [*users*]
-#   Define templates via a hash. This is mainly used with Hiera's auto binding
-#   Defaults to: undef
-#
-# [*users_hiera_merge*]
-#   Enable Hiera's merging function for users
-#   Defaults to: false
-#
-# [*package_pin*]
-#   Enables package version pinning.
-#   This pins the package version to the set version number and avoids
-#   package upgrades.
-#   Defaults to: true
-#
-# [*api_protocol*]
-#   Default protocol to use when accessing Elasticsearch APIs.
-#   Defaults to: http
-#
-# [*api_host*]
-#   Default host to use when accessing Elasticsearch APIs.
-#   Defaults to: localhost
-#
-# [*api_port*]
-#   Default port to use when accessing Elasticsearch APIs.
-#   Defaults to: 9200
-#
-# [*api_timeout*]
-#   Default timeout (in seconds) to use when accessing Elasticsearch APIs.
-#   Defaults to: 10
-#
-# [*validate_tls*]
-#   Enable TLS/SSL validation on API calls.
-#   Defaults to: true
-#
-# [*api_basic_auth_username*]
-#   Defines the default REST basic auth username for API authentication.
-#   Defaults to: undef
-#
-# [*api_basic_auth_password*]
-#   Defines the default REST basic auth password for API authentication.
-#   Defaults to: undef
-#
-# [*api_ca_file*]
-#   Path to a CA file which will be used to validate server certs when
-#   communicating with the Elasticsearch API over HTTPS.
-#   Defaults to: undef
-#
-# [*api_ca_path*]
-#   Path to a directory with CA files which will be used to validate server
-#   certs when communicating with the Elasticsearch API over HTTPS.
-#   Defaults to: undef
-#
-# [*system_key*]
-#   Source for the Shield/x-pack system key. Valid values are any that are
-#   supported for the file resource `source` parameter.
-#   Value type is string
-#   Default value: undef
-#
-# [*file_rolling_type*]
-#   Configuration for the file appender rotation. It can be 'dailyRollingFile'
-#   or 'rollingFile'. The first rotates by name, and the second one by size.
-#   Value type is string
-#   Default value: dailyRollingFile
-#
-# [*daily_rolling_date_pattern*]
-#   File pattern for the file appender log when file_rolling_type is 'dailyRollingFile'
-#   Value type is string
-#   Default value: "'.'yyyy-MM-dd"
-#
-# [*rolling_file_max_backup_index*]
+# @param rolling_file_max_backup_index [Integer]
 #   Max number of logs to store whern file_rolling_type is 'rollingFile'
-#   Value type is integer
-#   Default value: 1
 #
-# [*rolling_file_max_file_size*]
+# @param rolling_file_max_file_size [String]
 #   Max log file size when file_rolling_type is 'rollingFile'
-#   Value type is string
-#   Default value: 10MB
 #
-# [*security_plugin*]
-#   Which security plugin will be used to manage users, roles, and
-#   certificates. Valid values are 'shield' and 'x-pack'
-#   Value type is string
-#   Default value: undef
+# @param scripts [Hash]
+#   Define scripts via a hash. This is mainly used with Hiera's auto binding.
 #
-# [*security_logging_content*]
-#   File content for shield/x-pack logging configuration file (will be placed
-#   into logging.yml or log4j2.properties file as appropriate).
-#   Default value: undef
+# @param scripts_hiera_merge [Boolean]
+#   Enable Hiera's merging function for scripts.
 #
-# [*security_logging_source*]
-#   File source for shield/x-pack logging configuration file (will be placed
-#   into logging.yml or log4j2.properties file as appropriate).
-#   Default value: undef
-#
-# [*secrets*]
+# @param secrets [Hash]
 #   Optional default configuration hash of key/value pairs to store in the
 #   Elasticsearch keystore file. If unset, the keystore is left unmanaged.
-#   Value type is hash
-#   Default value: undef
 #
-# [*purge_secrets*]
-#   Whether or not keys present in the keystore will be removed if they are not
-#   present in the specified secrets hash.
-#   Value type is Boolean
-#   Default value: false
+# @param security_logging_content [String]
+#   File content for shield/x-pack logging configuration file (will be placed
+#   into logging.yml or log4j2.properties file as appropriate).
 #
-# The default values for the parameters are set in elasticsearch::params. Have
-# a look at the corresponding <tt>params.pp</tt> manifest file if you need more
-# technical information about them.
+# @param security_logging_source [String]
+#   File source for shield/x-pack logging configuration file (will be placed
+#   into logging.yml or log4j2.properties file as appropriate).
 #
-# === Examples
+# @param security_plugin [String]
+#   Which security plugin will be used to manage users, roles, and
+#   certificates. Valid values are 'shield' and 'x-pack'.
 #
-# * Installation, make sure service is running and will be started at boot time:
-#     class { 'elasticsearch': }
+# @param service_provider [String]
+#   Service provider to use. By Default when a single service provider is
+#   possible, that one is selected.
 #
-# * Removal/decommissioning:
-#     class { 'elasticsearch':
-#       ensure => 'absent',
-#     }
+# @param status [String]
+#   To define the status of the service. If set to `enabled`, the service will
+#   be run and will be started at boot time. If set to `disabled`, the service
+#   is stopped and will not be started at boot time. If set to `running`, the
+#   service will be run but will not be started at boot time. You may use this
+#   to start a service on the first Puppet run instead of the system startup.
+#   If set to `unmanaged`, the service will not be started at boot time and Puppet
+#   does not care whether the service is running or not. For example, this may
+#   be useful if a cluster management software is used to decide when to start
+#   the service plus assuring it is running on the desired node.
 #
-# * Install everything but disable service(s) afterwards
-#     class { 'elasticsearch':
-#       status => 'disabled',
-#     }
+# @param system_key [String]
+#   Source for the Shield/x-pack system key. Valid values are any that are
+#   supported for the file resource `source` parameter.
 #
+# @param templates [Hash]
+#   Define templates via a hash. This is mainly used with Hiera's auto binding.
 #
-# === Authors
+# @param templates_hiera_merge [Boolean]
+#   Enable Hiera's merging function for templates.
 #
-# * Richard Pijnenburg <mailto:richard.pijnenburg@elasticsearch.com>
+# @param users [Hash]
+#   Define templates via a hash. This is mainly used with Hiera's auto binding.
+#
+# @param users_hiera_merge [Boolean]
+#   Enable Hiera's merging function for users.
+#
+# @param validate_tls [Boolean]
+#   Enable TLS/SSL validation on API calls.
+#
+# @param version [String]
+#   To set the specific version you want to install.
+#
+# @author Richard Pijnenburg <richard.pijnenburg@elasticsearch.com>
+# @author Tyler Langlois <tyler.langlois@elastic.co>
 #
 class elasticsearch(
-  $ensure                         = $elasticsearch::params::ensure,
-  $status                         = $elasticsearch::params::status,
-  $restart_on_change              = $elasticsearch::params::restart_on_change,
-  $restart_config_change          = $elasticsearch::restart_on_change,
-  $restart_package_change         = $elasticsearch::restart_on_change,
-  $restart_plugin_change          = $elasticsearch::restart_on_change,
-  $autoupgrade                    = $elasticsearch::params::autoupgrade,
-  $version                        = false,
-  $package_provider               = 'package',
-  $package_url                    = undef,
-  $package_dir                    = $elasticsearch::params::package_dir,
-  $package_name                   = $elasticsearch::params::package,
-  $package_pin                    = true,
-  $purge_package_dir              = $elasticsearch::params::purge_package_dir,
-  $package_dl_timeout             = $elasticsearch::params::package_dl_timeout,
-  $proxy_url                      = undef,
-  $elasticsearch_user             = $elasticsearch::params::elasticsearch_user,
-  $elasticsearch_group            = $elasticsearch::params::elasticsearch_group,
+  $ensure                         = 'present',
+  $api_basic_auth_password        = undef,
+  $api_basic_auth_username        = undef,
+  $api_ca_file                    = undef,
+  $api_ca_path                    = undef,
+  $api_host                       = 'localhost',
+  $api_port                       = 9200,
+  $api_protocol                   = 'http',
+  $api_timeout                    = 10,
+  $autoupgrade                    = false,
+  $config                         = undef,
+  $config_hiera_merge             = false,
   $configdir                      = $elasticsearch::params::configdir,
-  $purge_configdir                = $elasticsearch::params::purge_configdir,
-  $service_provider               = 'init',
+  $daily_rolling_date_pattern     = '"\'.\'yyyy-MM-dd"',
+  $datadir                        = $elasticsearch::params::datadir,
+  $datadir_instance_directories   = true,
+  $default_logging_level          = 'INFO',
+  $elasticsearch_group            = $elasticsearch::params::elasticsearch_group,
+  $elasticsearch_user             = $elasticsearch::params::elasticsearch_user,
+  $file_rolling_type              = 'dailyRollingFile',
+  $indices                        = undef,
+  $indices_hiera_merge            = false,
   $init_defaults                  = undef,
   $init_defaults_file             = undef,
   $init_template                  = "${module_name}/etc/init.d/${elasticsearch::params::init_template}",
-  $config                         = undef,
-  $config_hiera_merge             = false,
-  $datadir                        = $elasticsearch::params::datadir,
-  $datadir_instance_directories   = true,
-  $logdir                         = $elasticsearch::params::logdir,
-  $plugindir                      = $elasticsearch::params::plugindir,
+  $instances                      = undef,
+  $instances_hiera_merge          = false,
   $java_install                   = false,
   $java_package                   = undef,
   $jvm_options                    = [],
-  $manage_repo                    = false,
-  $repo_baseurl                   = undef,
-  $repo_version                   = undef,
-  $repo_priority                  = undef,
-  $repo_key_id                    = '46095ACC8548582C1A2699A9D27D666CD88E42B4',
-  $repo_key_source                = 'https://artifacts.elastic.co/GPG-KEY-elasticsearch',
-  $repo_proxy                     = undef,
-  $logging_file                   = undef,
+  $logdir                         = '/var/log/elasticsearch',
   $logging_config                 = undef,
+  $logging_file                   = undef,
   $logging_template               = undef,
-  $default_logging_level          = $elasticsearch::params::default_logging_level,
-  $repo_stage                     = false,
-  $indices                        = undef,
-  $indices_hiera_merge            = false,
-  $instances                      = undef,
-  $instances_hiera_merge          = false,
+  $manage_repo                    = false,
+  $package_dir                    = $elasticsearch::params::package_dir,
+  $package_dl_timeout             = 600,
+  $package_name                   = $elasticsearch::params::package,
+  $package_pin                    = true,
+  $package_provider               = 'package',
+  $package_url                    = undef,
   $pipelines                      = undef,
   $pipelines_hiera_merge          = false,
+  $plugindir                      = $elasticsearch::params::plugindir,
   $plugins                        = undef,
   $plugins_hiera_merge            = false,
+  $proxy_url                      = undef,
+  $purge_configdir                = false,
+  $purge_package_dir              = false,
+  $purge_secrets                  = false,
+  $repo_baseurl                   = undef,
+  $repo_key_id                    = '46095ACC8548582C1A2699A9D27D666CD88E42B4',
+  $repo_key_source                = 'https://artifacts.elastic.co/GPG-KEY-elasticsearch',
+  $repo_priority                  = undef,
+  $repo_proxy                     = undef,
+  $repo_stage                     = false,
+  $repo_version                   = undef,
+  $restart_on_change              = false,
+  $restart_config_change          = $elasticsearch::restart_on_change,
+  $restart_package_change         = $elasticsearch::restart_on_change,
+  $restart_plugin_change          = $elasticsearch::restart_on_change,
   $roles                          = undef,
   $roles_hiera_merge              = false,
+  $rolling_file_max_backup_index  = 1,
+  $rolling_file_max_file_size     ='10MB',
   $scripts                        = undef,
   $scripts_hiera_merge            = false,
+  $secrets                        = undef,
+  $security_logging_content       = undef,
+  $security_logging_source        = undef,
+  $security_plugin                = undef,
+  $service_provider               = 'init',
+  $status                         = 'enabled',
+  $system_key                     = undef,
   $templates                      = undef,
   $templates_hiera_merge          = false,
   $users                          = undef,
   $users_hiera_merge              = false,
-  $api_protocol                   = 'http',
-  $api_host                       = 'localhost',
-  $api_port                       = 9200,
-  $api_timeout                    = 10,
-  $api_basic_auth_username        = undef,
-  $api_basic_auth_password        = undef,
-  $api_ca_file                    = undef,
-  $api_ca_path                    = undef,
   $validate_tls                   = true,
-  $system_key                     = undef,
-  $file_rolling_type              = $elasticsearch::params::file_rolling_type,
-  $daily_rolling_date_pattern     = $elasticsearch::params::daily_rolling_date_pattern,
-  $rolling_file_max_backup_index  = $elasticsearch::params::rolling_file_max_backup_index,
-  $rolling_file_max_file_size     = $elasticsearch::params::rolling_file_max_file_size,
-  $security_plugin                = undef,
-  $security_logging_content       = undef,
-  $security_logging_source        = undef,
-  $secrets                        = undef,
-  $purge_secrets                  = false,
+  $version                        = false,
 ) inherits elasticsearch::params {
 
   anchor {'elasticsearch::begin': }
-
 
   #### Validate parameters
 

@@ -9,10 +9,7 @@ Puppet::Type.newtype(:elasticsearch_pipeline) do
 
   desc 'Manages Elasticsearch ingest pipelines.'
 
-  ensurable do
-    defaultvalues
-    defaultto :present
-  end
+  ensurable
 
   newparam(:name, :namevar => true) do
     desc 'Pipeline name.'

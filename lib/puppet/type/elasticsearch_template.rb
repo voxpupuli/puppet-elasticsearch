@@ -13,10 +13,7 @@ Puppet::Type.newtype(:elasticsearch_template) do
 
   desc 'Manages Elasticsearch index templates.'
 
-  ensurable do
-    defaultvalues
-    defaultto :present
-  end
+  ensurable
 
   newparam(:name, :namevar => true) do
     desc 'Template name.'

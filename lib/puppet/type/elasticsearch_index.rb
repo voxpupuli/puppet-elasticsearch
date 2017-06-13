@@ -10,10 +10,7 @@ Puppet::Type.newtype(:elasticsearch_index) do
 
   desc 'Manages Elasticsearch index settings.'
 
-  ensurable do
-    defaultvalues
-    defaultto :present
-  end
+  ensurable
 
   newparam(:name, :namevar => true) do
     desc 'Index name.'

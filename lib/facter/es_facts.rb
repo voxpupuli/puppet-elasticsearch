@@ -4,6 +4,8 @@ require 'yaml'
 
 # Helper module to encapsulate custom fact injection
 module EsFacts
+
+  # Add a fact to the catalog of host facts
   def self.add_fact(prefix, key, value)
     key = "#{prefix}_#{key}".to_sym
     ::Facter.add(key) do
@@ -11,6 +13,7 @@ module EsFacts
     end
   end
 
+  # Helper to determine the instance port number
   def self.get_port(config)
     enabled = 'http.enabled'
     port = 'http.port'
@@ -23,6 +26,7 @@ module EsFacts
     end
   end
 
+  # Entrypoint for custom fact populator
   def self.run
     dir_prefix = '/etc/elasticsearch'
     ports = []

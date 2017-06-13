@@ -1,22 +1,12 @@
-# == Class: elasticsearch::package::pin
-#
-# Controls package pinning for the Elasticsearch package.
-#
-# === Parameters
-#
-# This class does not provide any parameters.
-#
-# === Examples
-#
-# This class may be imported by other classes to use its functionality:
-#   class { 'elasticsearch::package::pin': }
-#
-# It is not intended to be used directly by external resources like node
+# This is not intended to be used directly by external resources like node
 # definitions or other modules.
 #
-# === Authors
+# @summary Controls package pinning for the Elasticsearch package.
 #
-# * Tyler Langlois <mailto:tyler@elastic.co>
+# @example This class may be imported by other classes to use its functionality
+#   class { 'elasticsearch::package::pin': }
+#
+# @author Tyler Langlois <tyler.langlois@elastic.co>
 #
 class elasticsearch::package::pin {
 

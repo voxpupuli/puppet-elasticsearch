@@ -1,12 +1,16 @@
 module Puppet_X
   module Elastic
+    # Recursively implode a hash into dot-delimited structure of Hash
+    # keys/values.
     def self.deep_implode(hash)
       ret = Hash.new
       implode ret, hash
       ret
     end
 
-    def self.implode(new_hash, hash, path=[])
+    # Recursively descend into hash values, flattening the key structure into
+    # dot-delimited keyed Hash.
+    def self.implode(new_hash, hash, path = [])
       hash.sort_by{|k,v| k.length}.reverse.each do |key, value|
         new_path = path + [key]
         case value
