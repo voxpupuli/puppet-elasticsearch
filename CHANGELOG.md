@@ -1,6 +1,7 @@
-## x.x.x (Month Day, Year)
+## 5.3.1 (June 14, 2017)
 
 ### Summary
+Minor release to fix bugs related to the `elasticsearch_keystore` type and generated docs.
 
 #### Features
 * Moved documentation to Yard for doc auto-generation for all classes/types/etc.
