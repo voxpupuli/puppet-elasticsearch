@@ -2,7 +2,9 @@ require 'socket'
 require 'timeout'
 
 module Puppet
+  # Namespace for miscellaneous tools
   module Util
+    # Helper class to assist with talking to the Elasticsearch service ports.
     class EsInstanceValidator
       attr_reader :instance_server
       attr_reader :instance_port

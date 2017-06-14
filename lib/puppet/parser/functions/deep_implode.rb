@@ -24,6 +24,8 @@ module Puppet::Parser::Functions
     concatenated or merged, respectively.
     When duplace paths for a key are generated, the function will prefer
     to retain keys with the longest root key.
+
+    @return Hash
     ENDHEREDOC
 
     if args.length != 1

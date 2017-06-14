@@ -1,26 +1,14 @@
-# == Class: elasticsearch::config
-#
 # This class exists to coordinate all configuration related actions,
 # functionality and logical units in a central place.
-#
-#
-# === Parameters
-#
-# This class does not provide any parameters.
-#
-#
-# === Examples
-#
-# This class may be imported by other classes to use its functionality:
-#   class { 'elasticsearch::config': }
 #
 # It is not intended to be used directly by external resources like node
 # definitions or other modules.
 #
+# @example importing this class into other classes to use its functionality:
+#   class { 'elasticsearch::config': }
 #
-# === Authors
-#
-# * Richard Pijnenburg <mailto:richard.pijnenburg@elasticsearch.com>
+# @author Richard Pijnenburg <richard.pijnenburg@elasticsearch.com>
+# @author Tyler Langlois <tyler.langlois@elastic.co>
 #
 class elasticsearch::config {
 

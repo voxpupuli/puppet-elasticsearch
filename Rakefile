@@ -7,7 +7,8 @@ require 'net/http'
 require 'uri'
 require 'fileutils'
 require 'rspec/core/rake_task'
-require 'puppet-doc-lint/rake_task'
+require 'puppet-strings'
+require 'puppet-strings/tasks'
 require 'yaml'
 require 'json'
 
@@ -35,7 +36,6 @@ PuppetSyntax.future_parser = true if ENV['FUTURE_PARSER'] == 'true'
   80chars
   class_inherits_from_params_class
   class_parameter_defaults
-  documentation
   single_quote_string_with_variable
 ).each do |check|
   PuppetLint.configuration.send("disable_#{check}")
@@ -60,16 +60,6 @@ task :spec_prune do
 end
 task :spec_prep => [:spec_prune]
 
-desc 'Run documentation tests'
-task :spec_docs do
-  results = PuppetDocLint::Runner.new.run(
-    FileList['**/*.pp'].exclude(*exclude_paths)
-  )
-
-  results.each(&:result_report)
-  abort 'Issues found' if results.map(&:percent_documented).any? { |n| n < 100 }
-end
-
 RSpec::Core::RakeTask.new(:spec_verbose) do |t|
   t.pattern = 'spec/{classes,defines,unit,functions,templates}/**/*_spec.rb'
   t.rspec_opts = [
@@ -88,6 +78,15 @@ end
 task :spec_unit => :spec_prep
 
 task :beaker => [:spec_prep, 'artifacts:prep']
+
+desc 'Run all linting/unit tests.'
+task :intake => %i[
+  metadata_lint
+  syntax
+  lint
+  validate
+  spec_unit
+]
 
 desc 'Run integration tests'
 RSpec::Core::RakeTask.new('beaker:integration') do |c|

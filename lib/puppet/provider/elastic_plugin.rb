@@ -4,8 +4,13 @@ require 'uri'
 require 'puppet_x/elastic/es_versioning'
 require 'puppet_x/elastic/plugin_name'
 
+# Generalized parent class for providers that behave like Elasticsearch's plugin
+# command line tool.
 class Puppet::Provider::ElasticPlugin < Puppet::Provider
 
+  # Elasticsearch's home directory.
+  #
+  # @return String
   def homedir
     case Facter.value('osfamily')
     when 'OpenBSD'
@@ -29,6 +34,9 @@ class Puppet::Provider::ElasticPlugin < Puppet::Provider
     end
   end
 
+  # Returns the content that should be written to the pluginfile.
+  #
+  # @return String
   def pluginfile_content
     return @resource[:name] if is1x?
 
@@ -40,6 +48,10 @@ class Puppet::Provider::ElasticPlugin < Puppet::Provider
     end
   end
 
+  # Get the path for the `.name` file for the provider helper.
+  #
+  # @return String
+  #   path for the pluginfile
   def pluginfile
     if @resource[:plugin_path]
       File.join(
@@ -56,17 +68,26 @@ class Puppet::Provider::ElasticPlugin < Puppet::Provider
     end
   end
 
+  # Write plugfile file `.name` contents to disk.
   def writepluginfile
     File.open(pluginfile, 'w') do |file|
       file.write pluginfile_content
     end
   end
 
+  # Get pluginfile contents.
+  #
+  # @return String
   def readpluginfile
     f = File.open(pluginfile)
     f.readline
   end
 
+  # Intelligently returns the correct installation arguments for version 1
+  # version of Elasticsearch.
+  #
+  # @return [Array<String>]
+  #   arguments to pass to the plugin installation utility
   def install1x
     if !@resource[:url].nil?
       [
@@ -87,6 +108,11 @@ class Puppet::Provider::ElasticPlugin < Puppet::Provider
     end
   end
 
+  # Intelligently returns the correct installation arguments for version 2
+  # version of Elasticsearch.
+  #
+  # @return [Array<String>]
+  #   arguments to pass to the plugin installation utility
   def install2x
     if !@resource[:url].nil?
       [
@@ -103,6 +129,11 @@ class Puppet::Provider::ElasticPlugin < Puppet::Provider
     end
   end
 
+  # Format proxy arguments for consumption by the elasticsearch plugin
+  # management tool (i.e., Java properties).
+  #
+  # @return Array
+  #   of flags for command-line tools
   def proxy_args url
     parsed = URI(url)
     ['http', 'https'].map do |schema|
@@ -115,6 +146,7 @@ class Puppet::Provider::ElasticPlugin < Puppet::Provider
     end.flatten.compact
   end
 
+  # Install this plugin on the host.
   def create
     commands = []
     commands += proxy_args(@resource[:proxy]) if is2x? and @resource[:proxy]
@@ -140,12 +172,14 @@ class Puppet::Provider::ElasticPlugin < Puppet::Provider
     writepluginfile
   end
 
+  # Remove this plugin from the host.
   def destroy
     with_environment do
       plugin(['remove', Puppet_X::Elastic::plugin_name(@resource[:name])])
     end
   end
 
+  # Determine the installed version of Elasticsearch on this host.
   def es_version
     Puppet_X::Elastic::EsVersioning.version(
       resource[:elasticsearch_package_name], resource.catalog
@@ -164,6 +198,7 @@ class Puppet::Provider::ElasticPlugin < Puppet::Provider
     Puppet::Util::Package.versioncmp(es_version, '2.2.0') >= 0
   end
 
+  # Determine the plugin version.
   def plugin_version(plugin_name)
     _vendor, _plugin, version = plugin_name.split('/')
     return es_version if is2x? && version.nil?

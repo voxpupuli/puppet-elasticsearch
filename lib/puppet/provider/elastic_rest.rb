@@ -2,6 +2,8 @@ require 'json'
 require 'net/http'
 require 'openssl'
 
+# Parent class encapsulating general-use functions for children REST-based
+# providers.
 class Puppet::Provider::ElasticREST < Puppet::Provider
   class << self
     attr_accessor :api_discovery_uri
@@ -12,10 +14,16 @@ class Puppet::Provider::ElasticREST < Puppet::Provider
     attr_accessor :metadata_pipeline
   end
 
+  # Fetch arbitrary metadata for the class from an instance object.
+  #
+  # @return String
   def metadata
     self.class.metadata
   end
 
+  # Perform a REST API request against the indicated endpoint.
+  #
+  # @return Net::HTTPResponse
   def self.rest http, \
                 req, \
                 validate_tls = true, \
@@ -49,6 +57,8 @@ class Puppet::Provider::ElasticREST < Puppet::Provider
     end
   end
 
+  # Helper to format a remote URL request for Elasticsearch which takes into
+  # account path ordering, et cetera.
   def self.format_uri(resource_path, property_flush = {})
     return api_uri if resource_path.nil?
     if discrete_resource_creation and not property_flush[:ensure].nil?
@@ -63,6 +73,12 @@ class Puppet::Provider::ElasticREST < Puppet::Provider
     end
   end
 
+  # Fetch Elasticsearch API objects. Accepts a variety of argument functions
+  # dictating how to connect to the Elasticsearch API.
+  #
+  # @return Array
+  #   an array of Hashes representing the found API objects, whether they be
+  #   templates, pipelines, et cetera.
   def self.api_objects protocol = 'http', \
                        validate_tls = true, \
                        host = 'localhost', \
@@ -98,6 +114,8 @@ class Puppet::Provider::ElasticREST < Puppet::Provider
     end
   end
 
+  # Passes API objects through arbitrary Procs/lambdas in order to postprocess
+  # API responses.
   def self.process_metadata(raw_metadata)
     if metadata_pipeline.is_a? Array and !metadata_pipeline.empty?
       metadata_pipeline.reduce(raw_metadata) do |md, processor|
@@ -108,6 +126,7 @@ class Puppet::Provider::ElasticREST < Puppet::Provider
     end
   end
 
+  # Fetch an array of provider objects from the Elasticsearch API.
   def self.instances
     api_objects.map { |resource| new resource }
   end
@@ -148,6 +167,8 @@ class Puppet::Provider::ElasticREST < Puppet::Provider
     @property_flush = {}
   end
 
+  # Call Elasticsearch's REST API to appropriately PUT/DELETE/or otherwise
+  # update any managed API objects.
   def flush
     uri = URI(
       format(
@@ -229,6 +250,7 @@ class Puppet::Provider::ElasticREST < Puppet::Provider
     end
   end
 
+  # Set this provider's `:ensure` property to `:present`.
   def create
     @property_flush[:ensure] = :present
   end
@@ -237,6 +259,7 @@ class Puppet::Provider::ElasticREST < Puppet::Provider
     @property_hash[:ensure] == :present
   end
 
+  # Set this provider's `:ensure` property to `:absent`.
   def destroy
     @property_flush[:ensure] = :absent
   end

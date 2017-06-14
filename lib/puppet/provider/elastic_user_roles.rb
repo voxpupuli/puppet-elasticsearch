@@ -1,9 +1,12 @@
 require 'puppet/provider/elastic_yaml'
 
+# Provider to help manage file-based Shield/X-Pack user/role configuration
+# files.
 class Puppet::Provider::ElasticUserRoles < Puppet::Provider::ElasticYaml
-
-  def self.parse text
-    text.split("\n").map{|l|l.strip}.select do |line|
+  # Override the ancestor `parse` method to process a users/roles file
+  # managed by the Elasticsearch user tools.
+  def self.parse(text)
+    text.split("\n").map(&:strip).select do |line|
       # Strip comments
       not line.start_with? '#' and not line.empty?
     end.map do |line|
@@ -24,7 +27,8 @@ class Puppet::Provider::ElasticUserRoles < Puppet::Provider::ElasticYaml
     end.to_a
   end
 
-  def self.to_file records
+  # Represent this user/role record as a correctly-formatted config file.
+  def self.to_file(records)
     debug "Flushing: #{records.inspect}"
     records.map do |record|
       record[:roles].map do |r|
@@ -39,7 +43,7 @@ class Puppet::Provider::ElasticUserRoles < Puppet::Provider::ElasticYaml
     end.join("\n") + "\n"
   end
 
-  def self.skip_record? record
+  def self.skip_record?(_record)
     false
   end
 end

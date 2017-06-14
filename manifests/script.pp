@@ -1,30 +1,18 @@
-# == Define: elasticsearch::script
+#  This define allows you to insert, update or delete scripts that are used
+#  within Elasticsearch.
 #
-#  This define allows you to insert, update or delete scripts that are used within Elasticsearch
-#
-# === Parameters
-#
-# [*ensure*]
+# @param ensure [String]
 #   Controls the state of the script file resource to manage.
 #   Values are simply passed through to the `file` resource.
-#   Value type is string
-#   Default value: present
 #
-# [*source*]
+# @param recurse [Enum[String, Boolean]]
+#   Will be passed through to the script file resource.
+#
+# @param source [String]
 #   Puppet source of the script
-#   Value type is string
-#   Default value: undef
-#   This variable is mandatory
 #
-# [*recurse*]
-#   `recurse` parameter that will be passed through to the script file
-#   resource.
-#   Default value: undef
-#
-# === Authors
-#
-# * Richard Pijnenburg <mailto:richard.pijnenburg@elasticsearch.com>
-# * Tyler Langlois <mailto:tyler@elastic.co>
+# @author Richard Pijnenburg <richard.pijnenburg@elasticsearch.com>
+# @author Tyler Langlois <tyler.langlois@elastic.co>
 #
 define elasticsearch::script (
   $source,

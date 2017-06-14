@@ -1,57 +1,24 @@
-# == Class: elasticsearch::params
+# This class exists to:
 #
-# This class exists to
 # 1. Declutter the default value assignment for class parameters.
 # 2. Manage internally used module variables in a central place.
 #
 # Therefore, many operating system dependent differences (names, paths, ...)
 # are addressed in here.
 #
+# See the {Puppet docs on using parameterized Classes}[http://j.mp/nVpyWY] for
+# more information.
 #
-# === Parameters
+# @summary Provides operating system-specific defaults for init.pp
 #
-# This class does not provide any parameters.
+# @example this class is not intended to be used directly.
 #
-#
-# === Examples
-#
-# This class is not intended to be used directly.
-#
-#
-# === Links
-#
-# * {Puppet Docs: Using Parameterized Classes}[http://j.mp/nVpyWY]
-#
-#
-# === Authors
-#
-# * Richard Pijnenburg <mailto:richard@ispavailability.com>
+# @author Richard Pijnenburg <richard.pijnenburg@elasticsearch.com>
+# @author Tyler Langlois <tyler.langlois@elastic.co>
 #
 class elasticsearch::params {
 
-  #### Default values for the parameters of the main module class, init.pp
-
-  # ensure
-  $ensure = 'present'
-
-  # autoupgrade
-  $autoupgrade = false
-
-  # service status
-  $status = 'enabled'
-
-  # restart on configuration change?
   $restart_on_change = false
-
-  # Purge configuration directory
-  $purge_configdir = false
-
-  $purge_package_dir = false
-
-  # package download timeout
-  $package_dl_timeout = 600 # 300 seconds is default of puppet
-
-  $default_logging_level = 'INFO'
 
   $logging_defaults = {
     'action'                 => 'DEBUG',
@@ -59,14 +26,6 @@ class elasticsearch::params {
     'index.search.slowlog'   => 'TRACE, index_search_slow_log_file',
     'index.indexing.slowlog' => 'TRACE, index_indexing_slow_log_file',
   }
-
-  $file_rolling_type = 'dailyRollingFile'
-
-  $daily_rolling_date_pattern = '"\'.\'yyyy-MM-dd"'
-
-  $rolling_file_max_backup_index = 1
-
-  $rolling_file_max_file_size ='10MB'
 
   #### Internal module values
 
@@ -112,7 +71,6 @@ class elasticsearch::params {
   case $::kernel {
     'Linux': {
       $configdir   = '/etc/elasticsearch'
-      $logdir      = '/var/log/elasticsearch'
       $package_dir = '/opt/elasticsearch/swdl'
       $installpath = '/opt/elasticsearch'
       $homedir     = '/usr/share/elasticsearch'
@@ -121,7 +79,6 @@ class elasticsearch::params {
     }
     'OpenBSD': {
       $configdir   = '/etc/elasticsearch'
-      $logdir      = '/var/log/elasticsearch'
       $package_dir = '/var/cache/elasticsearch'
       $installpath = undef
       $homedir     = '/usr/local/elasticsearch'

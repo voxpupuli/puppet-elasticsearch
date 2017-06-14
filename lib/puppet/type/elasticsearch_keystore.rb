@@ -3,10 +3,7 @@ require 'puppet/parameter/boolean'
 Puppet::Type.newtype(:elasticsearch_keystore) do
   desc 'Manages an Elasticsearch keystore settings file.'
 
-  ensurable do
-    defaultvalues
-    defaultto :present
-  end
+  ensurable
 
   newparam(:instance, :namevar => true) do
     desc 'Elasticsearch instance this keystore belongs to.'
