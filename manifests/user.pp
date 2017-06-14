@@ -1,41 +1,25 @@
-# == Define: elasticsearch::user
-#
 # Manages shield/x-pack users.
 #
-# === Parameters
+# @example creates and manage a user with membership in the 'logstash' and 'kibana4' roles.
+#   elasticsearch::user { 'bob':
+#     password => 'foobar',
+#     roles    => ['logstash', 'kibana4'],
+#   }
 #
-# [*ensure*]
+# @param ensure [String]
 #   Whether the user should be present or not.
-#   Set to 'absent' to ensure a user is not installed
-#   Value type is string
-#   Default value: present
-#   This variable is optional
+#   Set to `absent` to ensure a user is not installed
 #
-# [*password*]
+# @param password [String]
 #   Password for the given user. A plaintext password will be managed
 #   with the esusers utility and requires a refresh to update, while
 #   a hashed password from the esusers utility will be managed manually
 #   in the uses file.
-#   Value type is string
-#   Default value: undef
 #
-# [*roles*]
+# @param roles [Array]
 #   A list of roles to which the user should belong.
-#   Value type is array
-#   Default value: []
 #
-# === Examples
-#
-# # Creates and manages a user with membership in the 'logstash'
-# # and 'kibana4' roles.
-# elasticsearch::user { 'bob':
-#   password => 'foobar',
-#   roles    => ['logstash', 'kibana4'],
-# }
-#
-# === Authors
-#
-# * Tyler Langlois <mailto:tyler@elastic.co>
+# @author Tyler Langlois <tyler.langlois@elastic.co>
 #
 define elasticsearch::user (
   $password,

@@ -11,6 +11,8 @@ This function applies a suffix to all elements in an array.
     array_suffix(['a','b','c'], 'p')
 
 Will return: ['ap','bp','cp']
+
+@return Array
     EOS
   ) do |arguments|
 

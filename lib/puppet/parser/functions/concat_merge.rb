@@ -16,6 +16,8 @@ module Puppet::Parser::Functions
 
     When there is a duplicate key that is not an array, the key in
     the rightmost hash will "win."
+
+    @return String
     ENDHEREDOC
 
     if args.length < 2

@@ -8,10 +8,7 @@ Puppet::Type.newtype(:elasticsearch_user) do
   feature :manages_plaintext_passwords,
     'The provider can control the password in plaintext form.'
 
-  ensurable do
-    defaultvalues
-    defaultto :present
-  end
+  ensurable
 
   newparam(:name, :namevar => true) do
     desc 'User name.'

@@ -1,69 +1,52 @@
-# == Class: elasticsearch::service
-#
 # This class exists to coordinate all service management related actions,
 # functionality and logical units in a central place.
 #
-# <b>Note:</b> "service" is the Puppet term and type for background processes
+# *Note*: "service" is the Puppet term and type for background processes
 # in general and is used in a platform-independent way. E.g. "service" means
 # "daemon" in relation to Unix-like systems.
 #
+# @param ensure [String]
+#   Controls if the managed resources shall be `present` or `absent`.
+#   If set to `absent`, the managed software packages will be uninstalled, and
+#   any traces of the packages will be purged as well as possible, possibly
+#   including existing configuration files.
+#   System modifications (if any) will be reverted as well as possible (e.g.
+#   removal of created users, services, changed log settings, and so on).
+#   This is a destructive parameter and should be used with care.
 #
-# === Parameters
-#
-# [*ensure*]
-#   String. Controls if the managed resources shall be <tt>present</tt> or
-#   <tt>absent</tt>. If set to <tt>absent</tt>:
-#   * The managed software packages are being uninstalled.
-#   * Any traces of the packages will be purged as good as possible. This may
-#     include existing configuration files. The exact behavior is provider
-#     dependent. Q.v.:
-#     * Puppet type reference: {package, "purgeable"}[http://j.mp/xbxmNP]
-#     * {Puppet's package provider source code}[http://j.mp/wtVCaL]
-#   * System modifications (if any) will be reverted as good as possible
-#     (e.g. removal of created users, services, changed log settings, ...).
-#   * This is thus destructive and should be used with care.
-#   Defaults to <tt>present</tt>.
-#
-# [*status*]
-#   String to define the status of the service. Possible values:
-#   * <tt>enabled</tt>: Service is running and will be started at boot time.
-#   * <tt>disabled</tt>: Service is stopped and will not be started at boot
-#     time.
-#   * <tt>running</tt>: Service is running but will not be started at boot time.
-#     You can use this to start a service on the first Puppet run instead of
-#     the system startup.
-#   * <tt>unmanaged</tt>: Service will not be started at boot time and Puppet
-#     does not care whether the service is running or not. For example, this may
-#     be useful if a cluster management software is used to decide when to start
-#     the service plus assuring it is running on the desired node.
-#   Defaults to <tt>enabled</tt>. The singular form ("service") is used for the
-#   sake of convenience. Of course, the defined status affects all services if
-#   more than one is managed (see <tt>service.pp</tt> to check if this is the
-#   case).
-#
-# [*init_defaults*]
+# @param init_defaults [Hash]
 #   Defaults file content in hash representation
 #
-# [*init_defaults_file*]
+# @param init_defaults_file [String]
 #   Defaults file as puppet resource
 #
-# [*init_template*]
+# @param init_template [String]
 #   Service file as a template
 #
-# [*service_flags*]
-#   Service flags, used on OpenBSD for service configuration
+# @param service_flags [String]
+#   Flags to pass to the service.
 #
-# === Authors
+# @param status [String]
+#   Defines the status of the service. If set to `enabled`, the service is
+#   started and will be enabled at boot time. If set to `disabled`, the
+#   service is stopped and will not be started at boot time. If set to `running`,
+#   the service is started but will not be enabled at boot time. You may use
+#   this to start a service on the first Puppet run instead of the system startup.
+#   If set to `unmanaged`, the service will not be started at boot time and Puppet
+#   does not care whether the service is running or not. For example, this may
+#   be useful if a cluster management software is used to decide when to start
+#   the service plus assuring it is running on the desired node.
 #
-# * Richard Pijnenburg <mailto:richard.pijnenburg@elasticsearch.com>
+# @author Richard Pijnenburg <richard.pijnenburg@elasticsearch.com>
+# @author Tyler Langlois <tyler.langlois@elastic.co>
 #
 define elasticsearch::service(
   $ensure             = $elasticsearch::ensure,
-  $status             = $elasticsearch::status,
-  $init_defaults_file = undef,
   $init_defaults      = undef,
+  $init_defaults_file = undef,
   $init_template      = undef,
   $service_flags      = undef,
+  $status             = $elasticsearch::status,
 ) {
 
   case $elasticsearch::real_service_provider {

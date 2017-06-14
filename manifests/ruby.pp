@@ -1,31 +1,20 @@
-# == Define: elasticsearch::ruby
+# There are many ruby bindings for elasticsearch; this provides all
+# the ones we know about: http://www.elasticsearch.org/guide/clients/
 #
-# there are many ruby bindings for elasticsearch. This provides all
-# the ones we know about http://www.elasticsearch.org/guide/clients/
+# @example install the elasticsearch ruby library
+#   elasticsearch::ruby { 'elasticsearch': }
 #
-# === Parameters
+# @param ensure [String]
+#   Controls if the managed resources shall be `present` or `absent`.
+#   If set to `absent`, the managed software packages will be uninstalled, and
+#   any traces of the packages will be purged as well as possible, possibly
+#   including existing configuration files.
+#   System modifications (if any) will be reverted as well as possible (e.g.
+#   removal of created users, services, changed log settings, and so on).
+#   This is a destructive parameter and should be used with care.
 #
-# [*ensure*]
-#   String. Controls if the managed resources shall be <tt>present</tt> or
-#   <tt>absent</tt>. If set to <tt>absent</tt>:
-#   * The managed software packages are being uninstalled.
-#   * Any traces of the packages will be purged as good as possible. This may
-#     include existing configuration files. The exact behavior is provider
-#     dependent. Q.v.:
-#     * Puppet type reference: {package, "purgeable"}[http://j.mp/xbxmNP]
-#     * {Puppet's package provider source code}[http://j.mp/wtVCaL]
-#   * System modifications (if any) will be reverted as good as possible
-#     (e.g. removal of created users, services, changed log settings, ...).
-#   * This is thus destructive and should be used with care.
-#   Defaults to <tt>present</tt>.
-#
-# === Examples
-#
-# elasticsearch::ruby { 'elasticsearch':; }
-#
-# === Authors
-#
-# * Richard Pijnenburg <mailto:richard@ispavailability.com>
+# @author Richard Pijnenburg <richard.pijnenburg@elasticsearch.com>
+# @author Tyler Langlois <tyler.langlois@elastic.co>
 #
 define elasticsearch::ruby (
   $ensure = 'present'

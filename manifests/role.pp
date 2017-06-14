@@ -1,54 +1,39 @@
-# == Define: elasticsearch::role
-#
 # Manage shield/x-pack roles.
 #
-# === Parameters
-#
-# [*ensure*]
+# @param ensure [String]
 #   Whether the role should be present or not.
 #   Set to 'absent' to ensure a role is not present.
-#   Value type is string
-#   Default value: present
-#   This variable is optional
 #
-# [*privileges*]
+# @param mappings [Array]
+#   A list of optional mappings defined for this role.
+#
+# @param privileges [Hash]
 #   A hash of permissions defined for the role. Valid privilege settings can
 #   be found in the Shield/x-pack documentation.
-#   Value type is hash
-#   Default value: {}
 #
-# [*mappings*]
-#   A list of optional mappings defined for this role.
-#   Value type is array
-#   Default value: []
-#
-# === Examples
-#
-# # Creates and manages the role 'power_user' mapped to an LDAP group.
-# elasticsearch::role { 'power_user':
-#   privileges => {
-#     'cluster' => 'monitor',
-#     'indices' => {
-#       '*' => 'all',
+# @example create and manage the role 'power_user' mapped to an LDAP group.
+#   elasticsearch::role { 'power_user':
+#     privileges => {
+#       'cluster' => 'monitor',
+#       'indices' => {
+#         '*' => 'all',
+#       },
 #     },
-#   },
-#   mappings => [
-#     "cn=users,dc=example,dc=com",
-#   ],
-# }
+#     mappings => [
+#       "cn=users,dc=example,dc=com",
+#     ],
+#   }
 #
-# === Authors
-#
-# * Tyler Langlois <mailto:tyler@elastic.co>
+# @author Tyler Langlois <tyler.langlois@elastic.co>
 #
 define elasticsearch::role (
   $ensure     = 'present',
-  $privileges = {},
   $mappings   = [],
+  $privileges = {},
 ) {
   validate_string($ensure)
-  validate_hash($privileges)
   validate_array($mappings)
+  validate_hash($privileges)
   validate_slength($name, 30, 1)
   if $elasticsearch::security_plugin == undef or ! ($elasticsearch::security_plugin in ['shield', 'x-pack']) {
     fail("\"${elasticsearch::security_plugin}\" is not a valid security_plugin parameter value")

@@ -1,205 +1,158 @@
-# == Define: elasticsearch::instance
-#
 #  This define allows you to create or remove an elasticsearch instance
 #
-# === Parameters
+# @param ensure [String]
+#   Controls if the managed resources shall be `present` or `absent`.
+#   If set to `absent`, the managed software packages will be uninstalled, and
+#   any traces of the packages will be purged as well as possible, possibly
+#   including existing configuration files.
+#   System modifications (if any) will be reverted as well as possible (e.g.
+#   removal of created users, services, changed log settings, and so on).
+#   This is a destructive parameter and should be used with care.
 #
-# [*ensure*]
-#   String. Controls if the managed resources shall be <tt>present</tt> or
-#   <tt>absent</tt>. If set to <tt>absent</tt>:
-#   * The managed software packages are being uninstalled.
-#   * Any traces of the packages will be purged as good as possible. This may
-#     include existing configuration files. The exact behavior is provider
-#     dependent. Q.v.:
-#     * Puppet type reference: {package, "purgeable"}[http://j.mp/xbxmNP]
-#     * {Puppet's package provider source code}[http://j.mp/wtVCaL]
-#   * System modifications (if any) will be reverted as good as possible
-#     (e.g. removal of created users, services, changed log settings, ...).
-#   * This is thus destructive and should be used with care.
-#   Defaults to <tt>present</tt>.
-#
-# [*status*]
-#   String to define the status of the service. Possible values:
-#   * <tt>enabled</tt>: Service is running and will be started at boot time.
-#   * <tt>disabled</tt>: Service is stopped and will not be started at boot
-#     time.
-#   * <tt>running</tt>: Service is running but will not be started at boot time.
-#     You can use this to start a service on the first Puppet run instead of
-#     the system startup.
-#   * <tt>unmanaged</tt>: Service will not be started at boot time and Puppet
-#     does not care whether the service is running or not. For example, this may
-#     be useful if a cluster management software is used to decide when to start
-#     the service plus assuring it is running on the desired node.
-#   Defaults to <tt>enabled</tt>. The singular form ("service") is used for the
-#   sake of convenience. Of course, the defined status affects all services if
-#   more than one is managed (see <tt>service.pp</tt> to check if this is the
-#   case).
-#
-# [*config*]
-#   Elasticsearch configuration hash
-#
-# [*configdir*]
-#   Path to directory containing the elasticsearch configuration.
-#   Use this setting if your packages deviate from the norm (/etc/elasticsearch)
-#
-# [*datadir*]
-#   Allows you to set the data directory of Elasticsearch
-#
-# [*datadir_instance_directories*]
-#   Control whether individual directories for instances will be created within
-#   each instance's data directorry.
-#   Value type is Boolean
-#   Defaults to: true
-#
-# [*logging_file*]
-#   Instead of a hash you can supply a puppet:// file source for the logging.yml file
-#
-# [*logging_config*]
-#   Hash representation of information you want in the logging.yml file
-#
-# [*logging_template*]
-#  Use a custom logging template - just supply the reative path ie ${module}/elasticsearch/logging.yml.erb
-#
-# [*logging_level*]
-#   Default logging level for Elasticsearch.
-#   Defaults to: INFO
-#
-# [*deprecation_logging*]
-#   Wheter to enable deprecation logging. If enabled, deprecation logs will be
-#   saved to ${cluster.name}_deprecation.log in the elastic search log folder.
-#   Default value: false
-#
-# [*deprecation_logging_level*]
-#   Default deprecation logging level for Elasticsearch.
-#   Defaults to: DEBUG
-#
-# [*init_defaults*]
-#   Defaults file content in hash representation
-#
-# [*init_defaults_file*]
-#   Defaults file as puppet resource
-#
-# [*service_flags*]
-#   Service flags used for the OpenBSD service configuration, defaults to undef.
-#
-# [*init_template*]
-#   Service file as a template
-#
-# [*logdir*]
-#   Log directory for this instance.
-#
-# [*ssl*]
-#   Whether to manage TLS certificates for Shield. Requires the ca_certificate,
-#   certificate, private_key and keystore_password parameters to be set.
-#   Value type is boolean
-#   Default value: false
-#
-# [*ca_certificate*]
+# @param ca_certificate [String]
 #   Path to the trusted CA certificate to add to this node's java keystore.
-#   Value type is string
-#   Default value: undef
 #
-# [*certificate*]
+# @param certificate [String]
 #   Path to the certificate for this node signed by the CA listed in
 #   ca_certificate.
-#   Value type is string
-#   Default value: undef
 #
-# [*private_key*]
-#   Path to the key associated with this node's certificate.
-#   Value type is string
-#   Default value: undef
+# @param config [Hash]
+#   Elasticsearch configuration hash.
 #
-# [*keystore_password*]
+# @param configdir [String]
+#   Path to directory containing the elasticsearch configuration.
+#   Use this setting if your packages deviate from the norm (/etc/elasticsearch).
+#
+# @param daily_rolling_date_pattern [String]
+#   File pattern for the file appender log when file_rolling_type is `dailyRollingFile`
+#
+# @param datadir [String]
+#   Allows you to set the data directory of Elasticsearch
+#
+# @param datadir_instance_directories [Boolean]
+#   Control whether individual directories for instances will be created within
+#   each instance's data directory.
+#
+# @param deprecation_logging [Boolean]
+#   Wheter to enable deprecation logging. If enabled, deprecation logs will be
+#   saved to ${cluster.name}_deprecation.log in the elastic search log folder.
+#
+# @param deprecation_logging_level [String]
+#   Default deprecation logging level for Elasticsearch.
+#
+# @param file_rolling_type [String]
+#   Configuration for the file appender rotation. It can be `dailyRollingFile`
+#   or `rollingFile`. The first rotates by name, and the second one by size.
+#
+# @param init_defaults [Hash]
+#   Defaults file content in hash representation.
+#
+# @param init_defaults_file [String]
+#   Defaults file as puppet resource.
+#
+# @param init_template [String]
+#   Service file as a template
+#
+# @param keystore_password [String]
 #   Password to encrypt this node's Java keystore.
-#   Value type is string
-#   Default value: undef
 #
-# [*keystore_path*]
+# @param keystore_path [String]
 #   Custom path to the java keystore file. This parameter is optional.
-#   Value type is string
-#   Default value: undef
 #
-# [*system_key*]
-#   Source for the Shield system key. Valid values are any that are
-#   supported for the file resource `source` parameter.
-#   Value type is string
-#   Default value: undef
+# @param logdir [String]
+#   Log directory for this instance.
 #
-# [*file_rolling_type*]
-#   Configuration for the file appender rotation. It can be 'dailyRollingFile'
-#   or 'rollingFile'. The first rotates by name, and the second one by size.
-#   Value type is string
-#   Default value: dailyRollingFile
+# @param logging_config [Hash]
+#   Hash representation of information you want in the logging.yml file.
 #
-# [*daily_rolling_date_pattern*]
-#   File pattern for the file appender log when file_rolling_type is 'dailyRollingFile'
-#   Value type is string
-#   Default value: "'.'yyyy-MM-dd"
+# @param logging_file [String]
+#   Instead of a hash you can supply a puppet:// file source for the logging.yml file
 #
-# [*rolling_file_max_backup_index*]
-#   Max number of logs to store whern file_rolling_type is 'rollingFile'
-#   Value type is integer
-#   Default value: 1
+# @param logging_level [String]
+#   Default logging level for Elasticsearch.
 #
-# [*rolling_file_max_file_size*]
-#   Max log file size when file_rolling_type is 'rollingFile'
-#   Value type is string
-#   Default value: 10MB
+# @param logging_template [String]
+#  Use a custom logging template - just supply the reative path, ie
+#  $module_name/elasticsearch/logging.yml.erb
 #
-# [*security_plugin*]
+# @param private_key [String]
+#   Path to the key associated with this node's certificate.
+#
+# @param purge_secrets [Boolean]
+#   Whether or not keys present in the keystore will be removed if they are not
+#   present in the specified secrets hash.
+#
+# @param rolling_file_max_backup_index [Integer]
+#   Max number of logs to store whern file_rolling_type is `rollingFile`
+#
+# @param rolling_file_max_file_size [String]
+#   Max log file size when file_rolling_type is `rollingFile`
+#
+# @param secrets [Hash]
+#   Optional configuration hash of key/value pairs to store in the instance's
+#   Elasticsearch keystore file. If unset, the keystore is left unmanaged.
+#
+# @param security_plugin [String]
 #   Which security plugin will be used to manage users, roles, and
 #   certificates. Inherited from top-level Elasticsearch class.
 #
-# [*secrets*]
-#   Optional configuration hash of key/value pairs to store in the instance's
-#   Elasticsearch keystore file. If unset, the keystore is left unmanaged.
-#   Value type is hash
-#   Default value: undef
+# @param service_flags [String]
+#   Service flags used for the OpenBSD service configuration, defaults to undef.
 #
-# [*purge_secrets*]
-#   Whether or not keys present in the keystore will be removed if they are not
-#   present in the specified secrets hash.
-#   Value type is Boolean
-#   Default value: false
+# @param ssl [Boolean]
+#   Whether to manage TLS certificates for Shield. Requires the ca_certificate,
+#   certificate, private_key and keystore_password parameters to be set.
 #
-# === Authors
+# @param status [String]
+#   To define the status of the service. If set to `enabled`, the service will
+#   be run and will be started at boot time. If set to `disabled`, the service
+#   is stopped and will not be started at boot time. If set to `running`, the
+#   service will be run but will not be started at boot time. You may use this
+#   to start a service on the first Puppet run instead of the system startup.
+#   If set to `unmanaged`, the service will not be started at boot time and Puppet
+#   does not care whether the service is running or not. For example, this may
+#   be useful if a cluster management software is used to decide when to start
+#   the service plus assuring it is running on the desired node.
 #
-# * Tyler Langlois <mailto:tyler@elastic.co>
-# * Richard Pijnenburg <mailto:richard.pijnenburg@elasticsearch.com>
+# @param system_key [String]
+#   Source for the Shield system key. Valid values are any that are
+#   supported for the file resource `source` parameter.
 #
-define elasticsearch::instance(
+# @author Richard Pijnenburg <richard.pijnenburg@elasticsearch.com>
+# @author Tyler Langlois <tyler.langlois@elastic.co>
+#
+define elasticsearch::instance (
   $ensure                        = $elasticsearch::ensure,
-  $status                        = $elasticsearch::status,
+  $ca_certificate                = undef,
+  $certificate                   = undef,
   $config                        = undef,
   $configdir                     = undef,
+  $daily_rolling_date_pattern    = $elasticsearch::daily_rolling_date_pattern,
   $datadir                       = undef,
   $datadir_instance_directories  = $elasticsearch::datadir_instance_directories,
-  $logdir                        = undef,
-  $logging_file                  = undef,
-  $logging_config                = undef,
-  $logging_template              = undef,
-  $logging_level                 = $elasticsearch::default_logging_level,
   $deprecation_logging           = false,
   $deprecation_logging_level     = 'DEBUG',
-  $service_flags                 = undef,
+  $file_rolling_type             = $elasticsearch::file_rolling_type,
   $init_defaults                 = undef,
   $init_defaults_file            = undef,
   $init_template                 = $elasticsearch::init_template,
-  $ssl                           = false,
-  $ca_certificate                = undef,
-  $certificate                   = undef,
-  $private_key                   = undef,
   $keystore_password             = undef,
   $keystore_path                 = undef,
-  $system_key                    = $elasticsearch::system_key,
-  $file_rolling_type             = $elasticsearch::file_rolling_type,
-  $daily_rolling_date_pattern    = $elasticsearch::daily_rolling_date_pattern,
+  $logdir                        = undef,
+  $logging_config                = undef,
+  $logging_file                  = undef,
+  $logging_level                 = $elasticsearch::default_logging_level,
+  $logging_template              = undef,
+  $private_key                   = undef,
+  $purge_secrets                 = $elasticsearch::purge_secrets,
   $rolling_file_max_backup_index = $elasticsearch::rolling_file_max_backup_index,
   $rolling_file_max_file_size    = $elasticsearch::rolling_file_max_file_size,
-  $security_plugin               = $elasticsearch::security_plugin,
   $secrets                       = undef,
-  $purge_secrets                 = $elasticsearch::purge_secrets,
+  $security_plugin               = $elasticsearch::security_plugin,
+  $service_flags                 = undef,
+  $ssl                           = false,
+  $status                        = $elasticsearch::status,
+  $system_key                    = $elasticsearch::system_key,
 ) {
 
   require elasticsearch::params

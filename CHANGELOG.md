@@ -3,6 +3,7 @@
 ### Summary
 
 #### Features
+* Moved documentation to Yard for doc auto-generation for all classes/types/etc.
 
 #### Fixes
 * Fixed dependency order bug with the `elasticsearch_keystore` type and augeas defaults resource.

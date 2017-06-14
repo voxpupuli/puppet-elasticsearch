@@ -19,9 +19,9 @@ gem 'rubysl-securerandom'
 gem 'ci_reporter_rspec'
 gem 'rspec', '~> 3.0'
 gem 'rake'
-gem 'puppet-doc-lint'
 gem 'puppet-lint'
 gem 'puppetlabs_spec_helper'
+gem 'puppet-strings'
 gem 'puppet-syntax'
 gem 'rspec-puppet-facts'
 gem 'rspec-puppet-utils'
@@ -38,3 +38,4 @@ gem 'puppet-lint-trailing_comma-check', :require => false
 gem 'puppet-lint-leading_zero-check', :require => false
 gem 'puppet-lint-file_ensure-check', :require => false
 gem 'puppet-lint-empty_string-check', :require => false
+gem 'puppet-lint-param-docs', :require => false
