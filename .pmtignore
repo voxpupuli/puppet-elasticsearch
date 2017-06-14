@@ -1,7 +1,8 @@
-spec/
+Gemfile
+Gemfile.lock
 Rakefile
+doc/
 junit/
 log/
 logs/
-Gemfile
-Gemfile.lock
+spec/
