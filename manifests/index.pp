@@ -76,8 +76,9 @@ define elasticsearch::index (
   require elasticsearch
 
   es_instance_conn_validator { "${name}-index-conn-validator":
-    server => $api_host,
-    port   => $api_port,
+    server  => $api_host,
+    port    => $api_port,
+    timeout => $api_timeout,
   }
   -> elasticsearch_index { $name:
     ensure       => $ensure,
