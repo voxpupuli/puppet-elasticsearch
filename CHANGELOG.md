@@ -3,6 +3,7 @@
 ### Summary
 
 #### Features
+* The `api_timeout` parameter is now passed to the `es_instance_conn_validator` resource for index, pipeline, and template defined types.
 
 #### Fixes
 
