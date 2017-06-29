@@ -78,8 +78,9 @@ define elasticsearch::pipeline (
   require elasticsearch
 
   es_instance_conn_validator { "${name}-ingest-pipeline":
-    server => $api_host,
-    port   => $api_port,
+    server  => $api_host,
+    port    => $api_port,
+    timeout => $api_timeout,
   }
   -> elasticsearch_pipeline { $name:
     ensure       => $ensure,
