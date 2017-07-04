@@ -39,7 +39,7 @@
 define elasticsearch::service::openbsd(
   $ensure             = $elasticsearch::ensure,
   $init_template      = $elasticsearch::init_template,
-  $pid_dir            = $elasticsearch::pid_dir,
+  $pid_dir            = $elasticsearch::params::pid_dir,
   $service_flags      = undef,
   $status             = $elasticsearch::status,
 ) {
@@ -103,6 +103,7 @@ define elasticsearch::service::openbsd(
         ensure       => $ensure,
         content      => file($init_template),
         instance     => $name,
+        pid_dir      => $pid_dir,
         notify       => $notify_service,
         package_name => $elasticsearch::package_name,
       }
