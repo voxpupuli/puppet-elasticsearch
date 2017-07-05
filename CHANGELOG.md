@@ -6,6 +6,7 @@
 * The `api_timeout` parameter is now passed to the `es_instance_conn_validator` resource for index, pipeline, and template defined types.
 
 #### Fixes
+* Fixed an edge case with `es_instance_validator` in which ruby connection errors were not caught.
 
 ## 5.3.1 (June 14, 2017)
 

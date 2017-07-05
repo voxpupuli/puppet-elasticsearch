@@ -31,7 +31,7 @@ module Puppet
           begin
             TCPSocket.new(@instance_server, @instance_port).close
             true
-          rescue Errno::ECONNREFUSED, Errno::EHOSTUNREACH => e
+          rescue Errno::EADDRNOTAVAIL, Errno::ECONNREFUSED, Errno::EHOSTUNREACH => e
             Puppet.debug "Unable to connect to Elasticsearch instance (#{@instance_server}:#{@instance_port}): #{e.message}"
             false
           end
