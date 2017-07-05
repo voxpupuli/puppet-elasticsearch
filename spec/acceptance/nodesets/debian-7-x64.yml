@@ -10,4 +10,5 @@ HOSTS:
     docker_cmd: ["/sbin/init"]
     docker_preserve_image: true
     docker_image_commands:
+      - apt-get update
       - apt-get install -yq wget libssl-dev net-tools

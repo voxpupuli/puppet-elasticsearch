@@ -6,6 +6,9 @@ require 'infrataster/rspec'
 require 'rspec/retry'
 require_relative 'spec_helper_tls'
 
+# Default to 4.x AIO style if no type is specified.
+ENV['PUPPET_INSTALL_TYPE'] = 'agent' if ENV['PUPPET_INSTALL_TYPE'].nil?
+
 def test_settings
   RSpec.configuration.test_settings
 end
