@@ -10,46 +10,48 @@ cache:
 
 language: ruby
 
+script: bundle exec rake $TASK
+
 jobs:
   include:
-   - script: bundle exec rake intake
+   - stage: intake
      env:
-     - PUPPET_VERSION='~> 3.8'
+     - TASK=intake
      - PUPPET_VERSION='~> 4.10'
+   - env:
+     - TASK=intake
+     - PUPPET_VERSION='~> 3.8'
    - stage: acceptance
-     before_script: bundle exec rake spec_prep
-     script: bundle exec rake beaker:$PLATFORM
      env:
-     - PLATFORM=integration
-     - PLATFORM=centos-6-x64 PUPPET_INSTALL_TYPE=foss
-     - PLATFORM=centos-6-x64
-     - PLATFORM=centos-7-x64 PUPPET_INSTALL_TYPE=foss
-     - PLATFORM=centos-7-x64
-     - PLATFORM=debian-7-x64
-     - PLATFORM=debian-8-x64
-     - PLATFORM=ubuntu-server-1404-x64 PUPPET_INSTALL_TYPE=foss
-     - PLATFORM=ubuntu-server-1404-x64
-     - PLATFORM=ubuntu-server-1604-x64
-     - PLATFORM=opensuse-42-x64 PUPPET_INSTALL_TYPE=foss
-     - PLATFORM=oracle-6-x64
-     - PLATFORM=oracle-7-x64
-
-env:
-- PUPPET_VERSION='~> 3.8'
-- PUPPET_VERSION='~> 4.10'
-- PLATFORM=integration
-- PLATFORM=centos-6-x64 PUPPET_INSTALL_TYPE=foss
-- PLATFORM=centos-6-x64
-- PLATFORM=centos-7-x64 PUPPET_INSTALL_TYPE=foss
-- PLATFORM=centos-7-x64
-- PLATFORM=debian-7-x64
-- PLATFORM=debian-8-x64
-- PLATFORM=ubuntu-server-1404-x64 PUPPET_INSTALL_TYPE=foss
-- PLATFORM=ubuntu-server-1404-x64
-- PLATFORM=ubuntu-server-1604-x64
-- PLATFORM=opensuse-42-x64 PUPPET_INSTALL_TYPE=foss
-- PLATFORM=oracle-6-x64
-- PLATFORM=oracle-7-x64
+     - TASK=beaker:integration
+   - env:
+     - TASK=beaker:centos-6-x64
+     - PUPPET_INSTALL_TYPE=foss
+   - env:
+     - TASK=beaker:centos-6-x64
+   - env:
+     - TASK=beaker:centos-7-x64
+     - PUPPET_INSTALL_TYPE=foss
+   - env:
+     - TASK=beaker:centos-7-x64
+   - env:
+     - TASK=beaker:debian-7-x64
+   - env:
+     - TASK=beaker:debian-8-x64
+   - env:
+     - TASK=beaker:ubuntu-server-1404-x64
+     - PUPPET_INSTALL_TYPE=foss
+   - env:
+     - TASK=beaker:ubuntu-server-1404-x64
+   - env:
+     - TASK=beaker:ubuntu-server-1604-x64
+   - env:
+     - TASK=beaker:opensuse-42-x64
+     - PUPPET_INSTALL_TYPE=foss
+   - env:
+     - TASK=beaker:oracle-6-x64
+   - env:
+     - TASK=beaker:oracle-7-x64
 
 notifications:
   slack:
