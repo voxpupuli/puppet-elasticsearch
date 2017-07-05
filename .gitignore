@@ -16,3 +16,4 @@ spec/fixtures/manifests
 spec/fixtures/modules
 spec/logs
 spec/reports/
+vendor/

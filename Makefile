@@ -3,11 +3,7 @@ DISTRO ?= ubuntu-server-1604-x64
 BEAKER_set ?= $(DISTRO)
 export BEAKER_set
 
-# Default to installing agent (version 4.x)
-PUPPET_INSTALL_TYPE ?= agent
-
 # Export potentially set variables for rake/rspec/beaker
-export PUPPET_INSTALL_TYPE
 export STRICT_VARIABLES=yes
 
 .DEFAULT_GOAL := .vendor
