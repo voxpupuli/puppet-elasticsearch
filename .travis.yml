@@ -14,6 +14,7 @@ env:
   - BUNDLE_PATH=.vendor
   matrix:
   - TEST_SUITE=intake
+  - TEST_SUITE=intake PUPPET_VERSION='~> 3.8'
   - TEST_SUITE=integration
   - DISTRO=centos-6-x64 PUPPET_INSTALL_TYPE=foss
   - DISTRO=centos-6-x64
