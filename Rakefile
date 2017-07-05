@@ -81,7 +81,6 @@ task :beaker => [:spec_prep, 'artifacts:prep']
 
 desc 'Run all linting/unit tests.'
 task :intake => %i[
-  metadata_lint
   syntax
   lint
   validate
