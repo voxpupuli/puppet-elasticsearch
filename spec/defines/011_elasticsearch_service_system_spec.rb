@@ -219,7 +219,9 @@ describe 'elasticsearch::service::systemd', :type => 'define' do
             should contain_elasticsearch_service_file(
               "#{systemd_service_path}/elasticsearch-es-01.service"
             ).with(
-              :before => "File[#{systemd_service_path}/elasticsearch-es-01.service]"
+              :before => [
+                "File[#{systemd_service_path}/elasticsearch-es-01.service]"
+              ]
             )
           end
 
