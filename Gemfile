@@ -3,6 +3,10 @@ source 'https://rubygems.org'
 puppetversion = ENV['PUPPET_VERSION'] || '~> 3.8.0'
 gem 'puppet', puppetversion, :require => false
 
+install_if(Gem::Version.new(puppetversion.split(' ').last) < Gem::Version.new(4)) do
+  gem 'semantic_puppet'
+end
+
 gem 'beaker', '~> 3.7'
 gem 'beaker-rspec', '~> 6.0'
 # 0.7.0 breaks 3.8, see https://github.com/puppetlabs/beaker-puppet_install_helper/issues/27
