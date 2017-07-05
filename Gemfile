@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-puppetversion = ENV['PUPPET_VERSION'] || '~> 3.8.0'
+puppetversion = ENV['PUPPET_VERSION'] || '~> 4.9'
 gem 'puppet', puppetversion, :require => false
 
 install_if(Gem::Version.new(puppetversion.split(' ').last) < Gem::Version.new(4)) do
