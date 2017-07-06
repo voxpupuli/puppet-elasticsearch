@@ -1,6 +1,6 @@
 ---
 elasticsearch::instances:
-  es-01:
+  es-hiera-single:
     config:
-      node.name: 'es-01'
+      node.name: 'es-hiera-single'
       network.host: '0.0.0.0'

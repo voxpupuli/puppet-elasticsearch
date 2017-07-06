@@ -1,40 +1,5 @@
 require 'spec_helper'
 
-shared_examples 'instance' do |name|
-  it { should contain_elasticsearch__instance(name).with(
-    :config => {
-      'node.name' => name,
-      'network.host' => '0.0.0.0'
-    }
-  )}
-  it { should contain_elasticsearch__service(name) }
-  it { should contain_elasticsearch__service__init(name) }
-  it { should contain_service("elasticsearch-instance-#{name}") }
-  it { should contain_augeas("defaults_#{name}") }
-  it { should contain_file("/etc/elasticsearch/#{name}")
-    .with(:ensure => 'directory') }
-  it { should contain_file("/etc/elasticsearch/#{name}/elasticsearch.yml") }
-  it { should contain_file("/etc/elasticsearch/#{name}/logging.yml") }
-  it { should contain_file("/etc/elasticsearch/#{name}/log4j2.properties") }
-  it { should contain_exec("mkdir_logdir_elasticsearch_#{name}")
-    .with(:command => "mkdir -p /var/log/elasticsearch/#{name}") }
-  it { should contain_exec("mkdir_datadir_elasticsearch_#{name}")
-    .with(:command => "mkdir -p /var/lib/elasticsearch/#{name}") }
-  it { should contain_exec("mkdir_configdir_elasticsearch_#{name}") }
-  it { should contain_file("/var/lib/elasticsearch/#{name}") }
-  it { should contain_file("/var/log/elasticsearch/#{name}") }
-  it { should contain_elasticsearch_service_file(
-    "/etc/init.d/elasticsearch-#{name}"
-  ) }
-  it { should contain_file("/etc/init.d/elasticsearch-#{name}") }
-  it { should contain_file("/etc/elasticsearch/#{name}/scripts")
-    .with(:target => '/usr/share/elasticsearch/scripts') }
-  it { should contain_datacat_fragment("main_config_#{name}") }
-  it { should contain_datacat(
-    "/etc/elasticsearch/#{name}/elasticsearch.yml"
-  ) }
-end
-
 describe 'elasticsearch', :type => 'class' do
   default_params = {
     :config => { 'node.name' => 'foo' }
@@ -83,21 +48,21 @@ describe 'elasticsearch', :type => 'class' do
       context 'single instance' do
         let(:facts) { facts.merge(:scenario => 'singleinstance') }
 
-        include_examples 'instance', 'es-01'
+        include_examples 'instance', 'es-hiera-single', :sysv
       end
 
       context 'multiple instances' do
         let(:facts) { facts.merge(:scenario => 'multipleinstances') }
 
-        include_examples 'instance', 'es-01'
-        include_examples 'instance', 'es-02'
+        include_examples 'instance', 'es-hiera-multiple-1', :sysv
+        include_examples 'instance', 'es-hiera-multiple-2', :sysv
       end
 
       context 'no instances' do
         let(:facts) { facts.merge(:scenario => '') }
 
-        it { should_not contain_elasticsearch__instance('es-01') }
-        it { should_not contain_elasticsearch__instance('es-02') }
+        it { should_not contain_elasticsearch__instance('es-hiera-multiple-1') }
+        it { should_not contain_elasticsearch__instance('es-hiera-multiple-2') }
       end
 
       context 'multiple instances using hiera_merge' do
@@ -110,8 +75,8 @@ describe 'elasticsearch', :type => 'class' do
           )
         end
 
-        include_examples 'instance', 'default'
-        include_examples 'instance', 'es-01'
+        include_examples 'instance', 'default', :sysv
+        include_examples 'instance', 'es-hiera-single', :sysv
       end
     end # of instances
 
@@ -152,7 +117,7 @@ describe 'elasticsearch', :type => 'class' do
           .with(
             :ensure => 'present',
             :module_dir => 'head',
-            :instances => ['es-01']
+            :instances => ['es-hiera-single']
           ) }
         it { should contain_elasticsearch_plugin('mobz/elasticsearch-head') }
       end
