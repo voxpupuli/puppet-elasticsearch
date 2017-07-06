@@ -23,6 +23,7 @@ jobs:
      - PUPPET_VERSION='~> 3.8'
    - stage: acceptance
      env:
+     - BEAKER_set=ubuntu-server-1604-x64
      - TASK=beaker:integration
    - env:
      - TASK=beaker:centos-6-x64
