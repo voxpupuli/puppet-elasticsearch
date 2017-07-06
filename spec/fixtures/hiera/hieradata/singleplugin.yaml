@@ -1,6 +1,6 @@
 ---
 elasticsearch::instances:
-  es-01:
+  es-hiera-single:
     config:
       node.name: 'es-01'
       network.host: '0.0.0.0'
@@ -9,4 +9,4 @@ elasticsearch::plugins:
     ensure: 'present'
     module_dir: 'head'
     instances:
-      - 'es-01'
+      - 'es-hiera-single'

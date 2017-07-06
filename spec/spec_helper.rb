@@ -1,4 +1,5 @@
 require 'puppetlabs_spec_helper/module_spec_helper'
+require_relative 'helpers/instance_shared_examples'
 require 'rspec-puppet-utils'
 require 'rspec-puppet-facts'
 include RspecPuppetFacts

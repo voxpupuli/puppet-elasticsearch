@@ -44,8 +44,8 @@ describe 'elasticsearch::user' do
         class { 'elasticsearch':
           security_plugin => 'shield',
         }
-        elasticsearch::instance { 'es-01': }
-        elasticsearch::plugin { 'shield': instances => 'es-01' }
+        elasticsearch::instance { 'es-security-user': }
+        elasticsearch::plugin { 'shield': instances => 'es-security-user' }
         elasticsearch::template { 'foo': content => {"foo" => "bar"} }
         elasticsearch::role { 'test_role':
           privileges => {
@@ -77,6 +77,9 @@ describe 'elasticsearch::user' do
         'Elasticsearch::Plugin[shield]',
         'Elasticsearch::Role[test_role]'
       ])}
+
+      include_examples 'instance', 'es-security-user', :systemd
+      it { should contain_file('/etc/elasticsearch/es-security-user/shield') }
     end
 
     describe 'when absent' do
@@ -84,10 +87,10 @@ describe 'elasticsearch::user' do
         class { 'elasticsearch':
           security_plugin => 'shield',
         }
-        elasticsearch::instance { 'es-01': }
+        elasticsearch::instance { 'es-security-user': }
         elasticsearch::plugin { 'shield':
           ensure => 'absent',
-          instances => 'es-01',
+          instances => 'es-security-user',
         }
         elasticsearch::template { 'foo': content => {"foo" => "bar"} }
         elasticsearch::role { 'test_role':
@@ -113,6 +116,8 @@ describe 'elasticsearch::user' do
       it { should contain_file(
         '/usr/share/elasticsearch/plugins/shield'
       ) }
+
+      include_examples 'instance', 'es-security-user', :systemd
       # TODO: Uncomment once upstream issue is fixed.
       # https://github.com/rodjek/rspec-puppet/issues/418
       # it { should contain_elasticsearch__shield__user('elastic')

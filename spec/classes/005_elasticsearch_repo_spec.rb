@@ -70,6 +70,13 @@ describe 'elasticsearch', :type => 'class' do
             'elasticsearch_zypper_refresh_elasticsearch'
           ) }
         end
+
+        case facts[:osfamily]
+        when 'RedHat', 'Linux'
+          it { should contain_yum__versionlock(
+            "0:elasticsearch-#{version}-1.noarch"
+          ) }
+        end
       end
 
       describe 'overriding the repo key ID' do
@@ -156,14 +163,18 @@ describe 'elasticsearch', :type => 'class' do
               it { should contain_apt__source('elasticsearch')
                 .with_location("#{repo_base}/#{post_5? ? 'apt' : 'debian'}") }
             when 'RedHat'
-              it { should contain_yum__versionlock(
-                "0:elasticsearch-#{version}-1.noarch"
-              ) }
               it { should contain_yumrepo('elasticsearch')
                 .with_baseurl("#{repo_base}/#{post_5? ? 'yum' : 'centos'}") }
             when 'Suse'
               it { should contain_zypprepo('elasticsearch')
                 .with_baseurl("#{repo_base}/#{post_5? ? 'yum' : 'centos'}") }
+            end
+
+            case facts[:osfamily]
+            when 'RedHat', 'Linux'
+              it { should contain_yum__versionlock(
+                "0:elasticsearch-#{version}-1.noarch"
+              ) }
             end
           end
         end

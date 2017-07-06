@@ -1,10 +1,10 @@
 ---
 elasticsearch::instances:
-  es-01:
+  es-hiera-multiple-1:
     config:
-      node.name: 'es-01'
+      node.name: 'es-hiera-multiple-1'
       network.host: '0.0.0.0'
-  es-02:
+  es-hiera-multiple-2:
     config:
-      node.name: 'es-02'
+      node.name: 'es-hiera-multiple-2'
       network.host: '0.0.0.0'
