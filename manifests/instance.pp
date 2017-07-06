@@ -347,7 +347,7 @@ define elasticsearch::instance (
       ensure  => 'directory',
       owner   => $elasticsearch::elasticsearch_user,
       group   => undef,
-      mode    => '0644',
+      mode    => '0755',
       require => Class['elasticsearch::package'],
       before  => Elasticsearch::Service[$name],
     }
@@ -363,7 +363,7 @@ define elasticsearch::instance (
         ensure  => 'directory',
         owner   => $elasticsearch::elasticsearch_user,
         group   => undef,
-        mode    => '0644',
+        mode    => '0755',
         require => Class['elasticsearch::package'],
         before  => Elasticsearch::Service[$name],
       }
@@ -378,7 +378,7 @@ define elasticsearch::instance (
 
     file { $instance_configdir:
       ensure  => 'directory',
-      mode    => '0644',
+      mode    => '0755',
       purge   => $elasticsearch::purge_configdir,
       force   => $elasticsearch::purge_configdir,
       require => [ Exec["mkdir_configdir_elasticsearch_${name}"], Class['elasticsearch::package'] ],
@@ -412,7 +412,7 @@ define elasticsearch::instance (
     if $security_plugin != undef {
       file { "${instance_configdir}/${security_plugin}":
         ensure  => 'directory',
-        mode    => '0644',
+        mode    => '0755',
         source  => "${elasticsearch::configdir}/${security_plugin}",
         recurse => 'remote',
         owner   => 'root',
