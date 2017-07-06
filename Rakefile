@@ -91,7 +91,11 @@ desc 'Run integration tests'
 RSpec::Core::RakeTask.new('beaker:integration') do |c|
   c.pattern = 'spec/integration/integration*.rb'
 end
-task 'beaker:integration' => [:spec_prep, 'artifacts:snapshot:fetch']
+task 'beaker:integration' => [
+  'artifacts:prep',
+  'artifacts:snapshot:fetch',
+  :spec_prep
+]
 
 desc 'Run acceptance tests'
 RSpec::Core::RakeTask.new('beaker:acceptance') do |c|
