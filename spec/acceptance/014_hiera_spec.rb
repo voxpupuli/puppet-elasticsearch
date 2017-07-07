@@ -38,7 +38,7 @@ describe 'hiera' do
 
     describe file('/etc/elasticsearch/es-hiera-single/elasticsearch.yml') do
       it { should be_file }
-      it { should contain 'name: es-01' }
+      it { should contain 'name: es-hiera-single' }
     end
 
     describe port(test_settings['port_a']) do
@@ -106,24 +106,24 @@ describe 'hiera' do
       end
     end
 
-    describe service('es-hiera-multiple-1') do
+    describe service('elasticsearch-es-hiera-multiple-1') do
       it { should be_enabled }
       it { should be_running }
     end
 
-    describe service('es-hiera-multiple-2') do
+    describe service('elasticsearch-es-hiera-multiple-2') do
       it { should be_enabled }
       it { should be_running }
     end
 
     describe file('/etc/elasticsearch/es-hiera-multiple-1/elasticsearch.yml') do
       it { should be_file }
-      it { should contain 'name: es-01' }
+      it { should contain 'name: es-hiera-multiple-1' }
     end
 
     describe file('/etc/elasticsearch/es-hiera-multiple-2/elasticsearch.yml') do
       it { should be_file }
-      it { should contain 'name: es-02' }
+      it { should contain 'name: es-hiera-multiple-2' }
     end
 
     describe port(test_settings['port_a']) do
@@ -164,8 +164,10 @@ describe 'hiera' do
 
     apply_manifest <<-EOS
       class { 'elasticsearch': ensure => 'absent' }
-      elasticsearch::instance { 'es-01': ensure => 'absent' }
-      elasticsearch::instance { 'es-02': ensure => 'absent' }
+      elasticsearch::instance { 'es-hiera-single': }
+      elasticsearch::instance { 'es-hiera-multiple-1': }
+      elasticsearch::instance { 'es-hiera-multiple-2': }
+      Elasticsearch::Instance { ensure => 'absent' }
     EOS
   end
 end
