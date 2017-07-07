@@ -26,17 +26,17 @@ describe 'hiera' do
       end
     end
 
-    describe service(test_settings['service_name_a']) do
+    describe service('elasticsearch-es-hiera-single') do
       it { should be_enabled }
       it { should be_running }
     end
 
-    describe file(test_settings['pid_a']) do
+    describe file('/var/run/elasticsearch/elasticsearch-es-hiera-single.pid') do
       it { should be_file }
       its(:content) { should match(/[0-9]+/) }
     end
 
-    describe file('/etc/elasticsearch/es-01/elasticsearch.yml') do
+    describe file('/etc/elasticsearch/es-hiera-single/elasticsearch.yml') do
       it { should be_file }
       it { should contain 'name: es-01' }
     end
@@ -106,22 +106,22 @@ describe 'hiera' do
       end
     end
 
-    describe service(test_settings['service_name_a']) do
+    describe service('es-hiera-multiple-1') do
       it { should be_enabled }
       it { should be_running }
     end
 
-    describe service(test_settings['service_name_b']) do
+    describe service('es-hiera-multiple-2') do
       it { should be_enabled }
       it { should be_running }
     end
 
-    describe file('/etc/elasticsearch/es-01/elasticsearch.yml') do
+    describe file('/etc/elasticsearch/es-hiera-multiple-1/elasticsearch.yml') do
       it { should be_file }
       it { should contain 'name: es-01' }
     end
 
-    describe file('/etc/elasticsearch/es-02/elasticsearch.yml') do
+    describe file('/etc/elasticsearch/es-hiera-multiple-2/elasticsearch.yml') do
       it { should be_file }
       it { should contain 'name: es-02' }
     end
