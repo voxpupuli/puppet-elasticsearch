@@ -167,6 +167,9 @@ describe 'hiera' do
       elasticsearch::instance { 'es-hiera-single': }
       elasticsearch::instance { 'es-hiera-multiple-1': }
       elasticsearch::instance { 'es-hiera-multiple-2': }
+      File['/etc/elasticsearch/es-hiera-single/scripts'] { force = > true }
+      File['/etc/elasticsearch/es-hiera-multiple-1/scripts'] { force = > true }
+      File['/etc/elasticsearch/es-hiera-multiple-2/scripts'] { force = > true }
       Elasticsearch::Instance { ensure => 'absent' }
     EOS
   end
