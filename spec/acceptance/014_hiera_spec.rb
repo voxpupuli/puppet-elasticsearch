@@ -31,11 +31,6 @@ describe 'hiera' do
       it { should be_running }
     end
 
-    describe file('/var/run/elasticsearch/elasticsearch-es-hiera-single.pid') do
-      it { should be_file }
-      its(:content) { should match(/[0-9]+/) }
-    end
-
     describe file('/etc/elasticsearch/es-hiera-single/elasticsearch.yml') do
       it { should be_file }
       it { should contain 'name: es-hiera-single' }
@@ -167,9 +162,6 @@ describe 'hiera' do
       elasticsearch::instance { 'es-hiera-single': }
       elasticsearch::instance { 'es-hiera-multiple-1': }
       elasticsearch::instance { 'es-hiera-multiple-2': }
-      File['/etc/elasticsearch/es-hiera-single/scripts'] { force = > true }
-      File['/etc/elasticsearch/es-hiera-multiple-1/scripts'] { force = > true }
-      File['/etc/elasticsearch/es-hiera-multiple-2/scripts'] { force = > true }
       Elasticsearch::Instance { ensure => 'absent' }
     EOS
   end
