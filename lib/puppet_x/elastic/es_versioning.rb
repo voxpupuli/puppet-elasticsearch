@@ -21,6 +21,8 @@ module Puppet_X
 
         opts.delete 'work' if min_version '5.0.0', package_name, catalog
         opts.delete 'home' if min_version '5.4.0', package_name, catalog
+        opts.delete 'logs' if min_version '6.0.0', package_name, catalog
+        opts.delete 'data' if min_version '6.0.0', package_name, catalog
 
         [opt_flag, opts.map{ |k, v| "-#{opt_flag}default.path.#{k}=${#{v}}" }.sort]
       end
