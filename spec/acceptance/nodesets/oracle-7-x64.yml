@@ -15,3 +15,5 @@ HOSTS:
       - echo '<busconfig><selinux></selinux></busconfig>' > /etc/selinux/targeted/contexts/dbus_contexts
       - rm /lib/systemd/system/systemd*udev*
       - rm /lib/systemd/system/getty.target
+CONFIG:
+  log_level: warn

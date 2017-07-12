@@ -13,3 +13,5 @@ HOSTS:
       - yum install -y wget which
       - rm /etc/init/tty.conf
       - echo -e "elasticsearch hard nproc 2048\nelasticsearch soft nproc 2048" >> /etc/security/limits.conf
+CONFIG:
+  log_level: warn

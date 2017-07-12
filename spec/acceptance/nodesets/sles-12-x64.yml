@@ -15,3 +15,5 @@ HOSTS:
       - zypper clean -a
       - zypper install --force-resolution -y augeas which
       - ln -s /usr/lib/systemd/system/sshd.service /etc/systemd/system/multi-user.target.wants/sshd.service
+CONFIG:
+  log_level: warn

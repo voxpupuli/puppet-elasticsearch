@@ -12,3 +12,5 @@ HOSTS:
     docker_image_commands:
       - apt-get update
       - apt-get install -yq libssl-dev puppet apt-transport-https
+CONFIG:
+  log_level: warn
