@@ -24,7 +24,11 @@ module Puppet_X
         opts.delete 'logs' if min_version '6.0.0', package_name, catalog
         opts.delete 'data' if min_version '6.0.0', package_name, catalog
 
-        [opt_flag, opts.map{ |k, v| "-#{opt_flag}default.path.#{k}=${#{v}}" }.sort]
+        if min_version '6.0.0', package_name, catalog
+          [opt_flag, ["--path.conf=${#{opts['conf']}}"]]
+        else
+          [opt_flag, opts.map { |k, v| "-#{opt_flag}default.path.#{k}=${#{v}}" }.sort]
+        end
       end
 
       # Get the correct option flag depending on whether Elasticsearch is post
