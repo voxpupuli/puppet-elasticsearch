@@ -14,3 +14,5 @@ HOSTS:
       - zypper install -y augeas augeas-lenses pkgconfig
       - mkdir -p /etc/puppetlabs/code /etc/puppet/modules
       - ln -sf /etc/puppet/modules /etc/puppetlabs/code/modules
+CONFIG:
+  log_level: warn

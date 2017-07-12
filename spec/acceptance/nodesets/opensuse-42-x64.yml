@@ -17,3 +17,5 @@ HOSTS:
       - mkdir /etc/systemd/system/sshd.service.d/
       - echo -e "[Service]\nExecStart=\nExecStart=/usr/bin/sshd -D"
       - ln -s /usr/lib/systemd/system/sshd.service /etc/systemd/system/multi-user.target.wants/sshd.service
+CONFIG:
+  log_level: warn
