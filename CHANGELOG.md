@@ -7,6 +7,7 @@
 
 #### Fixes
 * Fixed an edge case with `es_instance_validator` in which ruby connection errors were not caught.
+* Plugins with colon-delimited names (such as maven plugins) are properly handled now.
 
 ## 5.3.1 (June 14, 2017)
 
