@@ -1,9 +1,8 @@
 require 'spec_helper'
 
 describe 'es_plugin_name' do
-
   describe 'exception handling' do
-    it { is_expected.to run.with_params().and_raise_error(
+    it { is_expected.to run.with_params.and_raise_error(
       Puppet::ParseError, /wrong number of arguments/i
     ) }
   end
@@ -61,5 +60,4 @@ describe 'es_plugin_name' do
     subject.execute(argument1)
     expect(argument1).to eq(original1)
   end
-
 end
