@@ -27,6 +27,18 @@ describe 'es_plugin_name' do
     it { is_expected.to run
       .with_params('vendor/elasticsearch-foo/1.0.0')
       .and_return('foo') }
+
+    it { is_expected.to run
+      .with_params('com.foo:plugin_name:5.2.0')
+      .and_return('plugin_name')}
+
+    it { is_expected.to run
+      .with_params('com:plugin_name:5.2.0-12')
+      .and_return('plugin_name')}
+
+    it { is_expected.to run
+      .with_params('com.foo.bar:plugin_name:5')
+      .and_return('plugin_name')}
   end
 
   describe 'multiple arguments' do
