@@ -1,12 +1,16 @@
 module Puppet_X
   module Elastic
+    def self.plugin_name(raw_name)
+      plugin_split(raw_name, 1)
+    end
+
     # Attempt to guess at the plugin's final directory name
-    def self.plugin_name(original_string)
+    def self.plugin_split(original_string, position)
       # Try both colon (maven) and slash-delimited (github/elastic.co) names
       %w[/ :].each do |delimiter|
-        _vendor, plugin, _version = original_string.split(delimiter)
+        parts = original_string.split(delimiter)
         # If the string successfully split, assume we found the right format
-        return plugin.gsub(/(elasticsearch-|es-)/, '') unless plugin.nil?
+        return parts[position].gsub(/(elasticsearch-|es-)/, '') unless parts[position].nil?
       end
 
       # Fallback to the originally passed plugin name
