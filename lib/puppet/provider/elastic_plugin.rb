@@ -2,7 +2,7 @@ $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', '..'))
 
 require 'uri'
 require 'puppet_x/elastic/es_versioning'
-require 'puppet_x/elastic/plugin_name'
+require 'puppet_x/elastic/plugin_parsing'
 
 # Generalized parent class for providers that behave like Elasticsearch's plugin
 # command line tool.

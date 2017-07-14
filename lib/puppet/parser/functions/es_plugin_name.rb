@@ -1,6 +1,6 @@
 $LOAD_PATH.unshift(File.join(File.dirname(__FILE__),"..","..",".."))
 
-require 'puppet_x/elastic/plugin_name'
+require 'puppet_x/elastic/plugin_parsing'
 
 module Puppet::Parser::Functions
   newfunction(
