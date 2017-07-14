@@ -103,6 +103,13 @@ RSpec::Core::RakeTask.new('beaker:acceptance') do |c|
 end
 task 'beaker:acceptance' => [:spec_prep, 'artifacts:prep']
 
+desc 'Setup a dummy host only, do not run any tests'
+RSpec::Core::RakeTask.new('beaker:noop') do |c|
+  ENV['BEAKER_destroy'] = 'no'
+  c.pattern = 'spec/acceptance/*basic_spec.rb'
+end
+task 'beaker:noop' => [:spec_prep]
+
 namespace :artifacts do
   desc 'Fetch artifacts for tests'
   task :prep do
