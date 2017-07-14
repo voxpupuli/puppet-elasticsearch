@@ -10,7 +10,7 @@ cache:
 
 language: ruby
 
-script: bundle exec rake $TASK
+script: travis_retry bundle exec rake $TASK
 
 jobs:
   include:
