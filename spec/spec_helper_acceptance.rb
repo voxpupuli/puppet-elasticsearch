@@ -1,14 +1,13 @@
 require 'beaker-rspec'
-require 'beaker/puppet_install_helper'
 require 'securerandom'
 require 'thread'
 require 'infrataster/rspec'
 require 'rspec/retry'
+
 require_relative 'spec_helper_tls'
+require_relative 'spec_utilities'
 
 # Default to 4.x AIO style if no type is specified.
-ENV['PUPPET_INSTALL_TYPE'] = 'agent' if ENV['PUPPET_INSTALL_TYPE'].nil?
-
 def test_settings
   RSpec.configuration.test_settings
 end
@@ -70,21 +69,30 @@ files_dir = ENV['files_dir'] || './spec/fixtures/artifacts'
 RSpec.configuration.test_settings['files_dir'] = files_dir
 
 hosts.each do |host|
-  # Fix the Puppet type
-  host[:type] = ENV['PUPPET_INSTALL_TYPE'].dup
-  host[:type] = 'aio' if host[:type] == 'agent'
-
-  configure_defaults_on hosts, 'foss' unless ENV['PUPPET_INSTALL_TYPE'] == 'agent'
+  host[:type] = 'aio'
+  configure_defaults_on host, 'aio'
 
   # Install Puppet
   #
   # We spawn a thread to print dots periodically while installing puppet to
   # avoid inactivity timeouts in Travis. Don't judge me.
-  unless host[:skip_puppet_install]
-    progress = Thread.new { print '.' while sleep 5 }
-    run_puppet_install_helper
-    progress.exit
+  progress = Thread.new do
+    print 'Installing puppet..'
+    print '.' while sleep 5
   end
+  if host['platform'] == 'debian-9-amd64'
+    install_puppet_from_gem(
+      host,
+      version: Gem.loaded_specs['puppet'].version
+    )
+  else
+    install_puppet_agent_on(
+      host,
+      puppet_agent_version: to_agent_version(Gem.loaded_specs['puppet'].version)
+    )
+  end
+  progress.exit
+  puts "done. Installed version #{shell('puppet --version').output}"
 
   if fact('osfamily') == 'Suse'
     install_package host,
@@ -162,6 +170,9 @@ RSpec.configure do |c|
       end
 
       on(host, 'mkdir -p etc/puppet/modules/another/files/')
+
+      # Apt doesn't update package caches sometimes, ensure we're caught up.
+      shell 'apt update' if fact('osfamily') == 'Debian'
     end
   end
 

@@ -8,7 +8,7 @@ fixtures:
       ref: 4.13.1
     java:
       repo: puppetlabs/java
-      ref: 1.6.0
+      ref: 2.0.0
     concat:
       repo: puppetlabs/concat
       ref: 2.2.1

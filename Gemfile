@@ -1,16 +1,9 @@
 source 'https://rubygems.org'
 
-puppetversion = ENV['PUPPET_VERSION'] || '~> 4.9'
-gem 'puppet', puppetversion, :require => false
-
-install_if(Gem::Version.new(puppetversion.split(' ').last) < Gem::Version.new(4)) do
-  gem 'semantic_puppet'
-end
+gem 'puppet', (ENV['PUPPET_VERSION'] || '~> 4.10'), :require => false
 
 gem 'beaker', '~> 3.7'
 gem 'beaker-rspec', '~> 6.0'
-# 0.7.0 breaks 3.8, see https://github.com/puppetlabs/beaker-puppet_install_helper/issues/27
-gem 'beaker-puppet_install_helper', '0.6.0'
 gem 'metadata-json-lint'
 gem 'rspec-puppet', '2.6.3'
 gem 'specinfra', '~> 2.60'
