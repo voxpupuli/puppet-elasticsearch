@@ -116,17 +116,15 @@ describe 'elasticsearch::user' do
       it { should contain_file(
         '/usr/share/elasticsearch/plugins/shield'
       ) }
+      it { should contain_elasticsearch__user('elastic')
+        .that_comes_before([
+          'Elasticsearch::Template[foo]',
+          'Elasticsearch::Plugin[shield]'
+      ]).that_requires([
+        'Elasticsearch::Role[test_role]'
+      ])}
 
       include_examples 'instance', 'es-security-user', :systemd
-      # TODO: Uncomment once upstream issue is fixed.
-      # https://github.com/rodjek/rspec-puppet/issues/418
-      # it { should contain_elasticsearch__shield__user('elastic')
-      #   .that_comes_before([
-      #   'Elasticsearch::Template[foo]',
-      #   'Elasticsearch::Plugin[shield]'
-      # ]).that_requires([
-      #   'Elasticsearch::Shield::Role[test_role]'
-      # ])}
     end
   end
 end
