@@ -17,23 +17,19 @@ jobs:
    - stage: intake
      env:
      - TASK=intake
-     - PUPPET_VERSION='~> 4.10'
-   - env:
-     - TASK=intake
-     - PUPPET_VERSION='~> 3.8'
    - stage: acceptance
      env:
      - TASK=beaker:integration
    - env:
      - TASK=beaker:centos-6-x64
-     - PUPPET_INSTALL_TYPE=foss
-   - env:
-     - TASK=beaker:centos-6-x64
    - env:
      - TASK=beaker:centos-7-x64
-     - PUPPET_INSTALL_TYPE=foss
    - env:
-     - TASK=beaker:centos-7-x64
+     - TASK=beaker:oracle-6-x64
+   - env:
+     - TASK=beaker:oracle-7-x64
+   - env:
+     - TASK=beaker:opensuse-42-x64
    - env:
      - TASK=beaker:debian-7-x64
    - env:
@@ -42,13 +38,6 @@ jobs:
      - TASK=beaker:ubuntu-server-1404-x64
    - env:
      - TASK=beaker:ubuntu-server-1604-x64
-   - env:
-     - TASK=beaker:opensuse-42-x64
-     - PUPPET_INSTALL_TYPE=foss
-   - env:
-     - TASK=beaker:oracle-6-x64
-   - env:
-     - TASK=beaker:oracle-7-x64
 
 notifications:
   slack:
