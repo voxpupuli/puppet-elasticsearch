@@ -172,7 +172,7 @@ RSpec.configure do |c|
       on(host, 'mkdir -p etc/puppet/modules/another/files/')
 
       # Apt doesn't update package caches sometimes, ensure we're caught up.
-      shell 'apt update' if fact('osfamily') == 'Debian'
+      shell 'apt-get update' if fact('osfamily') == 'Debian'
     end
   end
 
