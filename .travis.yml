@@ -35,6 +35,8 @@ jobs:
    - env:
      - TASK=beaker:debian-8-x64
    - env:
+     - TASK=beaker:debian-9-x64
+   - env:
      - TASK=beaker:ubuntu-server-1404-x64
    - env:
      - TASK=beaker:ubuntu-server-1604-x64
