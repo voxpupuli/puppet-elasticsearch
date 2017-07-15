@@ -80,7 +80,8 @@ hosts.each do |host|
     print 'Installing puppet..'
     print '.' while sleep 5
   end
-  if host['platform'] == 'debian-9-amd64'
+  case host.name
+  when /debian-9/, /opensuse/
     install_puppet_from_gem(
       host,
       version: Gem.loaded_specs['puppet'].version
