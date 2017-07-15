@@ -68,7 +68,10 @@ end
 files_dir = ENV['files_dir'] || './spec/fixtures/artifacts'
 RSpec.configuration.test_settings['files_dir'] = files_dir
 
+# General bootstrapping steps for each host
 hosts.each do |host|
+  # Set the host to 'aio' in order to adopt the puppet-agent style of
+  # installation, and configure paths/etc.
   host[:type] = 'aio'
   configure_defaults_on host, 'aio'
 
@@ -80,18 +83,23 @@ hosts.each do |host|
     print 'Installing puppet..'
     print '.' while sleep 5
   end
+
   case host.name
   when /debian-9/, /opensuse/
+    # A few special cases need to be installed from gems (if the distro is
+    # very new and has no puppet repo package or has no upstream packages).
     install_puppet_from_gem(
       host,
       version: Gem.loaded_specs['puppet'].version
     )
   else
+    # Otherwise, just use the all-in-one agent package.
     install_puppet_agent_on(
       host,
       puppet_agent_version: to_agent_version(Gem.loaded_specs['puppet'].version)
     )
   end
+  # Quit the print thread and include some debugging.
   progress.exit
   puts "done. Installed version #{shell('puppet --version').output}"
 
