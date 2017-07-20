@@ -2,7 +2,6 @@ require 'json'
 require 'spec_helper_rspec'
 require 'webmock/rspec'
 
-# rubocop:disable Metrics/BlockLength
 shared_examples 'REST API' do |resource_type, create_uri|
   describe 'instances' do
     context "with no #{resource_type}s" do
@@ -38,7 +37,7 @@ shared_examples 'REST API' do |resource_type, create_uri|
     it 'authenticates' do
       stub_request(:get, "http://localhost:9200/_#{resource_type}")
         .with(
-          :basic_auth => %w(elastic password),
+          :basic_auth => %w[elastic password],
           :headers => { 'Accept' => 'application/json' }
         )
         .to_return(

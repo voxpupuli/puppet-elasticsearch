@@ -4,14 +4,14 @@ describe Puppet::Type.type(:elasticsearch_plugin) do
   let(:resource_name) { 'lmenezes/elasticsearch-kopf' }
 
   describe 'input validation' do
-    describe "when validating attributes" do
-      [:name, :source, :url, :proxy].each do |param|
+    describe 'when validating attributes' do
+      %i[name source url proxy].each do |param|
         it "should have a #{param} parameter" do
           expect(described_class.attrtype(param)).to eq(:param)
         end
       end
 
-      it "should have an ensure property" do
+      it 'should have an ensure property' do
         expect(described_class.attrtype(:ensure)).to eq(:property)
       end
     end
@@ -19,10 +19,9 @@ describe Puppet::Type.type(:elasticsearch_plugin) do
 end
 
 describe Puppet::Type.type(:elasticsearch_plugin).provider(:plugin) do
-
   it 'should install a plugin' do
     resource = Puppet::Type.type(:elasticsearch_plugin).new(
-      :name => "lmenezes/elasticsearch-kopf",
+      :name => 'lmenezes/elasticsearch-kopf',
       :ensure => :present
     )
     allow(File).to receive(:open)
@@ -34,5 +33,4 @@ describe Puppet::Type.type(:elasticsearch_plugin).provider(:plugin) do
     ])
     provider.create
   end
-
 end

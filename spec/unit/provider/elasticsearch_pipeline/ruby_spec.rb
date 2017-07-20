@@ -1,6 +1,5 @@
 require_relative '../../../helpers/unit/provider/elasticsearch_rest_shared_examples'
 
-# rubocop:disable Metrics/BlockLength
 describe Puppet::Type.type(:elasticsearch_pipeline).provider(:ruby) do
   let(:example_1) do
     {
