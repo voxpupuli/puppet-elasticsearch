@@ -1,4 +1,4 @@
-require 'puppet/util/package'
+require 'spec_helper_rspec'
 
 shared_examples 'plugin provider' do |version|
   describe "elasticsearch #{version}" do
@@ -9,7 +9,7 @@ shared_examples 'plugin provider' do |version|
 
     describe 'setup' do
       it 'installs with default parameters' do
-        provider.expects(:plugin).with(
+        expect(provider).to receive(:plugin).with(
           ['install', resource_name].tap do |args|
             if Puppet::Util::Package.versioncmp(version, '2.2.0') >= 0
               args.insert 1, '--batch'
@@ -21,7 +21,7 @@ shared_examples 'plugin provider' do |version|
 
       it 'installs via URLs' do
         resource[:url] = 'http://url/to/my/plugin.zip'
-        provider.expects(:plugin).with(
+        expect(provider).to receive(:plugin).with(
           ['install'] + ['http://url/to/my/plugin.zip'].tap do |args|
             args.unshift('kopf', '--url') if version.start_with? '1'
 
@@ -37,7 +37,7 @@ shared_examples 'plugin provider' do |version|
 
       it 'installs with a local file' do
         resource[:source] = '/tmp/plugin.zip'
-        provider.expects(:plugin).with(
+        expect(provider).to receive(:plugin).with(
           ['install'] + ['file:///tmp/plugin.zip'].tap do |args|
             args.unshift('kopf', '--url') if version.start_with? '1'
 
@@ -55,8 +55,8 @@ shared_examples 'plugin provider' do |version|
         it 'installs behind a proxy' do
           resource[:proxy] = 'http://localhost:3128'
           if version.start_with? '2'
-            provider
-              .expects(:plugin)
+            expect(provider)
+              .to receive(:plugin)
               .with([
                 '-Dhttp.proxyHost=localhost',
                 '-Dhttp.proxyPort=3128',
@@ -81,8 +81,8 @@ shared_examples 'plugin provider' do |version|
         it 'uses authentication credentials' do
           resource[:proxy] = 'http://elastic:password@es.local:8080'
           if version.start_with? '2'
-            provider
-              .expects(:plugin)
+            expect(provider)
+              .to receive(:plugin)
               .with([
                 '-Dhttp.proxyHost=es.local',
                 '-Dhttp.proxyPort=8080',
@@ -124,7 +124,7 @@ shared_examples 'plugin provider' do |version|
 
     describe 'removal' do
       it 'uninstalls the plugin' do
-        provider.expects(:plugin).with(
+        expect(provider).to receive(:plugin).with(
           ['remove', resource_name.split('-').last]
         )
         provider.destroy

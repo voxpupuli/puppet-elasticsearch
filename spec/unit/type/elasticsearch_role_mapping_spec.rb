@@ -1,4 +1,4 @@
-require 'spec_helper'
+require 'spec_helper_rspec'
 
 describe Puppet::Type.type(:elasticsearch_role_mapping) do
 

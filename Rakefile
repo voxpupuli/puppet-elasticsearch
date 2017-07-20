@@ -1,4 +1,3 @@
-# rubocop:disable Style/FileName
 require 'digest/sha1'
 require 'rubygems'
 require 'puppetlabs_spec_helper/rake_tasks'
@@ -32,12 +31,12 @@ require 'puppet-syntax/tasks/puppet-syntax'
 PuppetSyntax.exclude_paths = exclude_paths
 PuppetSyntax.future_parser = true if ENV['FUTURE_PARSER'] == 'true'
 
-%w(
+%w[
   80chars
   class_inherits_from_params_class
   class_parameter_defaults
   single_quote_string_with_variable
-).each do |check|
+].each do |check|
   PuppetLint.configuration.send("disable_#{check}")
 end
 
@@ -71,8 +70,14 @@ RSpec::Core::RakeTask.new(:spec_verbose) do |t|
 end
 task :spec_verbose => :spec_prep
 
+RSpec::Core::RakeTask.new(:spec_puppet) do |t|
+  t.pattern = 'spec/{classes,defines,functions,templates,unit/facter}/**/*_spec.rb'
+  t.rspec_opts = ['--color']
+end
+task :spec_puppet => :spec_prep
+
 RSpec::Core::RakeTask.new(:spec_unit) do |t|
-  t.pattern = 'spec/{classes,defines,unit,functions,templates}/**/*_spec.rb'
+  t.pattern = 'spec/unit/{type,provider}/**/*_spec.rb'
   t.rspec_opts = ['--color']
 end
 task :spec_unit => :spec_prep
@@ -85,6 +90,7 @@ task :intake => %i[
   lint
   validate
   spec_unit
+  spec_puppet
 ]
 
 desc 'Run integration tests'
