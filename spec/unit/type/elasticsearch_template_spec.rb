@@ -1,8 +1,5 @@
-require 'spec_helper'
-
 require_relative '../../helpers/unit/type/elasticsearch_rest_shared_examples'
 
-# rubocop:disable Metrics/BlockLength
 describe Puppet::Type.type(:elasticsearch_template) do
   let(:resource_name) { 'test_template' }
 
