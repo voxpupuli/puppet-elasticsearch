@@ -1,4 +1,4 @@
-require 'spec_helper'
+require 'spec_helper_rspec'
 
 [:esusers, :users].each do |provider|
   describe Puppet::Type.type(:elasticsearch_user).provider(provider) do
@@ -10,7 +10,7 @@ require 'spec_helper'
 
       context 'without users' do
         before do
-          described_class.expects(:command_with_path).with('list').returns(
+          expect(described_class).to receive(:command_with_path).with('list').and_return(
             'No users found'
           )
         end
@@ -22,7 +22,7 @@ require 'spec_helper'
 
       context 'with one user' do
         before do
-          described_class.expects(:command_with_path).with('list').returns(
+          expect(described_class).to receive(:command_with_path).with('list').and_return(
             'elastic        : admin*,power_user'
           )
         end
@@ -40,9 +40,9 @@ require 'spec_helper'
 
       context 'with multiple users' do
         before do
-          described_class.expects(
+          expect(described_class).to receive(
             :command_with_path
-          ).with('list').returns(<<-EOL
+          ).with('list').and_return(<<-EOL
             elastic        : admin*
             logstash       : user
             kibana         : kibana

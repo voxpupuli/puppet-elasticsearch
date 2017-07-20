@@ -1,5 +1,3 @@
-require 'spec_helper'
-
 require_relative '../../helpers/unit/type/elasticsearch_rest_shared_examples'
 
 # rubocop:disable Metrics/BlockLength

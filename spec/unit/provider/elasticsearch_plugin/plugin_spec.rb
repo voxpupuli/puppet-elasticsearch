@@ -1,4 +1,3 @@
-require 'spec_helper'
 require_relative 'shared_examples'
 
 provider_class = Puppet::Type.type(:elasticsearch_plugin).provider(:plugin)

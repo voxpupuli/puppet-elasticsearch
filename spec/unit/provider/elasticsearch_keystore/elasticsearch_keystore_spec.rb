@@ -1,4 +1,4 @@
-require 'spec_helper'
+require 'spec_helper_rspec'
 
 shared_examples 'keystore instance' do |instance|
   describe "instance #{instance}" do
@@ -42,14 +42,14 @@ describe Puppet::Type.type(:elasticsearch_keystore).provider(:elasticsearch_keys
           .with("#{instance_dir}/elasticsearch.keystore")
           .and_return(true)
 
-        described_class
-          .expects(:execute)
+        expect(described_class)
+          .to receive(:execute)
           .with(
             [executable, 'list'],
             :custom_environment => { 'ES_INCLUDE' => defaults_file },
             :uid => 'elasticsearch', :gid => 'elasticsearch'
           )
-          .returns(
+          .and_return(
             Puppet::Util::Execution::ProcessOutput.new(
               "node.name\ncloud.aws.access_key\n", 0
             )

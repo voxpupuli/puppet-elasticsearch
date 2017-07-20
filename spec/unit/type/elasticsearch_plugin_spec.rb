@@ -1,4 +1,4 @@
-require 'spec_helper'
+require 'spec_helper_rspec'
 
 describe Puppet::Type.type(:elasticsearch_plugin) do
   let(:resource_name) { 'lmenezes/elasticsearch-kopf' }
@@ -28,7 +28,7 @@ describe Puppet::Type.type(:elasticsearch_plugin).provider(:plugin) do
     allow(File).to receive(:open)
     provider = described_class.new(resource)
     allow(provider).to receive(:es_version).and_return '1.7.3'
-    provider.expects(:plugin).with([
+    expect(provider).to receive(:plugin).with([
       'install',
       'lmenezes/elasticsearch-kopf'
     ])
