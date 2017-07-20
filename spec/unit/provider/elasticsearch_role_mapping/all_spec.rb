@@ -1,4 +1,4 @@
-require 'spec_helper'
+require 'spec_helper_rspec'
 
 [:shield, :xpack].each do |provider|
   describe Puppet::Type.type(:elasticsearch_role_mapping).provider(provider) do

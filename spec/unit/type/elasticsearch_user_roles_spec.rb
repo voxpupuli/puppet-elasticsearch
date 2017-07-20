@@ -1,7 +1,6 @@
-require 'spec_helper'
+require 'spec_helper_rspec'
 
 describe Puppet::Type.type(:elasticsearch_user_roles) do
-
   let(:resource_name) { 'elastic' }
 
   describe 'when validating attributes' do
@@ -11,7 +10,7 @@ describe Puppet::Type.type(:elasticsearch_user_roles) do
       end
     end
 
-    [:ensure, :roles].each do |prop|
+    %i[ensure roles].each do |prop|
       it "should have a #{prop} property" do
         expect(described_class.attrtype(prop)).to eq(:property)
       end
@@ -29,21 +28,21 @@ describe Puppet::Type.type(:elasticsearch_user_roles) do
       it 'should support present as a value for ensure' do
         expect { described_class.new(
           :name => resource_name,
-          :ensure => :present,
+          :ensure => :present
         ) }.to_not raise_error
       end
 
       it 'should support absent as a value for ensure' do
         expect { described_class.new(
           :name => resource_name,
-          :ensure => :absent,
+          :ensure => :absent
         ) }.to_not raise_error
       end
 
       it 'should not support other values' do
         expect { described_class.new(
           :name => resource_name,
-          :ensure => :foo,
+          :ensure => :foo
         ) }.to raise_error(Puppet::Error, /Invalid value/)
       end
     end
