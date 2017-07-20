@@ -1,5 +1,5 @@
 require 'json'
-require 'spec_helper'
+require 'spec_helper_rspec'
 require 'webmock/rspec'
 
 # rubocop:disable Metrics/BlockLength
