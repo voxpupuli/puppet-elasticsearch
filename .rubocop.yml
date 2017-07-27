@@ -13,6 +13,9 @@ Style/BlockEndNewline:
 Style/FirstParameterIndentation:
   Enabled: false
 
+Style/FrozenStringLiteralComment:
+  Enabled: false
+
 Style/HashSyntax:
   Enabled: false
 
