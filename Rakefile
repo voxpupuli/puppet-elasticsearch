@@ -44,6 +44,12 @@ PuppetLint.configuration.ignore_paths = exclude_paths
 PuppetLint.configuration.log_format = \
   '%{path}:%{line}:%{check}:%{KIND}:%{message}'
 
+# Append custom cleanup tasks to :clean
+task :clean => %i[
+  artifacts:clean
+  spec_clean
+]
+
 desc 'remove outdated module fixtures'
 task :spec_prune do
   mods = 'spec/fixtures/modules'
