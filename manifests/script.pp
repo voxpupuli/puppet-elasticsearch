@@ -25,7 +25,7 @@ define elasticsearch::script (
   $filename_array = split($source, '/')
   $basefilename = $filename_array[-1]
 
-  file { "${elasticsearch::params::homedir}/scripts/${basefilename}":
+  file { "${elasticsearch::homedir}/scripts/${basefilename}":
     ensure  => $ensure,
     source  => $source,
     owner   => $elasticsearch::elasticsearch_user,

@@ -14,13 +14,6 @@
     ).extend(
       Puppet_X::Elastic::SortedHash
     ).to_yaml
-
-    # Puppet < 4 uses ZAML, which has some deviations from Puppet 4 YAML
-    # implementation
-    unless Puppet::Util::Package.versioncmp(Puppet.version, '4') >= 0
-      @yml_string.gsub!(/^\s{2}/, '')
-    end
-
   end
 -%>
 <%= @yml_string %>

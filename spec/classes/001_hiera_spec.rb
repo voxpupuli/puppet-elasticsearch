@@ -7,10 +7,16 @@ describe 'elasticsearch', :type => 'class' do
 
   facts = {
     :common => '',
+    :hostname => 'foo',
     :kernel => 'Linux',
-    :operatingsystem => 'CentOS',
-    :operatingsystemmajrelease => '6',
-    :osfamily => 'RedHat'
+    :os => {
+      :family => 'RedHat',
+      :name => 'CentOS',
+      :release => {
+        :major => '6'
+      }
+    },
+    :scenario => ''
   }
 
   let(:params) do

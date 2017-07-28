@@ -135,7 +135,7 @@ define elasticsearch::instance (
   $file_rolling_type             = $elasticsearch::file_rolling_type,
   $init_defaults                 = undef,
   $init_defaults_file            = undef,
-  $init_template                 = $elasticsearch::init_template,
+  $init_template                 = "${module_name}/etc/init.d/${elasticsearch::init_template}",
   $keystore_password             = undef,
   $keystore_path                 = undef,
   $logdir                        = undef,
@@ -154,8 +154,6 @@ define elasticsearch::instance (
   $status                        = $elasticsearch::status,
   $system_key                    = $elasticsearch::system_key,
 ) {
-
-  require elasticsearch::params
 
   File {
     owner => $elasticsearch::elasticsearch_user,
@@ -245,7 +243,13 @@ define elasticsearch::instance (
         $instance_logging_config = { }
       }
       $logging_hash = merge(
-        $elasticsearch::params::logging_defaults,
+        # Shipped defaults
+        {
+          'action'                 => 'DEBUG',
+          'com.amazonaws'          => 'WARN',
+          'index.search.slowlog'   => 'TRACE, index_search_slow_log_file',
+          'index.indexing.slowlog' => 'TRACE, index_indexing_slow_log_file',
+        },
         $main_logging_config,
         $instance_logging_config
       )
@@ -406,7 +410,7 @@ define elasticsearch::instance (
 
     file { "${instance_configdir}/scripts":
       ensure => 'link',
-      target => "${elasticsearch::params::homedir}/scripts",
+      target => "${elasticsearch::homedir}/scripts",
     }
 
     if $security_plugin != undef {
@@ -456,7 +460,7 @@ define elasticsearch::instance (
 
     $instance_init_defaults_main = {
       'CONF_DIR'  => $instance_configdir,
-      'ES_HOME'   => $elasticsearch::params::homedir,
+      'ES_HOME'   => $elasticsearch::homedir,
       'LOG_DIR'   => $instance_logdir,
     }
 
@@ -466,7 +470,7 @@ define elasticsearch::instance (
       $instance_init_defaults = { }
     }
     $init_defaults_new = merge(
-      { 'DATA_DIR'  => $elasticsearch::params::datadir },
+      { 'DATA_DIR'  => $elasticsearch::datadir },
       $global_init_defaults,
       $instance_init_defaults_main,
       $instance_init_defaults

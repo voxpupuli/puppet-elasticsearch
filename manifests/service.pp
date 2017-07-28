@@ -49,7 +49,7 @@ define elasticsearch::service(
   $status             = $elasticsearch::status,
 ) {
 
-  case $elasticsearch::real_service_provider {
+  case $elasticsearch::service_provider {
 
     'init': {
       elasticsearch::service::init { $name:
@@ -87,7 +87,7 @@ define elasticsearch::service(
       }
     }
     default: {
-      fail("Unknown service provider ${elasticsearch::real_service_provider}")
+      fail("Unknown service provider ${elasticsearch::service_provider}")
     }
 
   }

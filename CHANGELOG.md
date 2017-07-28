@@ -1,3 +1,12 @@
+## 6.0.0 (Month Day, Year)
+
+Major version upgrade with several important deprecations:
+
+* Puppet version 3 is no longer supported.
+* Package pinning is no longer supported.
+* Java installation is no longer supported.
+* Repo management through `manage_repo` is now set to `true` by default.
+
 ## x.x.x (Month Day, Year)
 
 ### Summary

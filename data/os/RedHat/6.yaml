@@ -1,0 +1,3 @@
+---
+elasticsearch::init_template: elasticsearch.RedHat.erb
+elasticsearch::service_provider: init

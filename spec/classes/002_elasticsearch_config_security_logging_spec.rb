@@ -42,13 +42,17 @@ end
 describe 'elasticsearch', :type => 'class' do
   let(:facts) do
     {
-      :operatingsystem => 'CentOS',
-      :kernel => 'Linux',
-      :osfamily => 'RedHat',
-      :operatingsystemmajrelease => '6',
-      :scenario => '',
       :common => '',
-      :hostname => 'foo'
+      :hostname => 'foo',
+      :kernel => 'Linux',
+      :os => {
+        :family => 'RedHat',
+        :name => 'CentOS',
+        :release => {
+          :major => '6'
+        }
+      },
+      :scenario => ''
     }
   end
 
