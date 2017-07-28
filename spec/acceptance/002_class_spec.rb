@@ -6,6 +6,8 @@ describe '::elasticsearch' do
   describe 'single instance' do
     describe 'manifest' do
       pp = <<-EOS
+        include ::java
+
         class { 'elasticsearch':
           config => {
             'cluster.name' => '#{test_settings['cluster_name']}',
@@ -13,7 +15,6 @@ describe '::elasticsearch' do
           },
           manage_repo => true,
           repo_version => '#{test_settings['repo_version']}',
-          java_install => true
         }
 
         elasticsearch::instance { 'es-01':
@@ -104,7 +105,6 @@ describe '::elasticsearch' do
           },
           manage_repo => true,
           repo_version => '#{test_settings['repo_version']}',
-          java_install => true
         }
 
         elasticsearch::instance { 'es-01':

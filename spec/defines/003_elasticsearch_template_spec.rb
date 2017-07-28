@@ -4,12 +4,17 @@ require 'spec_helper'
 describe 'elasticsearch::template', :type => 'define' do
   let :facts do
     {
-      :operatingsystem => 'CentOS',
+      :common => '',
+      :hostname => 'foo',
       :kernel => 'Linux',
-      :osfamily => 'RedHat',
-      :operatingsystemmajrelease => '6',
-      :scenario => '',
-      :common => ''
+      :os => {
+        :family => 'RedHat',
+        :name => 'CentOS',
+        :release => {
+          :major => '6'
+        }
+      },
+      :scenario => ''
     }
   end
 

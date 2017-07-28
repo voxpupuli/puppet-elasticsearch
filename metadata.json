@@ -8,6 +8,7 @@
   "description": "Module for managing and configuring Elasticsearch nodes",
   "project_page": "https://github.com/elastic/puppet-elasticsearch",
   "issues_url": "https://github.com/elastic/puppet-elasticsearch/issues",
+  "data_provider": "hiera",
   "dependencies": [
     {
       "name": "puppetlabs/apt",
@@ -18,16 +19,12 @@
       "version_requirement": ">= 0.6.2 < 1.0.0"
     },
     {
-      "name": "puppetlabs/java",
-      "version_requirement": ">= 1.0.0 < 2.0.0"
-    },
-    {
       "name": "puppetlabs/stdlib",
       "version_requirement": ">= 4.6.0 < 5.0.0"
     },
     {
-      "name": "puppet/yum",
-      "version_requirement": ">= 0.9.6 < 2.0.0"
+      "name": "puppet/tea",
+      "version_requirement": ">= 0.2.0 < 1.0.0"
     }
   ],
   "operatingsystem_support": [
@@ -95,7 +92,7 @@
   "requirements": [
     {
       "name": "puppet",
-      "version_requirement": ">=3.8.0 <5.0.0"
+      "version_requirement": ">= 4.3.0 < 5.0.0"
     }
   ]
 }

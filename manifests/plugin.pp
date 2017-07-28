@@ -1,8 +1,6 @@
 # This define allows you to install arbitrary Elasticsearch plugins
 # either by using the default repositories or by specifying an URL
 #
-# All default values are defined in the elasticsearch::params class.
-#
 # @example install from official repository
 #   elasticsearch::plugin {'mobz/elasticsearch-head': module_dir => 'head'}
 #

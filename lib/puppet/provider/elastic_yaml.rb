@@ -42,11 +42,6 @@ class Puppet::Provider::ElasticYaml < Puppet::Provider::ElasticParsedFile
     yaml.shift if yaml.first =~ /---/
     yaml = yaml.join("\n")
 
-    # Puppet < 4 uses ZAML, which prepends spaces in to_yaml... why
-    unless Puppet::Util::Package.versioncmp(Puppet.version, '4') >= 0
-      yaml.gsub!(/^\s{2}/, '')
-    end
-
     yaml << "\n"
   end
 

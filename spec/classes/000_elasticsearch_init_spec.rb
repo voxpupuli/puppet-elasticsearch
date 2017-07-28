@@ -62,6 +62,17 @@ describe 'elasticsearch', :type => 'class' do
         it { should contain_file('/usr/lib/tmpfiles.d/elasticsearch.conf') }
       end
 
+      context 'java installation' do
+        let(:pre_condition) do
+          <<~EOS
+            include ::java
+          EOS
+        end
+
+        it { should contain_class('elasticsearch::config')
+          .that_requires('Class[java]') }
+      end
+
       context 'package installation' do
         context 'via repository' do
           context 'with specified version' do
@@ -73,12 +84,6 @@ describe 'elasticsearch', :type => 'class' do
 
             it { should contain_package('elasticsearch')
               .with(:ensure => "1.0#{version_add}") }
-
-            if facts[:osfamily] == 'RedHat'
-              it { should contain_yum__versionlock(
-                '0:elasticsearch-1.0-1.noarch'
-              ) }
-            end
           end
 
           if facts[:osfamily] == 'RedHat'
@@ -91,9 +96,6 @@ describe 'elasticsearch', :type => 'class' do
 
               it { should contain_package('elasticsearch')
                 .with(:ensure => '1.1-2') }
-              it { should contain_yum__versionlock(
-                '0:elasticsearch-1.1-2.noarch'
-              ) }
             end
           end
         end
@@ -192,10 +194,6 @@ describe 'elasticsearch', :type => 'class' do
         when 'Suse'
           it { should contain_package('elasticsearch')
             .with(:ensure => 'absent') }
-        when 'RedHat'
-          it { should contain_exec(
-            'elasticsearch_purge_versionlock.list'
-          ) }
         else
           it { should contain_package('elasticsearch')
             .with(:ensure => 'purged') }
@@ -247,39 +245,6 @@ describe 'elasticsearch', :type => 'class' do
         end
       end
 
-      context 'package pinning' do
-        let :params do
-          default_params.merge(
-            :package_pin => true,
-            :version => '1.6.0'
-          )
-        end
-
-        it { should contain_class(
-          'elasticsearch::package::pin'
-        ).that_comes_before(
-          'Class[elasticsearch::package]'
-        ) }
-
-        case facts[:osfamily]
-        when 'Debian'
-          context 'is supported' do
-            it { should contain_apt__pin('elasticsearch')
-              .with(:packages => ['elasticsearch'], :version => '1.6.0') }
-          end
-        when 'RedHat'
-          context 'is supported' do
-            it { should contain_yum__versionlock(
-              '0:elasticsearch-1.6.0-1.noarch'
-            ) }
-          end
-        else
-          context 'is not supported' do
-            pending('unable to test for warnings yet. https://github.com/rodjek/rspec-puppet/issues/108')
-          end
-        end
-      end
-
       context 'repository priority pinning' do
         let(:params) do
           default_params.merge(
@@ -310,13 +275,17 @@ describe 'elasticsearch', :type => 'class' do
   context 'catch-all tests for CentOS' do
     let(:facts) do
       {
-        :operatingsystem => 'CentOS',
-        :kernel => 'Linux',
-        :osfamily => 'RedHat',
-        :operatingsystemmajrelease => '6',
-        :scenario => '',
         :common => '',
-        :hostname => 'foo'
+        :hostname => 'foo',
+        :kernel => 'Linux',
+        :os => {
+          :family => 'RedHat',
+          :name => 'CentOS',
+          :release => {
+            :major => '6'
+          }
+        },
+        :scenario => ''
       }
     end
 

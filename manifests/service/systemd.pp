@@ -46,7 +46,6 @@ define elasticsearch::service::systemd(
 
   #### Service management
 
-  # set params: in operation
   if $ensure == 'present' {
 
     case $status {
@@ -94,7 +93,7 @@ define elasticsearch::service::systemd(
 
     # defaults file content. Either from a hash or file
     if ($init_defaults_file != undef) {
-      file { "${elasticsearch::params::defaults_location}/elasticsearch-${name}":
+      file { "${elasticsearch::defaults_location}/elasticsearch-${name}":
         ensure => $ensure,
         source => $init_defaults_file,
         owner  => 'root',
@@ -122,7 +121,7 @@ define elasticsearch::service::systemd(
       $new_init_defaults = merge($init_defaults_pre_hash, $init_defaults)
 
       augeas { "defaults_${name}":
-        incl    => "${elasticsearch::params::defaults_location}/elasticsearch-${name}",
+        incl    => "${elasticsearch::defaults_location}/elasticsearch-${name}",
         lens    => 'Shellvars.lns',
         changes => template("${module_name}/etc/sysconfig/defaults.erb"),
         before  => Service["elasticsearch-instance-${name}"],
@@ -151,12 +150,12 @@ define elasticsearch::service::systemd(
         $nproc = '4096'
       }
 
-      elasticsearch_service_file { "${elasticsearch::params::systemd_service_path}/elasticsearch-${name}.service":
+      elasticsearch_service_file { "${elasticsearch::systemd_service_path}/elasticsearch-${name}.service":
         ensure            => $ensure,
         content           => file($init_template),
         defaults_location => $elasticsearch::defaults_location,
         group             => $elasticsearch::elasticsearch_group,
-        homedir           => $elasticsearch::params::homedir,
+        homedir           => $elasticsearch::homedir,
         instance          => $name,
         memlock           => $memlock,
         nofile            => $nofile,
@@ -166,7 +165,7 @@ define elasticsearch::service::systemd(
         user              => $elasticsearch::elasticsearch_user,
         notify            => $notify_service,
       }
-      -> file { "${elasticsearch::params::systemd_service_path}/elasticsearch-${name}.service":
+      -> file { "${elasticsearch::systemd_service_path}/elasticsearch-${name}.service":
         ensure => $ensure,
         before => Service["elasticsearch-instance-${name}"],
         notify => $notify_service,
@@ -178,13 +177,13 @@ define elasticsearch::service::systemd(
 
   } else {
 
-    file { "${elasticsearch::params::systemd_service_path}/elasticsearch-${name}.service":
+    file { "${elasticsearch::systemd_service_path}/elasticsearch-${name}.service":
       ensure    => 'absent',
       subscribe => Service["elasticsearch-instance-${name}"],
       notify    => Exec["systemd_reload_${name}"],
     }
 
-    file { "${elasticsearch::params::defaults_location}/elasticsearch-${name}":
+    file { "${elasticsearch::defaults_location}/elasticsearch-${name}":
       ensure    => 'absent',
       subscribe => Service["elasticsearch-instance-${name}"],
       notify    => Exec["systemd_reload_${name}"],
@@ -201,14 +200,10 @@ define elasticsearch::service::systemd(
 
   # action
   service { "elasticsearch-instance-${name}":
-    ensure     => $service_ensure,
-    enable     => $service_enable,
-    name       => "elasticsearch-${name}.service",
-    hasstatus  => $elasticsearch::params::service_hasstatus,
-    hasrestart => $elasticsearch::params::service_hasrestart,
-    pattern    => $elasticsearch::params::service_pattern,
-    provider   => 'systemd',
-    require    => $service_require,
+    ensure   => $service_ensure,
+    enable   => $service_enable,
+    name     => "elasticsearch-${name}.service",
+    provider => 'systemd',
+    require  => $service_require,
   }
-
 }

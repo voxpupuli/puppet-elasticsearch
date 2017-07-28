@@ -1,0 +1,4 @@
+---
+elasticsearch::init_template: elasticsearch.SLES.erb
+elasticsearch::pid_dir: ~
+elasticsearch::service_provider: init

@@ -96,13 +96,17 @@ describe 'elasticsearch::instance', :type => 'define' do
 
   # Test all non OS-specific functionality with just a single distro
   let :facts do {
-    :operatingsystem => 'CentOS',
-    :kernel => 'Linux',
-    :osfamily => 'RedHat',
-    :operatingsystemmajrelease => '6',
-    :scenario => '',
     :common => '',
-    :hostname => 'foo'
+    :hostname => 'foo',
+    :kernel => 'Linux',
+    :os => {
+      :family => 'RedHat',
+      :name => 'CentOS',
+      :release => {
+        :major => '6'
+      }
+    },
+    :scenario => ''
   } end
 
   let(:params) do

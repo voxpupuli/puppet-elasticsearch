@@ -1,0 +1,4 @@
+---
+elasticsearch::init_template: elasticsearch.Debian.erb
+elasticsearch::pid_dir: ~
+elasticsearch::service_provider: init

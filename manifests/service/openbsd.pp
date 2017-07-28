@@ -46,7 +46,6 @@ define elasticsearch::service::openbsd(
 
   #### Service management
 
-  # set params: in operation
   if $ensure == 'present' {
 
     case $status {
@@ -78,8 +77,6 @@ define elasticsearch::service::openbsd(
         fail("\"${status}\" is an unknown service status value")
       }
     }
-
-  # set params: removal
   } else {
 
     # make sure the service is stopped and disabled (the removal itself will be
@@ -130,15 +127,10 @@ define elasticsearch::service::openbsd(
 
     # action
     service { "elasticsearch-instance-${name}":
-      ensure     => $service_ensure,
-      enable     => $service_enable,
-      name       => "elasticsearch_${name}",
-      flags      => $service_flags,
-      hasstatus  => $elasticsearch::params::service_hasstatus,
-      hasrestart => $elasticsearch::params::service_hasrestart,
-      pattern    => $elasticsearch::params::service_pattern,
+      ensure => $service_ensure,
+      enable => $service_enable,
+      name   => "elasticsearch_${name}",
+      flags  => $service_flags,
     }
-
   }
-
 }
