@@ -64,7 +64,7 @@ define elasticsearch::plugin (
   case $ensure {
     'installed', 'present': {
       if empty($instances) and $elasticsearch::restart_plugin_change {
-        fail('no $instances defined, even tho `restart_plugin_change` is set!')
+        fail('no $instances defined, even though `restart_plugin_change` is set!')
       }
 
       $_file_ensure = 'directory'
