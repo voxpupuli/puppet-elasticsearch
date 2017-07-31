@@ -1,2 +1,2 @@
 ---
-elasticsearch::defaults_location: /etc/default
+elasticsearch::defaults_location: /etc/sysconfig
