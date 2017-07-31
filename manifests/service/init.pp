@@ -38,7 +38,7 @@
 #
 define elasticsearch::service::init (
   $ensure             = $elasticsearch::ensure,
-  $init_defaults      = undef,
+  $init_defaults      = {},
   $init_defaults_file = undef,
   $init_template      = undef,
   $status             = $elasticsearch::status,
@@ -86,15 +86,27 @@ define elasticsearch::service::init (
 
   }
 
+  if(has_key($init_defaults, 'ES_USER') and $init_defaults['ES_USER'] != $elasticsearch::elasticsearch_user) {
+    fail('Found ES_USER setting for init_defaults but is not same as elasticsearch_user setting. Please use elasticsearch_user setting.')
+  }
+
+  $new_init_defaults = merge(
+    {
+      'ES_USER' => $elasticsearch::elasticsearch_user,
+      'ES_GROUP' => $elasticsearch::elasticsearch_group,
+      'MAX_OPEN_FILES' => '65536',
+    },
+    $init_defaults
+  )
+
   $notify_service = $elasticsearch::restart_config_change ? {
     true  => Service["elasticsearch-instance-${name}"],
     false => undef,
   }
 
+  if ($ensure == 'present') {
 
-  if ( $ensure == 'present' ) {
-
-    # defaults file content. Either from a hash or file
+    # Defaults file, either from file source or from hash to augeas commands
     if ($init_defaults_file != undef) {
       file { "${elasticsearch::defaults_location}/elasticsearch-${name}":
         ensure => $ensure,
@@ -105,24 +117,7 @@ define elasticsearch::service::init (
         before => Service["elasticsearch-instance-${name}"],
         notify => $notify_service,
       }
-
     } else {
-
-      if ($init_defaults != undef and is_hash($init_defaults) ) {
-        if(has_key($init_defaults, 'ES_USER')) {
-          if($init_defaults['ES_USER'] != $elasticsearch::elasticsearch_user) {
-            fail('Found ES_USER setting for init_defaults but is not same as elasticsearch_user setting. Please use elasticsearch_user setting.')
-          }
-        }
-      }
-
-      $init_defaults_pre_hash = {
-        'ES_USER' => $elasticsearch::elasticsearch_user,
-        'ES_GROUP' => $elasticsearch::elasticsearch_group,
-        'MAX_OPEN_FILES' => '65536',
-      }
-      $new_init_defaults = merge($init_defaults_pre_hash, $init_defaults)
-
       augeas { "defaults_${name}":
         incl    => "${elasticsearch::defaults_location}/elasticsearch-${name}",
         lens    => 'Shellvars.lns',
@@ -130,7 +125,6 @@ define elasticsearch::service::init (
         before  => Service["elasticsearch-instance-${name}"],
         notify  => $notify_service,
       }
-
     }
 
     # init file from template
@@ -154,7 +148,7 @@ define elasticsearch::service::init (
 
     }
 
-  } else {
+  } else { # absent
 
     file { "/etc/init.d/elasticsearch-${name}":
       ensure    => 'absent',

@@ -38,7 +38,7 @@
 #
 define elasticsearch::service::openrc(
   $ensure             = $elasticsearch::ensure,
-  $init_defaults      = undef,
+  $init_defaults      = {},
   $init_defaults_file = undef,
   $init_template      = undef,
   $status             = $elasticsearch::status,
@@ -86,6 +86,19 @@ define elasticsearch::service::openrc(
 
   }
 
+  if(has_key($init_defaults, 'ES_USER') and $init_defaults['ES_USER'] != $elasticsearch::elasticsearch_user) {
+    fail('Found ES_USER setting for init_defaults but is not same as elasticsearch_user setting. Please use elasticsearch_user setting.')
+  }
+
+  $new_init_defaults = merge(
+    {
+      'ES_USER' => $elasticsearch::elasticsearch_user,
+      'ES_GROUP' => $elasticsearch::elasticsearch_group,
+      'MAX_OPEN_FILES' => '65536',
+    },
+    $init_defaults
+  )
+
   $notify_service = $elasticsearch::restart_config_change ? {
     true  => Service["elasticsearch-instance-${name}"],
     false => undef,
@@ -105,22 +118,7 @@ define elasticsearch::service::openrc(
         before => Service["elasticsearch-instance-${name}"],
         notify => $notify_service,
       }
-
-    } elsif ($init_defaults != undef and is_hash($init_defaults) ) {
-
-      if(has_key($init_defaults, 'ES_USER')) {
-        if($init_defaults['ES_USER'] != $elasticsearch::elasticsearch_user) {
-          fail('Found ES_USER setting for init_defaults but is not same as elasticsearch_user setting. Please use elasticsearch_user setting.')
-        }
-      }
-
-      $init_defaults_pre_hash = {
-        'ES_USER' => $elasticsearch::elasticsearch_user,
-        'ES_GROUP' => $elasticsearch::elasticsearch_group,
-        'MAX_OPEN_FILES' => '65536',
-      }
-      $new_init_defaults = merge($init_defaults_pre_hash, $init_defaults)
-
+    } else {
       augeas { "defaults_${name}":
         incl    => "${elasticsearch::defaults_location}/elasticsearch.${name}",
         lens    => 'Shellvars.lns',
@@ -128,7 +126,6 @@ define elasticsearch::service::openrc(
         before  => Service["elasticsearch-instance-${name}"],
         notify  => $notify_service,
       }
-
     }
 
     # init file from template

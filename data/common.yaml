@@ -21,14 +21,14 @@ elasticsearch::download_tool: ~
 elasticsearch::file_rolling_type: dailyRollingFile
 elasticsearch::indices: ~
 elasticsearch::indices_hiera_merge: false
-elasticsearch::init_defaults: ~
+elasticsearch::init_defaults: {}
 elasticsearch::init_defaults_file: ~
 elasticsearch::init_template: "%{module_name}/etc/init.d/elasticsearch.systemd.erb"
 elasticsearch::instances: ~
 elasticsearch::instances_hiera_merge: false
 elasticsearch::jvm_options: []
 elasticsearch::logdir: /var/log/elasticsearch
-elasticsearch::logging_config: ~
+elasticsearch::logging_config: {}
 elasticsearch::logging_file: ~
 elasticsearch::logging_template: ~
 elasticsearch::manage_repo: true

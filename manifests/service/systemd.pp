@@ -38,7 +38,7 @@
 #
 define elasticsearch::service::systemd(
   $ensure             = $elasticsearch::ensure,
-  $init_defaults      = undef,
+  $init_defaults      = {},
   $init_defaults_file = undef,
   $init_template      = undef,
   $status             = $elasticsearch::status,
@@ -84,14 +84,28 @@ define elasticsearch::service::systemd(
     $service_enable = false
   }
 
+  if(has_key($init_defaults, 'ES_USER') and $init_defaults['ES_USER'] != $elasticsearch::elasticsearch_user) {
+    fail('Found ES_USER setting for init_defaults but is not same as elasticsearch_user setting. Please use elasticsearch_user setting.')
+  }
+
+  $new_init_defaults = merge(
+    {
+      'ES_USER'        => $elasticsearch::elasticsearch_user,
+      'ES_GROUP'       => $elasticsearch::elasticsearch_group,
+      'MAX_OPEN_FILES' => '65536',
+      'MAX_THREADS'    => '4096',
+    },
+    $init_defaults
+  )
+
   $notify_service = $elasticsearch::restart_config_change ? {
     true  => [ Exec["systemd_reload_${name}"], Service["elasticsearch-instance-${name}"] ],
     false => Exec["systemd_reload_${name}"]
   }
 
-  if ( $ensure == 'present' ) {
+  if ($ensure == 'present') {
 
-    # defaults file content. Either from a hash or file
+    # Defaults file, either from file source or from hash to augeas commands
     if ($init_defaults_file != undef) {
       file { "${elasticsearch::defaults_location}/elasticsearch-${name}":
         ensure => $ensure,
@@ -102,24 +116,7 @@ define elasticsearch::service::systemd(
         before => Service["elasticsearch-instance-${name}"],
         notify => $notify_service,
       }
-
     } else {
-      if ($init_defaults != undef and is_hash($init_defaults) ) {
-
-        if(has_key($init_defaults, 'ES_USER')) {
-          if($init_defaults['ES_USER'] != $elasticsearch::elasticsearch_user) {
-            fail('Found ES_USER setting for init_defaults but is not same as elasticsearch_user setting. Please use elasticsearch_user setting.')
-          }
-        }
-      }
-      $init_defaults_pre_hash = {
-        'ES_USER'        => $elasticsearch::elasticsearch_user,
-        'ES_GROUP'       => $elasticsearch::elasticsearch_group,
-        'MAX_OPEN_FILES' => '65536',
-        'MAX_THREADS'    => '4096',
-      }
-      $new_init_defaults = merge($init_defaults_pre_hash, $init_defaults)
-
       augeas { "defaults_${name}":
         incl    => "${elasticsearch::defaults_location}/elasticsearch-${name}",
         lens    => 'Shellvars.lns',
@@ -132,21 +129,22 @@ define elasticsearch::service::systemd(
     # init file from template
     if ($init_template != undef) {
 
-      if ($new_init_defaults != undef and is_hash($new_init_defaults) and has_key($new_init_defaults, 'MAX_OPEN_FILES')) {
+      # Check for values in init defaults we may want to set in the init template
+      if (has_key($new_init_defaults, 'MAX_OPEN_FILES')) {
         $nofile = $new_init_defaults['MAX_OPEN_FILES']
-      }else{
+      } else {
         $nofile = '65536'
       }
 
-      if ($new_init_defaults != undef and is_hash($new_init_defaults) and has_key($new_init_defaults, 'MAX_LOCKED_MEMORY')) {
+      if (has_key($new_init_defaults, 'MAX_LOCKED_MEMORY')) {
         $memlock = $new_init_defaults['MAX_LOCKED_MEMORY']
-      }else{
+      } else {
         $memlock = undef
       }
 
-      if ($new_init_defaults != undef and is_hash($new_init_defaults) and has_key($new_init_defaults, 'MAX_THREADS')) {
+      if (has_key($new_init_defaults, 'MAX_THREADS')) {
         $nproc = $new_init_defaults['MAX_THREADS']
-      }else{
+      } else {
         $nproc = '4096'
       }
 
@@ -173,9 +171,9 @@ define elasticsearch::service::systemd(
 
     }
 
-  $service_require = Exec["systemd_reload_${name}"]
+    $service_require = Exec["systemd_reload_${name}"]
 
-  } else {
+  } else { # absent
 
     file { "${elasticsearch::systemd_service_path}/elasticsearch-${name}.service":
       ensure    => 'absent',
@@ -190,7 +188,6 @@ define elasticsearch::service::systemd(
     }
 
     $service_require = undef
-
   }
 
   exec { "systemd_reload_${name}":
