@@ -54,7 +54,7 @@ RSpec.configure do |c|
 
     create_remote_file hosts, @tls[:ca][:cert][:path], @tls[:ca][:cert][:pem]
     @tls[:clients].each do |node|
-      node.each do |type, params|
+      node.each do |_type, params|
         create_remote_file hosts, params[:path], params[:pem]
       end
     end
