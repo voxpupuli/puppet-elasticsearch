@@ -11,6 +11,7 @@ Major version upgrade with several important deprecations:
 Minor:
 
 * elasticsearch::plugin only accepts `present` or `absent`
+* Some REST-resource based providers (such as templates and pipelines) now validate parameters (such as numeric port numbers) more rigorously.
 
 ## x.x.x (Month Day, Year)
 

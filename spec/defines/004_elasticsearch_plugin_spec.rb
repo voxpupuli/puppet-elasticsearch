@@ -214,7 +214,7 @@ describe 'elasticsearch::plugin', :type => 'define' do
             :ensure         => 'present',
             :instances      => 'es-plugin',
             :proxy_host     => 'es.local',
-            :proxy_port     => '8080'
+            :proxy_port     => 8080
           } end
 
           it { should contain_elasticsearch_plugin(
@@ -252,7 +252,7 @@ describe 'elasticsearch::plugin', :type => 'define' do
             :ensure         => 'present',
             :instances      => 'es-plugin',
             :proxy_host     => 'es.local',
-            :proxy_port     => '8080',
+            :proxy_port     => 8080,
             :proxy_username => 'elastic',
             :proxy_password => 'password'
           } end
