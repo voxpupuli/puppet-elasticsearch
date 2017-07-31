@@ -7,14 +7,17 @@ describe 'elasticsearch', :type => 'class' do
 
   on_supported_os.each do |os, facts|
     context "on #{os}" do
-      case facts[:osfamily]
+      case facts[:os]['family']
       when 'Debian'
         let(:defaults_path) { '/etc/default' }
         let(:system_service_folder) { '/lib/systemd/system' }
         let(:pkg_ext) { 'deb' }
         let(:pkg_prov) { 'dpkg' }
         let(:version_add) { '' }
-        if facts[:lsbmajdistrelease] >= '8'
+        if (facts[:os]['name'] == 'Debian' and \
+           facts[:os]['release']['major'].to_i >= 8) or \
+           (facts[:os]['name'] == 'Ubuntu' and \
+           facts[:os]['release']['major'].to_i >= 15)
           let(:systemd_service_path) { '/lib/systemd/system' }
           test_pid = true
         else
@@ -26,7 +29,7 @@ describe 'elasticsearch', :type => 'class' do
         let(:pkg_ext) { 'rpm' }
         let(:pkg_prov) { 'rpm' }
         let(:version_add) { '-1' }
-        if facts[:operatingsystemmajrelease] >= '7'
+        if facts[:os]['release']['major'].to_i >= 7
           let(:systemd_service_path) { '/lib/systemd/system' }
           test_pid = true
         else
@@ -37,8 +40,8 @@ describe 'elasticsearch', :type => 'class' do
         let(:pkg_ext) { 'rpm' }
         let(:pkg_prov) { 'rpm' }
         let(:version_add) { '-1' }
-        if facts[:operatingsystem] == 'OpenSuSE' and
-           facts[:operatingsystemrelease].to_i <= 12
+        if facts[:os]['name'] == 'OpenSuSE' and
+           facts[:os]['release']['major'].to_i <= 12
           let(:systemd_service_path) { '/lib/systemd/system' }
         else
           let(:systemd_service_path) { '/usr/lib/systemd/system' }
@@ -86,7 +89,7 @@ describe 'elasticsearch', :type => 'class' do
               .with(:ensure => "1.0#{version_add}") }
           end
 
-          if facts[:osfamily] == 'RedHat'
+          if facts[:os]['family'] == 'RedHat'
             context 'Handle special CentOS/RHEL package versioning' do
               let(:params) do
                 default_params.merge(
@@ -190,7 +193,7 @@ describe 'elasticsearch', :type => 'class' do
           )
         end
 
-        case facts[:osfamily]
+        case facts[:os]['family']
         when 'Suse'
           it { should contain_package('elasticsearch')
             .with(:ensure => 'absent') }
@@ -211,7 +214,7 @@ describe 'elasticsearch', :type => 'class' do
           )
         end
 
-        case facts[:osfamily]
+        case facts[:os]['family']
         when 'Debian'
           it { should contain_class('elasticsearch::repo')
             .that_requires('Anchor[elasticsearch::begin]') }
@@ -254,7 +257,7 @@ describe 'elasticsearch', :type => 'class' do
           )
         end
 
-        case facts[:osfamily]
+        case facts[:os]['family']
         when 'Debian'
           context 'is supported' do
             it { should contain_apt__source('elasticsearch').with(
@@ -382,7 +385,7 @@ describe 'elasticsearch', :type => 'class' do
         it { should contain_file('/var/lib/elasticsearch')
           .with(:owner => 'myesuser', :group => 'myesgroup') }
         it { should contain_file('/var/run/elasticsearch')
-          .with(:owner => 'myesuser') if facts[:osfamily] == 'RedHat' }
+          .with(:owner => 'myesuser') if facts[:os]['family'] == 'RedHat' }
       end
 
       describe 'jvm.options' do
