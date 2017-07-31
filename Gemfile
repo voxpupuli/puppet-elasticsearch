@@ -8,9 +8,7 @@ group :test do
   gem 'xmlrpc'
 
   gem 'ci_reporter_rspec'
-  # This is required until https://github.com/camptocamp/facterdb/pull/44
-  # is released
-  gem 'facter', '~> 2.4.0'
+  gem 'facter'
   gem 'pry'
   gem 'puppet-lint'
   gem 'puppet-strings'

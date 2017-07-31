@@ -20,20 +20,20 @@ describe 'elasticsearch::instance', :type => 'define' do
         it { should contain_file("/etc/init.d/elasticsearch-#{title}") }
       end
 
-      if (facts[:operatingsystem] == 'OpenSuSE' and facts[:operatingsystemrelease].to_i >= 13) or facts[:operatingsystem] == 'SLES'
+      if (facts[:os]['name'] == 'OpenSuSE' and facts[:os]['release']['major'].to_i >= 13) or facts[:os]['name'] == 'SLES'
         let(:systemd_service_path) { '/usr/lib/systemd/system' }
       else
         let(:systemd_service_path) { '/lib/systemd/system' }
       end
 
-      case facts[:osfamily]
+      case facts[:os]['family']
       when 'Debian'
         let(:defaults_path) { '/etc/default' }
         let(:pkg_ext) { 'deb' }
         let(:pkg_prov) { 'dpkg' }
-        case facts[:operatingsystem]
+        case facts[:os]['name']
         when 'Debian'
-          if facts[:operatingsystemmajrelease].to_i >= 8
+          if facts[:os]['release']['major'].to_i >= 8
             let(:initscript) { 'systemd' }
 
             include_examples 'systemd'
@@ -43,7 +43,7 @@ describe 'elasticsearch::instance', :type => 'define' do
             include_examples 'init'
           end
         when 'Ubuntu'
-          if facts[:operatingsystemmajrelease].to_i >= 15
+          if facts[:os]['release']['major'].to_i >= 15
             let(:initscript) { 'systemd' }
 
             include_examples 'systemd'
@@ -57,7 +57,7 @@ describe 'elasticsearch::instance', :type => 'define' do
         let(:defaults_path) { '/etc/sysconfig' }
         let(:pkg_ext) { 'rpm' }
         let(:pkg_prov) { 'rpm' }
-        if facts[:operatingsystemmajrelease].to_i >= 7
+        if facts[:os]['release']['major'].to_i >= 7
           let(:initscript) { 'systemd' }
 
           include_examples 'systemd'
