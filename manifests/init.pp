@@ -420,7 +420,7 @@ class elasticsearch (
   }
 
   if ($version != false) {
-    case $::osfamily {
+    case $facts['os']['family'] {
       'RedHat', 'Linux', 'Suse': {
         if ($version =~ /.+-\d/) {
           $pkg_version = $version

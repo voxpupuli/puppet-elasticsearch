@@ -152,7 +152,7 @@ class elasticsearch::package {
   # Package removal
   } else {
 
-    if ($::osfamily == 'Suse') {
+    if ($facts['os']['family'] == 'Suse') {
       Package {
         provider  => 'rpm',
       }

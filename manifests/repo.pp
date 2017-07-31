@@ -24,7 +24,7 @@ class elasticsearch::repo {
     } else {
       if versioncmp($elasticsearch::repo_version, '5.0') >= 0 {
         $_repo_url = 'https://artifacts.elastic.co/packages'
-        case $::osfamily {
+        case $facts['os']['family'] {
           'Debian': {
             $_repo_path = 'apt'
           }
@@ -34,7 +34,7 @@ class elasticsearch::repo {
         }
       } else {
         $_repo_url = 'http://packages.elastic.co/elasticsearch'
-        case $::osfamily {
+        case $facts['os']['family'] {
           'Debian': {
             $_repo_path = 'debian'
           }
@@ -47,7 +47,7 @@ class elasticsearch::repo {
       $_baseurl = "${_repo_url}/${elasticsearch::repo_version}/${_repo_path}"
     }
   } else {
-    case $::osfamily {
+    case $facts['os']['family'] {
       'Debian': {
         $_baseurl = undef
       }
@@ -57,7 +57,7 @@ class elasticsearch::repo {
     }
   }
 
-  case $::osfamily {
+  case $facts['os']['family'] {
     'Debian': {
       include ::apt
       Class['apt::update'] -> Package[$elasticsearch::package_name]
@@ -96,7 +96,7 @@ class elasticsearch::repo {
       }
     }
     'Suse': {
-      if $::operatingsystem == 'SLES' and versioncmp($::operatingsystemmajrelease, '11') <= 0 {
+      if $facts['os']['name'] == 'SLES' and versioncmp($facts['os']['release']['major'], '11') <= 0 {
         # Older versions of SLES do not ship with rpmkeys
         $_import_cmd = "rpm --import ${::elasticsearch::repo_key_source}"
       } else {
@@ -125,7 +125,7 @@ class elasticsearch::repo {
       }
     }
     default: {
-      fail("\"${module_name}\" provides no repository information for OSfamily \"${::osfamily}\"")
+      fail("\"${module_name}\" provides no repo information for OS family ${facts['os']['family']}")
     }
   }
 }
