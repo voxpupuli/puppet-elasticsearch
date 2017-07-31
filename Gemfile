@@ -18,7 +18,7 @@ group :test do
   gem 'puppetlabs_spec_helper'
   gem 'rake'
   gem 'rspec', '~> 3.0'
-  gem 'rspec-puppet'
+  gem 'rspec-puppet', '~> 2.6'
   gem 'rspec-puppet-facts'
   gem 'rspec-puppet-utils'
   gem 'rspec-retry'
