@@ -1,15 +1,14 @@
 require 'spec_helper_acceptance'
 require 'json'
 
-# rubocop:disable Metrics/BlockLength
 describe 'elasticsearch::package_url' do
   before :all do
     shell "mkdir -p #{default['distmoduledir']}/another/files"
 
-    shell %W(
+    shell %W[
       cp #{test_settings['local']}
       #{default['distmoduledir']}/another/files/#{test_settings['puppet']}
-    ).join(' ')
+    ].join(' ')
   end
 
   context 'via http', :with_cleanup do
@@ -17,7 +16,6 @@ describe 'elasticsearch::package_url' do
       pp = <<-EOS
         class { 'elasticsearch':
           package_url => '#{test_settings['url']}',
-          java_install => true,
           config => {
             'node.name' => 'elasticsearch001',
             'cluster.name' => '#{test_settings['cluster_name']}',
@@ -72,7 +70,6 @@ describe 'elasticsearch::package_url' do
       pp = <<-EOS
         class { 'elasticsearch':
           package_url => 'file:#{test_settings['local']}',
-          java_install => true,
           config => {
             'node.name' => 'elasticsearch001',
             'cluster.name' => '#{test_settings['cluster_name']}',
@@ -128,7 +125,6 @@ describe 'elasticsearch::package_url' do
         class { 'elasticsearch':
           package_url =>
             'puppet:///modules/another/#{test_settings['puppet']}',
-          java_install => true,
           config => {
             'node.name' => 'elasticsearch001',
             'cluster.name' => '#{test_settings['cluster_name']}',

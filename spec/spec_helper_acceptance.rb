@@ -162,7 +162,7 @@ RSpec.configure do |c|
     hosts.each do |host|
       copy_hiera_data_to(host, 'spec/fixtures/hiera/hieradata/')
 
-      modules = %w(archive stdlib java datacat java_ks)
+      modules = %w[archive datacat java java_ks stdlib tea]
 
       dist_module = {
         'Debian' => ['apt'],
@@ -183,6 +183,9 @@ RSpec.configure do |c|
       # Apt doesn't update package caches sometimes, ensure we're caught up.
       shell 'apt-get update' if fact('osfamily') == 'Debian'
     end
+
+    # Use the Java class once before the suite of tests
+    apply_manifest 'class { "java" : distribution => "jre" }'
   end
 
   c.after :suite do

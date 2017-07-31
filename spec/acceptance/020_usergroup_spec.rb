@@ -1,6 +1,5 @@
 require 'spec_helper_acceptance'
 
-# rubocop:disable Metrics/BlockLength
 describe 'elasticsearch::elasticsearch_user', :then_purge do
   describe 'changing service user', :with_cleanup do
     describe 'manifest' do
@@ -17,9 +16,7 @@ describe 'elasticsearch::elasticsearch_user', :then_purge do
             'cluster.name' => '#{test_settings['cluster_name']}',
             'network.host' => '0.0.0.0',
           },
-          manage_repo => true,
           repo_version => '#{test_settings['repo_version']}',
-          java_install => true,
           elasticsearch_user => 'esuser',
           elasticsearch_group => 'esgroup'
         }
