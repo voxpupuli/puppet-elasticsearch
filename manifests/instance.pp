@@ -470,7 +470,7 @@ define elasticsearch::instance (
       $instance_init_defaults = { }
     }
     $init_defaults_new = merge(
-      { 'DATA_DIR'  => $elasticsearch::datadir },
+      { 'DATA_DIR'  => $elasticsearch::_datadir_default },
       $global_init_defaults,
       $instance_init_defaults_main,
       $instance_init_defaults
