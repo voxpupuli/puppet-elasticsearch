@@ -48,15 +48,15 @@
 # @author Tyler Langlois <tyler.langlois@elastic.co>
 #
 define elasticsearch::plugin (
-  Enum['absent', 'present']   $ensure         = 'present',
-  Enum[String, Array[String]] $instances      = [],
-  Optional[String]            $module_dir     = undef,
-  Optional[String]            $proxy_host     = undef,
-  Optional[String]            $proxy_password = undef,
-  Optional[Tea::Port]         $proxy_port     = undef,
-  Optional[String]            $proxy_username = undef,
-  Optional[String]            $source         = undef,
-  Optional[Tea::HTTPUrl]      $url            = undef,
+  Enum['absent', 'present']      $ensure         = 'present',
+  Variant[String, Array[String]] $instances      = [],
+  Optional[String]               $module_dir     = undef,
+  Optional[String]               $proxy_host     = undef,
+  Optional[String]               $proxy_password = undef,
+  Optional[Tea::Port]            $proxy_port     = undef,
+  Optional[String]               $proxy_username = undef,
+  Optional[String]               $source         = undef,
+  Optional[Tea::HTTPUrl]         $url            = undef,
 ) {
 
   include elasticsearch
