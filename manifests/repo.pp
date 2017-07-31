@@ -128,5 +128,4 @@ class elasticsearch::repo {
       fail("\"${module_name}\" provides no repository information for OSfamily \"${::osfamily}\"")
     }
   }
-
 }
