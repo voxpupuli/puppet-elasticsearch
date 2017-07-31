@@ -148,11 +148,6 @@ hosts.each do |host|
 end
 
 RSpec.configure do |c|
-  # Uncomment for verbose test descriptions.
-  # Readable test descriptions
-  # c.formatter = :documentation
-
-  # Configure all nodes in nodeset
   c.before :suite do
     # Install module and dependencies
     install_dev_puppet_module :ignore_list => [
