@@ -31,7 +31,7 @@ describe 'elasticsearch::index', :type => 'define' do
           end
 
           it 'validates cert paths' do
-            is_expected.to compile.and_raise_error(/absolute path/)
+            is_expected.to compile.and_raise_error(/expects a match/)
           end
         end
       end
