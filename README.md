@@ -410,22 +410,6 @@ elasticsearch::index { 'foo':
 }
 ```
 
-### Bindings/Clients
-
-Install a variety of [clients/bindings](http://www.elasticsearch.org/guide/en/elasticsearch/client/community/current/clients.html):
-
-#### Python
-
-```puppet
-elasticsearch::python { 'rawes': }
-```
-
-#### Ruby
-
-```puppet
-elasticsearch::ruby { 'elasticsearch': }
-```
-
 ### Connection Validator
 
 This module offers a way to make sure an instance has been started and is up and running before
