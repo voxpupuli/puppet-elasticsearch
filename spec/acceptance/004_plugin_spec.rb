@@ -1,7 +1,6 @@
 require 'spec_helper_acceptance'
 require 'json'
 
-# rubocop:disable Metrics/BlockLength
 shared_examples 'plugin behavior' do |version, user, plugin, offline, config|
   describe "plugin operations on #{version}" do
     context 'official repo', :with_cleanup do
@@ -13,9 +12,7 @@ shared_examples 'plugin behavior' do |version, user, plugin, offline, config|
               'cluster.name' => '#{test_settings['cluster_name']}',
               'network.host' => '0.0.0.0',
             },
-            manage_repo => true,
             #{config}
-            java_install => true,
             restart_on_change => true,
           }
 
@@ -79,9 +76,7 @@ shared_examples 'plugin behavior' do |version, user, plugin, offline, config|
               'cluster.name' => '#{test_settings['cluster_name']}',
               'network.host' => '0.0.0.0',
             },
-            manage_repo => true,
             #{config}
-            java_install => true
           }
 
           elasticsearch::instance { 'es-01':
@@ -111,9 +106,7 @@ shared_examples 'plugin behavior' do |version, user, plugin, offline, config|
               'cluster.name' => '#{test_settings['cluster_name']}',
               'network.host' => '0.0.0.0',
             },
-            manage_repo => true,
             #{config}
-            java_install => true,
             elasticsearch_user => '#{user}',
             elasticsearch_group => '#{user}',
             restart_on_change => true,
@@ -179,9 +172,7 @@ shared_examples 'plugin behavior' do |version, user, plugin, offline, config|
                 'cluster.name' => '#{test_settings['cluster_name']}',
                 'network.host' => '0.0.0.0',
               },
-              manage_repo => true,
               #{config}
-              java_install => true,
               elasticsearch_user => '#{user}',
               elasticsearch_group => '#{user}',
               restart_on_change => true,
@@ -237,9 +228,7 @@ shared_examples 'plugin behavior' do |version, user, plugin, offline, config|
               'cluster.name' => '#{test_settings['cluster_name']}',
               'network.host' => '0.0.0.0',
             },
-            manage_repo => true,
             #{config}
-            java_install => true,
             elasticsearch_user => '#{user}',
             elasticsearch_group => '#{user}',
             restart_on_change => true,
@@ -293,9 +282,7 @@ shared_examples 'plugin behavior' do |version, user, plugin, offline, config|
               'cluster.name' => '#{test_settings['cluster_name']}',
               'network.host' => '0.0.0.0',
             },
-            manage_repo => true,
             #{config}
-            java_install => true,
             restart_on_change => true,
           }
 
@@ -346,10 +333,10 @@ describe 'elasticsearch::plugin' do
   before :all do
     shell "mkdir -p #{default['distmoduledir']}/another/files"
 
-    shell %W(
+    shell %W[
       ln -sf /tmp/elasticsearch-kopf.zip
       #{default['distmoduledir']}/another/files/elasticsearch-kopf.zip
-    ).join(' ')
+    ].join(' ')
   end
 
   include_examples 'plugin behavior',

@@ -1,14 +1,11 @@
 require 'spec_helper_acceptance'
 require 'json'
 
-# rubocop:disable Metrics/BlockLength
 describe 'hiera' do
   let :base_manifest do
     <<-EOS
       class { 'elasticsearch':
-        manage_repo => true,
         repo_version => '#{test_settings['repo_version']}',
-        java_install => true,
         restart_on_change => true,
       }
     EOS
