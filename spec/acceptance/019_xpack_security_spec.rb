@@ -2,7 +2,7 @@ require 'spec_helper_acceptance'
 require 'json'
 
 describe 'elasticsearch x-pack security',
-         :if => is_5x_capable?,
+         :if => v5x_capable?,
          :with_certificates => true,
          :then_purge => true do
   # Template manifest
