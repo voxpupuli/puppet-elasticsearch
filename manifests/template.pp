@@ -53,18 +53,18 @@
 # @author Tyler Langlois <tyler.langlois@elastic.co>
 #
 define elasticsearch::template (
-  Enum['absent', 'present']    $ensure                  = 'present',
-  Optional[String]             $api_basic_auth_password = $elasticsearch::api_basic_auth_password,
-  Optional[String]             $api_basic_auth_username = $elasticsearch::api_basic_auth_username,
-  Optional[Tea::AbsolutePath]  $api_ca_file             = $elasticsearch::api_ca_file,
-  Optional[Tea::AbsolutePath]  $api_ca_path             = $elasticsearch::api_ca_path,
-  String                       $api_host                = $elasticsearch::api_host,
-  Tea::Port                    $api_port                = $elasticsearch::api_port,
-  Enum['http', 'https']        $api_protocol            = $elasticsearch::api_protocol,
-  Integer                      $api_timeout             = $elasticsearch::api_timeout,
-  Optional[Enum[String, Hash]] $content                 = undef,
-  Optional[String]             $source                  = undef,
-  Boolean                      $validate_tls            = $elasticsearch::validate_tls,
+  Enum['absent', 'present']       $ensure                  = 'present',
+  Optional[String]                $api_basic_auth_password = $elasticsearch::api_basic_auth_password,
+  Optional[String]                $api_basic_auth_username = $elasticsearch::api_basic_auth_username,
+  Optional[Tea::AbsolutePath]     $api_ca_file             = $elasticsearch::api_ca_file,
+  Optional[Tea::AbsolutePath]     $api_ca_path             = $elasticsearch::api_ca_path,
+  String                          $api_host                = $elasticsearch::api_host,
+  Tea::Port                       $api_port                = $elasticsearch::api_port,
+  Enum['http', 'https']           $api_protocol            = $elasticsearch::api_protocol,
+  Integer                         $api_timeout             = $elasticsearch::api_timeout,
+  Optional[Variant[String, Hash]] $content                 = undef,
+  Optional[String]                $source                  = undef,
+  Boolean                         $validate_tls            = $elasticsearch::validate_tls,
 ) {
   if $content != undef and is_string($content) {
     $_content = parsejson($content)

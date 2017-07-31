@@ -15,9 +15,9 @@
 # @author Tyler Langlois <tyler.langlois@elastic.co>
 #
 define elasticsearch::script (
-  String                      $source,
-  String                      $ensure  = 'present',
-  Enum[true, false, 'remote'] $recurse = undef,
+  String                                     $source,
+  String                                     $ensure  = 'present',
+  Optional[Variant[Boolean, Enum['remote']]] $recurse = undef,
 ) {
 
   require elasticsearch
