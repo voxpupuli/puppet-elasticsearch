@@ -272,157 +272,155 @@ describe 'elasticsearch', :type => 'class' do
     end
   end
 
-  context 'catch-all tests for CentOS' do
-    let(:facts) do
+  on_supported_os(
+    :hardwaremodels => ['x86_64'],
+    :supported_os => [
       {
-        :common => '',
-        :hostname => 'foo',
-        :kernel => 'Linux',
-        :os => {
-          :family => 'RedHat',
-          :name => 'CentOS',
-          :release => {
-            :major => '6'
-          }
-        },
-        :scenario => ''
+        'operatingsystem' => 'CentOS',
+        'operatingsystemrelease' => ['7']
       }
-    end
+    ]
+  ).each do |os, facts|
+    context "on #{os}" do
+      let(:facts) { facts.merge(
+        :scenario => '',
+        :common => ''
+      ) }
 
-    context 'main class tests' do
-      # init.pp
-      it { should compile.with_all_deps }
-      it { should contain_class('elasticsearch') }
-      it { should contain_anchor('elasticsearch::begin') }
-      it { should contain_class('elasticsearch::params') }
-      it { should contain_class('elasticsearch::package')
-        .that_requires('Anchor[elasticsearch::begin]') }
-      it { should contain_class('elasticsearch::config')
-        .that_requires('Class[elasticsearch::package]') }
+      context 'main class tests' do
+        # init.pp
+        it { should compile.with_all_deps }
+        it { should contain_class('elasticsearch') }
+        it { should contain_anchor('elasticsearch::begin') }
+        it { should contain_class('elasticsearch::package')
+          .that_requires('Anchor[elasticsearch::begin]') }
+        it { should contain_class('elasticsearch::config')
+          .that_requires('Class[elasticsearch::package]') }
 
-      # Base directories
-      it { should contain_file('/etc/elasticsearch') }
-      it { should contain_file('/etc/elasticsearch/jvm.options') }
-      it { should contain_file('/usr/share/elasticsearch/templates_import') }
-      it { should contain_file('/usr/share/elasticsearch/scripts') }
-      it { should contain_file('/usr/share/elasticsearch') }
-      it { should contain_file('/usr/share/elasticsearch/lib') }
+        # Base directories
+        it { should contain_file('/etc/elasticsearch') }
+        it { should contain_file('/etc/elasticsearch/jvm.options') }
+        it { should contain_file('/usr/share/elasticsearch/templates_import') }
+        it { should contain_file('/usr/share/elasticsearch/scripts') }
+        it { should contain_file('/usr/share/elasticsearch') }
+        it { should contain_file('/usr/share/elasticsearch/lib') }
 
-      it { should contain_exec('remove_plugin_dir') }
+        it { should contain_exec('remove_plugin_dir') }
 
-      # file removal from package
-      it { should contain_file('/etc/init.d/elasticsearch')
-        .with(:ensure => 'absent') }
-      it { should contain_file('/etc/elasticsearch/elasticsearch.yml')
-        .with(:ensure => 'absent') }
-      it { should contain_file('/etc/elasticsearch/logging.yml')
-        .with(:ensure => 'absent') }
-      it { should contain_file('/etc/elasticsearch/log4j2.properties')
-        .with(:ensure => 'absent') }
-      it { should contain_file('/etc/elasticsearch/log4j2.properties')
-        .with(:ensure => 'absent') }
-    end
-
-    context 'package installation' do
-      context 'with default package' do
-        it { should contain_package('elasticsearch')
-          .with(:ensure => 'present') }
-        it { should_not contain_package('my-elasticsearch')
-          .with(:ensure => 'present') }
+        # file removal from package
+        it { should contain_file('/etc/init.d/elasticsearch')
+          .with(:ensure => 'absent') }
+        it { should contain_file('/etc/elasticsearch/elasticsearch.yml')
+          .with(:ensure => 'absent') }
+        it { should contain_file('/etc/elasticsearch/logging.yml')
+          .with(:ensure => 'absent') }
+        it { should contain_file('/etc/elasticsearch/log4j2.properties')
+          .with(:ensure => 'absent') }
+        it { should contain_file('/etc/elasticsearch/log4j2.properties')
+          .with(:ensure => 'absent') }
       end
 
-      context 'with specified package name' do
+      context 'package installation' do
+        context 'with default package' do
+          it { should contain_package('elasticsearch')
+            .with(:ensure => 'present') }
+          it { should_not contain_package('my-elasticsearch')
+            .with(:ensure => 'present') }
+        end
+
+        context 'with specified package name' do
+          let(:params) do
+            default_params.merge(
+              :package_name => 'my-elasticsearch'
+            )
+          end
+
+          it { should contain_package('my-elasticsearch')
+            .with(:ensure => 'present') }
+          it { should_not contain_package('elasticsearch')
+            .with(:ensure => 'present') }
+        end
+
+        context 'with auto upgrade enabled' do
+          let(:params) do
+            default_params.merge(
+              :autoupgrade => true
+            )
+          end
+
+          it { should contain_package('elasticsearch')
+            .with(:ensure => 'latest') }
+        end
+      end
+
+      context 'when not supplying a repo_version' do
         let(:params) do
           default_params.merge(
-            :package_name => 'my-elasticsearch'
+            :manage_repo => true
           )
         end
 
-        it { should contain_package('my-elasticsearch')
-          .with(:ensure => 'present') }
-        it { should_not contain_package('elasticsearch')
-          .with(:ensure => 'present') }
+        it { expect { should raise_error(
+          Puppet::Error, 'Please fill in a repository version at $repo_version'
+        ) } }
       end
 
-      context 'with auto upgrade enabled' do
+      context 'running a a different user' do
         let(:params) do
           default_params.merge(
-            :autoupgrade => true
+            :elasticsearch_user => 'myesuser',
+            :elasticsearch_group => 'myesgroup'
           )
         end
 
-        it { should contain_package('elasticsearch')
-          .with(:ensure => 'latest') }
-      end
-    end
-
-    context 'when not supplying a repo_version' do
-      let(:params) do
-        default_params.merge(
-          :manage_repo => true
-        )
-      end
-
-      it { expect { should raise_error(
-        Puppet::Error, 'Please fill in a repository version at $repo_version'
-      ) } }
-    end
-
-    context 'running a a different user' do
-      let(:params) do
-        default_params.merge(
-          :elasticsearch_user => 'myesuser',
-          :elasticsearch_group => 'myesgroup'
-        )
+        it { should contain_file('/etc/elasticsearch')
+          .with(:owner => 'myesuser', :group => 'myesgroup') }
+        it { should contain_file('/var/log/elasticsearch')
+          .with(:owner => 'myesuser') }
+        it { should contain_file('/usr/share/elasticsearch')
+          .with(:owner => 'myesuser', :group => 'myesgroup') }
+        it { should contain_file('/var/lib/elasticsearch')
+          .with(:owner => 'myesuser', :group => 'myesgroup') }
+        it { should contain_file('/var/run/elasticsearch')
+          .with(:owner => 'myesuser') if facts[:osfamily] == 'RedHat' }
       end
 
-      it { should contain_file('/etc/elasticsearch')
-        .with(:owner => 'myesuser', :group => 'myesgroup') }
-      it { should contain_file('/var/log/elasticsearch')
-        .with(:owner => 'myesuser') }
-      it { should contain_file('/usr/share/elasticsearch')
-        .with(:owner => 'myesuser', :group => 'myesgroup') }
-      it { should contain_file('/var/lib/elasticsearch')
-        .with(:owner => 'myesuser', :group => 'myesgroup') }
-      it { should contain_file('/var/run/elasticsearch')
-        .with(:owner => 'myesuser') if facts[:osfamily] == 'RedHat' }
-    end
+      describe 'jvm.options' do
+        context 'class overrides' do
+          let(:params) do
+            default_params.merge(
+              :jvm_options => [
+                '-Xms1g',
+                '-Xmx1g'
+              ]
+            )
+          end
 
-    describe 'jvm.options' do
-      context 'class overrides' do
-        let(:params) do
-          default_params.merge(
-            :jvm_options => [
-              '-Xms1g',
-              '-Xmx1g'
-            ]
-          )
-        end
-
-        it 'creates the default jvm.options file' do
-          should contain_file('/etc/elasticsearch/jvm.options')
-            .with_content(/
-              -Dfile.encoding=UTF-8.
-              -Dio.netty.noKeySetOptimization=true.
-              -Dio.netty.noUnsafe=true.
-              -Dio.netty.recycler.maxCapacityPerThread=0.
-              -Djava.awt.headless=true.
-              -Djdk.io.permissionsUseCanonicalPath=true.
-              -Djna.nosys=true.
-              -Dlog4j.shutdownHookEnabled=false.
-              -Dlog4j.skipJansi=true.
-              -Dlog4j2.disable.jmx=true.
-              -XX:\+AlwaysPreTouch.
-              -XX:\+DisableExplicitGC.
-              -XX:\+HeapDumpOnOutOfMemoryError.
-              -XX:\+UseCMSInitiatingOccupancyOnly.
-              -XX:\+UseConcMarkSweepGC.
-              -XX:CMSInitiatingOccupancyFraction=75.
-              -Xms1g.
-              -Xmx1g.
-              -Xss1m.
-              -server.
-            /xm)
+          it 'creates the default jvm.options file' do
+            should contain_file('/etc/elasticsearch/jvm.options')
+              .with_content(/
+                -Dfile.encoding=UTF-8.
+                -Dio.netty.noKeySetOptimization=true.
+                -Dio.netty.noUnsafe=true.
+                -Dio.netty.recycler.maxCapacityPerThread=0.
+                -Djava.awt.headless=true.
+                -Djdk.io.permissionsUseCanonicalPath=true.
+                -Djna.nosys=true.
+                -Dlog4j.shutdownHookEnabled=false.
+                -Dlog4j.skipJansi=true.
+                -Dlog4j2.disable.jmx=true.
+                -XX:\+AlwaysPreTouch.
+                -XX:\+DisableExplicitGC.
+                -XX:\+HeapDumpOnOutOfMemoryError.
+                -XX:\+UseCMSInitiatingOccupancyOnly.
+                -XX:\+UseConcMarkSweepGC.
+                -XX:CMSInitiatingOccupancyFraction=75.
+                -Xms1g.
+                -Xmx1g.
+                -Xss1m.
+                -server.
+              /xm)
+          end
         end
       end
     end
