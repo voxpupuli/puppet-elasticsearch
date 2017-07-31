@@ -6,11 +6,11 @@ describe 'elasticsearch::service::systemd', :type => 'define' do
     :supported_os => [
       {
         'operatingsystem' => 'OpenSuSE',
-        'operatingsystemrelease' => %w[12 13]
+        'operatingsystemrelease' => %w[42]
       },
       {
         'operatingsystem' => 'CentOS',
-        'operatingsystemrelease' => ['7']
+        'operatingsystemrelease' => %w[7]
       }
     ]
   ).each do |os, facts|

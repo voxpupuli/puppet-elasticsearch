@@ -23,7 +23,7 @@ elasticsearch::indices: ~
 elasticsearch::indices_hiera_merge: false
 elasticsearch::init_defaults: ~
 elasticsearch::init_defaults_file: ~
-elasticsearch::init_template: elasticsearch.systemd.erb
+elasticsearch::init_template: "%{module_name}/etc/init.d/elasticsearch.systemd.erb"
 elasticsearch::instances: ~
 elasticsearch::instances_hiera_merge: false
 elasticsearch::jvm_options: []
@@ -54,9 +54,6 @@ elasticsearch::repo_proxy: ~
 elasticsearch::repo_stage: false
 elasticsearch::repo_version: 5.x
 elasticsearch::restart_on_change: false
-elasticsearch::restart_config_change: false
-elasticsearch::restart_package_change: false
-elasticsearch::restart_plugin_change: false
 elasticsearch::roles: ~
 elasticsearch::roles_hiera_merge: false
 elasticsearch::rolling_file_max_backup_index: 1

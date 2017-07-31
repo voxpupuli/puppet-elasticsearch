@@ -135,7 +135,7 @@ define elasticsearch::instance (
   $file_rolling_type             = $elasticsearch::file_rolling_type,
   $init_defaults                 = undef,
   $init_defaults_file            = undef,
-  $init_template                 = "${module_name}/etc/init.d/${elasticsearch::init_template}",
+  $init_template                 = $elasticsearch::init_template,
   $keystore_password             = undef,
   $keystore_path                 = undef,
   $logdir                        = undef,
