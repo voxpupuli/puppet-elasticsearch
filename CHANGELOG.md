@@ -8,6 +8,10 @@ Major version upgrade with several important deprecations:
 * The python and ruby defined types have been removed.
 * Repo management through `manage_repo` is now set to `true` by default.
 
+Minor:
+
+* elasticsearch::plugin only accepts `present` or `absent`
+
 ## x.x.x (Month Day, Year)
 
 ### Summary

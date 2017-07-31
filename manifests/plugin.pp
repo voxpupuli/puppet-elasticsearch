@@ -10,36 +10,36 @@
 #    url        => 'https://oss-es-plugins.s3.amazonaws.com/elasticsearch-jetty/elasticsearch-jetty-0.90.0.zip',
 #   }
 #
-# @param ensure [String]
+# @param ensure
 #   Whether the plugin will be installed or removed.
 #   Set to 'absent' to ensure a plugin is not installed
 #
-# @param instances [Enum[String, Array]]
+# @param instances
 #   Specify all the instances related
 #
-# @param module_dir [String]
+# @param module_dir
 #   Directory name where the module has been installed
 #   This is automatically generated based on the module name
 #   Specify a value here to override the auto generated value
 #
-# @param proxy_host [String]
+# @param proxy_host
 #   Proxy host to use when installing the plugin
 #
-# @param proxy_password [String]
+# @param proxy_password
 #   Proxy auth password to use when installing the plugin
 #
-# @param proxy_port [Integer]
+# @param proxy_port
 #   Proxy port to use when installing the plugin
 #
-# @param proxy_username [String]
+# @param proxy_username
 #   Proxy auth username to use when installing the plugin
 #
-# @param source [String]
+# @param source
 #   Specify the source of the plugin.
 #   This will copy over the plugin to the node and use it for installation.
 #   Useful for offline installation
 #
-# @param url [String]
+# @param url
 #   Specify an URL where to download the plugin from.
 #
 # @author Richard Pijnenburg <richard.pijnenburg@elasticsearch.com>
@@ -48,21 +48,21 @@
 # @author Tyler Langlois <tyler.langlois@elastic.co>
 #
 define elasticsearch::plugin (
-  $ensure         = 'present',
-  $instances      = undef,
-  $module_dir     = undef,
-  $proxy_host     = undef,
-  $proxy_password = undef,
-  $proxy_port     = undef,
-  $proxy_username = undef,
-  $source         = undef,
-  $url            = undef,
+  Enum['absent', 'present']   $ensure         = 'present',
+  Enum[String, Array[String]] $instances      = [],
+  Optional[String]            $module_dir     = undef,
+  Optional[String]            $proxy_host     = undef,
+  Optional[String]            $proxy_password = undef,
+  Optional[Tea::Port]         $proxy_port     = undef,
+  Optional[String]            $proxy_username = undef,
+  Optional[String]            $source         = undef,
+  Optional[Tea::HTTPUrl]      $url            = undef,
 ) {
 
   include elasticsearch
 
   case $ensure {
-    'installed', 'present': {
+    'present': {
       if empty($instances) and $elasticsearch::restart_plugin_change {
         fail('no $instances defined, even though `restart_plugin_change` is set!')
       }
@@ -74,9 +74,7 @@ define elasticsearch::plugin (
       $_file_ensure = $ensure
       $_file_before = File[$elasticsearch::plugindir]
     }
-    default: {
-      fail("'${ensure}' is not a valid ensure parameter value")
-    }
+    default: { }
   }
 
   if ! empty($instances) and $elasticsearch::restart_plugin_change {
@@ -116,10 +114,6 @@ define elasticsearch::plugin (
 
   } else {
     $file_source = undef
-  }
-
-  if ($url != undef) {
-    validate_string($url)
   }
 
   $_module_dir = es_plugin_name($module_dir, $name)
