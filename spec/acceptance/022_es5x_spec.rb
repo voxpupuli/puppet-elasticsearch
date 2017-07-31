@@ -1,7 +1,6 @@
 require 'spec_helper_acceptance'
 
-describe 'elasticsearch 5.x', :if => is_5x_capable? do
-  # On earlier versions of CentOS/RedHat 7, manually get JRE 1.8
+describe 'elasticsearch 5.x', :if => v5x_capable? do
   describe 'basic installation', :with_cleanup do
     describe 'manifest' do
       pp = <<-EOS
