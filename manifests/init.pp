@@ -434,6 +434,14 @@ class elasticsearch (
     }
   }
 
+  # This value serves as an unchanging default for platforms as a default for
+  # init scripts to fallback on.
+  $_datadir_default = $facts['kernel'] ? {
+    'Linux'   => '/var/lib/elasticsearch',
+    'OpenBSD' => '/var/elasticsearch/data',
+    default   => undef,
+  }
+
   #### Manage actions
 
   # package(s)
