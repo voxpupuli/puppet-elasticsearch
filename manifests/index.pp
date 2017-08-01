@@ -55,6 +55,10 @@ define elasticsearch::index (
   $settings                = {},
   $validate_tls            = $elasticsearch::validate_tls,
 ) {
+  if ! defined(Class['elasticsearch']) {
+    fail('You must include the elasticsearch base class before using defined resources')
+  }
+
   validate_string(
     $api_protocol,
     $api_host,
@@ -72,8 +76,6 @@ define elasticsearch::index (
   if ($api_ca_path != undef) { validate_absolute_path($api_ca_path) }
 
   if $ensure == 'present' { validate_hash($settings) }
-
-  require elasticsearch
 
   es_instance_conn_validator { "${name}-index-conn-validator":
     server  => $api_host,

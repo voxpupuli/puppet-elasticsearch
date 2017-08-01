@@ -21,6 +21,11 @@ describe 'elasticsearch::script', :type => 'define' do
     )
   end
 
+  describe 'missing parent class' do
+    let(:pre_condition) {}
+    it { should_not compile }
+  end
+
   describe 'adding script files' do
     let(:params) do {
       :ensure => 'present',
