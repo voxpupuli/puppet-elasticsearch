@@ -61,7 +61,7 @@ describe 'elasticsearch', :type => 'class' do
 
       # Systemd-specific files
       if test_pid == true
-        it { should contain_exec('systemctl mask elasticsearch.service') }
+        it { should contain_service('elasticsearch').with(:enable => 'mask') }
         it { should contain_file('/usr/lib/tmpfiles.d/elasticsearch.conf') }
       end
 
