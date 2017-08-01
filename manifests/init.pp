@@ -406,9 +406,9 @@ class elasticsearch (
   Boolean                                      $users_hiera_merge,
   Boolean                                      $validate_tls,
   Variant[String, Boolean]                     $version,
-  Boolean $restart_config_change  = $elasticsearch::restart_on_change,
-  Boolean $restart_package_change = $elasticsearch::restart_on_change,
-  Boolean $restart_plugin_change  = $elasticsearch::restart_on_change,
+  Boolean $restart_config_change  = $restart_on_change,
+  Boolean $restart_package_change = $restart_on_change,
+  Boolean $restart_plugin_change  = $restart_on_change,
 ) {
 
   anchor {'elasticsearch::begin': }
