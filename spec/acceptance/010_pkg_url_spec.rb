@@ -15,6 +15,7 @@ describe 'elasticsearch::package_url' do
     describe 'manifest' do
       pp = <<-EOS
         class { 'elasticsearch':
+          manage_repo => false,
           package_url => '#{test_settings['url']}',
           config => {
             'node.name' => 'elasticsearch001',
@@ -69,6 +70,7 @@ describe 'elasticsearch::package_url' do
     describe 'manifest' do
       pp = <<-EOS
         class { 'elasticsearch':
+          manage_repo => false,
           package_url => 'file:#{test_settings['local']}',
           config => {
             'node.name' => 'elasticsearch001',
@@ -123,6 +125,7 @@ describe 'elasticsearch::package_url' do
     describe 'manifest' do
       pp = <<-EOS
         class { 'elasticsearch':
+          manage_repo => false,
           package_url =>
             'puppet:///modules/another/#{test_settings['puppet']}',
           config => {
