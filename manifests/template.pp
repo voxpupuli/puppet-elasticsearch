@@ -66,6 +66,10 @@ define elasticsearch::template (
   $source                  = undef,
   $validate_tls            = $elasticsearch::validate_tls,
 ) {
+  if ! defined(Class['elasticsearch']) {
+    fail('You must include the elasticsearch base class before using defined resources')
+  }
+
   validate_string(
     $api_protocol,
     $api_host,
@@ -95,8 +99,6 @@ define elasticsearch::template (
   } elsif $source != undef and $_content != undef {
     fail('"file" and "content" cannot be simultaneously defined.')
   }
-
-  require elasticsearch
 
   es_instance_conn_validator { "${name}-template":
     server  => $api_host,

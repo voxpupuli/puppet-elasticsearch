@@ -32,6 +32,11 @@ describe 'elasticsearch::template', :type => 'define' do
         is_expected.to compile.and_raise_error(/absolute path/)
       end
     end
+
+    describe 'missing parent class' do
+      let(:pre_condition) {}
+      it { should_not compile }
+    end
   end
 
   describe 'template from source' do
