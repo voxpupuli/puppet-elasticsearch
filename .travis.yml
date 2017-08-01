@@ -17,6 +17,12 @@ jobs:
    - stage: intake
      env:
      - TASK=intake
+     - PUPPET_VERSION='~> 4.5.0'
+   - env:
+     - TASK=intake
+   - env:
+     - TASK=intake
+     - PUPPET_VERSION='~> 5.0'
    - stage: acceptance
      env:
      - TASK=beaker:integration
