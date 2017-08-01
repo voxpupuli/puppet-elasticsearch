@@ -213,7 +213,8 @@
 #   URL for repository proxy.
 #
 # @param repo_stage
-#   Use stdlib stage setup for managing the repo instead of anchoring.
+#   Use stdlib stage setup for managing the repo instead of relationship
+#   ordering.
 #
 # @param repo_version
 #   Elastic repositories are versioned per major version (5.x, 6.x). This
@@ -411,8 +412,6 @@ class elasticsearch (
   Boolean $restart_plugin_change  = $restart_on_change,
 ) {
 
-  anchor {'elasticsearch::begin': }
-
   #### Validate parameters
 
   if ($package_url != undef and $version != false) {
@@ -444,11 +443,8 @@ class elasticsearch (
 
   #### Manage actions
 
-  # package(s)
-  class { 'elasticsearch::package': }
-
-  # configuration
-  class { 'elasticsearch::config': }
+  contain elasticsearch::package
+  contain elasticsearch::config
 
   if $config_hiera_merge == true {
     $x_config = hiera_hash('elasticsearch::config', $config)
@@ -476,7 +472,6 @@ class elasticsearch (
   }
 
   if $x_instances {
-    validate_hash($x_instances)
     create_resources('elasticsearch::instance', $x_instances)
   }
 
@@ -488,7 +483,6 @@ class elasticsearch (
   }
 
   if $x_pipelines {
-    validate_hash($x_pipelines)
     create_resources('elasticsearch::pipeline', $x_pipelines)
   }
 
@@ -500,7 +494,6 @@ class elasticsearch (
   }
 
   if $x_plugins {
-    validate_hash($x_plugins)
     create_resources('elasticsearch::plugin', $x_plugins)
   }
 
@@ -511,7 +504,6 @@ class elasticsearch (
   }
 
   if $x_roles {
-    validate_hash($x_roles)
     create_resources('elasticsearch::role', $x_roles)
   }
 
@@ -522,7 +514,6 @@ class elasticsearch (
   }
 
   if $x_scripts {
-    validate_hash($x_scripts)
     create_resources('elasticsearch::script', $x_scripts)
   }
 
@@ -533,7 +524,6 @@ class elasticsearch (
   }
 
   if $x_templates {
-    validate_hash($x_templates)
     create_resources('elasticsearch::template', $x_templates)
   }
 
@@ -544,27 +534,19 @@ class elasticsearch (
   }
 
   if $x_users {
-    validate_hash($x_users)
     create_resources('elasticsearch::user', $x_users)
   }
 
   if ($manage_repo == true) {
-
     if ($repo_stage == false) {
-      # use anchor for ordering
+      # Use normal relationship ordering
+      contain elasticsearch::repo
 
-      # Set up repositories
-      class { 'elasticsearch::repo': }
-
-      # Ensure that we set up the repositories before trying to install
-      # the packages
-      Anchor['elasticsearch::begin']
-      -> Class['elasticsearch::repo']
+      Class['elasticsearch::repo']
       -> Class['elasticsearch::package']
 
     } else {
-      # use staging for ordering
-
+      # Use staging for ordering
       if !(defined(Stage[$repo_stage])) {
         stage { $repo_stage:  before => Stage['main'] }
       }
@@ -573,7 +555,6 @@ class elasticsearch (
         stage => $repo_stage,
       }
     }
-
   }
 
   #### Manage relationships
@@ -589,9 +570,8 @@ class elasticsearch (
 
   if $ensure == 'present' {
 
-    # Anchor, installation, and configuration
-    Anchor['elasticsearch::begin']
-    -> Class['elasticsearch::package']
+    # Installation and configuration
+    Class['elasticsearch::package']
     -> Class['elasticsearch::config']
 
     # Top-level ordering bindings for resources.
@@ -614,32 +594,24 @@ class elasticsearch (
 
   } else {
 
-    # Main anchor and included classes
-    Anchor['elasticsearch::begin']
-    -> Class['elasticsearch::config']
+    # Absent; remove configuration before the package.
+    Class['elasticsearch::config']
     -> Class['elasticsearch::package']
 
     # Top-level ordering bindings for resources.
-    Anchor['elasticsearch::begin']
-    -> Elasticsearch::Plugin <| |>
+    Elasticsearch::Plugin <| |>
     -> Class['elasticsearch::config']
-    Anchor['elasticsearch::begin']
-    -> Elasticsearch::Instance <| |>
+    Elasticsearch::Instance <| |>
     -> Class['elasticsearch::config']
-    Anchor['elasticsearch::begin']
-    -> Elasticsearch::User <| |>
+    Elasticsearch::User <| |>
     -> Class['elasticsearch::config']
-    Anchor['elasticsearch::begin']
-    -> Elasticsearch::Role <| |>
+    Elasticsearch::Role <| |>
     -> Class['elasticsearch::config']
-    Anchor['elasticsearch::begin']
-    -> Elasticsearch::Template <| |>
+    Elasticsearch::Template <| |>
     -> Class['elasticsearch::config']
-    Anchor['elasticsearch::begin']
-    -> Elasticsearch::Pipeline <| |>
+    Elasticsearch::Pipeline <| |>
     -> Class['elasticsearch::config']
-    Anchor['elasticsearch::begin']
-    -> Elasticsearch::Index <| |>
+    Elasticsearch::Index <| |>
     -> Class['elasticsearch::config']
 
   }

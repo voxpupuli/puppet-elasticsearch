@@ -25,19 +25,12 @@ describe 'elasticsearch', :type => 'class' do
         facts.merge('scenario' => '', 'common' => '')
       end
 
-      describe 'resource ordering' do
-        context 'Use anchor type for ordering' do
-          it { should contain_class('elasticsearch::repo')
-            .that_requires('Anchor[elasticsearch::begin]') }
-        end
+      context 'Use stage type for ordering' do
+        let(:params) { default_params.merge(:repo_stage => 'setup') }
 
-        context 'Use stage type for ordering' do
-          let(:params) { default_params.merge(:repo_stage => 'setup') }
-
-          it { should contain_stage('setup') }
-          it { should contain_class('elasticsearch::repo')
-            .with(:stage => 'setup')}
-        end
+        it { should contain_stage('setup') }
+        it { should contain_class('elasticsearch::repo')
+          .with(:stage => 'setup')}
       end
     end
   end
