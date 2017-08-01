@@ -7,9 +7,12 @@ require 'rspec/retry'
 require_relative 'spec_helper_tls'
 require_relative 'spec_utilities'
 
-# Default to 4.x AIO style if no type is specified.
 def test_settings
   RSpec.configuration.test_settings
+end
+
+def f
+  RSpec.configuration.fact
 end
 
 RSpec.configure do |c|
@@ -103,13 +106,17 @@ hosts.each do |host|
   progress.exit
   puts "done. Installed version #{shell('puppet --version').output}"
 
-  if fact('osfamily') == 'Suse'
+  RSpec.configure do |c|
+    c.add_setting :fact, :default => JSON.parse(fact('', '-j'))
+  end
+
+  if f['os']['family'] == 'Suse'
     install_package host,
                     '--force-resolution augeas-devel libxml2-devel ruby-devel'
     on host, 'gem install ruby-augeas --no-ri --no-rdoc'
   end
 
-  ext = case fact('osfamily')
+  ext = case f['os']['family']
         when 'Debian'
           'deb'
         else
@@ -163,7 +170,7 @@ RSpec.configure do |c|
         'Debian' => ['apt'],
         'Suse'   => ['zypprepo'],
         'RedHat' => ['yum', 'concat']
-      }[fact('osfamily')]
+      }[f['os']['family']]
 
       modules += dist_module unless dist_module.nil?
 
@@ -176,11 +183,16 @@ RSpec.configure do |c|
       on(host, 'mkdir -p etc/puppet/modules/another/files/')
 
       # Apt doesn't update package caches sometimes, ensure we're caught up.
-      shell 'apt-get update' if fact('osfamily') == 'Debian'
+      shell 'apt-get update' if f['os']['family'] == 'Debian'
     end
 
     # Use the Java class once before the suite of tests
-    apply_manifest 'class { "java" : distribution => "jre" }'
+    apply_manifest <<~EOS
+      class { "java" :
+        distribution => "jre",
+        #{'package => "java-1.8.0-openjdk-headless",' if f['os']['name'] == 'CentOS' and f['os']['release']['major'].to_i == 6}
+      }
+    EOS
   end
 
   c.after :suite do
@@ -199,8 +211,8 @@ require_relative 'spec_acceptance_common'
 
 # Java 8 is only easy to manage on recent distros
 def v5x_capable?
-  (fact('osfamily') == 'RedHat' and \
-        not (fact('operatingsystem') == 'OracleLinux' and \
-         fact('operatingsystemmajrelease') == '6')) or \
-    fact('lsbdistcodename') == 'xenial'
+  (f['os']['family'] == 'RedHat' and \
+    not (f['os']['name'] == 'OracleLinux' and \
+    f['os']['release']['major'] == '6')) or \
+    f.dig 'os', 'distro', 'codename' == 'xenial'
 end
