@@ -63,6 +63,8 @@ class elasticsearch::config {
         mode   => '0755';
       '/etc/elasticsearch/elasticsearch.yml':
         ensure => 'absent';
+      '/etc/elasticsearch/jvm.options':
+        ensure => 'absent';
       '/etc/elasticsearch/logging.yml':
         ensure => 'absent';
       '/etc/elasticsearch/log4j2.properties':
@@ -107,13 +109,6 @@ class elasticsearch::config {
         lens    => 'Shellvars.lns',
         changes => template("${module_name}/etc/sysconfig/defaults.erb"),
       }
-    }
-
-    $jvm_options = $elasticsearch::jvm_options
-    file { "${elasticsearch::configdir}/jvm.options":
-      content => template("${module_name}/etc/elasticsearch/jvm.options.erb"),
-      owner   => $elasticsearch::elasticsearch_user,
-      group   => $elasticsearch::elasticsearch_group,
     }
 
     if $::elasticsearch::security_plugin != undef and ($::elasticsearch::security_plugin in ['shield', 'x-pack']) {
