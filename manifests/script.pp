@@ -19,8 +19,9 @@ define elasticsearch::script (
   $ensure  = 'present',
   $recurse = undef,
 ) {
-
-  require elasticsearch
+  if ! defined(Class['elasticsearch']) {
+    fail('You must include the elasticsearch base class before using defined resources')
+  }
 
   $filename_array = split($source, '/')
   $basefilename = $filename_array[-1]
