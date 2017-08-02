@@ -391,10 +391,11 @@ define elasticsearch::instance (
 
     validate_array($jvm_options)
     file { "${instance_configdir}/jvm.options":
+      before  => Elasticsearch::Service[$name],
       content => template("${module_name}/etc/elasticsearch/jvm.options.erb"),
+      group   => $elasticsearch::elasticsearch_group,
       notify  => $notify_service,
       owner   => $elasticsearch::elasticsearch_user,
-      group   => $elasticsearch::elasticsearch_group,
     }
 
     file {
