@@ -53,6 +53,9 @@
 # @param init_template [String]
 #   Service file as a template
 #
+# @param jvm_options [Array]
+#   Array of options to set in jvm_options.
+#
 # @param keystore_password [String]
 #   Password to encrypt this node's Java keystore.
 #
@@ -136,6 +139,7 @@ define elasticsearch::instance (
   $init_defaults                 = undef,
   $init_defaults_file            = undef,
   $init_template                 = $elasticsearch::init_template,
+  $jvm_options                   = $elasticsearch::jvm_options,
   $keystore_password             = undef,
   $keystore_path                 = undef,
   $logdir                        = undef,
@@ -385,6 +389,14 @@ define elasticsearch::instance (
       before  => Elasticsearch::Service[$name],
     }
 
+    validate_array($jvm_options)
+    file { "${instance_configdir}/jvm.options":
+      content => template("${module_name}/etc/elasticsearch/jvm.options.erb"),
+      notify  => $notify_service,
+      owner   => $elasticsearch::elasticsearch_user,
+      group   => $elasticsearch::elasticsearch_group,
+    }
+
     file {
       "${instance_configdir}/logging.yml":
         ensure  => file,
@@ -467,6 +479,7 @@ define elasticsearch::instance (
     }
     $init_defaults_new = merge(
       { 'DATA_DIR'  => $elasticsearch::params::datadir },
+      { 'ES_JVM_OPTIONS' => "${instance_configdir}/jvm.options" },
       $global_init_defaults,
       $instance_init_defaults_main,
       $instance_init_defaults

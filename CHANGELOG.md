@@ -5,6 +5,7 @@
 #### Features
 * The `api_timeout` parameter is now passed to the `es_instance_conn_validator` resource for index, pipeline, and template defined types.
 * Updated puppetlabs/apt dependency to < 5.0.0.
+* `jvm_options` are now controllable on a per-instance basis.
 
 #### Fixes
 * Fixed an edge case with `es_instance_validator` in which ruby connection errors were not caught.
