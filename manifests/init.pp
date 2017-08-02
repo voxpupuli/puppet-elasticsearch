@@ -122,6 +122,9 @@
 # @param jvm_options [Array]
 #   Array of options to set in jvm_options.
 #
+# @param log4j2_ensure [String]
+#   State of the log4j2 logging configuration file.
+#
 # @param logdir [String]
 #   Directory that will be used for Elasticsearch logging.
 #
@@ -135,6 +138,9 @@
 # @param logging_template [String]
 #   Use a custom logging template - just supply the relative path, i.e.
 #   `$module/elasticsearch/logging.yml.erb`
+#
+# @param logging_yml_ensure [String]
+#   State of the logging.yml logging configuration file.
 #
 # @param manage_repo [Boolean]
 #   Enable repo management by enabling official Elastic repositories.
@@ -354,10 +360,12 @@ class elasticsearch(
   $java_install                   = false,
   $java_package                   = undef,
   $jvm_options                    = [],
+  $log4j2_ensure                  = 'file',
   $logdir                         = '/var/log/elasticsearch',
   $logging_config                 = undef,
   $logging_file                   = undef,
   $logging_template               = undef,
+  $logging_yml_ensure             = 'file',
   $manage_repo                    = false,
   $package_dir                    = $elasticsearch::params::package_dir,
   $package_dl_timeout             = 600,

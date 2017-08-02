@@ -59,6 +59,9 @@
 # @param keystore_path [String]
 #   Custom path to the java keystore file. This parameter is optional.
 #
+# @param log4j2_ensure [String]
+#   State of the log4j2 logging configuration file.
+#
 # @param logdir [String]
 #   Log directory for this instance.
 #
@@ -74,6 +77,9 @@
 # @param logging_template [String]
 #  Use a custom logging template - just supply the reative path, ie
 #  $module_name/elasticsearch/logging.yml.erb
+#
+# @param logging_yml_ensure [String]
+#   State of the logging.yml logging configuration file.
 #
 # @param private_key [String]
 #   Path to the key associated with this node's certificate.
@@ -138,11 +144,13 @@ define elasticsearch::instance (
   $init_template                 = $elasticsearch::init_template,
   $keystore_password             = undef,
   $keystore_path                 = undef,
+  $log4j2_ensure                 = 'file',
   $logdir                        = undef,
   $logging_config                = undef,
   $logging_file                  = undef,
   $logging_level                 = $elasticsearch::default_logging_level,
   $logging_template              = undef,
+  $logging_yml_ensure            = 'file',
   $private_key                   = undef,
   $purge_secrets                 = $elasticsearch::purge_secrets,
   $rolling_file_max_backup_index = $elasticsearch::rolling_file_max_backup_index,
@@ -387,7 +395,7 @@ define elasticsearch::instance (
 
     file {
       "${instance_configdir}/logging.yml":
-        ensure  => file,
+        ensure  => $logging_yml_ensure,
         content => $logging_content,
         source  => $logging_source,
         mode    => '0644',
@@ -395,7 +403,7 @@ define elasticsearch::instance (
         require => Class['elasticsearch::package'],
         before  => Elasticsearch::Service[$name];
       "${instance_configdir}/log4j2.properties":
-        ensure  => file,
+        ensure  => $log4j2_ensure,
         content => $_log4j_content,
         source  => $logging_source,
         mode    => '0644',
