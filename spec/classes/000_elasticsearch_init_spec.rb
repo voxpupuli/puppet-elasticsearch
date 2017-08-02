@@ -457,5 +457,38 @@ describe 'elasticsearch', :type => 'class' do
         end
       end
     end
+
+    # This check helps catch dependency cycles.
+    context 'create_resource' do
+      # Helper for these tests
+      def singular(s)
+        s == 'indices' ? 'index' : s[0..-2]
+      end
+      {
+        'indices' => { 'test-index' => {} },
+        'instances' => { 'es-instance' => {} },
+        'pipelines' => { 'testpipeline' => { 'content' => {} } },
+        'plugins' => { 'head' => {} },
+        'roles' => { 'elastic_role' => {} },
+        'scripts' => {
+          'foo' => { 'source' => 'puppet:///path/to/foo.groovy' }
+        },
+        'templates' => { 'foo' => { 'content' => {} } },
+        'users' => { 'elastic' => { 'password' => 'foobar' } }
+      }.each_pair do |deftype, params|
+        describe deftype do
+          let(:params) do
+            default_params.merge(
+              deftype => params,
+              :security_plugin => 'x-pack'
+            )
+          end
+          it { should compile }
+          it { should send(
+            "contain_elasticsearch__#{singular(deftype)}", params.keys.first
+          ) }
+        end
+      end
+    end
   end
 end

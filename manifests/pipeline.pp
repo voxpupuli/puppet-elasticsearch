@@ -57,6 +57,10 @@ define elasticsearch::pipeline (
   $content                 = undef,
   $validate_tls            = $elasticsearch::validate_tls,
 ) {
+  if ! defined(Class['elasticsearch']) {
+    fail('You must include the elasticsearch base class before using defined resources')
+  }
+
   validate_string(
     $api_protocol,
     $api_host,
@@ -74,8 +78,6 @@ define elasticsearch::pipeline (
   if ($api_ca_path != undef) { validate_absolute_path($api_ca_path) }
 
   if $ensure == 'present' { validate_hash($content) }
-
-  require elasticsearch
 
   es_instance_conn_validator { "${name}-ingest-pipeline":
     server  => $api_host,
