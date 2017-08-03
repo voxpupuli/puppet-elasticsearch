@@ -85,10 +85,11 @@ describe 'elasticsearch::instance', :type => 'define' do
         :init_template =>
           "elasticsearch/etc/init.d/elasticsearch.#{initscript}.erb",
         :init_defaults => {
-          'CONF_DIR' => '/etc/elasticsearch/es-instance',
-          'DATA_DIR' => '/var/lib/elasticsearch',
-          'LOG_DIR'  => '/var/log/elasticsearch/es-instance',
-          'ES_HOME'  => '/usr/share/elasticsearch'
+          'CONF_DIR'       => '/etc/elasticsearch/es-instance',
+          'DATA_DIR'       => '/var/lib/elasticsearch',
+          'ES_JVM_OPTIONS' => '/etc/elasticsearch/es-instance/jvm.options',
+          'LOG_DIR'        => '/var/log/elasticsearch/es-instance',
+          'ES_HOME'        => '/usr/share/elasticsearch'
         }
       )}
     end # of on os context
@@ -124,6 +125,9 @@ describe 'elasticsearch::instance', :type => 'define' do
       it { should_not contain_datacat(
         '/etc/elasticsearch/es-instance/elasticsearch.yml'
       ).that_notifies('Elasticsearch::Service[es-instance]') }
+      it { should_not contain_file(
+        '/etc/elasticsearch/es-instance/jvm.options'
+      ).that_notifies('Elasticsearch::Service[es-instance]') }
       it { should_not contain_package(
         'elasticsearch'
       ).that_notifies('Elasticsearch::Service[es-instance]') }
@@ -136,6 +140,9 @@ describe 'elasticsearch::instance', :type => 'define' do
 
       it { should contain_datacat(
         '/etc/elasticsearch/es-instance/elasticsearch.yml'
+      ).that_notifies('Elasticsearch::Service[es-instance]') }
+      it { should contain_file(
+        '/etc/elasticsearch/es-instance/jvm.options'
       ).that_notifies('Elasticsearch::Service[es-instance]') }
       it { should contain_package(
         'elasticsearch'
@@ -150,6 +157,9 @@ describe 'elasticsearch::instance', :type => 'define' do
       it { should_not contain_datacat(
         '/etc/elasticsearch/es-instance/elasticsearch.yml'
       ).that_notifies('Elasticsearch::Service[es-instance]') }
+      it { should_not contain_file(
+        '/etc/elasticsearch/es-instance/jvm.options'
+      ).that_notifies('Elasticsearch::Service[es-instance]') }
       it { should contain_package(
         'elasticsearch'
       ).that_notifies('Elasticsearch::Service[es-instance]') }
@@ -162,6 +172,9 @@ describe 'elasticsearch::instance', :type => 'define' do
 
       it { should contain_datacat(
         '/etc/elasticsearch/es-instance/elasticsearch.yml'
+      ).that_notifies('Elasticsearch::Service[es-instance]') }
+      it { should contain_file(
+        '/etc/elasticsearch/es-instance/jvm.options'
       ).that_notifies('Elasticsearch::Service[es-instance]') }
       it { should_not contain_package(
         'elasticsearch'
@@ -199,7 +212,7 @@ describe 'elasticsearch::instance', :type => 'define' do
 
       it { should contain_file('/etc/elasticsearch-config/es-instance/logging.yml') }
       it { should contain_file('/etc/elasticsearch-config/es-instance/log4j2.properties') }
-      it { should contain_file('/etc/elasticsearch-config/jvm.options') }
+      it { should contain_file('/etc/elasticsearch-config/es-instance/jvm.options') }
       it { should contain_file('/usr/share/elasticsearch/scripts') }
       it { should contain_file('/etc/elasticsearch-config/es-instance/scripts').with(:target => '/usr/share/elasticsearch/scripts') }
     end
@@ -759,6 +772,84 @@ describe 'elasticsearch::instance', :type => 'define' do
             )
           end
         end
+      end
+    end
+  end
+
+  describe 'jvm.options' do
+    let(:pre_condition) do
+      %(
+          class { 'elasticsearch':
+            jvm_options => [
+              '-Xms4g',
+              '-Xmx4g'
+            ]
+          }
+      )
+    end
+
+    context 'from parent class' do
+      it do
+        should contain_file('/etc/elasticsearch/es-instance/jvm.options')
+          .with_content(/
+            -Dfile.encoding=UTF-8.
+            -Dio.netty.noKeySetOptimization=true.
+            -Dio.netty.noUnsafe=true.
+            -Dio.netty.recycler.maxCapacityPerThread=0.
+            -Djava.awt.headless=true.
+            -Djdk.io.permissionsUseCanonicalPath=true.
+            -Djna.nosys=true.
+            -Dlog4j.shutdownHookEnabled=false.
+            -Dlog4j.skipJansi=true.
+            -Dlog4j2.disable.jmx=true.
+            -XX:\+AlwaysPreTouch.
+            -XX:\+DisableExplicitGC.
+            -XX:\+HeapDumpOnOutOfMemoryError.
+            -XX:\+UseCMSInitiatingOccupancyOnly.
+            -XX:\+UseConcMarkSweepGC.
+            -XX:CMSInitiatingOccupancyFraction=75.
+            -Xms4g.
+            -Xmx4g.
+            -Xss1m.
+            -server.
+          /xm)
+      end
+    end
+
+    context 'from instance' do
+      let(:params) do
+        {
+          :jvm_options => [
+            '-Xms8g',
+            '-Xmx8g'
+          ]
+        }
+      end
+
+      it do
+        should contain_file('/etc/elasticsearch/es-instance/jvm.options')
+          .with_content(/
+            -Dfile.encoding=UTF-8.
+            -Dio.netty.noKeySetOptimization=true.
+            -Dio.netty.noUnsafe=true.
+            -Dio.netty.recycler.maxCapacityPerThread=0.
+            -Djava.awt.headless=true.
+            -Djdk.io.permissionsUseCanonicalPath=true.
+            -Djna.nosys=true.
+            -Dlog4j.shutdownHookEnabled=false.
+            -Dlog4j.skipJansi=true.
+            -Dlog4j2.disable.jmx=true.
+            -XX:\+AlwaysPreTouch.
+            -XX:\+DisableExplicitGC.
+            -XX:\+HeapDumpOnOutOfMemoryError.
+            -XX:\+UseCMSInitiatingOccupancyOnly.
+            -XX:\+UseConcMarkSweepGC.
+            -XX:CMSInitiatingOccupancyFraction=75.
+            -Xms8g.
+            -Xmx8g.
+            -Xss1m.
+            -server.
+          /xm)
       end
     end
   end

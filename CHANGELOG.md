@@ -6,6 +6,7 @@
 * The `api_timeout` parameter is now passed to the `es_instance_conn_validator` resource for index, pipeline, and template defined types.
 * Updated puppetlabs/apt dependency to < 5.0.0.
 * Both the `logging.yml` and `log4j2.properties` files can be selectively enabled/disabled with the `logging_yml_ensure` and `log4j2_ensure` parameters on the `elasticsearch` class and `elasticsearch::instance` defined type.
+* `jvm_options` are now controllable on a per-instance basis.
 
 #### Fixes
 * Fixed an edge case with `es_instance_validator` in which ruby connection errors were not caught.
