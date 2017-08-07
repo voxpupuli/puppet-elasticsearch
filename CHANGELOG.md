@@ -1,8 +1,6 @@
-## x.x.x (Month Day, Year)
+## 5.4.1 (August 7, 2017)
 
-#### Features
-
-#### Fixes
+Fixed an issue where `logging_yml_ensure` and `log4j2_ensure` would not propagate to `elasticsearch::instance` resources.
 
 ## 5.4.0 (August 3, 2017)
 

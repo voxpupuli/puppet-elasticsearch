@@ -550,28 +550,33 @@ describe 'elasticsearch::instance', :type => 'define' do
     end
 
     describe 'logging ensure' do
-      %w[logging.yml log4j2].each do |param|
+      {
+        'logging_yml' => 'logging.yml',
+        'log4j2' => 'log4j2.properties'
+      }.each_pair do |param, config|
         context param do
           describe 'from parent class' do
             let(:pre_condition) do
               %(
                 class { 'elasticsearch':
-                  #{param.sub '.', '_'}_ensure => 'absent',
+                  #{param}_ensure => 'absent',
                 }
               )
             end
 
-            it { should_not contain_file("/etc/elasticsearch/es-instance/#{param}.yml") }
+            it { should contain_file("/etc/elasticsearch/es-instance/#{config}")
+              .with(:ensure => 'absent') }
           end
 
           describe 'from instance type' do
             let(:params) do
               {
-                "#{param.sub('.', '_')}_ensure" => 'absent'
+                "#{param}_ensure" => 'absent'
               }
             end
 
-            it { should_not contain_file("/etc/elasticsearch/es-instance/#{param}.yml") }
+            it { should contain_file("/etc/elasticsearch/es-instance/#{config}")
+              .with(:ensure => 'absent') }
           end
         end
       end
