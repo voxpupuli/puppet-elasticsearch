@@ -122,9 +122,9 @@ namespace :artifacts do
   end
 
   namespace :snapshot do
-    snapshots = 'https://snapshots.elastic.co/downloads/elasticsearch'
+    snapshots = 'https://artifacts.elastic.co/downloads/elasticsearch'
     artifacts = 'spec/fixtures/artifacts'
-    build = 'elasticsearch-6.0.0-alpha3-SNAPSHOT'
+    build = 'elasticsearch-6.0.0-beta1'
     %w[deb rpm].each do |ext|
       package = "#{build}.#{ext}"
       local = "#{artifacts}/#{package}"
