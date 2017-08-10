@@ -488,6 +488,7 @@ define elasticsearch::instance (
     }
     $init_defaults_new = merge(
       { 'DATA_DIR'  => $elasticsearch::params::datadir },
+      { 'ES_JVM_OPTIONS' => "${instance_configdir}/jvm.options" },
       $global_init_defaults,
       $instance_init_defaults_main,
       $instance_init_defaults
