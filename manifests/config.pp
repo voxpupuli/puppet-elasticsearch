@@ -102,12 +102,14 @@ class elasticsearch::config {
       }
     }
 
-    $new_init_defaults = { 'CONF_DIR' => $elasticsearch::configdir }
     if $elasticsearch::params::defaults_location {
       augeas { "${elasticsearch::params::defaults_location}/elasticsearch":
         incl    => "${elasticsearch::params::defaults_location}/elasticsearch",
         lens    => 'Shellvars.lns',
-        changes => template("${module_name}/etc/sysconfig/defaults.erb"),
+        changes => [
+          'rm CONF_FILE',
+          'rm CONF_DIR',
+        ],
       }
     }
 
