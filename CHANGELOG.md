@@ -1,3 +1,10 @@
+## x.x.x (Month Day, Year)
+
+#### Features
+
+#### Fixes
+* Custom facts no longer attempt to connect to SSL/TLS secured ports.
+
 ## 5.4.1 (August 7, 2017)
 
 Fixed an issue where `logging_yml_ensure` and `log4j2_ensure` would not propagate to `elasticsearch::instance` resources.
