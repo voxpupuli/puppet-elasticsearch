@@ -67,12 +67,10 @@ describe 'elasticsearch', :type => 'class' do
             it { should_not contain_elasticsearch__instance('es-hiera-multiple-2') }
           end
 
-          context 'multiple instances using hiera_merge' do
-            let(:params) { default_params.merge(:instances_hiera_merge => true) }
-
+          context 'multiple instances using lookup_options' do
             let(:facts) do
               facts.merge(
-                :common => 'defaultinstance',
+                :common => 'defaultinstance-merged',
                 :scenario => 'singleinstance'
               )
             end

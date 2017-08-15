@@ -193,7 +193,7 @@ describe 'elasticsearch::instance', :type => 'define' do
 
           it { should contain_file('/etc/elasticsearch/es-instance/logging.yml') }
           it { should contain_file('/etc/elasticsearch/es-instance/log4j2.properties') }
-          it { should contain_file('/etc/elasticsearch-config/es-instance/jvm.options') }
+          it { should contain_file('/etc/elasticsearch/es-instance/jvm.options') }
           it { should contain_file('/usr/share/elasticsearch/scripts') }
           it { should contain_file('/etc/elasticsearch/es-instance/scripts').with(:target => '/usr/share/elasticsearch/scripts') }
         end
@@ -215,7 +215,6 @@ describe 'elasticsearch::instance', :type => 'define' do
 
           it { should contain_file('/etc/elasticsearch-config/es-instance/logging.yml') }
           it { should contain_file('/etc/elasticsearch-config/es-instance/log4j2.properties') }
-          it { should contain_file('/etc/elasticsearch-config/jvm.options') }
           it { should contain_file('/usr/share/elasticsearch/scripts') }
           it { should contain_file('/etc/elasticsearch-config/es-instance/scripts').with(:target => '/usr/share/elasticsearch/scripts') }
         end

@@ -7,6 +7,7 @@ Major version upgrade with several important deprecations:
 * Java installation is no longer supported.
 * The python and ruby defined types have been removed.
 * Repo management through `manage_repo` is now set to `true` by default.
+* All `*_hiera_merge` parameters have been removed.
 
 Minor:
 

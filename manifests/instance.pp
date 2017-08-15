@@ -253,11 +253,7 @@ define elasticsearch::instance (
       $logging_source = undef
     }
 
-    if ($elasticsearch::x_config != undef) {
-      $main_config = deep_implode($elasticsearch::x_config)
-    } else {
-      $main_config = { }
-    }
+    $main_config = deep_implode($elasticsearch::config)
 
     $instance_datadir_config = { 'path.data' => $instance_datadir }
 

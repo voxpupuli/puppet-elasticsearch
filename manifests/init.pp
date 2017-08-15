@@ -61,9 +61,6 @@
 # @param config
 #   Elasticsearch configuration hash.
 #
-# @param config_hiera_merge
-#   Enable Hiera merging for the config hash.
-#
 # @param configdir
 #   Directory containing the elasticsearch configuration.
 #   Use this setting if your packages deviate from the norm (`/etc/elasticsearch`)
@@ -104,9 +101,6 @@
 # @param indices
 #   Define indices via a hash. This is mainly used with Hiera's auto binding.
 #
-# @param indices_hiera_merge
-#   Enable Hiera's merging function for indices.
-#
 # @param init_defaults
 #   Defaults file content in hash representation.
 #
@@ -118,9 +112,6 @@
 #
 # @param instances
 #   Define instances via a hash. This is mainly used with Hiera's auto binding.
-#
-# @param instances_hiera_merge
-#   Enable Hiera's merging function for the instances.
 #
 # @param jvm_options
 #   Array of options to set in jvm_options.
@@ -166,18 +157,12 @@
 # @param pipelines
 #   Define pipelines via a hash. This is mainly used with Hiera's auto binding.
 #
-# @param pipelines_hiera_merge
-#   Enable Hiera's merging function for pipelines.
-#
 # @param plugindir
 #   Directory containing elasticsearch plugins.
 #   Use this setting if your packages deviate from the norm (/usr/share/elasticsearch/plugins)
 #
 # @param plugins
 #   Define plugins via a hash. This is mainly used with Hiera's auto binding.
-#
-# @param plugins_hiera_merge
-#   Enable Hiera's merging function for the plugins.
 #
 # @param proxy_url
 #   For http and https downloads, you may set a proxy server to use. By default,
@@ -254,9 +239,6 @@
 # @param roles
 #   Define roles via a hash. This is mainly used with Hiera's auto binding.
 #
-# @param roles_hiera_merge
-#   Enable Hiera's merging function for roles.
-#
 # @param rolling_file_max_backup_index
 #   Max number of logs to store whern file_rolling_type is 'rollingFile'
 #
@@ -265,9 +247,6 @@
 #
 # @param scripts
 #   Define scripts via a hash. This is mainly used with Hiera's auto binding.
-#
-# @param scripts_hiera_merge
-#   Enable Hiera's merging function for scripts.
 #
 # @param secrets
 #   Optional default configuration hash of key/value pairs to store in the
@@ -309,14 +288,8 @@
 # @param templates
 #   Define templates via a hash. This is mainly used with Hiera's auto binding.
 #
-# @param templates_hiera_merge
-#   Enable Hiera's merging function for templates.
-#
 # @param users
 #   Define templates via a hash. This is mainly used with Hiera's auto binding.
-#
-# @param users_hiera_merge
-#   Enable Hiera's merging function for users.
 #
 # @param validate_tls
 #   Enable TLS/SSL validation on API calls.
@@ -339,7 +312,6 @@ class elasticsearch (
   Integer                                      $api_timeout,
   Boolean                                      $autoupgrade,
   Hash                                         $config,
-  Boolean                                      $config_hiera_merge,
   Tea::Absolutepath                            $configdir,
   String                                       $daily_rolling_date_pattern,
   Elasticsearch::Multipath                     $datadir,
@@ -351,13 +323,11 @@ class elasticsearch (
   String                                       $elasticsearch_user,
   Enum['dailyRollingFile', 'rollingFile']      $file_rolling_type,
   Tea::Absolutepath                            $homedir,
-  Optional[Hash]                               $indices,
-  Boolean                                      $indices_hiera_merge,
+  Hash                                         $indices,
   Hash                                         $init_defaults,
   Optional[String]                             $init_defaults_file,
   String                                       $init_template,
-  Optional[Hash]                               $instances,
-  Boolean                                      $instances_hiera_merge,
+  Hash                                         $instances,
   Array[String]                                $jvm_options,
   Tea::Absolutepath                            $logdir,
   Hash                                         $logging_config,
@@ -370,11 +340,9 @@ class elasticsearch (
   Enum['package']                              $package_provider,
   Optional[String]                             $package_url,
   Optional[Tea::Absolutepath]                  $pid_dir,
-  Optional[Hash]                               $pipelines,
-  Boolean                                      $pipelines_hiera_merge,
+  Hash                                         $pipelines,
   Tea::Absolutepath                            $plugindir,
-  Optional[Hash]                               $plugins,
-  Boolean                                      $plugins_hiera_merge,
+  Hash                                         $plugins,
   Optional[Tea::HTTPUrl]                       $proxy_url,
   Boolean                                      $purge_configdir,
   Boolean                                      $purge_package_dir,
@@ -387,12 +355,10 @@ class elasticsearch (
   Variant[Boolean, String]                     $repo_stage,
   String                                       $repo_version,
   Boolean                                      $restart_on_change,
-  Optional[Hash]                               $roles,
-  Boolean                                      $roles_hiera_merge,
+  Hash                                         $roles,
   Integer                                      $rolling_file_max_backup_index,
   String                                       $rolling_file_max_file_size,
-  Optional[Hash]                               $scripts,
-  Boolean                                      $scripts_hiera_merge,
+  Hash                                         $scripts,
   Optional[Hash]                               $secrets,
   Optional[String]                             $security_logging_content,
   Optional[String]                             $security_logging_source,
@@ -401,10 +367,8 @@ class elasticsearch (
   Elasticsearch::Status                        $status,
   Optional[String]                             $system_key,
   Tea::Absolutepath                            $systemd_service_path,
-  Optional[Hash]                               $templates,
-  Boolean                                      $templates_hiera_merge,
-  Optional[Hash]                               $users,
-  Boolean                                      $users_hiera_merge,
+  Hash                                         $templates,
+  Hash                                         $users,
   Boolean                                      $validate_tls,
   Variant[String, Boolean]                     $version,
   Boolean $restart_config_change  = $restart_on_change,
@@ -446,96 +410,14 @@ class elasticsearch (
   contain elasticsearch::package
   contain elasticsearch::config
 
-  if $config_hiera_merge == true {
-    $x_config = hiera_hash('elasticsearch::config', $config)
-  } else {
-    $x_config = $config
-  }
-
-  # Hiera support for indices
-  if $indices_hiera_merge == true {
-    $x_indices = hiera_hash('elasticsearch::indices', $::elasticsearch::indices)
-  } else {
-    $x_indices = $indices
-  }
-
-  if $x_indices {
-    validate_hash($x_indices)
-    create_resources('elasticsearch::index', $x_indices)
-  }
-
-  # Hiera support for instances
-  if $instances_hiera_merge == true {
-    $x_instances = hiera_hash('elasticsearch::instances', $::elasticsearch::instances)
-  } else {
-    $x_instances = $instances
-  }
-
-  if $x_instances {
-    create_resources('elasticsearch::instance', $x_instances)
-  }
-
-  # Hiera support for pipelines
-  if $pipelines_hiera_merge == true {
-    $x_pipelines = hiera_hash('elasticsearch::pipelines', $::elasticsearch::pipelines)
-  } else {
-    $x_pipelines = $pipelines
-  }
-
-  if $x_pipelines {
-    create_resources('elasticsearch::pipeline', $x_pipelines)
-  }
-
-  # Hiera support for plugins
-  if $plugins_hiera_merge == true {
-    $x_plugins = hiera_hash('elasticsearch::plugins', $::elasticsearch::plugins)
-  } else {
-    $x_plugins = $plugins
-  }
-
-  if $x_plugins {
-    create_resources('elasticsearch::plugin', $x_plugins)
-  }
-
-  if $roles_hiera_merge == true {
-    $x_roles = hiera_hash('elasticsearch::roles', $::elasticsearch::roles)
-  } else {
-    $x_roles = $roles
-  }
-
-  if $x_roles {
-    create_resources('elasticsearch::role', $x_roles)
-  }
-
-  if $scripts_hiera_merge == true {
-    $x_scripts = hiera_hash('elasticsearch::scripts', $::elasticsearch::scripts)
-  } else {
-    $x_scripts = $scripts
-  }
-
-  if $x_scripts {
-    create_resources('elasticsearch::script', $x_scripts)
-  }
-
-  if $templates_hiera_merge == true {
-    $x_templates = hiera_hash('elasticsearch::templates', $::elasticsearch::templates)
-  } else {
-    $x_templates = $templates
-  }
-
-  if $x_templates {
-    create_resources('elasticsearch::template', $x_templates)
-  }
-
-  if $users_hiera_merge == true {
-    $x_users = hiera_hash('elasticsearch::users', $::elasticsearch::users)
-  } else {
-    $x_users = $users
-  }
-
-  if $x_users {
-    create_resources('elasticsearch::user', $x_users)
-  }
+  create_resources('elasticsearch::index', $::elasticsearch::indices)
+  create_resources('elasticsearch::instance', $::elasticsearch::instances)
+  create_resources('elasticsearch::pipeline', $::elasticsearch::pipelines)
+  create_resources('elasticsearch::plugin', $::elasticsearch::plugins)
+  create_resources('elasticsearch::role', $::elasticsearch::roles)
+  create_resources('elasticsearch::script', $::elasticsearch::scripts)
+  create_resources('elasticsearch::template', $::elasticsearch::templates)
+  create_resources('elasticsearch::user', $::elasticsearch::users)
 
   if ($manage_repo == true) {
     if ($repo_stage == false) {
