@@ -10,7 +10,6 @@ elasticsearch::api_protocol: http
 elasticsearch::api_timeout: 10
 elasticsearch::autoupgrade: false
 elasticsearch::config: {}
-elasticsearch::config_hiera_merge: false
 elasticsearch::configdir: /etc/elasticsearch
 elasticsearch::daily_rolling_date_pattern: <
   "'.'yyyy-MM-dd"
@@ -19,13 +18,11 @@ elasticsearch::default_logging_level: 'INFO'
 elasticsearch::defaults_location: ~
 elasticsearch::download_tool: ~
 elasticsearch::file_rolling_type: dailyRollingFile
-elasticsearch::indices: ~
-elasticsearch::indices_hiera_merge: false
+elasticsearch::indices: {}
 elasticsearch::init_defaults: {}
 elasticsearch::init_defaults_file: ~
 elasticsearch::init_template: "%{module_name}/etc/init.d/elasticsearch.systemd.erb"
-elasticsearch::instances: ~
-elasticsearch::instances_hiera_merge: false
+elasticsearch::instances: {}
 elasticsearch::jvm_options: []
 elasticsearch::logdir: /var/log/elasticsearch
 elasticsearch::logging_config: {}
@@ -37,11 +34,9 @@ elasticsearch::package_name: elasticsearch
 elasticsearch::package_provider: package
 elasticsearch::package_url: ~
 elasticsearch::pid_dir: /var/run/elasticsearch
-elasticsearch::pipelines: ~
-elasticsearch::pipelines_hiera_merge: false
+elasticsearch::pipelines: {}
 elasticsearch::plugindir: "%{hiera('elasticsearch::homedir')}/plugins"
-elasticsearch::plugins: ~
-elasticsearch::plugins_hiera_merge: false
+elasticsearch::plugins: {}
 elasticsearch::proxy_url: ~
 elasticsearch::purge_configdir: false
 elasticsearch::purge_package_dir: false
@@ -54,12 +49,10 @@ elasticsearch::repo_proxy: ~
 elasticsearch::repo_stage: false
 elasticsearch::repo_version: 5.x
 elasticsearch::restart_on_change: false
-elasticsearch::roles: ~
-elasticsearch::roles_hiera_merge: false
+elasticsearch::roles: {}
 elasticsearch::rolling_file_max_backup_index: 1
 elasticsearch::rolling_file_max_file_size: 10MB
-elasticsearch::scripts: ~
-elasticsearch::scripts_hiera_merge: false
+elasticsearch::scripts: {}
 elasticsearch::secrets: ~
 elasticsearch::security_logging_content: ~
 elasticsearch::security_logging_source: ~
@@ -68,9 +61,7 @@ elasticsearch::service_provider: systemd
 elasticsearch::status: enabled
 elasticsearch::system_key: ~
 elasticsearch::systemd_service_path: /lib/systemd/system
-elasticsearch::templates: ~
-elasticsearch::templates_hiera_merge: false
-elasticsearch::users: ~
-elasticsearch::users_hiera_merge: false
+elasticsearch::templates: {}
+elasticsearch::users: {}
 elasticsearch::validate_tls: true
 elasticsearch::version: false
