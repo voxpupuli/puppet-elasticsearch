@@ -1,3 +1,10 @@
+## x.x.x (Month Day, Year)
+
+#### Features
+* Bumped puppet/yum dependency to < 3.0.0
+
+#### Fixes
+
 ## 5.4.1 (August 7, 2017)
 
 Fixed an issue where `logging_yml_ensure` and `log4j2_ensure` would not propagate to `elasticsearch::instance` resources.
