@@ -63,6 +63,8 @@ class elasticsearch::config {
         mode   => '0755';
       '/etc/elasticsearch/elasticsearch.yml':
         ensure => 'absent';
+      '/etc/elasticsearch/jvm.options':
+        ensure => 'absent';
       '/etc/elasticsearch/logging.yml':
         ensure => 'absent';
       '/etc/elasticsearch/log4j2.properties':
@@ -100,20 +102,15 @@ class elasticsearch::config {
       }
     }
 
-    $new_init_defaults = { 'CONF_DIR' => $elasticsearch::configdir }
     if $elasticsearch::defaults_location {
       augeas { "${elasticsearch::defaults_location}/elasticsearch":
         incl    => "${elasticsearch::defaults_location}/elasticsearch",
         lens    => 'Shellvars.lns',
-        changes => template("${module_name}/etc/sysconfig/defaults.erb"),
+        changes => [
+          'rm CONF_FILE',
+          'rm CONF_DIR',
+        ],
       }
-    }
-
-    $jvm_options = $elasticsearch::jvm_options
-    file { "${elasticsearch::configdir}/jvm.options":
-      content => template("${module_name}/etc/elasticsearch/jvm.options.erb"),
-      owner   => $elasticsearch::elasticsearch_user,
-      group   => $elasticsearch::elasticsearch_group,
     }
 
     if $::elasticsearch::security_plugin != undef and ($::elasticsearch::security_plugin in ['shield', 'x-pack']) {

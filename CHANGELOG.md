@@ -15,15 +15,27 @@ Minor:
 
 ## x.x.x (Month Day, Year)
 
-### Summary
+#### Features
+* Bumped puppet/yum dependency to < 3.0.0
+
+#### Fixes
+
+## 5.4.1 (August 7, 2017)
+
+Fixed an issue where `logging_yml_ensure` and `log4j2_ensure` would not propagate to `elasticsearch::instance` resources.
+
+## 5.4.0 (August 3, 2017)
 
 #### Features
 * The `api_timeout` parameter is now passed to the `es_instance_conn_validator` resource for index, pipeline, and template defined types.
 * Updated puppetlabs/apt dependency to < 5.0.0.
+* Both the `logging.yml` and `log4j2.properties` files can be selectively enabled/disabled with the `logging_yml_ensure` and `log4j2_ensure` parameters on the `elasticsearch` class and `elasticsearch::instance` defined type.
+* `jvm_options` are now controllable on a per-instance basis.
 
 #### Fixes
 * Fixed an edge case with `es_instance_validator` in which ruby connection errors were not caught.
 * Plugins with colon-delimited names (such as maven plugins) are properly handled now.
+* Fixed a bug that would cause dependency cycles when using parameters to create defined types.
 
 ## 5.3.1 (June 14, 2017)
 

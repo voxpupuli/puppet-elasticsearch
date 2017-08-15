@@ -53,6 +53,9 @@
 # @param init_template
 #   Service file as a template
 #
+# @param jvm_options
+#   Array of options to set in jvm_options.
+#
 # @param keystore_password
 #   Password to encrypt this node's Java keystore.
 #
@@ -136,6 +139,7 @@ define elasticsearch::instance (
   Hash                               $init_defaults                 = {},
   Optional[Tea::Absolutepath]        $init_defaults_file            = undef,
   String                             $init_template                 = $elasticsearch::init_template,
+  Array[String]                      $jvm_options                   = $elasticsearch::jvm_options,
   Optional[String]                   $keystore_password             = undef,
   Optional[Tea::Absolutepath]        $keystore_path                 = undef,
   Tea::Absolutepath                  $logdir                        = "${elasticsearch::logdir}/${name}",
@@ -359,6 +363,14 @@ define elasticsearch::instance (
       before  => Elasticsearch::Service[$name],
     }
 
+    file { "${configdir}/jvm.options":
+      before  => Elasticsearch::Service[$name],
+      content => template("${module_name}/etc/elasticsearch/jvm.options.erb"),
+      group   => $elasticsearch::elasticsearch_group,
+      notify  => $notify_service,
+      owner   => $elasticsearch::elasticsearch_user,
+    }
+
     file {
       "${configdir}/logging.yml":
         ensure  => file,
@@ -426,9 +438,10 @@ define elasticsearch::instance (
       { 'DATA_DIR'  => $elasticsearch::_datadir_default },
       $elasticsearch::init_defaults,
       {
-        'CONF_DIR' => $configdir,
-        'ES_HOME'  => $elasticsearch::homedir,
-        'LOG_DIR'  => $logdir,
+        'CONF_DIR'       => $configdir,
+        'ES_HOME'        => $elasticsearch::homedir,
+        'ES_JVM_OPTIONS' => "${configdir}/jvm.options",
+        'LOG_DIR'        => $logdir,
       },
       $init_defaults
     )

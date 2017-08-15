@@ -78,8 +78,6 @@ define elasticsearch::template (
     fail('"file" and "content" cannot be simultaneously defined.')
   }
 
-  require elasticsearch
-
   es_instance_conn_validator { "${name}-template":
     server  => $api_host,
     port    => $api_port,

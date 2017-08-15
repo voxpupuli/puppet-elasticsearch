@@ -510,6 +510,17 @@ class { 'elasticsearch':
 }
 ```
 
+`jvm.options` can also be controlled per-instance:
+
+```puppet
+elasticsearch::instance { 'es-01':
+  jvm_options => [
+    '-Xms4g',
+    '-Xmx4g'
+  ]
+}
+```
+
 ### Service management
 
 Currently only the basic SysV-style [init](https://en.wikipedia.org/wiki/Init) and [Systemd](http://en.wikipedia.org/wiki/Systemd) service providers are supported, but other systems could be implemented as necessary (pull requests welcome).
