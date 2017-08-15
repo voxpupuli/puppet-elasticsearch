@@ -4,6 +4,7 @@
 * Bumped puppet/yum dependency to < 3.0.0
 
 #### Fixes
+* Custom facts no longer attempt to connect to SSL/TLS secured ports.
 
 ## 5.4.1 (August 7, 2017)
 
