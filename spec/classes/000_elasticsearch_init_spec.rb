@@ -297,7 +297,6 @@ describe 'elasticsearch', :type => 'class' do
 
         # Base directories
         it { should contain_file('/etc/elasticsearch') }
-        it { should contain_file('/etc/elasticsearch/jvm.options') }
         it { should contain_file('/usr/share/elasticsearch/templates_import') }
         it { should contain_file('/usr/share/elasticsearch/scripts') }
         it { should contain_file('/usr/share/elasticsearch') }
@@ -383,41 +382,35 @@ describe 'elasticsearch', :type => 'class' do
           .with(:owner => 'myesuser') if facts[:os]['family'] == 'RedHat' }
       end
 
-      describe 'jvm.options' do
-        context 'class overrides' do
-          let(:params) do
-            default_params.merge(
-              :jvm_options => [
-                '-Xms1g',
-                '-Xmx1g'
-              ]
-            )
-          end
-
-          it 'creates the default jvm.options file' do
-            should contain_file('/etc/elasticsearch/jvm.options')
-              .with_content(/
-                -Dfile.encoding=UTF-8.
-                -Dio.netty.noKeySetOptimization=true.
-                -Dio.netty.noUnsafe=true.
-                -Dio.netty.recycler.maxCapacityPerThread=0.
-                -Djava.awt.headless=true.
-                -Djdk.io.permissionsUseCanonicalPath=true.
-                -Djna.nosys=true.
-                -Dlog4j.shutdownHookEnabled=false.
-                -Dlog4j.skipJansi=true.
-                -Dlog4j2.disable.jmx=true.
-                -XX:\+AlwaysPreTouch.
-                -XX:\+DisableExplicitGC.
-                -XX:\+HeapDumpOnOutOfMemoryError.
-                -XX:\+UseCMSInitiatingOccupancyOnly.
-                -XX:\+UseConcMarkSweepGC.
-                -XX:CMSInitiatingOccupancyFraction=75.
-                -Xms1g.
-                -Xmx1g.
-                -Xss1m.
-                -server.
-              /xm)
+      # This check helps catch dependency cycles.
+      context 'create_resource' do
+        # Helper for these tests
+        def singular(s)
+          s == 'indices' ? 'index' : s[0..-2]
+        end
+        {
+          'indices' => { 'test-index' => {} },
+          'instances' => { 'es-instance' => {} },
+          'pipelines' => { 'testpipeline' => { 'content' => {} } },
+          'plugins' => { 'head' => {} },
+          'roles' => { 'elastic_role' => {} },
+          'scripts' => {
+            'foo' => { 'source' => 'puppet:///path/to/foo.groovy' }
+          },
+          'templates' => { 'foo' => { 'content' => {} } },
+          'users' => { 'elastic' => { 'password' => 'foobar' } }
+        }.each_pair do |deftype, params|
+          describe deftype do
+            let(:params) do
+              default_params.merge(
+                deftype => params,
+                :security_plugin => 'x-pack'
+              )
+            end
+            it { should compile }
+            it { should send(
+              "contain_elasticsearch__#{singular(deftype)}", params.keys.first
+            ) }
           end
         end
       end

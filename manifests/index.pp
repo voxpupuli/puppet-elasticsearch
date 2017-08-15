@@ -55,7 +55,6 @@ define elasticsearch::index (
   Hash                        $settings                = {},
   Boolean                     $validate_tls            = $elasticsearch::validate_tls,
 ) {
-  require elasticsearch
 
   es_instance_conn_validator { "${name}-index-conn-validator":
     server  => $api_host,
