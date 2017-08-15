@@ -1,10 +1,11 @@
 require 'spec_helper'
 require 'webmock/rspec'
 
-# rubocop:disable Metric/BlockLength
 describe 'elasticsearch facts' do
   before(:each) do
-    %w(Warlock Zom).each_with_index do |instance, n|
+    Dir[File.join(RSpec.configuration.fixture_path, 'facts', '*.json')].map do |json|
+      File.basename(json).split('.').first.split('-').first
+    end.uniq.sort.each_with_index do |instance, n|
       stub_request(:get, "http://localhost:920#{n}/")
         .with(:headers => { 'Accept' => '*/*', 'User-Agent' => 'Ruby' })
         .to_return(
@@ -32,14 +33,13 @@ describe 'elasticsearch facts' do
 
     allow(File)
       .to receive(:directory?)
-      .with('/etc/elasticsearch')
       .and_return(true)
 
     allow(Dir)
       .to receive(:foreach)
-      .and_yield('es01').and_yield('es02')
+      .and_yield('es01').and_yield('es02').and_yield('es03').and_yield('es-ssl')
 
-    %w(es01 es02).each do |instance|
+    %w[es01 es02 es03 es-ssl].each do |instance|
       allow(File)
         .to receive(:readable?)
         .with("/etc/elasticsearch/#{instance}/elasticsearch.yml")
@@ -56,13 +56,27 @@ describe 'elasticsearch facts' do
       .with('/etc/elasticsearch/es02/elasticsearch.yml', any_args)
       .and_return('http.port' => '9201')
 
+    allow(YAML)
+      .to receive(:load_file)
+      .with('/etc/elasticsearch/es03/elasticsearch.yml', any_args)
+      .and_return('http.port' => '9202')
+
+    allow(YAML)
+      .to receive(:load_file)
+      .with('/etc/elasticsearch/es-ssl/elasticsearch.yml', any_args)
+      .and_return(
+        'xpack.security.http.ssl.enabled' => true,
+        'shield.http.ssl'                 => true,
+        'http.port'                       => '9443'
+      )
+
     require 'lib/facter/es_facts'
   end
 
   describe 'elasticsearch_ports' do
     it 'finds listening ports' do
       expect(Facter.fact(:elasticsearch_ports).value.split(','))
-        .to contain_exactly('9200', '9201')
+        .to contain_exactly('9200', '9201', '9202', '9443')
     end
   end
 
