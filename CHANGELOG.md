@@ -1,6 +1,7 @@
 ## x.x.x (Month Day, Year)
 
 #### Features
+* Bumped puppet/yum dependency to < 3.0.0
 
 #### Fixes
 * Custom facts no longer attempt to connect to SSL/TLS secured ports.
