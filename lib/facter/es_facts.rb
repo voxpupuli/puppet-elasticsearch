@@ -16,7 +16,8 @@ module EsFacts
   def self.ssl?(config)
     tls_keys = [
       'xpack.security.http.ssl.enabled',
-      'shield.http.ssl'
+      'shield.http.ssl',
+      'searchguard.ssl.http.enabled'
     ]
 
     tls_keys.any? { |key| config.key? key and config[key] == true }
