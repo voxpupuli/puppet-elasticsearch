@@ -686,6 +686,24 @@ binding.</p>
   
     <li>
       
+        <span class='name'>log4j2_ensure</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>&#39;file&#39;</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>State of the log4j2 logging configuration file.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
         <span class='name'>logdir</span>
       
       
@@ -754,6 +772,24 @@ the logging.yml file.</p>
         <div class='inline'>
 <p>Use a custom logging template - just supply the relative path, i.e.
 <code>$module/elasticsearch/logging.yml.erb</code></p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>logging_yml_ensure</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>&#39;file&#39;</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>State of the logging.yml logging configuration file.</p>
 </div>
       
     </li>
@@ -1679,12 +1715,6 @@ href="mailto:tyler.langlois@elastic.co">tyler.langlois@elastic.co</a></p>
         <pre class="lines">
 
 
-326
-327
-328
-329
-330
-331
 332
 333
 334
@@ -2176,10 +2206,18 @@ href="mailto:tyler.langlois@elastic.co">tyler.langlois@elastic.co</a></p>
 820
 821
 822
-823</pre>
+823
+824
+825
+826
+827
+828
+829
+830
+831</pre>
       </td>
       <td>
-        <pre class="code"><span class="info file"># File 'manifests/init.pp', line 326</span>
+        <pre class="code"><span class="info file"># File 'manifests/init.pp', line 332</span>
 
 class elasticsearch(
   $ensure                         = &#39;present&#39;,
@@ -2212,10 +2250,12 @@ class elasticsearch(
   $java_install                   = false,
   $java_package                   = undef,
   $jvm_options                    = [],
+  $log4j2_ensure                  = &#39;file&#39;,
   $logdir                         = &#39;/var/log/elasticsearch&#39;,
   $logging_config                 = undef,
   $logging_file                   = undef,
   $logging_template               = undef,
+  $logging_yml_ensure             = &#39;file&#39;,
   $manage_repo                    = false,
   $package_dir                    = $elasticsearch::params::package_dir,
   $package_dl_timeout             = 600,
@@ -2686,7 +2726,7 @@ class elasticsearch(
 </div>
 
       <div id="footer">
-  Generated on Tue Jun 13 16:58:42 2017 by
+  Generated on Fri Aug 18 15:52:05 2017 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.9 (ruby-2.3.1).
 </div>

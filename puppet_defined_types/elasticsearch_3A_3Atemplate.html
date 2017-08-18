@@ -414,7 +414,10 @@ href="mailto:tyler.langlois@elastic.co">tyler.langlois@elastic.co</a></p>
 116
 117
 118
-119</pre>
+119
+120
+121
+122</pre>
       </td>
       <td>
         <pre class="code"><span class="info file"># File 'manifests/template.pp', line 55</span>
@@ -433,6 +436,10 @@ define elasticsearch::template (
   $source                  = undef,
   $validate_tls            = $elasticsearch::validate_tls,
 ) {
+  if ! defined(Class[&#39;elasticsearch&#39;]) {
+    fail(&#39;You must include the elasticsearch base class before using defined resources&#39;)
+  }
+
   validate_string(
     $api_protocol,
     $api_host,
@@ -463,11 +470,10 @@ define elasticsearch::template (
     fail(&#39;&quot;file&quot; and &quot;content&quot; cannot be simultaneously defined.&#39;)
   }
 
-  require elasticsearch
-
   es_instance_conn_validator { &quot;${name}-template&quot;:
-    server =&gt; $api_host,
-    port   =&gt; $api_port,
+    server  =&gt; $api_host,
+    port    =&gt; $api_port,
+    timeout =&gt; $api_timeout,
   }
   -&gt; elasticsearch_template { $name:
     ensure       =&gt; $ensure,
@@ -491,7 +497,7 @@ define elasticsearch::template (
 </div>
 
       <div id="footer">
-  Generated on Tue Jun 13 16:58:43 2017 by
+  Generated on Fri Aug 18 15:52:06 2017 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.9 (ruby-2.3.1).
 </div>

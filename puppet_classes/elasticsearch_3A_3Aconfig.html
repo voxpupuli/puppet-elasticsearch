@@ -275,10 +275,7 @@ href="mailto:tyler.langlois@elastic.co">tyler.langlois@elastic.co</a></p>
 150
 151
 152
-153
-154
-155
-156</pre>
+153</pre>
       </td>
       <td>
         <pre class="code"><span class="info file"># File 'manifests/config.pp', line 13</span>
@@ -299,7 +296,7 @@ class elasticsearch::config {
         ensure =&gt; &#39;directory&#39;,
         group  =&gt; $elasticsearch::elasticsearch_group,
         owner  =&gt; $elasticsearch::elasticsearch_user,
-        mode   =&gt; &#39;0644&#39;;
+        mode   =&gt; &#39;0755&#39;;
       $elasticsearch::datadir:
         ensure =&gt; &#39;directory&#39;,
         group  =&gt; $elasticsearch::elasticsearch_group,
@@ -308,7 +305,7 @@ class elasticsearch::config {
         ensure  =&gt; &#39;directory&#39;,
         group   =&gt; undef,
         owner   =&gt; $elasticsearch::elasticsearch_user,
-        mode    =&gt; &#39;0644&#39;,
+        mode    =&gt; &#39;0755&#39;,
         recurse =&gt; true;
       $elasticsearch::plugindir:
         ensure =&gt; &#39;directory&#39;,
@@ -328,13 +325,15 @@ class elasticsearch::config {
         ensure =&gt; &#39;directory&#39;,
         group  =&gt; $elasticsearch::elasticsearch_group,
         owner  =&gt; $elasticsearch::elasticsearch_user,
-        mode   =&gt; &#39;0644&#39;;
+        mode   =&gt; &#39;0755&#39;;
       &quot;${elasticsearch::params::homedir}/scripts&quot;:
         ensure =&gt; &#39;directory&#39;,
         group  =&gt; $elasticsearch::elasticsearch_group,
         owner  =&gt; $elasticsearch::elasticsearch_user,
-        mode   =&gt; &#39;0644&#39;;
+        mode   =&gt; &#39;0755&#39;;
       &#39;/etc/elasticsearch/elasticsearch.yml&#39;:
+        ensure =&gt; &#39;absent&#39;;
+      &#39;/etc/elasticsearch/jvm.options&#39;:
         ensure =&gt; &#39;absent&#39;;
       &#39;/etc/elasticsearch/logging.yml&#39;:
         ensure =&gt; &#39;absent&#39;;
@@ -373,20 +372,15 @@ class elasticsearch::config {
       }
     }
 
-    $new_init_defaults = { &#39;CONF_DIR&#39; =&gt; $elasticsearch::configdir }
     if $elasticsearch::params::defaults_location {
       augeas { &quot;${elasticsearch::params::defaults_location}/elasticsearch&quot;:
         incl    =&gt; &quot;${elasticsearch::params::defaults_location}/elasticsearch&quot;,
         lens    =&gt; &#39;Shellvars.lns&#39;,
-        changes =&gt; template(&quot;${module_name}/etc/sysconfig/defaults.erb&quot;),
+        changes =&gt; [
+          &#39;rm CONF_FILE&#39;,
+          &#39;rm CONF_DIR&#39;,
+        ],
       }
-    }
-
-    $jvm_options = $elasticsearch::jvm_options
-    file { &quot;${elasticsearch::configdir}/jvm.options&quot;:
-      content =&gt; template(&quot;${module_name}/etc/elasticsearch/jvm.options.erb&quot;),
-      owner   =&gt; $elasticsearch::elasticsearch_user,
-      group   =&gt; $elasticsearch::elasticsearch_group,
     }
 
     if $::elasticsearch::security_plugin != undef and ($::elasticsearch::security_plugin in [&#39;shield&#39;, &#39;x-pack&#39;]) {
@@ -434,7 +428,7 @@ class elasticsearch::config {
 </div>
 
       <div id="footer">
-  Generated on Tue Jun 13 16:58:42 2017 by
+  Generated on Fri Aug 18 15:52:05 2017 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.9 (ruby-2.3.1).
 </div>

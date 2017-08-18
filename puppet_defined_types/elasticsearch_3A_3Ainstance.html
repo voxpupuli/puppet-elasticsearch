@@ -348,6 +348,24 @@ rotates by name, and the second one by size.</p>
   
     <li>
       
+        <span class='name'>jvm_options</span>
+      
+      
+        <span class='type'>(<tt>Array</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>$elasticsearch::jvm_options</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>Array of options to set in jvm_options.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
         <span class='name'>keystore_password</span>
       
       
@@ -378,6 +396,24 @@ rotates by name, and the second one by size.</p>
         &mdash;
         <div class='inline'>
 <p>Custom path to the java keystore file. This parameter is optional.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>log4j2_ensure</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>$elasticsearch::log4j2_ensure</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>State of the log4j2 logging configuration file.</p>
 </div>
       
     </li>
@@ -470,6 +506,24 @@ logging.yml file</p>
         <div class='inline'>
 <p>Use a custom logging template - just supply the reative path, ie
 $module_name/elasticsearch/logging.yml.erb</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>logging_yml_ensure</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>$elasticsearch::logging_yml_ensure</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>State of the logging.yml logging configuration file.</p>
 </div>
       
     </li>
@@ -711,15 +765,6 @@ href="mailto:tyler.langlois@elastic.co">tyler.langlois@elastic.co</a></p>
         <pre class="lines">
 
 
-124
-125
-126
-127
-128
-129
-130
-131
-132
 133
 134
 135
@@ -1129,10 +1174,32 @@ href="mailto:tyler.langlois@elastic.co">tyler.langlois@elastic.co</a></p>
 539
 540
 541
-542</pre>
+542
+543
+544
+545
+546
+547
+548
+549
+550
+551
+552
+553
+554
+555
+556
+557
+558
+559
+560
+561
+562
+563
+564</pre>
       </td>
       <td>
-        <pre class="code"><span class="info file"># File 'manifests/instance.pp', line 124</span>
+        <pre class="code"><span class="info file"># File 'manifests/instance.pp', line 133</span>
 
 define elasticsearch::instance (
   $ensure                        = $elasticsearch::ensure,
@@ -1149,13 +1216,16 @@ define elasticsearch::instance (
   $init_defaults                 = undef,
   $init_defaults_file            = undef,
   $init_template                 = $elasticsearch::init_template,
+  $jvm_options                   = $elasticsearch::jvm_options,
   $keystore_password             = undef,
   $keystore_path                 = undef,
+  $log4j2_ensure                 = $elasticsearch::log4j2_ensure,
   $logdir                        = undef,
   $logging_config                = undef,
   $logging_file                  = undef,
   $logging_level                 = $elasticsearch::default_logging_level,
   $logging_template              = undef,
+  $logging_yml_ensure            = $elasticsearch::logging_yml_ensure,
   $private_key                   = undef,
   $purge_secrets                 = $elasticsearch::purge_secrets,
   $rolling_file_max_backup_index = $elasticsearch::rolling_file_max_backup_index,
@@ -1360,7 +1430,7 @@ define elasticsearch::instance (
       ensure  =&gt; &#39;directory&#39;,
       owner   =&gt; $elasticsearch::elasticsearch_user,
       group   =&gt; undef,
-      mode    =&gt; &#39;0644&#39;,
+      mode    =&gt; &#39;0755&#39;,
       require =&gt; Class[&#39;elasticsearch::package&#39;],
       before  =&gt; Elasticsearch::Service[$name],
     }
@@ -1376,7 +1446,7 @@ define elasticsearch::instance (
         ensure  =&gt; &#39;directory&#39;,
         owner   =&gt; $elasticsearch::elasticsearch_user,
         group   =&gt; undef,
-        mode    =&gt; &#39;0644&#39;,
+        mode    =&gt; &#39;0755&#39;,
         require =&gt; Class[&#39;elasticsearch::package&#39;],
         before  =&gt; Elasticsearch::Service[$name],
       }
@@ -1391,16 +1461,25 @@ define elasticsearch::instance (
 
     file { $instance_configdir:
       ensure  =&gt; &#39;directory&#39;,
-      mode    =&gt; &#39;0644&#39;,
+      mode    =&gt; &#39;0755&#39;,
       purge   =&gt; $elasticsearch::purge_configdir,
       force   =&gt; $elasticsearch::purge_configdir,
       require =&gt; [ Exec[&quot;mkdir_configdir_elasticsearch_${name}&quot;], Class[&#39;elasticsearch::package&#39;] ],
       before  =&gt; Elasticsearch::Service[$name],
     }
 
+    validate_array($jvm_options)
+    file { &quot;${instance_configdir}/jvm.options&quot;:
+      before  =&gt; Elasticsearch::Service[$name],
+      content =&gt; template(&quot;${module_name}/etc/elasticsearch/jvm.options.erb&quot;),
+      group   =&gt; $elasticsearch::elasticsearch_group,
+      notify  =&gt; $notify_service,
+      owner   =&gt; $elasticsearch::elasticsearch_user,
+    }
+
     file {
       &quot;${instance_configdir}/logging.yml&quot;:
-        ensure  =&gt; file,
+        ensure  =&gt; $logging_yml_ensure,
         content =&gt; $logging_content,
         source  =&gt; $logging_source,
         mode    =&gt; &#39;0644&#39;,
@@ -1408,7 +1487,7 @@ define elasticsearch::instance (
         require =&gt; Class[&#39;elasticsearch::package&#39;],
         before  =&gt; Elasticsearch::Service[$name];
       &quot;${instance_configdir}/log4j2.properties&quot;:
-        ensure  =&gt; file,
+        ensure  =&gt; $log4j2_ensure,
         content =&gt; $_log4j_content,
         source  =&gt; $logging_source,
         mode    =&gt; &#39;0644&#39;,
@@ -1425,7 +1504,7 @@ define elasticsearch::instance (
     if $security_plugin != undef {
       file { &quot;${instance_configdir}/${security_plugin}&quot;:
         ensure  =&gt; &#39;directory&#39;,
-        mode    =&gt; &#39;0644&#39;,
+        mode    =&gt; &#39;0755&#39;,
         source  =&gt; &quot;${elasticsearch::configdir}/${security_plugin}&quot;,
         recurse =&gt; &#39;remote&#39;,
         owner   =&gt; &#39;root&#39;,
@@ -1480,6 +1559,7 @@ define elasticsearch::instance (
     }
     $init_defaults_new = merge(
       { &#39;DATA_DIR&#39;  =&gt; $elasticsearch::params::datadir },
+      { &#39;ES_JVM_OPTIONS&#39; =&gt; &quot;${instance_configdir}/jvm.options&quot; },
       $global_init_defaults,
       $instance_init_defaults_main,
       $instance_init_defaults
@@ -1560,7 +1640,7 @@ define elasticsearch::instance (
 </div>
 
       <div id="footer">
-  Generated on Tue Jun 13 16:58:43 2017 by
+  Generated on Fri Aug 18 15:52:06 2017 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.9 (ruby-2.3.1).
 </div>

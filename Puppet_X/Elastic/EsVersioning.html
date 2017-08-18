@@ -288,14 +288,14 @@ version 5.</p>
       <pre class="lines">
 
 
-35
-36
-37
-38
-39</pre>
+39
+40
+41
+42
+43</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/puppet_x/elastic/es_versioning.rb', line 35</span>
+      <pre class="code"><span class="info file"># File 'lib/puppet_x/elastic/es_versioning.rb', line 39</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_min_version'>min_version</span><span class='lparen'>(</span><span class='id identifier rubyid_ver'>ver</span><span class='comma'>,</span> <span class='id identifier rubyid_package_name'>package_name</span><span class='comma'>,</span> <span class='id identifier rubyid_catalog'>catalog</span><span class='rparen'>)</span>
   <span class='const'><span class='object_link'><a href="../../Puppet.html" title="Puppet (module)">Puppet</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../../Puppet/Util.html" title="Puppet::Util (module)">Util</a></span></span><span class='op'>::</span><span class='const'>Package</span><span class='period'>.</span><span class='id identifier rubyid_versioncmp'>versioncmp</span><span class='lparen'>(</span>
@@ -334,12 +334,12 @@ version 5.</p>
       <pre class="lines">
 
 
-30
-31
-32</pre>
+34
+35
+36</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/puppet_x/elastic/es_versioning.rb', line 30</span>
+      <pre class="code"><span class="info file"># File 'lib/puppet_x/elastic/es_versioning.rb', line 34</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_opt_flag'>opt_flag</span><span class='lparen'>(</span><span class='id identifier rubyid_v5_or_later'>v5_or_later</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_v5_or_later'>v5_or_later</span> <span class='op'>?</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>E</span><span class='tstring_end'>&#39;</span></span> <span class='op'>:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Des.</span><span class='tstring_end'>&#39;</span></span>
@@ -383,7 +383,11 @@ version 5.</p>
 23
 24
 25
-26</pre>
+26
+27
+28
+29
+30</pre>
     </td>
     <td>
       <pre class="code"><span class="info file"># File 'lib/puppet_x/elastic/es_versioning.rb', line 19</span>
@@ -394,7 +398,11 @@ version 5.</p>
   <span class='id identifier rubyid_opts'>opts</span><span class='period'>.</span><span class='id identifier rubyid_delete'>delete</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>work</span><span class='tstring_end'>&#39;</span></span> <span class='kw'>if</span> <span class='id identifier rubyid_min_version'>min_version</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>5.0.0</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='id identifier rubyid_package_name'>package_name</span><span class='comma'>,</span> <span class='id identifier rubyid_catalog'>catalog</span>
   <span class='id identifier rubyid_opts'>opts</span><span class='period'>.</span><span class='id identifier rubyid_delete'>delete</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>home</span><span class='tstring_end'>&#39;</span></span> <span class='kw'>if</span> <span class='id identifier rubyid_min_version'>min_version</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>5.4.0</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='id identifier rubyid_package_name'>package_name</span><span class='comma'>,</span> <span class='id identifier rubyid_catalog'>catalog</span>
 
-  <span class='lbracket'>[</span><span class='id identifier rubyid_opt_flag'>opt_flag</span><span class='comma'>,</span> <span class='id identifier rubyid_opts'>opts</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span><span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_k'>k</span><span class='comma'>,</span> <span class='id identifier rubyid_v'>v</span><span class='op'>|</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>-</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_opt_flag'>opt_flag</span><span class='embexpr_end'>}</span><span class='tstring_content'>default.path.</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_k'>k</span><span class='embexpr_end'>}</span><span class='tstring_content'>=${</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_v'>v</span><span class='embexpr_end'>}</span><span class='tstring_content'>}</span><span class='tstring_end'>&quot;</span></span> <span class='rbrace'>}</span><span class='period'>.</span><span class='id identifier rubyid_sort'>sort</span><span class='rbracket'>]</span>
+  <span class='kw'>if</span> <span class='id identifier rubyid_min_version'>min_version</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>6.0.0</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='id identifier rubyid_package_name'>package_name</span><span class='comma'>,</span> <span class='id identifier rubyid_catalog'>catalog</span>
+    <span class='lbracket'>[</span><span class='id identifier rubyid_opt_flag'>opt_flag</span><span class='comma'>,</span> <span class='lbracket'>[</span><span class='rbracket'>]</span><span class='rbracket'>]</span>
+  <span class='kw'>else</span>
+    <span class='lbracket'>[</span><span class='id identifier rubyid_opt_flag'>opt_flag</span><span class='comma'>,</span> <span class='id identifier rubyid_opts'>opts</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_k'>k</span><span class='comma'>,</span> <span class='id identifier rubyid_v'>v</span><span class='op'>|</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>-</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_opt_flag'>opt_flag</span><span class='embexpr_end'>}</span><span class='tstring_content'>default.path.</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_k'>k</span><span class='embexpr_end'>}</span><span class='tstring_content'>=${</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_v'>v</span><span class='embexpr_end'>}</span><span class='tstring_content'>}</span><span class='tstring_end'>&quot;</span></span> <span class='rbrace'>}</span><span class='period'>.</span><span class='id identifier rubyid_sort'>sort</span><span class='rbracket'>]</span>
+  <span class='kw'>end</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -427,16 +435,16 @@ version 5.</p>
       <pre class="lines">
 
 
-42
-43
-44
-45
 46
 47
-48</pre>
+48
+49
+50
+51
+52</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/puppet_x/elastic/es_versioning.rb', line 42</span>
+      <pre class="code"><span class="info file"># File 'lib/puppet_x/elastic/es_versioning.rb', line 46</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_version'>version</span><span class='lparen'>(</span><span class='id identifier rubyid_package_name'>package_name</span><span class='comma'>,</span> <span class='id identifier rubyid_catalog'>catalog</span><span class='rparen'>)</span>
   <span class='kw'>if</span> <span class='lparen'>(</span><span class='id identifier rubyid_es_pkg'>es_pkg</span> <span class='op'>=</span> <span class='id identifier rubyid_catalog'>catalog</span><span class='period'>.</span><span class='id identifier rubyid_resource'>resource</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Package[</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_package_name'>package_name</span><span class='embexpr_end'>}</span><span class='tstring_content'>]</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span><span class='rparen'>)</span>
@@ -455,7 +463,7 @@ version 5.</p>
 </div>
 
       <div id="footer">
-  Generated on Tue Jun 13 16:58:41 2017 by
+  Generated on Fri Aug 18 15:52:04 2017 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.9 (ruby-2.3.1).
 </div>

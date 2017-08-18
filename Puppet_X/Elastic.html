@@ -79,7 +79,7 @@
   <dl>
     <dt>Defined in:</dt>
     <dd>lib/puppet_x/elastic/hash.rb<span class="defines">,<br />
-  lib/puppet_x/elastic/deep_to_i.rb,<br /> lib/puppet_x/elastic/plugin_name.rb,<br /> lib/puppet_x/elastic/deep_implode.rb,<br /> lib/puppet_x/elastic/es_versioning.rb</span>
+  lib/puppet_x/elastic/deep_to_i.rb,<br /> lib/puppet_x/elastic/deep_implode.rb,<br /> lib/puppet_x/elastic/es_versioning.rb,<br /> lib/puppet_x/elastic/plugin_parsing.rb</span>
 </dd>
   </dl>
   
@@ -203,7 +203,29 @@ dot-delimited keyed Hash.</p>
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#plugin_name-class_method" title="plugin_name (class method)">.<strong>plugin_name</strong>(original_string)  &#x21d2; Object </a>
+      <a href="#plugin_name-class_method" title="plugin_name (class method)">.<strong>plugin_name</strong>(raw_name)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#plugin_split-class_method" title="plugin_split (class method)">.<strong>plugin_split</strong>(original_string, position)  &#x21d2; Object </a>
     
 
     
@@ -414,7 +436,37 @@ dot-delimited keyed Hash.</p>
       <div class="method_details ">
   <h3 class="signature " id="plugin_name-class_method">
   
-    .<strong>plugin_name</strong>(original_string)  &#x21d2; <tt>Object</tt> 
+    .<strong>plugin_name</strong>(raw_name)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+3
+4
+5</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/puppet_x/elastic/plugin_parsing.rb', line 3</span>
+
+<span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_plugin_name'>plugin_name</span><span class='lparen'>(</span><span class='id identifier rubyid_raw_name'>raw_name</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_plugin_split'>plugin_split</span><span class='lparen'>(</span><span class='id identifier rubyid_raw_name'>raw_name</span><span class='comma'>,</span> <span class='int'>1</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="plugin_split-class_method">
+  
+    .<strong>plugin_split</strong>(original_string, position)  &#x21d2; <tt>Object</tt> 
   
 
   
@@ -437,31 +489,31 @@ dot-delimited keyed Hash.</p>
       <pre class="lines">
 
 
-4
-5
-6
-7
 8
 9
 10
 11
 12
 13
-14</pre>
+14
+15
+16
+17
+18</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/puppet_x/elastic/plugin_name.rb', line 4</span>
+      <pre class="code"><span class="info file"># File 'lib/puppet_x/elastic/plugin_parsing.rb', line 8</span>
 
-<span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_plugin_name'>plugin_name</span><span class='lparen'>(</span><span class='id identifier rubyid_original_string'>original_string</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_vendor'>vendor</span><span class='comma'>,</span> <span class='id identifier rubyid_plugin'>plugin</span><span class='comma'>,</span> <span class='id identifier rubyid__version'>_version</span> <span class='op'>=</span> <span class='id identifier rubyid_original_string'>original_string</span><span class='period'>.</span><span class='id identifier rubyid_split'>split</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>/</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
-
-  <span class='kw'>if</span> <span class='id identifier rubyid_plugin'>plugin</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span>
-    <span class='comment'># Not delineated by slashes; single plugin name in the style of
-</span>    <span class='comment'># commercial plugins post-2.x
-</span>    <span class='id identifier rubyid_vendor'>vendor</span>
-  <span class='kw'>else</span> <span class='comment'># strip off potential es prefixes and return the plugin name
-</span>    <span class='id identifier rubyid_plugin'>plugin</span><span class='period'>.</span><span class='id identifier rubyid_gsub'>gsub</span><span class='lparen'>(</span><span class='tstring'><span class='regexp_beg'>/</span><span class='tstring_content'>(elasticsearch-|es-)</span><span class='regexp_end'>/</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
+<span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_plugin_split'>plugin_split</span><span class='lparen'>(</span><span class='id identifier rubyid_original_string'>original_string</span><span class='comma'>,</span> <span class='id identifier rubyid_position'>position</span><span class='rparen'>)</span>
+  <span class='comment'># Try both colon (maven) and slash-delimited (github/elastic.co) names
+</span>  <span class='qwords_beg'>%w[</span><span class='tstring_content'>/</span><span class='words_sep'> </span><span class='tstring_content'>:</span><span class='words_sep'>]</span><span class='period'>.</span><span class='id identifier rubyid_each'>each</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_delimiter'>delimiter</span><span class='op'>|</span>
+    <span class='id identifier rubyid_parts'>parts</span> <span class='op'>=</span> <span class='id identifier rubyid_original_string'>original_string</span><span class='period'>.</span><span class='id identifier rubyid_split'>split</span><span class='lparen'>(</span><span class='id identifier rubyid_delimiter'>delimiter</span><span class='rparen'>)</span>
+    <span class='comment'># If the string successfully split, assume we found the right format
+</span>    <span class='kw'>return</span> <span class='id identifier rubyid_parts'>parts</span><span class='lbracket'>[</span><span class='id identifier rubyid_position'>position</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_gsub'>gsub</span><span class='lparen'>(</span><span class='tstring'><span class='regexp_beg'>/</span><span class='tstring_content'>(elasticsearch-|es-)</span><span class='regexp_end'>/</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span> <span class='kw'>unless</span> <span class='id identifier rubyid_parts'>parts</span><span class='lbracket'>[</span><span class='id identifier rubyid_position'>position</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span>
   <span class='kw'>end</span>
+
+  <span class='comment'># Fallback to the originally passed plugin name
+</span>  <span class='id identifier rubyid_original_string'>original_string</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -473,7 +525,7 @@ dot-delimited keyed Hash.</p>
 </div>
 
       <div id="footer">
-  Generated on Tue Jun 13 16:58:40 2017 by
+  Generated on Fri Aug 18 15:52:02 2017 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.9 (ruby-2.3.1).
 </div>

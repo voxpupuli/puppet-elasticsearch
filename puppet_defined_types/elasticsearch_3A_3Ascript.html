@@ -194,7 +194,8 @@ href="mailto:tyler.langlois@elastic.co">tyler.langlois@elastic.co</a></p>
 33
 34
 35
-36</pre>
+36
+37</pre>
       </td>
       <td>
         <pre class="code"><span class="info file"># File 'manifests/script.pp', line 17</span>
@@ -204,8 +205,9 @@ define elasticsearch::script (
   $ensure  = &#39;present&#39;,
   $recurse = undef,
 ) {
-
-  require elasticsearch
+  if ! defined(Class[&#39;elasticsearch&#39;]) {
+    fail(&#39;You must include the elasticsearch base class before using defined resources&#39;)
+  }
 
   $filename_array = split($source, &#39;/&#39;)
   $basefilename = $filename_array[-1]
@@ -226,7 +228,7 @@ define elasticsearch::script (
 </div>
 
       <div id="footer">
-  Generated on Tue Jun 13 16:58:43 2017 by
+  Generated on Fri Aug 18 15:52:05 2017 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.9 (ruby-2.3.1).
 </div>

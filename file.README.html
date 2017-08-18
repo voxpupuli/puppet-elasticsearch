@@ -618,6 +618,15 @@ in 5.x using <code>jvm.options</code>:</p>
   ]
 }</code></pre>
 
+<p><code>jvm.options</code> can also be controlled per-instance:</p>
+
+<pre class="code ruby"><code class="ruby">elasticsearch::instance { &#39;es-01&#39;:
+  jvm_options =&gt; [
+    &#39;-Xms4g&#39;,
+    &#39;-Xmx4g&#39;
+  ]
+}</code></pre>
+
 <h3 id="label-Service+management">Service management</h3>
 
 <p>Currently only the basic SysV-style <a
@@ -1138,7 +1147,7 @@ forum</a>.</p>
 </div></div>
 
       <div id="footer">
-  Generated on Tue Jun 13 16:58:39 2017 by
+  Generated on Fri Aug 18 15:52:02 2017 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.9 (ruby-2.3.1).
 </div>

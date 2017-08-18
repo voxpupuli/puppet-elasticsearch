@@ -366,7 +366,10 @@ href="mailto:tyler.langlois@elastic.co">tyler.langlois@elastic.co</a></p>
 94
 95
 96
-97</pre>
+97
+98
+99
+100</pre>
       </td>
       <td>
         <pre class="code"><span class="info file"># File 'manifests/pipeline.pp', line 47</span>
@@ -384,6 +387,10 @@ define elasticsearch::pipeline (
   $content                 = undef,
   $validate_tls            = $elasticsearch::validate_tls,
 ) {
+  if ! defined(Class[&#39;elasticsearch&#39;]) {
+    fail(&#39;You must include the elasticsearch base class before using defined resources&#39;)
+  }
+
   validate_string(
     $api_protocol,
     $api_host,
@@ -402,11 +409,10 @@ define elasticsearch::pipeline (
 
   if $ensure == &#39;present&#39; { validate_hash($content) }
 
-  require elasticsearch
-
   es_instance_conn_validator { &quot;${name}-ingest-pipeline&quot;:
-    server =&gt; $api_host,
-    port   =&gt; $api_port,
+    server  =&gt; $api_host,
+    port    =&gt; $api_port,
+    timeout =&gt; $api_timeout,
   }
   -&gt; elasticsearch_pipeline { $name:
     ensure       =&gt; $ensure,
@@ -429,7 +435,7 @@ define elasticsearch::pipeline (
 </div>
 
       <div id="footer">
-  Generated on Tue Jun 13 16:58:43 2017 by
+  Generated on Fri Aug 18 15:52:06 2017 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.9 (ruby-2.3.1).
 </div>
