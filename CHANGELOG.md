@@ -1,4 +1,4 @@
-## x.x.x (Month Day, Year)
+## 5.4.2 (August 18, 2017)
 
 #### Features
 * Bumped puppet/yum dependency to < 3.0.0
