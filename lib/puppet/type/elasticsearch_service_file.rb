@@ -24,6 +24,9 @@ Puppet::Type.newtype(:elasticsearch_service_file) do
       opt_flag, opt_flags = Puppet_X::Elastic::EsVersioning.opt_flags(
         resource[:package_name], resource.catalog
       )
+      # This should only be present on systemd systems.
+      opt_flags.delete('--quiet') unless resource[:name].include?('systemd')
+
       template = ERB.new(should, 0, "-")
       is == template.result(binding)
     end
