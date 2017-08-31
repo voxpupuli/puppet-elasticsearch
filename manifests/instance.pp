@@ -476,9 +476,10 @@ define elasticsearch::instance (
     }
 
     $instance_init_defaults_main = {
-      'CONF_DIR'  => $instance_configdir,
-      'ES_HOME'   => $elasticsearch::params::homedir,
-      'LOG_DIR'   => $instance_logdir,
+      'CONF_DIR'     => $instance_configdir,
+      'ES_PATH_CONF' => $instance_configdir,
+      'ES_HOME'      => $elasticsearch::params::homedir,
+      'LOG_DIR'      => $instance_logdir,
     }
 
     if (is_hash($init_defaults)) {
