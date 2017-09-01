@@ -137,7 +137,7 @@ namespace :artifacts do
   namespace :snapshot do
     snapshots = 'https://artifacts.elastic.co/downloads/elasticsearch'
     artifacts = 'spec/fixtures/artifacts'
-    build = 'elasticsearch-6.0.0-beta1'
+    build = 'elasticsearch-6.0.0-beta2'
     %w[deb rpm].each do |ext|
       package = "#{build}.#{ext}"
       local = "#{artifacts}/#{package}"

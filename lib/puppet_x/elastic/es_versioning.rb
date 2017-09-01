@@ -16,17 +16,23 @@ module Puppet_X
 
       # Create an array of command-line flags to append to an `elasticsearch`
       # startup command.
-      def self.opt_flags(package_name, catalog, opts=DEFAULT_OPTS)
+      def self.opt_flags(package_name, catalog, opts = DEFAULT_OPTS)
         opt_flag = opt_flag(min_version('5.0.0', package_name, catalog))
 
         opts.delete 'work' if min_version '5.0.0', package_name, catalog
         opts.delete 'home' if min_version '5.4.0', package_name, catalog
 
-        if min_version '6.0.0', package_name, catalog
-          [opt_flag, []]
-        else
-          [opt_flag, opts.map { |k, v| "-#{opt_flag}default.path.#{k}=${#{v}}" }.sort]
-        end
+        opt_args = if min_version '6.0.0', package_name, catalog
+                     []
+                   else
+                     opts.map do |k, v|
+                       "-#{opt_flag}default.path.#{k}=${#{v}}"
+                     end.sort
+                   end
+
+        opt_args << '--quiet' if min_version '5.0.0', package_name, catalog
+
+        [opt_flag, opt_args]
       end
 
       # Get the correct option flag depending on whether Elasticsearch is post

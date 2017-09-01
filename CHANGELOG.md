@@ -15,11 +15,22 @@ Minor:
 * Some REST-resource based providers (such as templates and pipelines) now validate parameters (such as numeric port numbers) more rigorously.
 
 ## x.x.x (Month Day, Year)
+## 5.4.3 (September 1, 2017)
+
+#### Features
+* Bumped puppet/java dependency to < 3.0.0
+
+#### Fixes
+* Append `--quiet` flag to >= 5.x versions of Elasticsearch systemd service units
+* Disable es_facts collection on SearchGuard nodes with TLS enabled
+
+## 5.4.2 (August 18, 2017)
 
 #### Features
 * Bumped puppet/yum dependency to < 3.0.0
 
 #### Fixes
+* Custom facts no longer attempt to connect to SSL/TLS secured ports.
 
 ## 5.4.1 (August 7, 2017)
 
