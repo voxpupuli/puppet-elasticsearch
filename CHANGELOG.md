@@ -1,8 +1,11 @@
-## x.x.x (Month Day, Year)
+## 5.4.3 (September 1, 2017)
 
 #### Features
+* Bumped puppet/java dependency to < 3.0.0
 
 #### Fixes
+* Append `--quiet` flag to >= 5.x versions of Elasticsearch systemd service units
+* Disable es_facts collection on SearchGuard nodes with TLS enabled
 
 ## 5.4.2 (August 18, 2017)
 
