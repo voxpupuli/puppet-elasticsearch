@@ -86,6 +86,7 @@ describe 'elasticsearch::instance', :type => 'define' do
           "elasticsearch/etc/init.d/elasticsearch.#{initscript}.erb",
         :init_defaults => {
           'CONF_DIR'       => '/etc/elasticsearch/es-instance',
+          'ES_PATH_CONF'   => '/etc/elasticsearch/es-instance',
           'DATA_DIR'       => '/var/lib/elasticsearch',
           'ES_JVM_OPTIONS' => '/etc/elasticsearch/es-instance/jvm.options',
           'LOG_DIR'        => '/var/log/elasticsearch/es-instance',

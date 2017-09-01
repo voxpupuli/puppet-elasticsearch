@@ -13,23 +13,35 @@ module EsFacts
     end
   end
 
+  def self.ssl?(config)
+    tls_keys = [
+      'xpack.security.http.ssl.enabled',
+      'shield.http.ssl',
+      'searchguard.ssl.http.enabled'
+    ]
+
+    tls_keys.any? { |key| config.key? key and config[key] == true }
+  end
+
   # Helper to determine the instance port number
   def self.get_port(config)
     enabled = 'http.enabled'
     port = 'http.port'
+
     if not config[enabled].nil? and config[enabled] == 'false'
       false
     elsif not config[port].nil?
-      config[port]
+      { config[port] => ssl?(config) }
     else
-      '9200'
+      { '9200' => ssl?(config) }
     end
   end
 
   # Entrypoint for custom fact populator
   def self.run
     dir_prefix = '/etc/elasticsearch'
-    ports = []
+    # Ports is a hash of port_number => ssl?
+    ports = {}
 
     # only when the directory exists we need to process the stuff
     return unless File.directory?(dir_prefix)
@@ -41,15 +53,17 @@ module EsFacts
         config_data = YAML.load_file("#{dir_prefix}/#{dir}/elasticsearch.yml")
         port = get_port(config_data)
         next unless port
-        ports << port
+        ports.merge! port
       end
     end
 
     begin
-      if ports.count > 0
+      if ports.keys.count > 0
 
-        add_fact('elasticsearch', 'ports', ports.join(','))
-        ports.each do |port|
+        add_fact('elasticsearch', 'ports', ports.keys.join(','))
+        ports.each_pair do |port, ssl|
+          next if ssl
+
           key_prefix = "elasticsearch_#{port}"
 
           uri = URI("http://localhost:#{port}")

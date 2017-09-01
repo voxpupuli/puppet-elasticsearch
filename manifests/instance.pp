@@ -437,6 +437,7 @@ define elasticsearch::instance (
         'CONF_DIR'       => $configdir,
         'ES_HOME'        => $elasticsearch::homedir,
         'ES_JVM_OPTIONS' => "${configdir}/jvm.options",
+        'ES_PATH_CONF'   => $configdir,
         'LOG_DIR'        => $logdir,
       },
       $init_defaults
