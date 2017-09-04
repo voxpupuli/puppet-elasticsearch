@@ -18,6 +18,8 @@ ExecStart=/usr/share/elasticsearch/bin/elasticsearch \
                                                 -p <%= @resource[:pid_dir] %>/elasticsearch-<%= @resource[:instance] %>.pid \
                                                 <%= opt_flags.join(' ') %>
 
+Restart=on-failure
+
 # StandardOutput is configured to redirect to journalctl since
 # some error messages may be logged in standard output before
 # elasticsearch logging system is initialized. Elasticsearch
