@@ -3,13 +3,16 @@ require 'rubygems'
 require 'puppetlabs_spec_helper/rake_tasks'
 require 'puppet_blacksmith/rake_tasks'
 require 'net/http'
+require 'nokogiri'
 require 'uri'
 require 'fileutils'
 require 'rspec/core/rake_task'
+require 'open-uri'
 require 'puppet-strings'
 require 'puppet-strings/tasks'
 require 'yaml'
 require 'json'
+require_relative 'spec/spec_utilities'
 
 # Workaround for certain rspec/beaker versions
 module TempFixForRakeLastComment
@@ -93,13 +96,14 @@ task :intake => %i[
   spec_puppet
 ]
 
-desc 'Run integration tests'
-RSpec::Core::RakeTask.new('beaker:integration') do |c|
-  c.pattern = 'spec/integration/integration*.rb'
+desc 'Run snapshot tests'
+RSpec::Core::RakeTask.new('beaker:snapshot') do |c|
+  c.pattern = 'spec/acceptance/snapshot.rb'
 end
-task 'beaker:integration' => [
+task 'beaker:snapshot' => [
   'artifacts:prep',
-  'artifacts:snapshot:fetch',
+  'artifacts:snapshot:deb',
+  'artifacts:snapshot:rpm',
   :spec_prep
 ]
 
@@ -122,41 +126,33 @@ namespace :artifacts do
   end
 
   namespace :snapshot do
-    snapshots = 'https://artifacts.elastic.co/downloads/elasticsearch'
-    artifacts = 'spec/fixtures/artifacts'
-    build = 'elasticsearch-6.0.0-beta2'
-    %w[deb rpm].each do |ext|
-      package = "#{build}.#{ext}"
-      local = "#{artifacts}/#{package}"
-      checksum = "#{artifacts}/#{package}.sha1"
-      link = "#{artifacts}/elasticsearch-snapshot.#{ext}"
+    dls = Nokogiri::HTML(open('https://www.elastic.co/downloads/elasticsearch'))
+    dls
+      .at_css('#preview-release-id')
+      .at_css('.downloads')
+      .xpath('li/a[contains(text(), "rpm") or contains(text(), "deb")]')
+      .each do |anchor|
+        filename = artifact(anchor.attr('href'))
+        link = artifact("elasticsearch-snapshot.#{anchor.text.split(' ').first.downcase}")
+        checksum = filename + '.sha1'
 
-      task :fetch => link
-
-      desc "Symlink #{ext} latest snapshot build."
-      file link => local do
-        unless File.exist?(link) and File.symlink?(link) \
-              and File.readlink(link) == package
-          File.delete link if File.exist? link
-          File.symlink package, link
+        task anchor.text.split(' ').first.downcase => link
+        file link => filename do
+          unless File.exist?(link) and File.symlink?(link) \
+              and File.readlink(link) == filename
+            File.delete link if File.exist? link
+            File.symlink File.basename(filename), link
+          end
         end
-      end
 
-      desc "Retrieve #{ext} snapshot build."
-      file local => checksum do
-        if File.exist?(local) and \
-           Digest::SHA1.hexdigest(File.read(local)) == File.read(checksum)
-          puts "Artifact #{package} already fetched and up-to-date"
-        else
-          fetch_archives "#{snapshots}/#{package}" => package
+        file filename => checksum do
+          get anchor.attr('href'), filename
         end
-      end
 
-      desc "Retrieve #{ext} checksums."
-      task checksum do
-        File.delete checksum if File.exist? checksum
-        fetch_archives "#{snapshots}/#{package}.sha1" => "#{package}.sha1"
-      end
+        task checksum do
+          File.delete checksum if File.exist? checksum
+          get "#{anchor.attr('href')}.sha1", checksum
+        end
     end
   end
 
@@ -180,21 +176,4 @@ def fetch_archives(archives)
     end
     get url, fp
   end
-end
-
-def get(url, file_path)
-  puts "Fetching #{url}..."
-  found = false
-  until found
-    uri = URI.parse(url)
-    conn = Net::HTTP.new(uri.host, uri.port)
-    conn.use_ssl = true
-    res = conn.get(uri.path)
-    if res.header['location']
-      url = res.header['location']
-    else
-      found = true
-    end
-  end
-  File.open(file_path, 'w+') { |fh| fh.write res.body }
 end
