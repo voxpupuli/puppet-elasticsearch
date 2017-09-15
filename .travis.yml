@@ -25,8 +25,6 @@ jobs:
      - PUPPET_VERSION='~> 5.0'
    - stage: acceptance
      env:
-     - TASK=beaker:integration
-   - env:
      - TASK=beaker:centos-6-x64
    - env:
      - TASK=beaker:centos-7-x64
@@ -46,6 +44,9 @@ jobs:
      - TASK=beaker:ubuntu-server-1404-x64
    - env:
      - TASK=beaker:ubuntu-server-1604-x64
+   - stage: snapshots
+     env:
+     - TASK=beaker:snapshot
 
 notifications:
   slack:
