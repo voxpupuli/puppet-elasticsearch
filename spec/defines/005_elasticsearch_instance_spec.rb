@@ -214,6 +214,7 @@ describe 'elasticsearch::instance', :type => 'define' do
           it { should contain_datacat_fragment('main_config_es-instance') }
           it { should contain_datacat('/etc/elasticsearch-config/es-instance/elasticsearch.yml') }
 
+          it { should contain_file('/etc/elasticsearch-config/es-instance/jvm.options') }
           it { should contain_file('/etc/elasticsearch-config/es-instance/logging.yml') }
           it { should contain_file('/etc/elasticsearch-config/es-instance/log4j2.properties') }
           it { should contain_file('/usr/share/elasticsearch/scripts') }
@@ -231,6 +232,7 @@ describe 'elasticsearch::instance', :type => 'define' do
           it { should contain_datacat_fragment('main_config_es-instance') }
           it { should contain_datacat('/etc/elasticsearch-config/es-instance/elasticsearch.yml') }
 
+          it { should contain_file('/etc/elasticsearch-config/es-instance/jvm.options') }
           it { should contain_file('/etc/elasticsearch-config/es-instance/logging.yml') }
           it { should contain_file('/etc/elasticsearch-config/es-instance/log4j2.properties') }
           it { should contain_file('/usr/share/elasticsearch/scripts') }

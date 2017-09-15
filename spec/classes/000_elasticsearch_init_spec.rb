@@ -309,6 +309,8 @@ describe 'elasticsearch', :type => 'class' do
           .with(:ensure => 'absent') }
         it { should contain_file('/etc/elasticsearch/elasticsearch.yml')
           .with(:ensure => 'absent') }
+        it { should contain_file('/etc/elasticsearch/jvm.options')
+            .with(:ensure => 'absent') }
         it { should contain_file('/etc/elasticsearch/logging.yml')
           .with(:ensure => 'absent') }
         it { should contain_file('/etc/elasticsearch/log4j2.properties')
