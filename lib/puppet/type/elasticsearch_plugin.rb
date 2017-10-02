@@ -12,6 +12,11 @@ Puppet::Type.newtype(:elasticsearch_plugin) do
     desc 'Name of the system Elasticsearch package.'
   end
 
+  newparam(:configdir) do
+    desc 'Path to the Elasticsearch configuration directory.'
+    defaultto '/etc/elasticsearch'
+  end
+
   newparam(:url) do
     desc 'Url of the package'
   end
@@ -32,5 +37,4 @@ Puppet::Type.newtype(:elasticsearch_plugin) do
   newparam(:plugin_path) do
     desc 'Override name of the directory created for the plugin'
   end
-
 end
