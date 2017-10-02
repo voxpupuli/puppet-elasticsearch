@@ -79,38 +79,6 @@ describe 'Integration testing' do
     end
   end
 
-  describe 'Plugin tests' do
-    describe 'Install xpack from official repository' do
-      it 'should run successfully' do
-        pp = <<-EOS
-          class { 'elasticsearch':
-            config => {
-              'cluster.name' => '#{test_settings['cluster_name']}',
-              'network.host' => '0.0.0.0',
-            },
-            java_install => true,
-            package_url => '#{test_settings['integration_package'][:file]}'
-          }
-
-          elasticsearch::instance { 'es-01':
-            config => {
-              'node.name' => 'elasticsearch001',
-              'http.port' => '#{test_settings['port_a']}'
-            }
-          }
-
-          elasticsearch::plugin { 'x-pack':
-            ensure => 'present',
-          }
-        EOS
-
-        # Run it twice and test for idempotency
-        apply_manifest(pp, :catch_failures => true)
-        expect(apply_manifest(pp, :catch_failures => true).exit_code).to be_zero
-      end
-    end
-  end
-
   describe 'Template tests', :template => true do
     describe 'Insert a template with valid json content' do
       it 'should run successfully' do
@@ -187,6 +155,38 @@ describe 'Integration testing' do
         EOS
 
         apply_manifest pp, :expect_failures => true
+      end
+    end
+  end
+
+  describe 'Plugin tests' do
+    describe 'Install xpack from official repository' do
+      it 'should run successfully' do
+        pp = <<-EOS
+          class { 'elasticsearch':
+            config => {
+              'cluster.name' => '#{test_settings['cluster_name']}',
+              'network.host' => '0.0.0.0',
+            },
+            java_install => true,
+            package_url => '#{test_settings['integration_package'][:file]}'
+          }
+
+          elasticsearch::instance { 'es-01':
+            config => {
+              'node.name' => 'elasticsearch001',
+              'http.port' => '#{test_settings['port_a']}'
+            }
+          }
+
+          elasticsearch::plugin { 'x-pack':
+            ensure => 'present',
+          }
+        EOS
+
+        # Run it twice and test for idempotency
+        apply_manifest(pp, :catch_failures => true)
+        expect(apply_manifest(pp, :catch_failures => true).exit_code).to be_zero
       end
     end
   end
