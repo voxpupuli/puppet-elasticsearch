@@ -16,6 +16,9 @@
 #   Whether the plugin will be installed or removed.
 #   Set to 'absent' to ensure a plugin is not installed
 #
+# @param configdir [String]
+#   Path to the Elasticsearch configuration directory.
+#
 # @param instances [Enum[String, Array]]
 #   Specify all the instances related
 #
@@ -51,6 +54,7 @@
 #
 define elasticsearch::plugin (
   $ensure         = 'present',
+  $configdir      = $elasticsearch::configdir,
   $instances      = undef,
   $module_dir     = undef,
   $proxy_host     = undef,
@@ -123,11 +127,13 @@ define elasticsearch::plugin (
   if ($url != undef) {
     validate_string($url)
   }
+  validate_absolute_path($configdir)
 
   $_module_dir = es_plugin_name($module_dir, $name)
 
   elasticsearch_plugin { $name:
     ensure                     => $ensure,
+    configdir                  => $configdir,
     elasticsearch_package_name => $elasticsearch::package_name,
     source                     => $file_source,
     url                        => $url,

@@ -1,3 +1,10 @@
+## x.x.x (Month, Day, Year)
+
+#### Features
+
+#### Fixes
+* Properly support plugin installation on 6.x series with explicit `ES_PATH_CONF`
+
 ## 5.4.3 (September 1, 2017)
 
 #### Features
