@@ -213,6 +213,8 @@ class Puppet::Provider::ElasticPlugin < Puppet::Provider
     }
     saved_vars = {}
 
+    env_vars['ES_PATH_CONF'] = @resource[:configdir] if @resource[:configdir]
+
     if !is2x? and @resource[:proxy]
       env_vars['ES_JAVA_OPTS'] += proxy_args(@resource[:proxy])
     end

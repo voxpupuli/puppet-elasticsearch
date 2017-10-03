@@ -112,6 +112,12 @@ shared_examples 'plugin provider' do |version|
           end
         end
       end
+
+      it 'sets up the configuration environment variable' do
+        expect(provider.with_environment do
+          ENV['ES_PATH_CONF']
+        end).to eq('/etc/elasticsearch')
+      end
     end # of setup
 
     describe 'plugin_name' do
