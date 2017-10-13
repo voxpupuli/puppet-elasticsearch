@@ -155,7 +155,7 @@ define elasticsearch::service::systemd(
         ensure            => $ensure,
         content           => file($init_template),
         defaults_location => $elasticsearch::defaults_location,
-        group             => $elasticsearch::elasticsearch_group,
+        group             => 'root',
         homedir           => $elasticsearch::params::homedir,
         instance          => $name,
         memlock           => $memlock,
@@ -163,7 +163,7 @@ define elasticsearch::service::systemd(
         nproc             => $nproc,
         package_name      => $elasticsearch::package_name,
         pid_dir           => $elasticsearch::pid_dir,
-        user              => $elasticsearch::elasticsearch_user,
+        user              => 'root',
         notify            => $notify_service,
       }
       -> file { "${elasticsearch::params::systemd_service_path}/elasticsearch-${name}.service":
