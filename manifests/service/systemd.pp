@@ -168,6 +168,8 @@ define elasticsearch::service::systemd(
       }
       -> file { "${elasticsearch::params::systemd_service_path}/elasticsearch-${name}.service":
         ensure => $ensure,
+        owner  => 'root',
+        group  => 'root',
         before => Service["elasticsearch-instance-${name}"],
         notify => $notify_service,
       }
