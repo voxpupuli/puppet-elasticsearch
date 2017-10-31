@@ -1,6 +1,7 @@
 ## x.x.x (Month, Day, Year)
 
 #### Features
+* Updated puppetlabs/java dependency to `< 5.0.0`
 
 #### Fixes
 * Properly support plugin installation on 6.x series with explicit `ES_PATH_CONF`
