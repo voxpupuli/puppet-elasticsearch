@@ -19,7 +19,7 @@
     },
     {
       "name": "puppetlabs/java",
-      "version_requirement": ">= 1.0.0 < 3.0.0"
+      "version_requirement": ">= 1.0.0 < 5.0.0"
     },
     {
       "name": "puppetlabs/stdlib",
