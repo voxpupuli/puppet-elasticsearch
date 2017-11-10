@@ -2,6 +2,25 @@ require 'spec_helper_acceptance'
 require 'json'
 
 describe 'Integration testing' do
+  let(:manifest) do
+    <<-MANIFEST
+      class { 'elasticsearch':
+        config => {
+          'cluster.name' => '#{test_settings['cluster_name']}',
+          'network.host' => '0.0.0.0',
+        },
+        package_url => '#{test_settings['integration_package'][:file]}'
+      }
+
+      elasticsearch::instance { 'es-01':
+        config => {
+          'node.name' => 'elasticsearch001',
+          'http.port' => '#{test_settings['port_a']}'
+        }
+      }
+    MANIFEST
+  end
+
   before :all do
     scp_to default,
            test_settings['integration_package'][:src],
@@ -20,26 +39,10 @@ describe 'Integration testing' do
 
   describe 'Setup Elasticsearch', :main => true do
     it 'should run successfully' do
-      pp = <<-EOS
-        class { 'elasticsearch':
-          config => {
-            'cluster.name' => '#{test_settings['cluster_name']}',
-            'network.host' => '0.0.0.0',
-          },
-          package_url => '#{test_settings['integration_package'][:file]}'
-        }
-
-        elasticsearch::instance { 'es-01':
-          config => {
-            'node.name' => 'elasticsearch001',
-            'http.port' => '#{test_settings['port_a']}'
-          }
-        }
-      EOS
-
       # Run it twice and test for idempotency
-      apply_manifest(pp, :catch_failures => true)
-      expect(apply_manifest(pp, :catch_failures => true).exit_code).to be_zero
+      apply_manifest(manifest, :catch_failures => true)
+      expect(apply_manifest(manifest, :catch_failures => true).exit_code)
+        .to be_zero
     end
 
     describe service(test_settings['service_name_a']) do
@@ -80,29 +83,16 @@ describe 'Integration testing' do
 
   describe 'Template tests', :template => true do
     describe 'Insert a template with valid json content' do
-      it 'should run successfully' do
-        pp = <<-EOS
-          class { 'elasticsearch':
-            config => {
-              'cluster.name' => '#{test_settings['cluster_name']}',
-              'network.host' => '0.0.0.0',
-            },
-            package_url => '#{test_settings['integration_package'][:file]}'
-          }
-
-          elasticsearch::instance { 'es-01':
-            config => {
-              'node.name' => 'elasticsearch001',
-              'http.port' => '#{test_settings['port_a']}'
-            }
-          }
-
+      let(:pp) do
+        manifest + <<~TEMPLATE
           elasticsearch::template { 'foo':
             ensure => 'present',
             source => 'puppet:///modules/another/good.json'
           }
-        EOS
+        TEMPLATE
+      end
 
+      it 'should run successfully' do
         # Run it twice and test for idempotency
         apply_manifest(pp, :catch_failures => true)
         expect(apply_manifest(pp, :catch_failures => true).exit_code).to be_zero
@@ -128,29 +118,16 @@ describe 'Integration testing' do
     end
 
     describe 'Insert a template with bad json content' do
-      it 'run should fail' do
-        pp = <<-EOS
-          class { 'elasticsearch':
-            config => {
-              'cluster.name' => '#{test_settings['cluster_name']}',
-              'network.host' => '0.0.0.0',
-            },
-            package_url => '#{test_settings['integration_package'][:file]}'
-          }
-
-          elasticsearch::instance { 'es-01':
-            config => {
-              'node.name' => 'elasticsearch001',
-              'http.port' => '#{test_settings['port_a']}'
-            }
-          }
-
+      let(:pp) do
+        manifest + <<~TEMPLATE
           elasticsearch::template { 'foo':
             ensure => 'present',
             source => 'puppet:///modules/another/bad.json'
           }
-        EOS
+        TEMPLATE
+      end
 
+      it 'run should fail' do
         apply_manifest pp, :expect_failures => true
       end
     end
