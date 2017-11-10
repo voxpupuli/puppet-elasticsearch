@@ -9,7 +9,9 @@ describe 'Integration testing' do
           'cluster.name' => '#{test_settings['cluster_name']}',
           'network.host' => '0.0.0.0',
         },
-        package_url => '#{test_settings['integration_package'][:file]}'
+        package_url => '#{test_settings['integration_package'][:file]}',
+        restart_on_change => true,
+        security_plugin => 'x-pack',
       }
 
       elasticsearch::instance { 'es-01':
@@ -129,6 +131,56 @@ describe 'Integration testing' do
 
       it 'run should fail' do
         apply_manifest pp, :expect_failures => true
+      end
+    end
+  end
+
+  describe 'security', :with_certificates => true do
+    describe 'installing x-pack' do
+      let(:pp) do
+        manifest + <<~XPACK
+          elasticsearch::plugin { 'x-pack' : instances => 'es-01' }
+
+          Elasticsearch::Instance['es-01'] {
+            ssl                  => true,
+            ca_certificate       => '#{@tls[:ca][:cert][:path]}',
+            certificate          => '#{@tls[:clients].first[:cert][:path]}',
+            private_key          => '#{@tls[:clients].first[:key][:path]}',
+            keystore_password    => '#{@keystore_password}',
+          }
+
+          elasticsearch::user { '#{test_settings['security_user']}':
+            password => '#{test_settings['security_password']}',
+            roles => ['superuser'],
+          }
+        XPACK
+      end
+
+      it 'should run successfully' do
+        # Run it twice and test for idempotency
+        apply_manifest(pp, :catch_failures => true)
+        expect(apply_manifest(pp, :catch_failures => true).exit_code).to be_zero
+      end
+
+      describe port(test_settings['port_a']) do
+        it 'open', :with_retries do
+          should be_listening
+        end
+      end
+
+      describe server :container do
+        describe http(
+          "https://localhost:#{test_settings['port_a']}/_cluster/health",
+          :basic_auth => [
+            test_settings['security_user'],
+            test_settings['security_password']
+          ],
+          :ssl => { :verify => false }
+        ) do
+          it 'permits TLS health API access', :with_retries do
+            expect(response.status).to eq(200)
+          end
+        end
       end
     end
   end
