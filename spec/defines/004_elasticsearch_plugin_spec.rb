@@ -46,6 +46,20 @@ describe 'elasticsearch::plugin', :type => 'define' do
 
         it { is_expected.to compile }
       end
+
+      context 'configdir' do
+        let(:params) do {
+          :instances => 'es-plugin'
+        } end
+
+        it { should contain_elasticsearch__plugin(
+          'mobz/elasticsearch-head/1.0.0'
+        ).with_configdir('/etc/elasticsearch') }
+
+        it { should contain_elasticsearch_plugin(
+          'mobz/elasticsearch-head/1.0.0'
+        ).with_configdir('/etc/elasticsearch') }
+      end
     end
 
     context 'with module_dir' do
