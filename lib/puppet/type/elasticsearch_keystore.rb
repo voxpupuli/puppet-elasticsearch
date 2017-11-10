@@ -9,6 +9,11 @@ Puppet::Type.newtype(:elasticsearch_keystore) do
     desc 'Elasticsearch instance this keystore belongs to.'
   end
 
+  newparam(:configdir) do
+    desc 'Path to the elasticsearch configuration directory (ES_PATH_CONF).'
+    defaultto '/etc/elasticsearch'
+  end
+
   newparam(:purge, :boolean => true, :parent => Puppet::Parameter::Boolean) do
     desc <<-EOS
       Whether to proactively remove settings that exist in the keystore but
