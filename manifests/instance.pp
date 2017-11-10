@@ -474,9 +474,10 @@ define elasticsearch::instance (
       }
 
       elasticsearch_keystore { $name :
-        purge    => $purge_secrets,
-        settings => merge($main_secrets, $instance_secrets),
-        notify   => $notify_service,
+        configdir => $elasticsearch::configdir,
+        purge     => $purge_secrets,
+        settings  => merge($main_secrets, $instance_secrets),
+        notify    => $notify_service,
       }
     }
 
