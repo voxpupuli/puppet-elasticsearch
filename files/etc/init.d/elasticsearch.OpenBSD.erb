@@ -3,7 +3,7 @@
 # This file is managed via PUPPET
 
 daemon="/usr/local/elasticsearch/bin/elasticsearch"
-daemon_flags="-d -<%= opt_flag %>default.path.conf=/etc/elasticsearch/<%= @resource[:instance] %> -p <%= @resource[:instance] %>/elasticsearch-<%= @resource[:instance] %>.pid"
+daemon_flags="-d -<%= opt_flag %>default.path.conf=/etc/elasticsearch/<%= @resource[:instance] %> -p <%= @resource[:pid_dir] %>/elasticsearch-<%= @resource[:instance] %>.pid"
 daemon_user="_elasticsearch"
 
 . /etc/rc.d/rc.subr
@@ -21,7 +21,7 @@ rc_start() {
 }
 
 rc_pre() {
-	install -d -o _elasticsearch /var/run/elasticsearch/
+	install -d -o _elasticsearch <%= @resource[:pid_dir] %>
 }
 
 rc_cmd $1

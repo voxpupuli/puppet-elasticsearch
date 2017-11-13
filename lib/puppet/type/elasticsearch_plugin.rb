@@ -9,6 +9,7 @@ Puppet::Type.newtype(:elasticsearch_plugin) do
 
   newparam(:configdir) do
     desc 'Path to the elasticsearch configuration directory (ES_PATH_CONF).'
+    defaultto '/etc/elasticsearch'
 
     validate do |value|
       raise Puppet::Error, 'path expected' if value.nil?

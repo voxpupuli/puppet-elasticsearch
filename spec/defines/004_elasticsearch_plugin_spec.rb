@@ -32,6 +32,7 @@ describe 'elasticsearch::plugin', :type => 'define' do
       context 'present' do
         let(:params) do {
           :ensure => 'present',
+          :configdir => '/etc/elasticsearch',
           :instances => 'es-plugin'
         } end
 
