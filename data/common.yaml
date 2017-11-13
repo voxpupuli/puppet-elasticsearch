@@ -47,7 +47,7 @@ elasticsearch::repo_key_source: https://artifacts.elastic.co/GPG-KEY-elasticsear
 elasticsearch::repo_priority: ~
 elasticsearch::repo_proxy: ~
 elasticsearch::repo_stage: false
-elasticsearch::repo_version: 5.x
+elasticsearch::repo_version: 6.x
 elasticsearch::restart_on_change: false
 elasticsearch::roles: {}
 elasticsearch::rolling_file_max_backup_index: 1
