@@ -14,6 +14,58 @@ Minor:
 * elasticsearch::plugin only accepts `present` or `absent`
 * Some REST-resource based providers (such as templates and pipelines) now validate parameters (such as numeric port numbers) more rigorously.
 
+The following migration guide is intended to help aid in upgrading this module.
+
+### Migration Guide
+
+#### Puppet 3.x No Longer Supported
+
+Puppet 4.5.0 is the new minimum required version of Puppet, which offers better safety, module metadata, and Ruby features.
+Migrating from Puppet 3 to Puppet 4 is beyond the scope of this guide, but the [official upgrade documentation](https://docs.puppet.com/upgrade/upgrade_steps.html) can help.
+As with any version or module upgrade, remember to restart any agents and master servers as needed.
+
+#### Package Pinning No Longer Supported
+
+Package pinning caused lots of unexpected behavior and usually caused more problems than solutions.
+If you still require package pinning, consider using the [`apt::pin` resource](https://forge.puppet.com/puppetlabs/apt#pin-a-specific-release) on Debian-based systems or a [`yum::versionlock` resource from the yum module](https://forge.puppet.com/puppet/yum#lock-a-package-with-the-versionlock-plugin) for Red Hat-based systems.
+
+#### Java Installation No Longer Supported
+
+Java installation was a very simple operation in this module which simply declared an instance of the `java` class but created conflicts for users who managed Java separately.
+If you still wish to configure Java alongside this module, consider using the [puppetlabs/java](https://forge.puppet.com/puppetlabs/java) module and installing Java with the following configuration:
+
+```puppet
+class { "java" : distribution => "jre" }
+```
+
+This will install a version of Java suitable for Elasticsearch in most situations.
+Note that in some older distributions, you may need to take extra steps to install a more recent version of Java that supports Elasticsearch.
+
+#### Removal of Python and Ruby Resources
+
+These resource types were simple wrappers around `package` resources with their providers set to `pip` and `gem`, respectively.
+Simply defining your own resources similarly to:
+
+```puppet
+package { 'elasticsearch' : provider => 'pip' }
+```
+
+Is sufficient.
+
+#### Automatic Package Repository Management
+
+This parameter is now set to `true` by default to automatically manage the Elastic repository.
+If you do not wish to configure the repository to automatically retrieve package updates, set this parameter to `false`:
+
+```puppet
+class { 'elasticsearch': manage_repo => false }
+```
+
+#### Removal of `hiera_merge` Parameters
+
+Updates to Hiera in later versions of Puppet mean that you can set merging behavior in end-user configuration.
+Read [the upstream Hiera documentation regarding `lookup_options`](https://puppet.com/docs/puppet/4.10/hiera_merging.html#configuring-merge-behavior-in-hiera-data) to learn how to configure Hiera appropriately for your needs.
+
 ## x.x.x (Month Day, Year)
 
 #### Features
