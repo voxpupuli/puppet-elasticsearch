@@ -66,7 +66,7 @@ class { 'elasticsearch': manage_repo => false }
 Updates to Hiera in later versions of Puppet mean that you can set merging behavior in end-user configuration.
 Read [the upstream Hiera documentation regarding `lookup_options`](https://puppet.com/docs/puppet/4.10/hiera_merging.html#configuring-merge-behavior-in-hiera-data) to learn how to configure Hiera appropriately for your needs.
 
-## x.x.x (Month Day, Year)
+## 5.5.0 (November 13, 2017)
 
 #### Features
 * Updated puppetlabs/java dependency to `< 5.0.0`
