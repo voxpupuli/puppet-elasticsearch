@@ -1,4 +1,4 @@
-## x.x.x (Month, Day, Year)
+## 5.5.0 (November 13, 2017)
 
 #### Features
 * Updated puppetlabs/java dependency to `< 5.0.0`
