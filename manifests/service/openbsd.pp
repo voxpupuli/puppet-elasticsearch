@@ -95,6 +95,7 @@ define elasticsearch::service::openbsd (
         ensure       => $ensure,
         content      => file($init_template),
         instance     => $name,
+        pid_dir      => $pid_dir,
         notify       => $notify_service,
         package_name => $elasticsearch::package_name,
       }

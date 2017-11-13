@@ -15,6 +15,15 @@ Minor:
 * Some REST-resource based providers (such as templates and pipelines) now validate parameters (such as numeric port numbers) more rigorously.
 
 ## x.x.x (Month Day, Year)
+
+#### Features
+* Updated puppetlabs/java dependency to `< 5.0.0`
+
+#### Fixes
+* Properly support plugin installation on 6.x series with explicit `ES_PATH_CONF`
+* set file ownership of systemd service file to root user/group
+* Fix propagating the pid_dir into OpenBSD rcscript
+
 ## 5.4.3 (September 1, 2017)
 
 #### Features
