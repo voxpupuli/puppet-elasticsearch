@@ -105,6 +105,10 @@ task :intake => %i[
 desc 'Run snapshot tests'
 RSpec::Core::RakeTask.new('beaker:snapshot') do |c|
   c.pattern = 'spec/acceptance/snapshot.rb'
+  if Rake::Task.task_defined? 'artifacts:snapshot:not_found'
+    puts 'No snapshot artifacts found, skipping snapshot tests.'
+    exit(0)
+  end
 end
 task 'beaker:snapshot' => [
   'artifacts:prep',
@@ -140,11 +144,17 @@ namespace :artifacts do
 
   namespace :snapshot do
     dls = Nokogiri::HTML(open('https://www.elastic.co/downloads/elasticsearch'))
-    dls
-      .at_css('#preview-release-id')
-      .at_css('.downloads')
-      .xpath('li/a[contains(text(), "rpm") or contains(text(), "deb")]')
-      .each do |anchor|
+    div = dls.at_css('#preview-release-id')
+
+    if div.nil?
+      puts 'No preview release available; skipping snapshot download'
+      %w[deb rpm].each { |ext| task ext }
+      task 'not_found'
+    else
+      div
+        .at_css('.downloads')
+        .xpath('li/a[contains(text(), "rpm") or contains(text(), "deb")]')
+        .each do |anchor|
         filename = artifact(anchor.attr('href'))
         link = artifact("elasticsearch-snapshot.#{anchor.text.split(' ').first.downcase}")
         checksum = filename + '.sha1'
@@ -166,6 +176,7 @@ namespace :artifacts do
           File.delete checksum if File.exist? checksum
           get "#{anchor.attr('href')}.sha1", checksum
         end
+      end
     end
   end
 
