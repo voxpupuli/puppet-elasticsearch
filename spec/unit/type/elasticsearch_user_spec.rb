@@ -4,7 +4,7 @@ describe Puppet::Type.type(:elasticsearch_user) do
   let(:resource_name) { 'elastic' }
 
   describe 'when validating attributes' do
-    %i[name password].each do |param|
+    %i[name configdir password].each do |param|
       it "should have a #{param} parameter" do
         expect(described_class.attrtype(param)).to eq(:param)
       end

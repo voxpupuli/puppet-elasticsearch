@@ -40,39 +40,44 @@ shared_examples 'security plugin logging' do |plugin, logfile, tests|
 end
 
 describe 'elasticsearch', :type => 'class' do
-  let(:facts) do
-    {
-      :operatingsystem => 'CentOS',
-      :kernel => 'Linux',
-      :osfamily => 'RedHat',
-      :operatingsystemmajrelease => '6',
-      :scenario => '',
-      :common => '',
-      :hostname => 'foo'
-    }
+  on_supported_os(
+    :hardwaremodels => ['x86_64'],
+    :supported_os => [
+      {
+        'operatingsystem' => 'CentOS',
+        'operatingsystemrelease' => ['6']
+      }
+    ]
+  ).each do |os, facts|
+    context "on #{os}" do
+      let(:facts) { facts.merge(
+        :scenario => '',
+        :common => ''
+      ) }
+
+      include_examples 'security plugin logging',
+                       'shield',
+                       'logging.yml',
+                       'content' => {
+                         :manifest => "one: two\nfoo: bar\n",
+                         :value => "one: two\nfoo: bar\n"
+                       },
+                       'source' => {
+                         :manifest => '/foo/bar.yml',
+                         :value => '/foo/bar.yml'
+                       }
+
+      include_examples 'security plugin logging',
+                       'x-pack',
+                       'log4j2.properties',
+                       'content' => {
+                         :manifest => "one = two\nfoo = bar\n",
+                         :value => "one = two\nfoo = bar\n"
+                       },
+                       'source' => {
+                         :manifest => '/foo/bar.properties',
+                         :value => '/foo/bar.properties'
+                       }
+    end
   end
-
-  include_examples 'security plugin logging',
-                   'shield',
-                   'logging.yml',
-                   'content' => {
-                     :manifest => "one: two\nfoo: bar\n",
-                     :value => "one: two\nfoo: bar\n"
-                   },
-                   'source' => {
-                     :manifest => '/foo/bar.yml',
-                     :value => '/foo/bar.yml'
-                   }
-
-  include_examples 'security plugin logging',
-                   'x-pack',
-                   'log4j2.properties',
-                   'content' => {
-                     :manifest => "one = two\nfoo = bar\n",
-                     :value => "one = two\nfoo = bar\n"
-                   },
-                   'source' => {
-                     :manifest => '/foo/bar.properties',
-                     :value => '/foo/bar.properties'
-                   }
 end

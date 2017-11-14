@@ -1,7 +1,6 @@
 require 'spec_helper_acceptance'
 require 'json'
 
-# rubocop:disable Metrics/BlockLength
 describe '::elasticsearch' do
   describe 'single instance' do
     describe 'manifest' do
@@ -11,9 +10,7 @@ describe '::elasticsearch' do
             'cluster.name' => '#{test_settings['cluster_name']}',
             'network.host' => '0.0.0.0',
           },
-          manage_repo => true,
           repo_version => '#{test_settings['repo_version']}',
-          java_install => true
         }
 
         elasticsearch::instance { 'es-01':
@@ -102,9 +99,7 @@ describe '::elasticsearch' do
             'cluster.name' => '#{test_settings['cluster_name']}',
             'network.host' => '0.0.0.0',
           },
-          manage_repo => true,
           repo_version => '#{test_settings['repo_version']}',
-          java_install => true
         }
 
         elasticsearch::instance { 'es-01':

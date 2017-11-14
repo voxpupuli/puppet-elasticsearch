@@ -8,7 +8,7 @@ fixtures:
       ref: 4.13.1
     java:
       repo: puppetlabs/java
-      ref: 1.6.0
+      ref: 2.0.0
     concat:
       repo: puppetlabs/concat
       ref: 2.2.1
@@ -18,9 +18,9 @@ fixtures:
     apt:
       repo: puppetlabs/apt
       ref: 2.2.2
-    yum:
-      repo: puppet/yum
-      ref: 0.10.0
+    tea:
+      repo: puppet/tea
+      ref: 0.2.0
     zypprepo:
       repo: darin/zypprepo
       ref: 1.0.2

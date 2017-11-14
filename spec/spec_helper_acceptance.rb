@@ -1,16 +1,18 @@
 require 'beaker-rspec'
-require 'beaker/puppet_install_helper'
 require 'securerandom'
 require 'thread'
 require 'infrataster/rspec'
 require 'rspec/retry'
-require_relative 'spec_helper_tls'
 
-# Default to 4.x AIO style if no type is specified.
-ENV['PUPPET_INSTALL_TYPE'] = 'agent' if ENV['PUPPET_INSTALL_TYPE'].nil?
+require_relative 'spec_helper_tls'
+require_relative 'spec_utilities'
 
 def test_settings
   RSpec.configuration.test_settings
+end
+
+def f
+  RSpec.configuration.fact
 end
 
 RSpec.configure do |c|
@@ -55,7 +57,7 @@ RSpec.configure do |c|
 
     create_remote_file hosts, @tls[:ca][:cert][:path], @tls[:ca][:cert][:pem]
     @tls[:clients].each do |node|
-      node.each do |type, params|
+      node.each do |_type, params|
         create_remote_file hosts, params[:path], params[:pem]
       end
     end
@@ -69,30 +71,52 @@ end
 files_dir = ENV['files_dir'] || './spec/fixtures/artifacts'
 RSpec.configuration.test_settings['files_dir'] = files_dir
 
+# General bootstrapping steps for each host
 hosts.each do |host|
-  # Fix the Puppet type
-  host[:type] = ENV['PUPPET_INSTALL_TYPE'].dup
-  host[:type] = 'aio' if host[:type] == 'agent'
-
-  configure_defaults_on hosts, 'foss' unless ENV['PUPPET_INSTALL_TYPE'] == 'agent'
+  # Set the host to 'aio' in order to adopt the puppet-agent style of
+  # installation, and configure paths/etc.
+  host[:type] = 'aio'
+  configure_defaults_on host, 'aio'
 
   # Install Puppet
   #
   # We spawn a thread to print dots periodically while installing puppet to
   # avoid inactivity timeouts in Travis. Don't judge me.
-  unless host[:skip_puppet_install]
-    progress = Thread.new { print '.' while sleep 5 }
-    run_puppet_install_helper
-    progress.exit
+  progress = Thread.new do
+    print 'Installing puppet..'
+    print '.' while sleep 5
   end
 
-  if fact('osfamily') == 'Suse'
+  case host.name
+  when /debian-9/, /opensuse/
+    # A few special cases need to be installed from gems (if the distro is
+    # very new and has no puppet repo package or has no upstream packages).
+    install_puppet_from_gem(
+      host,
+      version: Gem.loaded_specs['puppet'].version
+    )
+  else
+    # Otherwise, just use the all-in-one agent package.
+    install_puppet_agent_on(
+      host,
+      puppet_agent_version: to_agent_version(Gem.loaded_specs['puppet'].version)
+    )
+  end
+  # Quit the print thread and include some debugging.
+  progress.exit
+  puts "done. Installed version #{shell('puppet --version').output}"
+
+  RSpec.configure do |c|
+    c.add_setting :fact, :default => JSON.parse(fact('', '-j'))
+  end
+
+  if f['os']['family'] == 'Suse'
     install_package host,
                     '--force-resolution augeas-devel libxml2-devel ruby-devel'
     on host, 'gem install ruby-augeas --no-ri --no-rdoc'
   end
 
-  ext = case fact('osfamily')
+  ext = case f['os']['family']
         when 'Debian'
           'deb'
         else
@@ -131,11 +155,6 @@ hosts.each do |host|
 end
 
 RSpec.configure do |c|
-  # Uncomment for verbose test descriptions.
-  # Readable test descriptions
-  # c.formatter = :documentation
-
-  # Configure all nodes in nodeset
   c.before :suite do
     # Install module and dependencies
     install_dev_puppet_module :ignore_list => [
@@ -145,13 +164,13 @@ RSpec.configure do |c|
     hosts.each do |host|
       copy_hiera_data_to(host, 'spec/fixtures/hiera/hieradata/')
 
-      modules = %w(archive stdlib java datacat java_ks)
+      modules = %w[archive datacat java java_ks stdlib tea]
 
       dist_module = {
         'Debian' => ['apt'],
         'Suse'   => ['zypprepo'],
         'RedHat' => ['yum', 'concat']
-      }[fact('osfamily')]
+      }[f['os']['family']]
 
       modules += dist_module unless dist_module.nil?
 
@@ -162,7 +181,18 @@ RSpec.configure do |c|
       end
 
       on(host, 'mkdir -p etc/puppet/modules/another/files/')
+
+      # Apt doesn't update package caches sometimes, ensure we're caught up.
+      shell 'apt-get update' if f['os']['family'] == 'Debian'
     end
+
+    # Use the Java class once before the suite of tests
+    apply_manifest <<~EOS
+      class { "java" :
+        distribution => "jre",
+        #{'package => "java-1.8.0-openjdk-headless",' if f['os']['name'] == 'CentOS' and f['os']['release']['major'].to_i == 6}
+      }
+    EOS
   end
 
   c.after :suite do
@@ -180,9 +210,9 @@ end
 require_relative 'spec_acceptance_common'
 
 # Java 8 is only easy to manage on recent distros
-def is_5x_capable?
-  (fact('osfamily') == 'RedHat' and \
-        not (fact('operatingsystem') == 'OracleLinux' and \
-         fact('operatingsystemmajrelease') == '6')) or \
-    fact('lsbdistcodename') == 'xenial'
+def v5x_capable?
+  (f['os']['family'] == 'RedHat' and \
+    not (f['os']['name'] == 'OracleLinux' and \
+    f['os']['release']['major'] == '6')) or \
+    f.dig 'os', 'distro', 'codename' == 'xenial'
 end

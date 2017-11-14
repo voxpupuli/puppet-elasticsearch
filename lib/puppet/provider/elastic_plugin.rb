@@ -209,11 +209,10 @@ class Puppet::Provider::ElasticPlugin < Puppet::Provider
   # Run a command wrapped in necessary env vars
   def with_environment(&block)
     env_vars = {
-      'ES_JAVA_OPTS' => []
+      'ES_JAVA_OPTS' => [],
+      'ES_PATH_CONF' => @resource[:configdir]
     }
     saved_vars = {}
-
-    env_vars['ES_PATH_CONF'] = @resource[:configdir] if @resource[:configdir]
 
     if !is2x? and @resource[:proxy]
       env_vars['ES_JAVA_OPTS'] += proxy_args(@resource[:proxy])

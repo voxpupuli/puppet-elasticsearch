@@ -1,8 +1,7 @@
 # Contributing
 
 If you have a bugfix or new feature that you would like to contribute to this puppet module, please find or open an issue about it first.
-Talk about what you would like to do.
-It may be that somebody is already working on it, or that there are particular issues that you should know about before implementing the change.
+Talk about what you would like to do - it may be that somebody is already working on it, or that there are particular issues that you should know about before implementing the change.
 
 **Note**: If you have support-oriented questions that aren't a bugfix or feature request, please post your questions on the [discussion forums](https://discuss.elastic.co/c/elasticsearch).
 
@@ -27,10 +26,9 @@ There are a few testing prerequisites to meet:
 
 You can then install the necessary gems with:
 
-    make
+    bundle install
 
-This will install the requisite rubygems for testing into `.vendor`.
-Note that you can purge all testing fixtures/artifacts/gems with `make clean`.
+This will install the requisite rubygems for testin.
 
 * Docker.
   Note that Docker is used to run tests that require a Linux container/VM - if you only need to run simple rspec/doc tests, this shouldn't be necessary.
@@ -42,17 +40,18 @@ Note that you can purge all testing fixtures/artifacts/gems with `make clean`.
 
 Running through the tests on your own machine can get ahead of any problems others (or Jenkins) may run into.
 
-First, run the rspec tests and ensure it completes without errors with your changes. These are lightweight tests.
+First, run the intake tests and ensure it completes without errors with your changes.
+These are lightweight tests that verify syntax, style, and all other tests that do not require a container to run.
 
-    make test-rspec
+    bundle exec rake intake
 
 Next, run the more thorough acceptance tests.
-By default, the test will run against a Debian 8 Docker image - other available hosts can be found in `spec/acceptance/nodesets`.
-For example, to run the acceptance tests against CentOS 6, run the following:
+For example, to run the acceptance tests against CentOS 7, run the following:
 
-    DISTRO=centos-6-x64 make test-acceptance
+    bundle exec rake beaker:centos-7-x64
 
 The final output line will tell you which, if any, tests failed.
+Note that you can find all other container acceptance tests with the `bundle exec rake -T` command.
 
 ## Opening Pull Requests
 

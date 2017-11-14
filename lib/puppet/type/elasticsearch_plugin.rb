@@ -1,6 +1,5 @@
 Puppet::Type.newtype(:elasticsearch_plugin) do
-
-  @doc = "Plugin installation type"
+  @doc = 'Plugin installation type'
 
   ensurable
 
@@ -8,13 +7,17 @@ Puppet::Type.newtype(:elasticsearch_plugin) do
     desc 'An arbitrary name used as the identity of the resource.'
   end
 
-  newparam(:elasticsearch_package_name) do
-    desc 'Name of the system Elasticsearch package.'
+  newparam(:configdir) do
+    desc 'Path to the elasticsearch configuration directory (ES_PATH_CONF).'
+    defaultto '/etc/elasticsearch'
+
+    validate do |value|
+      raise Puppet::Error, 'path expected' if value.nil?
+    end
   end
 
-  newparam(:configdir) do
-    desc 'Path to the Elasticsearch configuration directory.'
-    defaultto '/etc/elasticsearch'
+  newparam(:elasticsearch_package_name) do
+    desc 'Name of the system Elasticsearch package.'
   end
 
   newparam(:url) do
