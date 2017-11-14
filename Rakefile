@@ -47,6 +47,12 @@ PuppetLint.configuration.ignore_paths = exclude_paths
 PuppetLint.configuration.log_format = \
   '%{path}:%{line}:%{check}:%{KIND}:%{message}'
 
+# Append custom cleanup tasks to :clean
+task :clean => %i[
+  artifacts:clean
+  spec_clean
+]
+
 desc 'remove outdated module fixtures'
 task :spec_prune do
   mods = 'spec/fixtures/modules'
@@ -112,6 +118,13 @@ RSpec::Core::RakeTask.new('beaker:acceptance') do |c|
   c.pattern = 'spec/acceptance/0*_spec.rb'
 end
 task 'beaker:acceptance' => [:spec_prep, 'artifacts:prep']
+
+desc 'Setup a dummy host only, do not run any tests'
+RSpec::Core::RakeTask.new('beaker:noop') do |c|
+  ENV['BEAKER_destroy'] = 'no'
+  c.pattern = 'spec/acceptance/*basic_spec.rb'
+end
+task 'beaker:noop' => [:spec_prep]
 
 namespace :artifacts do
   desc 'Fetch artifacts for tests'

@@ -1,14 +1,11 @@
 require 'spec_helper_acceptance'
 require 'json'
 
-# rubocop:disable Metrics/BlockLength
 describe 'elasticsearch shield', :with_certificates, :then_purge do
   # Template manifest
   let :base_manifest do
     <<-EOF
       class { 'elasticsearch' :
-        java_install => true,
-        manage_repo  => true,
         repo_version => '#{test_settings['repo_version']}',
         config => {
           'cluster.name' => '#{test_settings['cluster_name']}',

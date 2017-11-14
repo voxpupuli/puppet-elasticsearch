@@ -19,10 +19,6 @@ class elasticsearch::package {
     try_sleep => 10,
   }
 
-  #### Package management
-
-
-  # set params: in operation
   if $elasticsearch::ensure == 'present' {
 
     if $elasticsearch::restart_package_change {
@@ -107,13 +103,20 @@ class elasticsearch::package {
             $exec_environment = []
           }
 
-          exec { 'download_package_elasticsearch':
-            command     => "${elasticsearch::params::download_tool} ${pkg_source} ${elasticsearch::package_url} 2> /dev/null",
-            creates     => $pkg_source,
-            environment => $exec_environment,
-            timeout     => $elasticsearch::package_dl_timeout,
-            require     => File[$package_dir],
-            before      => $before,
+          case $elasticsearch::download_tool {
+            String: {
+              exec { 'download_package_elasticsearch':
+                command     => "${elasticsearch::download_tool} ${pkg_source} ${elasticsearch::package_url} 2> /dev/null",
+                creates     => $pkg_source,
+                environment => $exec_environment,
+                timeout     => $elasticsearch::package_dl_timeout,
+                require     => File[$package_dir],
+                before      => $before,
+              }
+            }
+            default: {
+              fail("no \$elasticsearch::download_tool defined for ${facts['os']['family']}")
+            }
           }
 
         }
@@ -149,7 +152,7 @@ class elasticsearch::package {
   # Package removal
   } else {
 
-    if ($::osfamily == 'Suse') {
+    if ($facts['os']['family'] == 'Suse') {
       Package {
         provider  => 'rpm',
       }

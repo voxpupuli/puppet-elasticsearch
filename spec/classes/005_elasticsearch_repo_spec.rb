@@ -25,19 +25,12 @@ describe 'elasticsearch', :type => 'class' do
         facts.merge('scenario' => '', 'common' => '')
       end
 
-      describe 'resource ordering' do
-        context 'Use anchor type for ordering' do
-          it { should contain_class('elasticsearch::repo')
-            .that_requires('Anchor[elasticsearch::begin]') }
-        end
+      context 'Use stage type for ordering' do
+        let(:params) { default_params.merge(:repo_stage => 'setup') }
 
-        context 'Use stage type for ordering' do
-          let(:params) { default_params.merge(:repo_stage => 'setup') }
-
-          it { should contain_stage('setup') }
-          it { should contain_class('elasticsearch::repo')
-            .with(:stage => 'setup')}
-        end
+        it { should contain_stage('setup') }
+        it { should contain_class('elasticsearch::repo')
+          .with(:stage => 'setup')}
       end
     end
   end
@@ -50,7 +43,7 @@ describe 'elasticsearch', :type => 'class' do
       end
 
       describe 'distro-specific package repositories' do
-        case facts[:osfamily]
+        case facts[:os]['family']
         when 'Debian'
           it { should contain_apt__source('elasticsearch')
             .with(
@@ -70,13 +63,6 @@ describe 'elasticsearch', :type => 'class' do
             'elasticsearch_zypper_refresh_elasticsearch'
           ) }
         end
-
-        case facts[:osfamily]
-        when 'RedHat', 'Linux'
-          it { should contain_yum__versionlock(
-            "0:elasticsearch-#{version}-1.noarch"
-          ) }
-        end
       end
 
       describe 'overriding the repo key ID' do
@@ -86,7 +72,7 @@ describe 'elasticsearch', :type => 'class' do
           )
         end
 
-        case facts[:osfamily]
+        case facts[:os]['family']
         when 'Debian'
           it { is_expected.to contain_apt__source('elasticsearch').with(
             :key => {
@@ -113,7 +99,7 @@ describe 'elasticsearch', :type => 'class' do
           )
         end
 
-        case facts[:osfamily]
+        case facts[:os]['family']
         when 'Debian'
           it { is_expected.to contain_apt__source('elasticsearch').with(
             :key => {
@@ -135,7 +121,7 @@ describe 'elasticsearch', :type => 'class' do
           default_params.merge(:repo_proxy => 'http://proxy.com:8080')
         end
 
-        case facts[:osfamily]
+        case facts[:os]['family']
         when 'RedHat'
           it { is_expected.to contain_yumrepo('elasticsearch')
             .with_proxy('http://proxy.com:8080') }
@@ -158,7 +144,7 @@ describe 'elasticsearch', :type => 'class' do
               end
             end
 
-            case facts[:osfamily]
+            case facts[:os]['family']
             when 'Debian'
               it { should contain_apt__source('elasticsearch')
                 .with_location("#{repo_base}/#{post_5? ? 'apt' : 'debian'}") }
@@ -168,13 +154,6 @@ describe 'elasticsearch', :type => 'class' do
             when 'Suse'
               it { should contain_zypprepo('elasticsearch')
                 .with_baseurl("#{repo_base}/#{post_5? ? 'yum' : 'centos'}") }
-            end
-
-            case facts[:osfamily]
-            when 'RedHat', 'Linux'
-              it { should contain_yum__versionlock(
-                "0:elasticsearch-#{version}-1.noarch"
-              ) }
             end
           end
         end
@@ -196,7 +175,7 @@ describe 'elasticsearch', :type => 'class' do
         context 'local repository' do
           let(:repo_baseurl) { 'https://repo.local/path' }
 
-          case facts[:osfamily]
+          case facts[:os]['family']
           when 'Debian'
             it { should contain_apt__source('elasticsearch')
               .with_location(repo_baseurl) }

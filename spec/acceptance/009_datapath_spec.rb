@@ -1,7 +1,6 @@
 require 'spec_helper_acceptance'
 require 'json'
 
-# rubocop:disable Metrics/BlockLength
 describe 'elasticsearch::datadir' do
   describe 'single data dir from class', :with_cleanup do
     describe 'manifest' do
@@ -11,9 +10,7 @@ describe 'elasticsearch::datadir' do
             'cluster.name' => '#{test_settings['cluster_name']}',
             'network.host' => '0.0.0.0',
           },
-          manage_repo => true,
           repo_version => '#{test_settings['repo_version']}',
-          java_install => true,
           datadir => '/var/lib/elasticsearch-data'
         }
 
@@ -70,9 +67,7 @@ describe 'elasticsearch::datadir' do
             'cluster.name' => '#{test_settings['cluster_name']}',
             'network.host' => '0.0.0.0',
           },
-          manage_repo => true,
           repo_version => '#{test_settings['repo_version']}',
-          java_install => true
         }
 
         elasticsearch::instance { 'es-01':
@@ -129,9 +124,7 @@ describe 'elasticsearch::datadir' do
             'cluster.name' => '#{test_settings['cluster_name']}',
             'network.host' => '0.0.0.0',
           },
-          manage_repo => true,
           repo_version => '#{test_settings['repo_version']}',
-          java_install => true,
           datadir => [
             '/var/lib/elasticsearch-01',
             '/var/lib/elasticsearch-02'
@@ -198,9 +191,7 @@ describe 'elasticsearch::datadir' do
             'cluster.name' => '#{test_settings['cluster_name']}',
             'network.host' => '0.0.0.0',
           },
-          manage_repo => true,
           repo_version => '#{test_settings['repo_version']}',
-          java_install => true
         }
 
         elasticsearch::instance { 'es-01':

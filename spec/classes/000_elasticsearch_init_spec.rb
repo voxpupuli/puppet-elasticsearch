@@ -7,14 +7,17 @@ describe 'elasticsearch', :type => 'class' do
 
   on_supported_os.each do |os, facts|
     context "on #{os}" do
-      case facts[:osfamily]
+      case facts[:os]['family']
       when 'Debian'
         let(:defaults_path) { '/etc/default' }
         let(:system_service_folder) { '/lib/systemd/system' }
         let(:pkg_ext) { 'deb' }
         let(:pkg_prov) { 'dpkg' }
         let(:version_add) { '' }
-        if facts[:lsbmajdistrelease] >= '8'
+        if (facts[:os]['name'] == 'Debian' and \
+           facts[:os]['release']['major'].to_i >= 8) or \
+           (facts[:os]['name'] == 'Ubuntu' and \
+           facts[:os]['release']['major'].to_i >= 15)
           let(:systemd_service_path) { '/lib/systemd/system' }
           test_pid = true
         else
@@ -26,7 +29,7 @@ describe 'elasticsearch', :type => 'class' do
         let(:pkg_ext) { 'rpm' }
         let(:pkg_prov) { 'rpm' }
         let(:version_add) { '-1' }
-        if facts[:operatingsystemmajrelease] >= '7'
+        if facts[:os]['release']['major'].to_i >= 7
           let(:systemd_service_path) { '/lib/systemd/system' }
           test_pid = true
         else
@@ -37,8 +40,8 @@ describe 'elasticsearch', :type => 'class' do
         let(:pkg_ext) { 'rpm' }
         let(:pkg_prov) { 'rpm' }
         let(:version_add) { '-1' }
-        if facts[:operatingsystem] == 'OpenSuSE' and
-           facts[:operatingsystemrelease].to_i <= 12
+        if facts[:os]['name'] == 'OpenSuSE' and
+           facts[:os]['release']['major'].to_i <= 12
           let(:systemd_service_path) { '/lib/systemd/system' }
         else
           let(:systemd_service_path) { '/usr/lib/systemd/system' }
@@ -58,8 +61,19 @@ describe 'elasticsearch', :type => 'class' do
 
       # Systemd-specific files
       if test_pid == true
-        it { should contain_exec('systemctl mask elasticsearch.service') }
+        it { should contain_service('elasticsearch').with(:enable => 'mask') }
         it { should contain_file('/usr/lib/tmpfiles.d/elasticsearch.conf') }
+      end
+
+      context 'java installation' do
+        let(:pre_condition) do
+          <<~EOS
+            include ::java
+          EOS
+        end
+
+        it { should contain_class('elasticsearch::config')
+          .that_requires('Class[java]') }
       end
 
       context 'package installation' do
@@ -73,15 +87,9 @@ describe 'elasticsearch', :type => 'class' do
 
             it { should contain_package('elasticsearch')
               .with(:ensure => "1.0#{version_add}") }
-
-            if facts[:osfamily] == 'RedHat'
-              it { should contain_yum__versionlock(
-                '0:elasticsearch-1.0-1.noarch'
-              ) }
-            end
           end
 
-          if facts[:osfamily] == 'RedHat'
+          if facts[:os]['family'] == 'RedHat'
             context 'Handle special CentOS/RHEL package versioning' do
               let(:params) do
                 default_params.merge(
@@ -91,9 +99,6 @@ describe 'elasticsearch', :type => 'class' do
 
               it { should contain_package('elasticsearch')
                 .with(:ensure => '1.1-2') }
-              it { should contain_yum__versionlock(
-                '0:elasticsearch-1.1-2.noarch'
-              ) }
             end
           end
         end
@@ -188,14 +193,10 @@ describe 'elasticsearch', :type => 'class' do
           )
         end
 
-        case facts[:osfamily]
+        case facts[:os]['family']
         when 'Suse'
           it { should contain_package('elasticsearch')
             .with(:ensure => 'absent') }
-        when 'RedHat'
-          it { should contain_exec(
-            'elasticsearch_purge_versionlock.list'
-          ) }
         else
           it { should contain_package('elasticsearch')
             .with(:ensure => 'purged') }
@@ -213,10 +214,9 @@ describe 'elasticsearch', :type => 'class' do
           )
         end
 
-        case facts[:osfamily]
+        case facts[:os]['family']
         when 'Debian'
-          it { should contain_class('elasticsearch::repo')
-            .that_requires('Anchor[elasticsearch::begin]') }
+          it { should contain_class('elasticsearch::repo') }
           it { should contain_class('apt') }
           it { should contain_apt__source('elasticsearch')
             .with(
@@ -225,8 +225,7 @@ describe 'elasticsearch', :type => 'class' do
               :location => 'http://packages.elastic.co/elasticsearch/1.0/debian'
             ) }
         when 'RedHat'
-          it { should contain_class('elasticsearch::repo')
-            .that_requires('Anchor[elasticsearch::begin]') }
+          it { should contain_class('elasticsearch::repo') }
           it { should contain_yumrepo('elasticsearch')
             .with(
               :baseurl => 'http://packages.elastic.co/elasticsearch/1.0/centos',
@@ -235,8 +234,7 @@ describe 'elasticsearch', :type => 'class' do
             ) }
           it { should contain_exec('elasticsearch_yumrepo_yum_clean') }
         when 'SuSE'
-          it { should contain_class('elasticsearch::repo')
-            .that_requires('Anchor[elasticsearch::begin]') }
+          it { should contain_class('elasticsearch::repo') }
           it { should contain_exec('elasticsearch_suse_import_gpg') }
           it { should contain_zypprepo('elasticsearch')
             .with(
@@ -244,39 +242,6 @@ describe 'elasticsearch', :type => 'class' do
           it { should contain_exec(
             'elasticsearch_zypper_refresh_elasticsearch'
           ) }
-        end
-      end
-
-      context 'package pinning' do
-        let :params do
-          default_params.merge(
-            :package_pin => true,
-            :version => '1.6.0'
-          )
-        end
-
-        it { should contain_class(
-          'elasticsearch::package::pin'
-        ).that_comes_before(
-          'Class[elasticsearch::package]'
-        ) }
-
-        case facts[:osfamily]
-        when 'Debian'
-          context 'is supported' do
-            it { should contain_apt__pin('elasticsearch')
-              .with(:packages => ['elasticsearch'], :version => '1.6.0') }
-          end
-        when 'RedHat'
-          context 'is supported' do
-            it { should contain_yum__versionlock(
-              '0:elasticsearch-1.6.0-1.noarch'
-            ) }
-          end
-        else
-          context 'is not supported' do
-            pending('unable to test for warnings yet. https://github.com/rodjek/rspec-puppet/issues/108')
-          end
         end
       end
 
@@ -289,7 +254,7 @@ describe 'elasticsearch', :type => 'class' do
           )
         end
 
-        case facts[:osfamily]
+        case facts[:os]['family']
         when 'Debian'
           context 'is supported' do
             it { should contain_apt__source('elasticsearch').with(
@@ -307,148 +272,148 @@ describe 'elasticsearch', :type => 'class' do
     end
   end
 
-  context 'catch-all tests for CentOS' do
-    let(:facts) do
+  on_supported_os(
+    :hardwaremodels => ['x86_64'],
+    :supported_os => [
       {
-        :operatingsystem => 'CentOS',
-        :kernel => 'Linux',
-        :osfamily => 'RedHat',
-        :operatingsystemmajrelease => '6',
-        :scenario => '',
-        :common => '',
-        :hostname => 'foo'
+        'operatingsystem' => 'CentOS',
+        'operatingsystemrelease' => ['7']
       }
-    end
+    ]
+  ).each do |os, facts|
+    context "on #{os}" do
+      let(:facts) { facts.merge(
+        :scenario => '',
+        :common => ''
+      ) }
 
-    context 'main class tests' do
-      # init.pp
-      it { should compile.with_all_deps }
-      it { should contain_class('elasticsearch') }
-      it { should contain_anchor('elasticsearch::begin') }
-      it { should contain_class('elasticsearch::params') }
-      it { should contain_class('elasticsearch::package')
-        .that_requires('Anchor[elasticsearch::begin]') }
-      it { should contain_class('elasticsearch::config')
-        .that_requires('Class[elasticsearch::package]') }
+      context 'main class tests' do
+        # init.pp
+        it { should compile.with_all_deps }
+        it { should contain_class('elasticsearch') }
+        it { should contain_class('elasticsearch::package') }
+        it { should contain_class('elasticsearch::config')
+          .that_requires('Class[elasticsearch::package]') }
 
-      # Base directories
-      it { should contain_file('/etc/elasticsearch') }
-      it { should contain_file('/usr/share/elasticsearch/templates_import') }
-      it { should contain_file('/usr/share/elasticsearch/scripts') }
-      it { should contain_file('/usr/share/elasticsearch') }
-      it { should contain_file('/usr/share/elasticsearch/lib') }
+        # Base directories
+        it { should contain_file('/etc/elasticsearch') }
+        it { should contain_file('/usr/share/elasticsearch/templates_import') }
+        it { should contain_file('/usr/share/elasticsearch/scripts') }
+        it { should contain_file('/usr/share/elasticsearch') }
+        it { should contain_file('/usr/share/elasticsearch/lib') }
 
-      it { should contain_exec('remove_plugin_dir') }
+        it { should contain_exec('remove_plugin_dir') }
 
-      # file removal from package
-      it { should contain_file('/etc/init.d/elasticsearch')
-        .with(:ensure => 'absent') }
-      it { should contain_file('/etc/elasticsearch/elasticsearch.yml')
-        .with(:ensure => 'absent') }
-      it { should contain_file('/etc/elasticsearch/jvm.options')
-        .with(:ensure => 'absent') }
-      it { should contain_file('/etc/elasticsearch/logging.yml')
-        .with(:ensure => 'absent') }
-      it { should contain_file('/etc/elasticsearch/log4j2.properties')
-        .with(:ensure => 'absent') }
-      it { should contain_file('/etc/elasticsearch/log4j2.properties')
-        .with(:ensure => 'absent') }
-    end
-
-    context 'package installation' do
-      context 'with default package' do
-        it { should contain_package('elasticsearch')
-          .with(:ensure => 'present') }
-        it { should_not contain_package('my-elasticsearch')
-          .with(:ensure => 'present') }
+        # file removal from package
+        it { should contain_file('/etc/init.d/elasticsearch')
+          .with(:ensure => 'absent') }
+        it { should contain_file('/etc/elasticsearch/elasticsearch.yml')
+          .with(:ensure => 'absent') }
+        it { should contain_file('/etc/elasticsearch/jvm.options')
+            .with(:ensure => 'absent') }
+        it { should contain_file('/etc/elasticsearch/logging.yml')
+          .with(:ensure => 'absent') }
+        it { should contain_file('/etc/elasticsearch/log4j2.properties')
+          .with(:ensure => 'absent') }
+        it { should contain_file('/etc/elasticsearch/log4j2.properties')
+          .with(:ensure => 'absent') }
       end
 
-      context 'with specified package name' do
-        let(:params) do
-          default_params.merge(
-            :package_name => 'my-elasticsearch'
-          )
+      context 'package installation' do
+        context 'with default package' do
+          it { should contain_package('elasticsearch')
+            .with(:ensure => 'present') }
+          it { should_not contain_package('my-elasticsearch')
+            .with(:ensure => 'present') }
         end
 
-        it { should contain_package('my-elasticsearch')
-          .with(:ensure => 'present') }
-        it { should_not contain_package('elasticsearch')
-          .with(:ensure => 'present') }
-      end
-
-      context 'with auto upgrade enabled' do
-        let(:params) do
-          default_params.merge(
-            :autoupgrade => true
-          )
-        end
-
-        it { should contain_package('elasticsearch')
-          .with(:ensure => 'latest') }
-      end
-    end
-
-    context 'when not supplying a repo_version' do
-      let(:params) do
-        default_params.merge(
-          :manage_repo => true
-        )
-      end
-
-      it { expect { should raise_error(
-        Puppet::Error, 'Please fill in a repository version at $repo_version'
-      ) } }
-    end
-
-    context 'running a a different user' do
-      let(:params) do
-        default_params.merge(
-          :elasticsearch_user => 'myesuser',
-          :elasticsearch_group => 'myesgroup'
-        )
-      end
-
-      it { should contain_file('/etc/elasticsearch')
-        .with(:owner => 'myesuser', :group => 'myesgroup') }
-      it { should contain_file('/var/log/elasticsearch')
-        .with(:owner => 'myesuser') }
-      it { should contain_file('/usr/share/elasticsearch')
-        .with(:owner => 'myesuser', :group => 'myesgroup') }
-      it { should contain_file('/var/lib/elasticsearch')
-        .with(:owner => 'myesuser', :group => 'myesgroup') }
-      it { should contain_file('/var/run/elasticsearch')
-        .with(:owner => 'myesuser') if facts[:osfamily] == 'RedHat' }
-    end
-
-    # This check helps catch dependency cycles.
-    context 'create_resource' do
-      # Helper for these tests
-      def singular(s)
-        s == 'indices' ? 'index' : s[0..-2]
-      end
-      {
-        'indices' => { 'test-index' => {} },
-        'instances' => { 'es-instance' => {} },
-        'pipelines' => { 'testpipeline' => { 'content' => {} } },
-        'plugins' => { 'head' => {} },
-        'roles' => { 'elastic_role' => {} },
-        'scripts' => {
-          'foo' => { 'source' => 'puppet:///path/to/foo.groovy' }
-        },
-        'templates' => { 'foo' => { 'content' => {} } },
-        'users' => { 'elastic' => { 'password' => 'foobar' } }
-      }.each_pair do |deftype, params|
-        describe deftype do
+        context 'with specified package name' do
           let(:params) do
             default_params.merge(
-              deftype => params,
-              :security_plugin => 'x-pack'
+              :package_name => 'my-elasticsearch'
             )
           end
-          it { should compile }
-          it { should send(
-            "contain_elasticsearch__#{singular(deftype)}", params.keys.first
-          ) }
+
+          it { should contain_package('my-elasticsearch')
+            .with(:ensure => 'present') }
+          it { should_not contain_package('elasticsearch')
+            .with(:ensure => 'present') }
+        end
+
+        context 'with auto upgrade enabled' do
+          let(:params) do
+            default_params.merge(
+              :autoupgrade => true
+            )
+          end
+
+          it { should contain_package('elasticsearch')
+            .with(:ensure => 'latest') }
+        end
+      end
+
+      context 'when not supplying a repo_version' do
+        let(:params) do
+          default_params.merge(
+            :manage_repo => true
+          )
+        end
+
+        it { expect { should raise_error(
+          Puppet::Error, 'Please fill in a repository version at $repo_version'
+        ) } }
+      end
+
+      context 'running a a different user' do
+        let(:params) do
+          default_params.merge(
+            :elasticsearch_user => 'myesuser',
+            :elasticsearch_group => 'myesgroup'
+          )
+        end
+
+        it { should contain_file('/etc/elasticsearch')
+          .with(:owner => 'myesuser', :group => 'myesgroup') }
+        it { should contain_file('/var/log/elasticsearch')
+          .with(:owner => 'myesuser') }
+        it { should contain_file('/usr/share/elasticsearch')
+          .with(:owner => 'myesuser', :group => 'myesgroup') }
+        it { should contain_file('/var/lib/elasticsearch')
+          .with(:owner => 'myesuser', :group => 'myesgroup') }
+        it { should contain_file('/var/run/elasticsearch')
+          .with(:owner => 'myesuser') if facts[:os]['family'] == 'RedHat' }
+      end
+
+      # This check helps catch dependency cycles.
+      context 'create_resource' do
+        # Helper for these tests
+        def singular(s)
+          s == 'indices' ? 'index' : s[0..-2]
+        end
+        {
+          'indices' => { 'test-index' => {} },
+          'instances' => { 'es-instance' => {} },
+          'pipelines' => { 'testpipeline' => { 'content' => {} } },
+          'plugins' => { 'head' => {} },
+          'roles' => { 'elastic_role' => {} },
+          'scripts' => {
+            'foo' => { 'source' => 'puppet:///path/to/foo.groovy' }
+          },
+          'templates' => { 'foo' => { 'content' => {} } },
+          'users' => { 'elastic' => { 'password' => 'foobar' } }
+        }.each_pair do |deftype, params|
+          describe deftype do
+            let(:params) do
+              default_params.merge(
+                deftype => params,
+                :security_plugin => 'x-pack'
+              )
+            end
+            it { should compile }
+            it { should send(
+              "contain_elasticsearch__#{singular(deftype)}", params.keys.first
+            ) }
+          end
         end
       end
     end

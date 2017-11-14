@@ -2,16 +2,13 @@ require 'spec_helper_acceptance'
 require 'json'
 
 describe 'elasticsearch x-pack security',
-         :if => is_5x_capable?,
+         :if => v5x_capable?,
          :with_certificates => true,
          :then_purge => true do
   # Template manifest
   let :base_manifest do
     <<-EOF
       class { 'elasticsearch' :
-        java_install => true,
-        #{fact('operatingsystemmajrelease') == '6' ? "java_package => 'java-1.8.0-openjdk-headless'," : ''}
-        manage_repo  => true,
         repo_version => '#{test_settings['repo_version5x']}',
         config => {
           'cluster.name' => '#{test_settings['cluster_name']}',

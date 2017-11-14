@@ -1,7 +1,6 @@
 require 'spec_helper_acceptance'
 
-describe 'elasticsearch 5.x', :if => is_5x_capable? do
-  # On earlier versions of CentOS/RedHat 7, manually get JRE 1.8
+describe 'elasticsearch 5.x', :if => v5x_capable? do
   describe 'basic installation', :with_cleanup do
     describe 'manifest' do
       pp = <<-EOS
@@ -11,10 +10,7 @@ describe 'elasticsearch 5.x', :if => is_5x_capable? do
             'cluster.name' => '#{test_settings['cluster_name']}',
             'network.host' => '0.0.0.0',
           },
-          manage_repo => true,
           repo_version => '#{test_settings['repo_version5x']}',
-          java_install => true,
-          #{fact('operatingsystemmajrelease') == '6' ? "java_package => 'java-1.8.0-openjdk-headless'," : ''}
           restart_on_change => true,
         }
 

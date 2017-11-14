@@ -6,11 +6,11 @@ describe 'elasticsearch::service::systemd', :type => 'define' do
     :supported_os => [
       {
         'operatingsystem' => 'OpenSuSE',
-        'operatingsystemrelease' => %w[12 13]
+        'operatingsystemrelease' => %w[42]
       },
       {
         'operatingsystem' => 'CentOS',
-        'operatingsystemrelease' => ['7']
+        'operatingsystemrelease' => %w[7]
       }
     ]
   ).each do |os, facts|
@@ -29,8 +29,8 @@ describe 'elasticsearch::service::systemd', :type => 'define' do
         EOS
       end
 
-      if facts[:operatingsystem] == 'OpenSuSE' and
-        facts[:operatingsystemrelease].to_i >= 13
+      if facts[:os]['name'] == 'OpenSuSE' and
+        facts[:os]['release']['major'].to_i >= 13
         let(:systemd_service_path) { '/usr/lib/systemd/system' }
       else
         let(:systemd_service_path) { '/lib/systemd/system' }

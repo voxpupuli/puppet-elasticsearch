@@ -47,16 +47,16 @@ class elasticsearch::config {
         group   => '0',
         owner   => 'root',
         recurse => true;
-      $elasticsearch::params::homedir:
+      $elasticsearch::homedir:
         ensure => 'directory',
         group  => $elasticsearch::elasticsearch_group,
         owner  => $elasticsearch::elasticsearch_user;
-      "${elasticsearch::params::homedir}/templates_import":
+      "${elasticsearch::homedir}/templates_import":
         ensure => 'directory',
         group  => $elasticsearch::elasticsearch_group,
         owner  => $elasticsearch::elasticsearch_user,
         mode   => '0755';
-      "${elasticsearch::params::homedir}/scripts":
+      "${elasticsearch::homedir}/scripts":
         ensure => 'directory',
         group  => $elasticsearch::elasticsearch_group,
         owner  => $elasticsearch::elasticsearch_user,
@@ -73,18 +73,18 @@ class elasticsearch::config {
         ensure => 'absent';
     }
 
-    if $elasticsearch::params::pid_dir {
-      file { $elasticsearch::params::pid_dir:
+    if $elasticsearch::pid_dir {
+      file { $elasticsearch::pid_dir:
         ensure  => 'directory',
         group   => undef,
         owner   => $elasticsearch::elasticsearch_user,
         recurse => true,
       }
 
-      if ($elasticsearch::service_providers == 'systemd') {
+      if ($elasticsearch::service_provider == 'systemd') {
         $group = $elasticsearch::elasticsearch_group
         $user = $elasticsearch::elasticsearch_user
-        $pid_dir = $elasticsearch::params::pid_dir
+        $pid_dir = $elasticsearch::pid_dir
 
         file { '/usr/lib/tmpfiles.d/elasticsearch.conf':
           ensure  => 'file',
@@ -95,16 +95,16 @@ class elasticsearch::config {
       }
     }
 
-    if ($elasticsearch::service_providers == 'systemd') {
+    if ($elasticsearch::service_provider == 'systemd') {
       # Mask default unit (from package)
-      exec { 'systemctl mask elasticsearch.service':
-        unless => 'test `systemctl is-enabled elasticsearch.service` = masked',
+      service { 'elasticsearch' :
+        enable => 'mask',
       }
     }
 
-    if $elasticsearch::params::defaults_location {
-      augeas { "${elasticsearch::params::defaults_location}/elasticsearch":
-        incl    => "${elasticsearch::params::defaults_location}/elasticsearch",
+    if $elasticsearch::defaults_location {
+      augeas { "${elasticsearch::defaults_location}/elasticsearch":
+        incl    => "${elasticsearch::defaults_location}/elasticsearch",
         lens    => 'Shellvars.lns',
         changes => [
           'rm CONF_FILE',

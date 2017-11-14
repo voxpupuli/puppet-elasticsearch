@@ -1,13 +1,13 @@
 # Manage shield/x-pack roles.
 #
-# @param ensure [String]
+# @param ensure
 #   Whether the role should be present or not.
 #   Set to 'absent' to ensure a role is not present.
 #
-# @param mappings [Array]
+# @param mappings
 #   A list of optional mappings defined for this role.
 #
-# @param privileges [Hash]
+# @param privileges
 #   A hash of permissions defined for the role. Valid privilege settings can
 #   be found in the Shield/x-pack documentation.
 #
@@ -27,16 +27,13 @@
 # @author Tyler Langlois <tyler.langlois@elastic.co>
 #
 define elasticsearch::role (
-  $ensure     = 'present',
-  $mappings   = [],
-  $privileges = {},
+  Enum['absent', 'present'] $ensure     = 'present',
+  Array                     $mappings   = [],
+  Hash                      $privileges = {},
 ) {
-  validate_string($ensure)
-  validate_array($mappings)
-  validate_hash($privileges)
   validate_slength($name, 30, 1)
-  if $elasticsearch::security_plugin == undef or ! ($elasticsearch::security_plugin in ['shield', 'x-pack']) {
-    fail("\"${elasticsearch::security_plugin}\" is not a valid security_plugin parameter value")
+  if $elasticsearch::security_plugin == undef {
+    fail("\"${elasticsearch::security_plugin}\" required")
   }
 
   if empty($privileges) or $ensure == 'absent' {
