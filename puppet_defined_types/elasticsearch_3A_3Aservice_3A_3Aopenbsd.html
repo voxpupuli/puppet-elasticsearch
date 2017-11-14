@@ -91,7 +91,7 @@ processes in general and is used in a platform-independent way. E.g.
         <span class='name'>ensure</span>
       
       
-        <span class='type'>(<tt>String</tt>)</span>
+        <span class='type'>(<tt>Enum['absent', 'present']</tt>)</span>
       
       
         <em class="default">(defaults to: <tt>$elasticsearch::ensure</tt>)</em>
@@ -114,7 +114,7 @@ used with care.</p>
         <span class='name'>init_template</span>
       
       
-        <span class='type'>(<tt>String</tt>)</span>
+        <span class='type'>(<tt>Optional[String]</tt>)</span>
       
       
         <em class="default">(defaults to: <tt>$elasticsearch::init_template</tt>)</em>
@@ -132,10 +132,10 @@ used with care.</p>
         <span class='name'>pid_dir</span>
       
       
-        <span class='type'>(<tt>String</tt>)</span>
+        <span class='type'>(<tt>Optional[String]</tt>)</span>
       
       
-        <em class="default">(defaults to: <tt>$elasticsearch::params::pid_dir</tt>)</em>
+        <em class="default">(defaults to: <tt>$elasticsearch::pid_dir</tt>)</em>
       
       
         &mdash;
@@ -150,7 +150,7 @@ used with care.</p>
         <span class='name'>service_flags</span>
       
       
-        <span class='type'>(<tt>String</tt>)</span>
+        <span class='type'>(<tt>Optional[String]</tt>)</span>
       
       
         <em class="default">(defaults to: <tt>undef</tt>)</em>
@@ -168,7 +168,7 @@ used with care.</p>
         <span class='name'>status</span>
       
       
-        <span class='type'>(<tt>String</tt>)</span>
+        <span class='type'>(<tt>Elasticsearch::Status</tt>)</span>
       
       
         <em class="default">(defaults to: <tt>$elasticsearch::status</tt>)</em>
@@ -323,35 +323,21 @@ href="mailto:tyler.langlois@elastic.co">tyler.langlois@elastic.co</a></p>
 129
 130
 131
-132
-133
-134
-135
-136
-137
-138
-139
-140
-141
-142
-143
-144
-145</pre>
+132</pre>
       </td>
       <td>
         <pre class="code"><span class="info file"># File 'manifests/service/openbsd.pp', line 39</span>
 
-define elasticsearch::service::openbsd(
-  $ensure             = $elasticsearch::ensure,
-  $init_template      = $elasticsearch::init_template,
-  $pid_dir            = $elasticsearch::params::pid_dir,
-  $service_flags      = undef,
-  $status             = $elasticsearch::status,
+define elasticsearch::service::openbsd (
+  Enum[&#39;absent&#39;, &#39;present&#39;] $ensure        = $elasticsearch::ensure,
+  Optional[String]          $init_template = $elasticsearch::init_template,
+  Optional[String]          $pid_dir       = $elasticsearch::pid_dir,
+  Optional[String]          $service_flags = undef,
+  Elasticsearch::Status     $status        = $elasticsearch::status,
 ) {
 
   #### Service management
 
-  # set params: in operation
   if $ensure == &#39;present&#39; {
 
     case $status {
@@ -376,15 +362,8 @@ define elasticsearch::service::openbsd(
         $service_ensure = undef
         $service_enable = false
       }
-      # unknown status
-      # note: don&#39;t forget to update the parameter check in init.pp if you
-      #       add a new or change an existing status.
-      default: {
-        fail(&quot;\&quot;${status}\&quot; is an unknown service status value&quot;)
-      }
+      default: { }
     }
-
-  # set params: removal
   } else {
 
     # make sure the service is stopped and disabled (the removal itself will be
@@ -436,17 +415,12 @@ define elasticsearch::service::openbsd(
 
     # action
     service { &quot;elasticsearch-instance-${name}&quot;:
-      ensure     =&gt; $service_ensure,
-      enable     =&gt; $service_enable,
-      name       =&gt; &quot;elasticsearch_${name}&quot;,
-      flags      =&gt; $service_flags,
-      hasstatus  =&gt; $elasticsearch::params::service_hasstatus,
-      hasrestart =&gt; $elasticsearch::params::service_hasrestart,
-      pattern    =&gt; $elasticsearch::params::service_pattern,
+      ensure =&gt; $service_ensure,
+      enable =&gt; $service_enable,
+      name   =&gt; &quot;elasticsearch_${name}&quot;,
+      flags  =&gt; $service_flags,
     }
-
   }
-
 }</pre>
       </td>
     </tr>

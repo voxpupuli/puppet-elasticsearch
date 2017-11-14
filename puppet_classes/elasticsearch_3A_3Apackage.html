@@ -301,7 +301,10 @@ href="mailto:tyler.langlois@elastic.co">tyler.langlois@elastic.co</a></p>
 176
 177
 178
-179</pre>
+179
+180
+181
+182</pre>
       </td>
       <td>
         <pre class="code"><span class="info file"># File 'manifests/package.pp', line 13</span>
@@ -315,10 +318,6 @@ class elasticsearch::package {
     try_sleep =&gt; 10,
   }
 
-  #### Package management
-
-
-  # set params: in operation
   if $elasticsearch::ensure == &#39;present&#39; {
 
     if $elasticsearch::restart_package_change {
@@ -403,13 +402,20 @@ class elasticsearch::package {
             $exec_environment = []
           }
 
-          exec { &#39;download_package_elasticsearch&#39;:
-            command     =&gt; &quot;${elasticsearch::params::download_tool} ${pkg_source} ${elasticsearch::package_url} 2&gt; /dev/null&quot;,
-            creates     =&gt; $pkg_source,
-            environment =&gt; $exec_environment,
-            timeout     =&gt; $elasticsearch::package_dl_timeout,
-            require     =&gt; File[$package_dir],
-            before      =&gt; $before,
+          case $elasticsearch::download_tool {
+            String: {
+              exec { &#39;download_package_elasticsearch&#39;:
+                command     =&gt; &quot;${elasticsearch::download_tool} ${pkg_source} ${elasticsearch::package_url} 2&gt; /dev/null&quot;,
+                creates     =&gt; $pkg_source,
+                environment =&gt; $exec_environment,
+                timeout     =&gt; $elasticsearch::package_dl_timeout,
+                require     =&gt; File[$package_dir],
+                before      =&gt; $before,
+              }
+            }
+            default: {
+              fail(&quot;no \$elasticsearch::download_tool defined for ${facts[&#39;os&#39;][&#39;family&#39;]}&quot;)
+            }
           }
 
         }
@@ -445,7 +451,7 @@ class elasticsearch::package {
   # Package removal
   } else {
 
-    if ($::osfamily == &#39;Suse&#39;) {
+    if ($facts[&#39;os&#39;][&#39;family&#39;] == &#39;Suse&#39;) {
       Package {
         provider  =&gt; &#39;rpm&#39;,
       }

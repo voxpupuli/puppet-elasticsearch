@@ -108,7 +108,7 @@
         <span class='name'>ensure</span>
       
       
-        <span class='type'>(<tt>String</tt>)</span>
+        <span class='type'>(<tt>Enum['absent', 'present']</tt>)</span>
       
       
         <em class="default">(defaults to: <tt>&#39;present&#39;</tt>)</em>
@@ -217,25 +217,19 @@ href="mailto:tyler.langlois@elastic.co">tyler.langlois@elastic.co</a></p>
 57
 58
 59
-60
-61
-62
-63</pre>
+60</pre>
       </td>
       <td>
         <pre class="code"><span class="info file"># File 'manifests/role.pp', line 29</span>
 
 define elasticsearch::role (
-  $ensure     = &#39;present&#39;,
-  $mappings   = [],
-  $privileges = {},
+  Enum[&#39;absent&#39;, &#39;present&#39;] $ensure     = &#39;present&#39;,
+  Array                     $mappings   = [],
+  Hash                      $privileges = {},
 ) {
-  validate_string($ensure)
-  validate_array($mappings)
-  validate_hash($privileges)
   validate_slength($name, 30, 1)
-  if $elasticsearch::security_plugin == undef or ! ($elasticsearch::security_plugin in [&#39;shield&#39;, &#39;x-pack&#39;]) {
-    fail(&quot;\&quot;${elasticsearch::security_plugin}\&quot; is not a valid security_plugin parameter value&quot;)
+  if $elasticsearch::security_plugin == undef {
+    fail(&quot;\&quot;${elasticsearch::security_plugin}\&quot; required&quot;)
   }
 
   if empty($privileges) or $ensure == &#39;absent&#39; {

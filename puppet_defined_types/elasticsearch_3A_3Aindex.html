@@ -86,7 +86,7 @@
         <span class='name'>ensure</span>
       
       
-        <span class='type'>(<tt>String</tt>)</span>
+        <span class='type'>(<tt>Enum['absent', 'present']</tt>)</span>
       
       
         <em class="default">(defaults to: <tt>&#39;present&#39;</tt>)</em>
@@ -105,7 +105,7 @@ cluster.</p>
         <span class='name'>api_basic_auth_password</span>
       
       
-        <span class='type'>(<tt>String</tt>)</span>
+        <span class='type'>(<tt>Optional[String]</tt>)</span>
       
       
         <em class="default">(defaults to: <tt>$elasticsearch::api_basic_auth_password</tt>)</em>
@@ -124,7 +124,7 @@ API.</p>
         <span class='name'>api_basic_auth_username</span>
       
       
-        <span class='type'>(<tt>String</tt>)</span>
+        <span class='type'>(<tt>Optional[String]</tt>)</span>
       
       
         <em class="default">(defaults to: <tt>$elasticsearch::api_basic_auth_username</tt>)</em>
@@ -143,7 +143,7 @@ API.</p>
         <span class='name'>api_ca_file</span>
       
       
-        <span class='type'>(<tt>String</tt>)</span>
+        <span class='type'>(<tt>Optional[Tea::Absolutepath]</tt>)</span>
       
       
         <em class="default">(defaults to: <tt>$elasticsearch::api_ca_file</tt>)</em>
@@ -162,7 +162,7 @@ communicating with the Elasticsearch API over HTTPS.</p>
         <span class='name'>api_ca_path</span>
       
       
-        <span class='type'>(<tt>String</tt>)</span>
+        <span class='type'>(<tt>Optional[Tea::Absolutepath]</tt>)</span>
       
       
         <em class="default">(defaults to: <tt>$elasticsearch::api_ca_path</tt>)</em>
@@ -199,7 +199,7 @@ certs when communicating with the Elasticsearch API over HTTPS.</p>
         <span class='name'>api_port</span>
       
       
-        <span class='type'>(<tt>Integer</tt>)</span>
+        <span class='type'>(<tt>Tea::Port</tt>)</span>
       
       
         <em class="default">(defaults to: <tt>$elasticsearch::api_port</tt>)</em>
@@ -217,7 +217,7 @@ certs when communicating with the Elasticsearch API over HTTPS.</p>
         <span class='name'>api_protocol</span>
       
       
-        <span class='type'>(<tt>String</tt>)</span>
+        <span class='type'>(<tt>Enum['http', 'https']</tt>)</span>
       
       
         <em class="default">(defaults to: <tt>$elasticsearch::api_protocol</tt>)</em>
@@ -357,66 +357,24 @@ href="mailto:tyler.langlois@elastic.co">tyler.langlois@elastic.co</a></p>
 74
 75
 76
-77
-78
-79
-80
-81
-82
-83
-84
-85
-86
-87
-88
-89
-90
-91
-92
-93
-94
-95
-96
-97
-98</pre>
+77</pre>
       </td>
       <td>
         <pre class="code"><span class="info file"># File 'manifests/index.pp', line 45</span>
 
 define elasticsearch::index (
-  $ensure                  = &#39;present&#39;,
-  $api_basic_auth_password = $elasticsearch::api_basic_auth_password,
-  $api_basic_auth_username = $elasticsearch::api_basic_auth_username,
-  $api_ca_file             = $elasticsearch::api_ca_file,
-  $api_ca_path             = $elasticsearch::api_ca_path,
-  $api_host                = $elasticsearch::api_host,
-  $api_port                = $elasticsearch::api_port,
-  $api_protocol            = $elasticsearch::api_protocol,
-  $api_timeout             = $elasticsearch::api_timeout,
-  $settings                = {},
-  $validate_tls            = $elasticsearch::validate_tls,
+  Enum[&#39;absent&#39;, &#39;present&#39;]   $ensure                  = &#39;present&#39;,
+  Optional[String]            $api_basic_auth_password = $elasticsearch::api_basic_auth_password,
+  Optional[String]            $api_basic_auth_username = $elasticsearch::api_basic_auth_username,
+  Optional[Tea::Absolutepath] $api_ca_file             = $elasticsearch::api_ca_file,
+  Optional[Tea::Absolutepath] $api_ca_path             = $elasticsearch::api_ca_path,
+  String                      $api_host                = $elasticsearch::api_host,
+  Tea::Port                   $api_port                = $elasticsearch::api_port,
+  Enum[&#39;http&#39;, &#39;https&#39;]       $api_protocol            = $elasticsearch::api_protocol,
+  Integer                     $api_timeout             = $elasticsearch::api_timeout,
+  Hash                        $settings                = {},
+  Boolean                     $validate_tls            = $elasticsearch::validate_tls,
 ) {
-  if ! defined(Class[&#39;elasticsearch&#39;]) {
-    fail(&#39;You must include the elasticsearch base class before using defined resources&#39;)
-  }
-
-  validate_string(
-    $api_protocol,
-    $api_host,
-    $api_basic_auth_username,
-    $api_basic_auth_password
-  )
-  validate_bool($validate_tls)
-
-  if ! ($ensure in [&#39;present&#39;, &#39;absent&#39;]) {
-    fail(&quot;&#39;${ensure}&#39; is not a valid &#39;ensure&#39; parameter value&quot;)
-  }
-  if ! is_integer($api_port)    { fail(&#39;&quot;api_port&quot; is not an integer&#39;) }
-  if ! is_integer($api_timeout) { fail(&#39;&quot;api_timeout&quot; is not an integer&#39;) }
-  if ($api_ca_file != undef) { validate_absolute_path($api_ca_file) }
-  if ($api_ca_path != undef) { validate_absolute_path($api_ca_path) }
-
-  if $ensure == &#39;present&#39; { validate_hash($settings) }
 
   es_instance_conn_validator { &quot;${name}-index-conn-validator&quot;:
     server  =&gt; $api_host,

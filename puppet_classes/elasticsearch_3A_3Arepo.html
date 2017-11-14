@@ -265,14 +265,7 @@ href="mailto:tyler.langlois@elastic.co">tyler.langlois@elastic.co</a></p>
 128
 129
 130
-131
-132
-133
-134
-135
-136
-137
-138</pre>
+131</pre>
       </td>
       <td>
         <pre class="code"><span class="info file"># File 'manifests/repo.pp', line 14</span>
@@ -290,7 +283,7 @@ class elasticsearch::repo {
     } else {
       if versioncmp($elasticsearch::repo_version, &#39;5.0&#39;) &gt;= 0 {
         $_repo_url = &#39;https://artifacts.elastic.co/packages&#39;
-        case $::osfamily {
+        case $facts[&#39;os&#39;][&#39;family&#39;] {
           &#39;Debian&#39;: {
             $_repo_path = &#39;apt&#39;
           }
@@ -300,7 +293,7 @@ class elasticsearch::repo {
         }
       } else {
         $_repo_url = &#39;http://packages.elastic.co/elasticsearch&#39;
-        case $::osfamily {
+        case $facts[&#39;os&#39;][&#39;family&#39;] {
           &#39;Debian&#39;: {
             $_repo_path = &#39;debian&#39;
           }
@@ -313,7 +306,7 @@ class elasticsearch::repo {
       $_baseurl = &quot;${_repo_url}/${elasticsearch::repo_version}/${_repo_path}&quot;
     }
   } else {
-    case $::osfamily {
+    case $facts[&#39;os&#39;][&#39;family&#39;] {
       &#39;Debian&#39;: {
         $_baseurl = undef
       }
@@ -323,7 +316,7 @@ class elasticsearch::repo {
     }
   }
 
-  case $::osfamily {
+  case $facts[&#39;os&#39;][&#39;family&#39;] {
     &#39;Debian&#39;: {
       include ::apt
       Class[&#39;apt::update&#39;] -&gt; Package[$elasticsearch::package_name]
@@ -345,14 +338,8 @@ class elasticsearch::repo {
       }
     }
     &#39;RedHat&#39;, &#39;Linux&#39;: {
-      # Versions prior to 3.5.1 have issues with this param
-      # See: https://tickets.puppetlabs.com/browse/PUP-2163
-      if versioncmp($::puppetversion, &#39;3.5.1&#39;) &gt;= 0 {
-        Yumrepo[&#39;elasticsearch&#39;] {
-          ensure =&gt; $elasticsearch::ensure,
-        }
-      }
       yumrepo { &#39;elasticsearch&#39;:
+        ensure   =&gt; $elasticsearch::ensure,
         descr    =&gt; &#39;elasticsearch repo&#39;,
         baseurl  =&gt; $_baseurl,
         gpgcheck =&gt; 1,
@@ -368,7 +355,7 @@ class elasticsearch::repo {
       }
     }
     &#39;Suse&#39;: {
-      if $::operatingsystem == &#39;SLES&#39; and versioncmp($::operatingsystemmajrelease, &#39;11&#39;) &lt;= 0 {
+      if $facts[&#39;os&#39;][&#39;name&#39;] == &#39;SLES&#39; and versioncmp($facts[&#39;os&#39;][&#39;release&#39;][&#39;major&#39;], &#39;11&#39;) &lt;= 0 {
         # Older versions of SLES do not ship with rpmkeys
         $_import_cmd = &quot;rpm --import ${::elasticsearch::repo_key_source}&quot;
       } else {
@@ -397,10 +384,9 @@ class elasticsearch::repo {
       }
     }
     default: {
-      fail(&quot;\&quot;${module_name}\&quot; provides no repository information for OSfamily \&quot;${::osfamily}\&quot;&quot;)
+      fail(&quot;\&quot;${module_name}\&quot; provides no repo information for OS family ${facts[&#39;os&#39;][&#39;family&#39;]}&quot;)
     }
   }
-
 }</pre>
       </td>
     </tr>

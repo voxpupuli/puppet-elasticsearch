@@ -106,7 +106,7 @@ passed through to the <code>file</code> resource.</p>
         <span class='name'>recurse</span>
       
       
-        <span class='type'>(<tt>Enum[String, Boolean]</tt>)</span>
+        <span class='type'>(<tt>Optional[Variant[Boolean, Enum['remote']]]</tt>)</span>
       
       
         <em class="default">(defaults to: <tt>undef</tt>)</em>
@@ -201,9 +201,9 @@ href="mailto:tyler.langlois@elastic.co">tyler.langlois@elastic.co</a></p>
         <pre class="code"><span class="info file"># File 'manifests/script.pp', line 17</span>
 
 define elasticsearch::script (
-  $source,
-  $ensure  = &#39;present&#39;,
-  $recurse = undef,
+  String                                     $source,
+  String                                     $ensure  = &#39;present&#39;,
+  Optional[Variant[Boolean, Enum[&#39;remote&#39;]]] $recurse = undef,
 ) {
   if ! defined(Class[&#39;elasticsearch&#39;]) {
     fail(&#39;You must include the elasticsearch base class before using defined resources&#39;)
@@ -212,7 +212,7 @@ define elasticsearch::script (
   $filename_array = split($source, &#39;/&#39;)
   $basefilename = $filename_array[-1]
 
-  file { &quot;${elasticsearch::params::homedir}/scripts/${basefilename}&quot;:
+  file { &quot;${elasticsearch::homedir}/scripts/${basefilename}&quot;:
     ensure  =&gt; $ensure,
     source  =&gt; $source,
     owner   =&gt; $elasticsearch::elasticsearch_user,

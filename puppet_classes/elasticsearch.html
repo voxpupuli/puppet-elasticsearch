@@ -62,11 +62,6 @@
       <div id="content"><h1>Puppet Class: elasticsearch</h1>
 <div class="box_info">
   
-  <dl>
-    <dt>Inherits:</dt>
-    <dd><span class='object_link'><a href="elasticsearch_3A_3Aparams.html" title="puppet_classes::elasticsearch::params (puppet_class)">elasticsearch::params</a></span></dd>
-  </dl>
-  
   
   <dl>
     <dt>Defined in:</dt>
@@ -84,8 +79,8 @@
   <div class="discussion">
     
 <p>Top-level Elasticsearch class which may manage installation of the
-Elasticsearch package, package repository, java package, and other global
-options and parameters.</p>
+Elasticsearch package, package repository, and other global options and
+parameters.</p>
 
   </div>
 </div>
@@ -128,10 +123,8 @@ options and parameters.</p>
         <span class='name'>ensure</span>
       
       
-        <span class='type'>(<tt>String</tt>)</span>
+        <span class='type'>(<tt>Enum['absent', 'present']</tt>)</span>
       
-      
-        <em class="default">(defaults to: <tt>&#39;present&#39;</tt>)</em>
       
       
         &mdash;
@@ -152,10 +145,8 @@ is a destructive parameter and should be used with care.</p>
         <span class='name'>api_basic_auth_password</span>
       
       
-        <span class='type'>(<tt>String</tt>)</span>
+        <span class='type'>(<tt>Optional[String]</tt>)</span>
       
-      
-        <em class="default">(defaults to: <tt>undef</tt>)</em>
       
       
         &mdash;
@@ -170,10 +161,8 @@ is a destructive parameter and should be used with care.</p>
         <span class='name'>api_basic_auth_username</span>
       
       
-        <span class='type'>(<tt>String</tt>)</span>
+        <span class='type'>(<tt>Optional[String]</tt>)</span>
       
-      
-        <em class="default">(defaults to: <tt>undef</tt>)</em>
       
       
         &mdash;
@@ -188,10 +177,8 @@ is a destructive parameter and should be used with care.</p>
         <span class='name'>api_ca_file</span>
       
       
-        <span class='type'>(<tt>String</tt>)</span>
+        <span class='type'>(<tt>Optional[String]</tt>)</span>
       
-      
-        <em class="default">(defaults to: <tt>undef</tt>)</em>
       
       
         &mdash;
@@ -207,10 +194,8 @@ communicating with the Elasticsearch API over HTTPS.</p>
         <span class='name'>api_ca_path</span>
       
       
-        <span class='type'>(<tt>String</tt>)</span>
+        <span class='type'>(<tt>Optional[String]</tt>)</span>
       
-      
-        <em class="default">(defaults to: <tt>undef</tt>)</em>
       
       
         &mdash;
@@ -229,8 +214,6 @@ certs when communicating with the Elasticsearch API over HTTPS.</p>
         <span class='type'>(<tt>String</tt>)</span>
       
       
-        <em class="default">(defaults to: <tt>&#39;localhost&#39;</tt>)</em>
-      
       
         &mdash;
         <div class='inline'>
@@ -244,10 +227,8 @@ certs when communicating with the Elasticsearch API over HTTPS.</p>
         <span class='name'>api_port</span>
       
       
-        <span class='type'>(<tt>Integer</tt>)</span>
+        <span class='type'>(<tt>Tea::Port</tt>)</span>
       
-      
-        <em class="default">(defaults to: <tt>9200</tt>)</em>
       
       
         &mdash;
@@ -262,10 +243,8 @@ certs when communicating with the Elasticsearch API over HTTPS.</p>
         <span class='name'>api_protocol</span>
       
       
-        <span class='type'>(<tt>String</tt>)</span>
+        <span class='type'>(<tt>Enum['http', 'https']</tt>)</span>
       
-      
-        <em class="default">(defaults to: <tt>&#39;http&#39;</tt>)</em>
       
       
         &mdash;
@@ -283,8 +262,6 @@ certs when communicating with the Elasticsearch API over HTTPS.</p>
         <span class='type'>(<tt>Integer</tt>)</span>
       
       
-        <em class="default">(defaults to: <tt>10</tt>)</em>
-      
       
         &mdash;
         <div class='inline'>
@@ -300,8 +277,6 @@ certs when communicating with the Elasticsearch API over HTTPS.</p>
       
         <span class='type'>(<tt>Boolean</tt>)</span>
       
-      
-        <em class="default">(defaults to: <tt>false</tt>)</em>
       
       
         &mdash;
@@ -323,8 +298,6 @@ documentation).</p>
         <span class='type'>(<tt>Hash</tt>)</span>
       
       
-        <em class="default">(defaults to: <tt>undef</tt>)</em>
-      
       
         &mdash;
         <div class='inline'>
@@ -335,31 +308,11 @@ documentation).</p>
   
     <li>
       
-        <span class='name'>config_hiera_merge</span>
-      
-      
-        <span class='type'>(<tt>Boolean</tt>)</span>
-      
-      
-        <em class="default">(defaults to: <tt>false</tt>)</em>
-      
-      
-        &mdash;
-        <div class='inline'>
-<p>Enable Hiera merging for the config hash.</p>
-</div>
-      
-    </li>
-  
-    <li>
-      
         <span class='name'>configdir</span>
       
       
-        <span class='type'>(<tt>String</tt>)</span>
+        <span class='type'>(<tt>Tea::Absolutepath</tt>)</span>
       
-      
-        <em class="default">(defaults to: <tt>$elasticsearch::params::configdir</tt>)</em>
       
       
         &mdash;
@@ -378,8 +331,6 @@ your packages deviate from the norm (<code>/etc/elasticsearch</code>)</p>
         <span class='type'>(<tt>String</tt>)</span>
       
       
-        <em class="default">(defaults to: <tt>&#39;&quot;\&#39;.\&#39;yyyy-MM-dd&quot;&#39;</tt>)</em>
-      
       
         &mdash;
         <div class='inline'>
@@ -394,10 +345,8 @@ your packages deviate from the norm (<code>/etc/elasticsearch</code>)</p>
         <span class='name'>datadir</span>
       
       
-        <span class='type'>(<tt>String</tt>)</span>
+        <span class='type'>(<tt>Elasticsearch::Multipath</tt>)</span>
       
-      
-        <em class="default">(defaults to: <tt>$elasticsearch::params::datadir</tt>)</em>
       
       
         &mdash;
@@ -415,13 +364,11 @@ your packages deviate from the norm (<code>/etc/elasticsearch</code>)</p>
         <span class='type'>(<tt>Boolean</tt>)</span>
       
       
-        <em class="default">(defaults to: <tt>true</tt>)</em>
-      
       
         &mdash;
         <div class='inline'>
 <p>Control whether individual directories for instances will be created within
-each instance&#39;s data directorry.</p>
+each instance&#39;s data directory.</p>
 </div>
       
     </li>
@@ -434,12 +381,42 @@ each instance&#39;s data directorry.</p>
         <span class='type'>(<tt>String</tt>)</span>
       
       
-        <em class="default">(defaults to: <tt>&#39;INFO&#39;</tt>)</em>
-      
       
         &mdash;
         <div class='inline'>
 <p>Default logging level for Elasticsearch.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>defaults_location</span>
+      
+      
+        <span class='type'>(<tt>Tea::Absolutepath</tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>Absolute path to directory containing init defaults file.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>download_tool</span>
+      
+      
+        <span class='type'>(<tt>Optional[String]</tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>Command-line invocation with which to retrieve an optional package_url.</p>
 </div>
       
     </li>
@@ -451,8 +428,6 @@ each instance&#39;s data directorry.</p>
       
         <span class='type'>(<tt>String</tt>)</span>
       
-      
-        <em class="default">(defaults to: <tt>$elasticsearch::params::elasticsearch_group</tt>)</em>
       
       
         &mdash;
@@ -471,8 +446,6 @@ permissions.</p>
         <span class='type'>(<tt>String</tt>)</span>
       
       
-        <em class="default">(defaults to: <tt>$elasticsearch::params::elasticsearch_user</tt>)</em>
-      
       
         &mdash;
         <div class='inline'>
@@ -486,10 +459,8 @@ permissions.</p>
         <span class='name'>file_rolling_type</span>
       
       
-        <span class='type'>(<tt>String</tt>)</span>
+        <span class='type'>(<tt>Enum['dailyRollingFile', 'rollingFile']</tt>)</span>
       
-      
-        <em class="default">(defaults to: <tt>&#39;dailyRollingFile&#39;</tt>)</em>
       
       
         &mdash;
@@ -503,13 +474,28 @@ name, and the second one by size.</p>
   
     <li>
       
+        <span class='name'>homedir</span>
+      
+      
+        <span class='type'>(<tt>Tea::Absolutepath</tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>Directory where the elasticsearch installation&#39;s files are kept
+(plugins, etc.)</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
         <span class='name'>indices</span>
       
       
         <span class='type'>(<tt>Hash</tt>)</span>
       
-      
-        <em class="default">(defaults to: <tt>undef</tt>)</em>
       
       
         &mdash;
@@ -522,31 +508,11 @@ binding.</p>
   
     <li>
       
-        <span class='name'>indices_hiera_merge</span>
-      
-      
-        <span class='type'>(<tt>Boolean</tt>)</span>
-      
-      
-        <em class="default">(defaults to: <tt>false</tt>)</em>
-      
-      
-        &mdash;
-        <div class='inline'>
-<p>Enable Hiera&#39;s merging function for indices.</p>
-</div>
-      
-    </li>
-  
-    <li>
-      
         <span class='name'>init_defaults</span>
       
       
         <span class='type'>(<tt>Hash</tt>)</span>
       
-      
-        <em class="default">(defaults to: <tt>undef</tt>)</em>
       
       
         &mdash;
@@ -561,10 +527,8 @@ binding.</p>
         <span class='name'>init_defaults_file</span>
       
       
-        <span class='type'>(<tt>String</tt>)</span>
+        <span class='type'>(<tt>Optional[String]</tt>)</span>
       
-      
-        <em class="default">(defaults to: <tt>undef</tt>)</em>
       
       
         &mdash;
@@ -582,8 +546,6 @@ binding.</p>
         <span class='type'>(<tt>String</tt>)</span>
       
       
-        <em class="default">(defaults to: <tt>&quot;${module_name}/etc/init.d/${elasticsearch::params::init_template}&quot;</tt>)</em>
-      
       
         &mdash;
         <div class='inline'>
@@ -600,8 +562,6 @@ binding.</p>
         <span class='type'>(<tt>Hash</tt>)</span>
       
       
-        <em class="default">(defaults to: <tt>undef</tt>)</em>
-      
       
         &mdash;
         <div class='inline'>
@@ -613,68 +573,11 @@ binding.</p>
   
     <li>
       
-        <span class='name'>instances_hiera_merge</span>
-      
-      
-        <span class='type'>(<tt>Boolean</tt>)</span>
-      
-      
-        <em class="default">(defaults to: <tt>false</tt>)</em>
-      
-      
-        &mdash;
-        <div class='inline'>
-<p>Enable Hiera&#39;s merging function for the instances.</p>
-</div>
-      
-    </li>
-  
-    <li>
-      
-        <span class='name'>java_install</span>
-      
-      
-        <span class='type'>(<tt>Boolean</tt>)</span>
-      
-      
-        <em class="default">(defaults to: <tt>false</tt>)</em>
-      
-      
-        &mdash;
-        <div class='inline'>
-<p>Install java which is required for Elasticsearch.</p>
-</div>
-      
-    </li>
-  
-    <li>
-      
-        <span class='name'>java_package</span>
-      
-      
-        <span class='type'>(<tt>String</tt>)</span>
-      
-      
-        <em class="default">(defaults to: <tt>undef</tt>)</em>
-      
-      
-        &mdash;
-        <div class='inline'>
-<p>Custom java package to be used when managing Java with
-<code>java_install</code>.</p>
-</div>
-      
-    </li>
-  
-    <li>
-      
         <span class='name'>jvm_options</span>
       
       
-        <span class='type'>(<tt>Array</tt>)</span>
+        <span class='type'>(<tt>Array[String]</tt>)</span>
       
-      
-        <em class="default">(defaults to: <tt>[]</tt>)</em>
       
       
         &mdash;
@@ -686,31 +589,11 @@ binding.</p>
   
     <li>
       
-        <span class='name'>log4j2_ensure</span>
-      
-      
-        <span class='type'>(<tt>String</tt>)</span>
-      
-      
-        <em class="default">(defaults to: <tt>&#39;file&#39;</tt>)</em>
-      
-      
-        &mdash;
-        <div class='inline'>
-<p>State of the log4j2 logging configuration file.</p>
-</div>
-      
-    </li>
-  
-    <li>
-      
         <span class='name'>logdir</span>
       
       
-        <span class='type'>(<tt>String</tt>)</span>
+        <span class='type'>(<tt>Tea::Absolutepath</tt>)</span>
       
-      
-        <em class="default">(defaults to: <tt>&#39;/var/log/elasticsearch&#39;</tt>)</em>
       
       
         &mdash;
@@ -728,8 +611,6 @@ binding.</p>
         <span class='type'>(<tt>Hash</tt>)</span>
       
       
-        <em class="default">(defaults to: <tt>undef</tt>)</em>
-      
       
         &mdash;
         <div class='inline'>
@@ -743,10 +624,8 @@ binding.</p>
         <span class='name'>logging_file</span>
       
       
-        <span class='type'>(<tt>String</tt>)</span>
+        <span class='type'>(<tt>Optional[String]</tt>)</span>
       
-      
-        <em class="default">(defaults to: <tt>undef</tt>)</em>
       
       
         &mdash;
@@ -762,10 +641,8 @@ the logging.yml file.</p>
         <span class='name'>logging_template</span>
       
       
-        <span class='type'>(<tt>String</tt>)</span>
+        <span class='type'>(<tt>Optional[String]</tt>)</span>
       
-      
-        <em class="default">(defaults to: <tt>undef</tt>)</em>
       
       
         &mdash;
@@ -778,31 +655,11 @@ the logging.yml file.</p>
   
     <li>
       
-        <span class='name'>logging_yml_ensure</span>
-      
-      
-        <span class='type'>(<tt>String</tt>)</span>
-      
-      
-        <em class="default">(defaults to: <tt>&#39;file&#39;</tt>)</em>
-      
-      
-        &mdash;
-        <div class='inline'>
-<p>State of the logging.yml logging configuration file.</p>
-</div>
-      
-    </li>
-  
-    <li>
-      
         <span class='name'>manage_repo</span>
       
       
         <span class='type'>(<tt>Boolean</tt>)</span>
       
-      
-        <em class="default">(defaults to: <tt>false</tt>)</em>
       
       
         &mdash;
@@ -817,10 +674,8 @@ the logging.yml file.</p>
         <span class='name'>package_dir</span>
       
       
-        <span class='type'>(<tt>String</tt>)</span>
+        <span class='type'>(<tt>Tea::Absolutepath</tt>)</span>
       
-      
-        <em class="default">(defaults to: <tt>$elasticsearch::params::package_dir</tt>)</em>
       
       
         &mdash;
@@ -837,8 +692,6 @@ the logging.yml file.</p>
       
         <span class='type'>(<tt>Integer</tt>)</span>
       
-      
-        <em class="default">(defaults to: <tt>600</tt>)</em>
       
       
         &mdash;
@@ -857,8 +710,6 @@ may take.</p>
         <span class='type'>(<tt>String</tt>)</span>
       
       
-        <em class="default">(defaults to: <tt>$elasticsearch::params::package</tt>)</em>
-      
       
         &mdash;
         <div class='inline'>
@@ -869,32 +720,11 @@ may take.</p>
   
     <li>
       
-        <span class='name'>package_pin</span>
-      
-      
-        <span class='type'>(<tt>Boolean</tt>)</span>
-      
-      
-        <em class="default">(defaults to: <tt>true</tt>)</em>
-      
-      
-        &mdash;
-        <div class='inline'>
-<p>Enables package version pinning. This pins the package version to the set
-version number and avoids package upgrades.</p>
-</div>
-      
-    </li>
-  
-    <li>
-      
         <span class='name'>package_provider</span>
       
       
-        <span class='type'>(<tt>String</tt>)</span>
+        <span class='type'>(<tt>Enum['<span class='object_link'><a href="elasticsearch_3A_3Apackage.html" title="puppet_classes::elasticsearch::package (puppet_class)">package</a></span>']</tt>)</span>
       
-      
-        <em class="default">(defaults to: <tt>&#39;package&#39;</tt>)</em>
       
       
         &mdash;
@@ -910,10 +740,8 @@ supported.</p>
         <span class='name'>package_url</span>
       
       
-        <span class='type'>(<tt>String</tt>)</span>
+        <span class='type'>(<tt>Optional[String]</tt>)</span>
       
-      
-        <em class="default">(defaults to: <tt>undef</tt>)</em>
       
       
         &mdash;
@@ -927,13 +755,27 @@ for remote packages, or a <code>puppet://</code> resource or
   
     <li>
       
+        <span class='name'>pid_dir</span>
+      
+      
+        <span class='type'>(<tt>Optional[Tea::Absolutepath]</tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>Directory where the elasticsearch process should write out its PID.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
         <span class='name'>pipelines</span>
       
       
         <span class='type'>(<tt>Hash</tt>)</span>
       
-      
-        <em class="default">(defaults to: <tt>undef</tt>)</em>
       
       
         &mdash;
@@ -946,31 +788,11 @@ binding.</p>
   
     <li>
       
-        <span class='name'>pipelines_hiera_merge</span>
-      
-      
-        <span class='type'>(<tt>Boolean</tt>)</span>
-      
-      
-        <em class="default">(defaults to: <tt>false</tt>)</em>
-      
-      
-        &mdash;
-        <div class='inline'>
-<p>Enable Hiera&#39;s merging function for pipelines.</p>
-</div>
-      
-    </li>
-  
-    <li>
-      
         <span class='name'>plugindir</span>
       
       
-        <span class='type'>(<tt>String</tt>)</span>
+        <span class='type'>(<tt>Tea::Absolutepath</tt>)</span>
       
-      
-        <em class="default">(defaults to: <tt>$elasticsearch::params::plugindir</tt>)</em>
       
       
         &mdash;
@@ -989,8 +811,6 @@ packages deviate from the norm (/usr/share/elasticsearch/plugins)</p>
         <span class='type'>(<tt>Hash</tt>)</span>
       
       
-        <em class="default">(defaults to: <tt>undef</tt>)</em>
-      
       
         &mdash;
         <div class='inline'>
@@ -1002,31 +822,11 @@ binding.</p>
   
     <li>
       
-        <span class='name'>plugins_hiera_merge</span>
-      
-      
-        <span class='type'>(<tt>Boolean</tt>)</span>
-      
-      
-        <em class="default">(defaults to: <tt>false</tt>)</em>
-      
-      
-        &mdash;
-        <div class='inline'>
-<p>Enable Hiera&#39;s merging function for the plugins.</p>
-</div>
-      
-    </li>
-  
-    <li>
-      
         <span class='name'>proxy_url</span>
       
       
-        <span class='type'>(<tt>String</tt>)</span>
+        <span class='type'>(<tt>Optional[Tea::HTTPUrl]</tt>)</span>
       
-      
-        <em class="default">(defaults to: <tt>undef</tt>)</em>
       
       
         &mdash;
@@ -1046,8 +846,6 @@ default, no proxy is used. Format:
         <span class='type'>(<tt>Boolean</tt>)</span>
       
       
-        <em class="default">(defaults to: <tt>false</tt>)</em>
-      
       
         &mdash;
         <div class='inline'>
@@ -1063,8 +861,6 @@ default, no proxy is used. Format:
       
         <span class='type'>(<tt>Boolean</tt>)</span>
       
-      
-        <em class="default">(defaults to: <tt>false</tt>)</em>
       
       
         &mdash;
@@ -1082,8 +878,6 @@ default, no proxy is used. Format:
         <span class='type'>(<tt>Boolean</tt>)</span>
       
       
-        <em class="default">(defaults to: <tt>false</tt>)</em>
-      
       
         &mdash;
         <div class='inline'>
@@ -1098,10 +892,8 @@ present in the specified secrets hash.</p>
         <span class='name'>repo_baseurl</span>
       
       
-        <span class='type'>(<tt>String</tt>)</span>
+        <span class='type'>(<tt>Optional[String]</tt>)</span>
       
-      
-        <em class="default">(defaults to: <tt>undef</tt>)</em>
       
       
         &mdash;
@@ -1122,8 +914,6 @@ signing keys and so on) will need to be handled appropriately.</p>
         <span class='type'>(<tt>String</tt>)</span>
       
       
-        <em class="default">(defaults to: <tt>&#39;46095ACC8548582C1A2699A9D27D666CD88E42B4&#39;</tt>)</em>
-      
       
         &mdash;
         <div class='inline'>
@@ -1137,10 +927,8 @@ signing keys and so on) will need to be handled appropriately.</p>
         <span class='name'>repo_key_source</span>
       
       
-        <span class='type'>(<tt>String</tt>)</span>
+        <span class='type'>(<tt>Tea::HTTPUrl</tt>)</span>
       
-      
-        <em class="default">(defaults to: <tt>&#39;https://artifacts.elastic.co/GPG-KEY-elasticsearch&#39;</tt>)</em>
       
       
         &mdash;
@@ -1155,10 +943,8 @@ signing keys and so on) will need to be handled appropriately.</p>
         <span class='name'>repo_priority</span>
       
       
-        <span class='type'>(<tt>Integer</tt>)</span>
+        <span class='type'>(<tt>Optional[Integer]</tt>)</span>
       
-      
-        <em class="default">(defaults to: <tt>undef</tt>)</em>
       
       
         &mdash;
@@ -1173,10 +959,8 @@ signing keys and so on) will need to be handled appropriately.</p>
         <span class='name'>repo_proxy</span>
       
       
-        <span class='type'>(<tt>String</tt>)</span>
+        <span class='type'>(<tt>Optional[String]</tt>)</span>
       
-      
-        <em class="default">(defaults to: <tt>undef</tt>)</em>
       
       
         &mdash;
@@ -1191,15 +975,14 @@ signing keys and so on) will need to be handled appropriately.</p>
         <span class='name'>repo_stage</span>
       
       
-        <span class='type'>(<tt>Boolean</tt>)</span>
+        <span class='type'>(<tt>Variant[Boolean, String]</tt>)</span>
       
-      
-        <em class="default">(defaults to: <tt>false</tt>)</em>
       
       
         &mdash;
         <div class='inline'>
-<p>Use stdlib stage setup for managing the repo instead of anchoring.</p>
+<p>Use stdlib stage setup for managing the repo instead of relationship
+ordering.</p>
 </div>
       
     </li>
@@ -1212,12 +995,10 @@ signing keys and so on) will need to be handled appropriately.</p>
         <span class='type'>(<tt>String</tt>)</span>
       
       
-        <em class="default">(defaults to: <tt>undef</tt>)</em>
-      
       
         &mdash;
         <div class='inline'>
-<p>Elastic repositories are versioned per major version (0.90, 1.0). This
+<p>Elastic repositories are versioned per major version (5.x, 6.x). This
 parameter controls which version to use.</p>
 </div>
       
@@ -1230,8 +1011,6 @@ parameter controls which version to use.</p>
       
         <span class='type'>(<tt>Boolean</tt>)</span>
       
-      
-        <em class="default">(defaults to: <tt>$elasticsearch::params::restart_on_change</tt>)</em>
       
       
         &mdash;
@@ -1256,7 +1035,7 @@ restart</em>*_change defaults.</p>
         <span class='type'>(<tt>Boolean</tt>)</span>
       
       
-        <em class="default">(defaults to: <tt>$elasticsearch::restart_on_change</tt>)</em>
+        <em class="default">(defaults to: <tt>$restart_on_change</tt>)</em>
       
       
         &mdash;
@@ -1279,7 +1058,7 @@ run.</p>
         <span class='type'>(<tt>Boolean</tt>)</span>
       
       
-        <em class="default">(defaults to: <tt>$elasticsearch::restart_on_change</tt>)</em>
+        <em class="default">(defaults to: <tt>$restart_on_change</tt>)</em>
       
       
         &mdash;
@@ -1301,7 +1080,7 @@ rather than during a Puppet run.</p>
         <span class='type'>(<tt>Boolean</tt>)</span>
       
       
-        <em class="default">(defaults to: <tt>$elasticsearch::restart_on_change</tt>)</em>
+        <em class="default">(defaults to: <tt>$restart_on_change</tt>)</em>
       
       
         &mdash;
@@ -1322,30 +1101,10 @@ occur in a controlled/rolling manner rather than during a Puppet run.</p>
         <span class='type'>(<tt>Hash</tt>)</span>
       
       
-        <em class="default">(defaults to: <tt>undef</tt>)</em>
-      
       
         &mdash;
         <div class='inline'>
 <p>Define roles via a hash. This is mainly used with Hiera&#39;s auto binding.</p>
-</div>
-      
-    </li>
-  
-    <li>
-      
-        <span class='name'>roles_hiera_merge</span>
-      
-      
-        <span class='type'>(<tt>Boolean</tt>)</span>
-      
-      
-        <em class="default">(defaults to: <tt>false</tt>)</em>
-      
-      
-        &mdash;
-        <div class='inline'>
-<p>Enable Hiera&#39;s merging function for roles.</p>
 </div>
       
     </li>
@@ -1357,8 +1116,6 @@ occur in a controlled/rolling manner rather than during a Puppet run.</p>
       
         <span class='type'>(<tt>Integer</tt>)</span>
       
-      
-        <em class="default">(defaults to: <tt>1</tt>)</em>
       
       
         &mdash;
@@ -1377,8 +1134,6 @@ occur in a controlled/rolling manner rather than during a Puppet run.</p>
         <span class='type'>(<tt>String</tt>)</span>
       
       
-        <em class="default">(defaults to: <tt>&#39;10MB&#39;</tt>)</em>
-      
       
         &mdash;
         <div class='inline'>
@@ -1395,8 +1150,6 @@ occur in a controlled/rolling manner rather than during a Puppet run.</p>
         <span class='type'>(<tt>Hash</tt>)</span>
       
       
-        <em class="default">(defaults to: <tt>undef</tt>)</em>
-      
       
         &mdash;
         <div class='inline'>
@@ -1408,31 +1161,11 @@ binding.</p>
   
     <li>
       
-        <span class='name'>scripts_hiera_merge</span>
-      
-      
-        <span class='type'>(<tt>Boolean</tt>)</span>
-      
-      
-        <em class="default">(defaults to: <tt>false</tt>)</em>
-      
-      
-        &mdash;
-        <div class='inline'>
-<p>Enable Hiera&#39;s merging function for scripts.</p>
-</div>
-      
-    </li>
-  
-    <li>
-      
         <span class='name'>secrets</span>
       
       
-        <span class='type'>(<tt>Hash</tt>)</span>
+        <span class='type'>(<tt>Optional[Hash]</tt>)</span>
       
-      
-        <em class="default">(defaults to: <tt>undef</tt>)</em>
       
       
         &mdash;
@@ -1448,10 +1181,8 @@ Elasticsearch keystore file. If unset, the keystore is left unmanaged.</p>
         <span class='name'>security_logging_content</span>
       
       
-        <span class='type'>(<tt>String</tt>)</span>
+        <span class='type'>(<tt>Optional[String]</tt>)</span>
       
-      
-        <em class="default">(defaults to: <tt>undef</tt>)</em>
       
       
         &mdash;
@@ -1467,10 +1198,8 @@ into logging.yml or log4j2.properties file as appropriate).</p>
         <span class='name'>security_logging_source</span>
       
       
-        <span class='type'>(<tt>String</tt>)</span>
+        <span class='type'>(<tt>Optional[String]</tt>)</span>
       
-      
-        <em class="default">(defaults to: <tt>undef</tt>)</em>
       
       
         &mdash;
@@ -1486,16 +1215,14 @@ into logging.yml or log4j2.properties file as appropriate).</p>
         <span class='name'>security_plugin</span>
       
       
-        <span class='type'>(<tt>String</tt>)</span>
+        <span class='type'>(<tt>Optional[Enum['shield', 'x-pack']]</tt>)</span>
       
-      
-        <em class="default">(defaults to: <tt>undef</tt>)</em>
       
       
         &mdash;
         <div class='inline'>
 <p>Which security plugin will be used to manage users, roles, and
-certificates. Valid values are &#39;shield&#39; and &#39;x-pack&#39;.</p>
+certificates.</p>
 </div>
       
     </li>
@@ -1505,16 +1232,14 @@ certificates. Valid values are &#39;shield&#39; and &#39;x-pack&#39;.</p>
         <span class='name'>service_provider</span>
       
       
-        <span class='type'>(<tt>String</tt>)</span>
+        <span class='type'>(<tt>Enum['init', 'openbsd', 'openrc', 'systemd']</tt>)</span>
       
-      
-        <em class="default">(defaults to: <tt>&#39;init&#39;</tt>)</em>
       
       
         &mdash;
         <div class='inline'>
-<p>Service provider to use. By Default when a single service provider is
-possible, that one is selected.</p>
+<p>The service resource type provider to use when managing elasticsearch
+instances.</p>
 </div>
       
     </li>
@@ -1524,10 +1249,8 @@ possible, that one is selected.</p>
         <span class='name'>status</span>
       
       
-        <span class='type'>(<tt>String</tt>)</span>
+        <span class='type'>(<tt>Elasticsearch::Status</tt>)</span>
       
-      
-        <em class="default">(defaults to: <tt>&#39;enabled&#39;</tt>)</em>
       
       
         &mdash;
@@ -1551,10 +1274,8 @@ to start the service plus assuring it is running on the desired node.</p>
         <span class='name'>system_key</span>
       
       
-        <span class='type'>(<tt>String</tt>)</span>
+        <span class='type'>(<tt>Optional[String]</tt>)</span>
       
-      
-        <em class="default">(defaults to: <tt>undef</tt>)</em>
       
       
         &mdash;
@@ -1567,37 +1288,33 @@ supported for the file resource <code>source</code> parameter.</p>
   
     <li>
       
-        <span class='name'>templates</span>
+        <span class='name'>systemd_service_path</span>
       
       
-        <span class='type'>(<tt>Hash</tt>)</span>
+        <span class='type'>(<tt>Tea::Absolutepath</tt>)</span>
       
-      
-        <em class="default">(defaults to: <tt>undef</tt>)</em>
       
       
         &mdash;
         <div class='inline'>
-<p>Define templates via a hash. This is mainly used with Hiera&#39;s auto
-binding.</p>
+<p>Path to the directory in which to install systemd service units.</p>
 </div>
       
     </li>
   
     <li>
       
-        <span class='name'>templates_hiera_merge</span>
+        <span class='name'>templates</span>
       
       
-        <span class='type'>(<tt>Boolean</tt>)</span>
+        <span class='type'>(<tt>Hash</tt>)</span>
       
-      
-        <em class="default">(defaults to: <tt>false</tt>)</em>
       
       
         &mdash;
         <div class='inline'>
-<p>Enable Hiera&#39;s merging function for templates.</p>
+<p>Define templates via a hash. This is mainly used with Hiera&#39;s auto
+binding.</p>
 </div>
       
     </li>
@@ -1610,8 +1327,6 @@ binding.</p>
         <span class='type'>(<tt>Hash</tt>)</span>
       
       
-        <em class="default">(defaults to: <tt>undef</tt>)</em>
-      
       
         &mdash;
         <div class='inline'>
@@ -1623,31 +1338,11 @@ binding.</p>
   
     <li>
       
-        <span class='name'>users_hiera_merge</span>
-      
-      
-        <span class='type'>(<tt>Boolean</tt>)</span>
-      
-      
-        <em class="default">(defaults to: <tt>false</tt>)</em>
-      
-      
-        &mdash;
-        <div class='inline'>
-<p>Enable Hiera&#39;s merging function for users.</p>
-</div>
-      
-    </li>
-  
-    <li>
-      
         <span class='name'>validate_tls</span>
       
       
         <span class='type'>(<tt>Boolean</tt>)</span>
       
-      
-        <em class="default">(defaults to: <tt>true</tt>)</em>
       
       
         &mdash;
@@ -1662,10 +1357,8 @@ binding.</p>
         <span class='name'>version</span>
       
       
-        <span class='type'>(<tt>String</tt>)</span>
+        <span class='type'>(<tt>Variant[String, Boolean]</tt>)</span>
       
-      
-        <em class="default">(defaults to: <tt>false</tt>)</em>
       
       
         &mdash;
@@ -1715,6 +1408,35 @@ href="mailto:tyler.langlois@elastic.co">tyler.langlois@elastic.co</a></p>
         <pre class="lines">
 
 
+303
+304
+305
+306
+307
+308
+309
+310
+311
+312
+313
+314
+315
+316
+317
+318
+319
+320
+321
+322
+323
+324
+325
+326
+327
+328
+329
+330
+331
 332
 333
 334
@@ -1939,459 +1661,95 @@ href="mailto:tyler.langlois@elastic.co">tyler.langlois@elastic.co</a></p>
 553
 554
 555
-556
-557
-558
-559
-560
-561
-562
-563
-564
-565
-566
-567
-568
-569
-570
-571
-572
-573
-574
-575
-576
-577
-578
-579
-580
-581
-582
-583
-584
-585
-586
-587
-588
-589
-590
-591
-592
-593
-594
-595
-596
-597
-598
-599
-600
-601
-602
-603
-604
-605
-606
-607
-608
-609
-610
-611
-612
-613
-614
-615
-616
-617
-618
-619
-620
-621
-622
-623
-624
-625
-626
-627
-628
-629
-630
-631
-632
-633
-634
-635
-636
-637
-638
-639
-640
-641
-642
-643
-644
-645
-646
-647
-648
-649
-650
-651
-652
-653
-654
-655
-656
-657
-658
-659
-660
-661
-662
-663
-664
-665
-666
-667
-668
-669
-670
-671
-672
-673
-674
-675
-676
-677
-678
-679
-680
-681
-682
-683
-684
-685
-686
-687
-688
-689
-690
-691
-692
-693
-694
-695
-696
-697
-698
-699
-700
-701
-702
-703
-704
-705
-706
-707
-708
-709
-710
-711
-712
-713
-714
-715
-716
-717
-718
-719
-720
-721
-722
-723
-724
-725
-726
-727
-728
-729
-730
-731
-732
-733
-734
-735
-736
-737
-738
-739
-740
-741
-742
-743
-744
-745
-746
-747
-748
-749
-750
-751
-752
-753
-754
-755
-756
-757
-758
-759
-760
-761
-762
-763
-764
-765
-766
-767
-768
-769
-770
-771
-772
-773
-774
-775
-776
-777
-778
-779
-780
-781
-782
-783
-784
-785
-786
-787
-788
-789
-790
-791
-792
-793
-794
-795
-796
-797
-798
-799
-800
-801
-802
-803
-804
-805
-806
-807
-808
-809
-810
-811
-812
-813
-814
-815
-816
-817
-818
-819
-820
-821
-822
-823
-824
-825
-826
-827
-828
-829
-830
-831</pre>
+556</pre>
       </td>
       <td>
-        <pre class="code"><span class="info file"># File 'manifests/init.pp', line 332</span>
+        <pre class="code"><span class="info file"># File 'manifests/init.pp', line 303</span>
 
-class elasticsearch(
-  $ensure                         = &#39;present&#39;,
-  $api_basic_auth_password        = undef,
-  $api_basic_auth_username        = undef,
-  $api_ca_file                    = undef,
-  $api_ca_path                    = undef,
-  $api_host                       = &#39;localhost&#39;,
-  $api_port                       = 9200,
-  $api_protocol                   = &#39;http&#39;,
-  $api_timeout                    = 10,
-  $autoupgrade                    = false,
-  $config                         = undef,
-  $config_hiera_merge             = false,
-  $configdir                      = $elasticsearch::params::configdir,
-  $daily_rolling_date_pattern     = &#39;&quot;\&#39;.\&#39;yyyy-MM-dd&quot;&#39;,
-  $datadir                        = $elasticsearch::params::datadir,
-  $datadir_instance_directories   = true,
-  $default_logging_level          = &#39;INFO&#39;,
-  $elasticsearch_group            = $elasticsearch::params::elasticsearch_group,
-  $elasticsearch_user             = $elasticsearch::params::elasticsearch_user,
-  $file_rolling_type              = &#39;dailyRollingFile&#39;,
-  $indices                        = undef,
-  $indices_hiera_merge            = false,
-  $init_defaults                  = undef,
-  $init_defaults_file             = undef,
-  $init_template                  = &quot;${module_name}/etc/init.d/${elasticsearch::params::init_template}&quot;,
-  $instances                      = undef,
-  $instances_hiera_merge          = false,
-  $java_install                   = false,
-  $java_package                   = undef,
-  $jvm_options                    = [],
-  $log4j2_ensure                  = &#39;file&#39;,
-  $logdir                         = &#39;/var/log/elasticsearch&#39;,
-  $logging_config                 = undef,
-  $logging_file                   = undef,
-  $logging_template               = undef,
-  $logging_yml_ensure             = &#39;file&#39;,
-  $manage_repo                    = false,
-  $package_dir                    = $elasticsearch::params::package_dir,
-  $package_dl_timeout             = 600,
-  $package_name                   = $elasticsearch::params::package,
-  $package_pin                    = true,
-  $package_provider               = &#39;package&#39;,
-  $package_url                    = undef,
-  $pipelines                      = undef,
-  $pipelines_hiera_merge          = false,
-  $plugindir                      = $elasticsearch::params::plugindir,
-  $plugins                        = undef,
-  $plugins_hiera_merge            = false,
-  $proxy_url                      = undef,
-  $purge_configdir                = false,
-  $purge_package_dir              = false,
-  $purge_secrets                  = false,
-  $repo_baseurl                   = undef,
-  $repo_key_id                    = &#39;46095ACC8548582C1A2699A9D27D666CD88E42B4&#39;,
-  $repo_key_source                = &#39;https://artifacts.elastic.co/GPG-KEY-elasticsearch&#39;,
-  $repo_priority                  = undef,
-  $repo_proxy                     = undef,
-  $repo_stage                     = false,
-  $repo_version                   = undef,
-  $restart_on_change              = $elasticsearch::params::restart_on_change,
-  $restart_config_change          = $elasticsearch::restart_on_change,
-  $restart_package_change         = $elasticsearch::restart_on_change,
-  $restart_plugin_change          = $elasticsearch::restart_on_change,
-  $roles                          = undef,
-  $roles_hiera_merge              = false,
-  $rolling_file_max_backup_index  = 1,
-  $rolling_file_max_file_size     =&#39;10MB&#39;,
-  $scripts                        = undef,
-  $scripts_hiera_merge            = false,
-  $secrets                        = undef,
-  $security_logging_content       = undef,
-  $security_logging_source        = undef,
-  $security_plugin                = undef,
-  $service_provider               = &#39;init&#39;,
-  $status                         = &#39;enabled&#39;,
-  $system_key                     = undef,
-  $templates                      = undef,
-  $templates_hiera_merge          = false,
-  $users                          = undef,
-  $users_hiera_merge              = false,
-  $validate_tls                   = true,
-  $version                        = false,
-) inherits elasticsearch::params {
-
-  anchor {&#39;elasticsearch::begin&#39;: }
+class elasticsearch (
+  Enum[&#39;absent&#39;, &#39;present&#39;]                    $ensure,
+  Optional[String]                             $api_basic_auth_password,
+  Optional[String]                             $api_basic_auth_username,
+  Optional[String]                             $api_ca_file,
+  Optional[String]                             $api_ca_path,
+  String                                       $api_host,
+  Tea::Port                                    $api_port,
+  Enum[&#39;http&#39;, &#39;https&#39;]                        $api_protocol,
+  Integer                                      $api_timeout,
+  Boolean                                      $autoupgrade,
+  Hash                                         $config,
+  Tea::Absolutepath                            $configdir,
+  String                                       $daily_rolling_date_pattern,
+  Elasticsearch::Multipath                     $datadir,
+  Boolean                                      $datadir_instance_directories,
+  String                                       $default_logging_level,
+  Tea::Absolutepath                            $defaults_location,
+  Optional[String]                             $download_tool,
+  String                                       $elasticsearch_group,
+  String                                       $elasticsearch_user,
+  Enum[&#39;dailyRollingFile&#39;, &#39;rollingFile&#39;]      $file_rolling_type,
+  Tea::Absolutepath                            $homedir,
+  Hash                                         $indices,
+  Hash                                         $init_defaults,
+  Optional[String]                             $init_defaults_file,
+  String                                       $init_template,
+  Hash                                         $instances,
+  Array[String]                                $jvm_options,
+  Tea::Absolutepath                            $logdir,
+  Hash                                         $logging_config,
+  Optional[String]                             $logging_file,
+  Optional[String]                             $logging_template,
+  Boolean                                      $manage_repo,
+  Tea::Absolutepath                            $package_dir,
+  Integer                                      $package_dl_timeout,
+  String                                       $package_name,
+  Enum[&#39;package&#39;]                              $package_provider,
+  Optional[String]                             $package_url,
+  Optional[Tea::Absolutepath]                  $pid_dir,
+  Hash                                         $pipelines,
+  Tea::Absolutepath                            $plugindir,
+  Hash                                         $plugins,
+  Optional[Tea::HTTPUrl]                       $proxy_url,
+  Boolean                                      $purge_configdir,
+  Boolean                                      $purge_package_dir,
+  Boolean                                      $purge_secrets,
+  Optional[String]                             $repo_baseurl,
+  String                                       $repo_key_id,
+  Tea::HTTPUrl                                 $repo_key_source,
+  Optional[Integer]                            $repo_priority,
+  Optional[String]                             $repo_proxy,
+  Variant[Boolean, String]                     $repo_stage,
+  String                                       $repo_version,
+  Boolean                                      $restart_on_change,
+  Hash                                         $roles,
+  Integer                                      $rolling_file_max_backup_index,
+  String                                       $rolling_file_max_file_size,
+  Hash                                         $scripts,
+  Optional[Hash]                               $secrets,
+  Optional[String]                             $security_logging_content,
+  Optional[String]                             $security_logging_source,
+  Optional[Enum[&#39;shield&#39;, &#39;x-pack&#39;]]           $security_plugin,
+  Enum[&#39;init&#39;, &#39;openbsd&#39;, &#39;openrc&#39;, &#39;systemd&#39;] $service_provider,
+  Elasticsearch::Status                        $status,
+  Optional[String]                             $system_key,
+  Tea::Absolutepath                            $systemd_service_path,
+  Hash                                         $templates,
+  Hash                                         $users,
+  Boolean                                      $validate_tls,
+  Variant[String, Boolean]                     $version,
+  Boolean $restart_config_change  = $restart_on_change,
+  Boolean $restart_package_change = $restart_on_change,
+  Boolean $restart_plugin_change  = $restart_on_change,
+) {
 
   #### Validate parameters
-
-  # ensure
-  if ! ($ensure in [ &#39;present&#39;, &#39;absent&#39; ]) {
-    fail(&quot;\&quot;${ensure}\&quot; is not a valid ensure parameter value&quot;)
-  }
-
-  # autoupgrade
-  validate_bool($autoupgrade)
-
-  # service status
-  if ! ($status in [ &#39;enabled&#39;, &#39;disabled&#39;, &#39;running&#39;, &#39;unmanaged&#39; ]) {
-    fail(&quot;\&quot;${status}\&quot; is not a valid status parameter value&quot;)
-  }
-
-  if ! ($file_rolling_type in [ &#39;dailyRollingFile&#39;, &#39;rollingFile&#39;]) {
-    fail(&quot;\&quot;${file_rolling_type}\&quot; is not a valid type&quot;)
-  }
-
-  validate_array($jvm_options)
-  validate_integer($rolling_file_max_backup_index)
-  validate_string($daily_rolling_date_pattern)
-  validate_string($rolling_file_max_file_size)
-
-  # restart on change
-  validate_bool(
-    $restart_on_change,
-    $restart_config_change,
-    $restart_package_change,
-    $restart_plugin_change
-  )
-
-  # purge conf dir
-  validate_bool($purge_configdir)
-
-  if is_array($elasticsearch::params::service_providers) {
-    # Verify the service provider given is in the array
-    if ! ($service_provider in $elasticsearch::params::service_providers) {
-      fail(&quot;\&quot;${service_provider}\&quot; is not a valid provider for \&quot;${::operatingsystem}\&quot;&quot;)
-    }
-    $real_service_provider = $service_provider
-  } else {
-    # There is only one option so simply set it
-    $real_service_provider = $elasticsearch::params::service_providers
-  }
 
   if ($package_url != undef and $version != false) {
     fail(&#39;Unable to set the version number when using package_url option.&#39;)
   }
 
-  if $ensure == &#39;present&#39; {
-    # validate config hash
-    if ($config != undef) {
-      validate_hash($config)
-    }
-
-    if ($logging_config != undef) {
-      validate_hash($logging_config)
-    }
-
-    if ($secrets != undef) {
-      validate_hash($secrets)
-    }
-  }
-
-  # java install validation
-  validate_bool($java_install)
-
-  validate_bool(
-    $datadir_instance_directories,
-    $manage_repo,
-    $package_pin
-  )
-
-  if ($manage_repo == true and $ensure == &#39;present&#39;) {
-    if $repo_baseurl != undef {
-      validate_string($repo_baseurl)
-    } elsif $repo_version == undef {
-      fail(&#39;Please fill in a repository version at $repo_version&#39;)
-    } else {
-      validate_string($repo_version)
-    }
-  }
-
   if ($version != false) {
-    case $::osfamily {
+    case $facts[&#39;os&#39;][&#39;family&#39;] {
       &#39;RedHat&#39;, &#39;Linux&#39;, &#39;Suse&#39;: {
         if ($version =~ /.+-\d/) {
           $pkg_version = $version
@@ -2405,187 +1763,38 @@ class elasticsearch(
     }
   }
 
-  # Various parameters governing API access to Elasticsearch
-  validate_string($api_protocol, $api_host)
-  validate_bool($validate_tls)
-  if $api_basic_auth_username { validate_string($api_basic_auth_username) }
-  if $api_basic_auth_password { validate_string($api_basic_auth_password) }
-
-  if ! is_integer($api_timeout) {
-    fail(&quot;&#39;${api_timeout}&#39; is not an integer&quot;)
+  # This value serves as an unchanging default for platforms as a default for
+  # init scripts to fallback on.
+  $_datadir_default = $facts[&#39;kernel&#39;] ? {
+    &#39;Linux&#39;   =&gt; &#39;/var/lib/elasticsearch&#39;,
+    &#39;OpenBSD&#39; =&gt; &#39;/var/elasticsearch/data&#39;,
+    default   =&gt; undef,
   }
-
-  if ! is_integer($api_port) {
-    fail(&quot;&#39;${api_port}&#39; is not an integer&quot;)
-  }
-
-  if $system_key != undef { validate_string($system_key) }
 
   #### Manage actions
 
-  # package(s)
-  class { &#39;elasticsearch::package&#39;: }
+  contain elasticsearch::package
+  contain elasticsearch::config
 
-  # configuration
-  class { &#39;elasticsearch::config&#39;: }
-
-  # Hiera support for configuration hash
-  validate_bool($config_hiera_merge)
-
-  if $config_hiera_merge == true {
-    $x_config = hiera_hash(&#39;elasticsearch::config&#39;, $config)
-  } else {
-    $x_config = $config
-  }
-
-  # Hiera support for indices
-  validate_bool($indices_hiera_merge)
-
-  if $indices_hiera_merge == true {
-    $x_indices = hiera_hash(&#39;elasticsearch::indices&#39;, $::elasticsearch::indices)
-  } else {
-    $x_indices = $indices
-  }
-
-  if $x_indices {
-    validate_hash($x_indices)
-    create_resources(&#39;elasticsearch::index&#39;, $x_indices)
-  }
-
-  # Hiera support for instances
-  validate_bool($instances_hiera_merge)
-
-  if $instances_hiera_merge == true {
-    $x_instances = hiera_hash(&#39;elasticsearch::instances&#39;, $::elasticsearch::instances)
-  } else {
-    $x_instances = $instances
-  }
-
-  if $x_instances {
-    validate_hash($x_instances)
-    create_resources(&#39;elasticsearch::instance&#39;, $x_instances)
-  }
-
-  # Hiera support for pipelines
-  validate_bool($pipelines_hiera_merge)
-
-  if $pipelines_hiera_merge == true {
-    $x_pipelines = hiera_hash(&#39;elasticsearch::pipelines&#39;, $::elasticsearch::pipelines)
-  } else {
-    $x_pipelines = $pipelines
-  }
-
-  if $x_pipelines {
-    validate_hash($x_pipelines)
-    create_resources(&#39;elasticsearch::pipeline&#39;, $x_pipelines)
-  }
-
-  # Hiera support for plugins
-  validate_bool($plugins_hiera_merge)
-
-  if $plugins_hiera_merge == true {
-    $x_plugins = hiera_hash(&#39;elasticsearch::plugins&#39;, $::elasticsearch::plugins)
-  } else {
-    $x_plugins = $plugins
-  }
-
-  if $x_plugins {
-    validate_hash($x_plugins)
-    create_resources(&#39;elasticsearch::plugin&#39;, $x_plugins)
-  }
-
-  # Hiera support for roles
-  validate_bool($roles_hiera_merge)
-
-  if $roles_hiera_merge == true {
-    $x_roles = hiera_hash(&#39;elasticsearch::roles&#39;, $::elasticsearch::roles)
-  } else {
-    $x_roles = $roles
-  }
-
-  if $x_roles {
-    validate_hash($x_roles)
-    create_resources(&#39;elasticsearch::role&#39;, $x_roles)
-  }
-
-  # Hiera support for scripts
-  validate_bool($scripts_hiera_merge)
-
-  if $scripts_hiera_merge == true {
-    $x_scripts = hiera_hash(&#39;elasticsearch::scripts&#39;, $::elasticsearch::scripts)
-  } else {
-    $x_scripts = $scripts
-  }
-
-  if $x_scripts {
-    validate_hash($x_scripts)
-    create_resources(&#39;elasticsearch::script&#39;, $x_scripts)
-  }
-
-  # Hiera support for templates
-  validate_bool($templates_hiera_merge)
-
-  if $templates_hiera_merge == true {
-    $x_templates = hiera_hash(&#39;elasticsearch::templates&#39;, $::elasticsearch::templates)
-  } else {
-    $x_templates = $templates
-  }
-
-  if $x_templates {
-    validate_hash($x_templates)
-    create_resources(&#39;elasticsearch::template&#39;, $x_templates)
-  }
-
-  # Hiera support for users
-  validate_bool($users_hiera_merge)
-
-  if $users_hiera_merge == true {
-    $x_users = hiera_hash(&#39;elasticsearch::users&#39;, $::elasticsearch::users)
-  } else {
-    $x_users = $users
-  }
-
-  if $x_users {
-    validate_hash($x_users)
-    create_resources(&#39;elasticsearch::user&#39;, $x_users)
-  }
-
-  if $java_install == true {
-    # Install java
-    class { &#39;::java&#39;:
-      package      =&gt; $java_package,
-      distribution =&gt; &#39;jre&#39;,
-    }
-
-    # ensure we first install java, the package and then the rest
-    Anchor[&#39;elasticsearch::begin&#39;]
-    -&gt; Class[&#39;::java&#39;]
-    -&gt; Class[&#39;elasticsearch::package&#39;]
-  }
-
-  if $package_pin {
-    class { &#39;elasticsearch::package::pin&#39;:
-      before =&gt; Class[&#39;elasticsearch::package&#39;],
-    }
-  }
+  create_resources(&#39;elasticsearch::index&#39;, $::elasticsearch::indices)
+  create_resources(&#39;elasticsearch::instance&#39;, $::elasticsearch::instances)
+  create_resources(&#39;elasticsearch::pipeline&#39;, $::elasticsearch::pipelines)
+  create_resources(&#39;elasticsearch::plugin&#39;, $::elasticsearch::plugins)
+  create_resources(&#39;elasticsearch::role&#39;, $::elasticsearch::roles)
+  create_resources(&#39;elasticsearch::script&#39;, $::elasticsearch::scripts)
+  create_resources(&#39;elasticsearch::template&#39;, $::elasticsearch::templates)
+  create_resources(&#39;elasticsearch::user&#39;, $::elasticsearch::users)
 
   if ($manage_repo == true) {
-
     if ($repo_stage == false) {
-      # use anchor for ordering
+      # Use normal relationship ordering
+      contain elasticsearch::repo
 
-      # Set up repositories
-      class { &#39;elasticsearch::repo&#39;: }
-
-      # Ensure that we set up the repositories before trying to install
-      # the packages
-      Anchor[&#39;elasticsearch::begin&#39;]
-      -&gt; Class[&#39;elasticsearch::repo&#39;]
+      Class[&#39;elasticsearch::repo&#39;]
       -&gt; Class[&#39;elasticsearch::package&#39;]
 
     } else {
-      # use staging for ordering
-
+      # Use staging for ordering
       if !(defined(Stage[$repo_stage])) {
         stage { $repo_stage:  before =&gt; Stage[&#39;main&#39;] }
       }
@@ -2594,7 +1803,6 @@ class elasticsearch(
         stage =&gt; $repo_stage,
       }
     }
-
   }
 
   #### Manage relationships
@@ -2606,11 +1814,12 @@ class elasticsearch(
   #
   # forgive me for what you&#39;re about to see
 
+  if defined(Class[&#39;java&#39;]) { Class[&#39;java&#39;] -&gt; Class[&#39;elasticsearch::config&#39;] }
+
   if $ensure == &#39;present&#39; {
 
-    # Anchor, installation, and configuration
-    Anchor[&#39;elasticsearch::begin&#39;]
-    -&gt; Class[&#39;elasticsearch::package&#39;]
+    # Installation and configuration
+    Class[&#39;elasticsearch::package&#39;]
     -&gt; Class[&#39;elasticsearch::config&#39;]
 
     # Top-level ordering bindings for resources.
@@ -2633,32 +1842,24 @@ class elasticsearch(
 
   } else {
 
-    # Main anchor and included classes
-    Anchor[&#39;elasticsearch::begin&#39;]
-    -&gt; Class[&#39;elasticsearch::config&#39;]
+    # Absent; remove configuration before the package.
+    Class[&#39;elasticsearch::config&#39;]
     -&gt; Class[&#39;elasticsearch::package&#39;]
 
     # Top-level ordering bindings for resources.
-    Anchor[&#39;elasticsearch::begin&#39;]
-    -&gt; Elasticsearch::Plugin &lt;| |&gt;
+    Elasticsearch::Plugin &lt;| |&gt;
     -&gt; Class[&#39;elasticsearch::config&#39;]
-    Anchor[&#39;elasticsearch::begin&#39;]
-    -&gt; Elasticsearch::Instance &lt;| |&gt;
+    Elasticsearch::Instance &lt;| |&gt;
     -&gt; Class[&#39;elasticsearch::config&#39;]
-    Anchor[&#39;elasticsearch::begin&#39;]
-    -&gt; Elasticsearch::User &lt;| |&gt;
+    Elasticsearch::User &lt;| |&gt;
     -&gt; Class[&#39;elasticsearch::config&#39;]
-    Anchor[&#39;elasticsearch::begin&#39;]
-    -&gt; Elasticsearch::Role &lt;| |&gt;
+    Elasticsearch::Role &lt;| |&gt;
     -&gt; Class[&#39;elasticsearch::config&#39;]
-    Anchor[&#39;elasticsearch::begin&#39;]
-    -&gt; Elasticsearch::Template &lt;| |&gt;
+    Elasticsearch::Template &lt;| |&gt;
     -&gt; Class[&#39;elasticsearch::config&#39;]
-    Anchor[&#39;elasticsearch::begin&#39;]
-    -&gt; Elasticsearch::Pipeline &lt;| |&gt;
+    Elasticsearch::Pipeline &lt;| |&gt;
     -&gt; Class[&#39;elasticsearch::config&#39;]
-    Anchor[&#39;elasticsearch::begin&#39;]
-    -&gt; Elasticsearch::Index &lt;| |&gt;
+    Elasticsearch::Index &lt;| |&gt;
     -&gt; Class[&#39;elasticsearch::config&#39;]
 
   }

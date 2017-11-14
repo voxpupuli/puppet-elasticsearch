@@ -91,7 +91,7 @@ processes in general and is used in a platform-independent way. E.g.
         <span class='name'>ensure</span>
       
       
-        <span class='type'>(<tt>String</tt>)</span>
+        <span class='type'>(<tt>Enum['absent', 'present']</tt>)</span>
       
       
         <em class="default">(defaults to: <tt>$elasticsearch::ensure</tt>)</em>
@@ -118,7 +118,7 @@ is a destructive parameter and should be used with care.</p>
         <span class='type'>(<tt>Hash</tt>)</span>
       
       
-        <em class="default">(defaults to: <tt>undef</tt>)</em>
+        <em class="default">(defaults to: <tt>{}</tt>)</em>
       
       
         &mdash;
@@ -133,7 +133,7 @@ is a destructive parameter and should be used with care.</p>
         <span class='name'>init_defaults_file</span>
       
       
-        <span class='type'>(<tt>String</tt>)</span>
+        <span class='type'>(<tt>Optional[String]</tt>)</span>
       
       
         <em class="default">(defaults to: <tt>undef</tt>)</em>
@@ -151,7 +151,7 @@ is a destructive parameter and should be used with care.</p>
         <span class='name'>init_template</span>
       
       
-        <span class='type'>(<tt>String</tt>)</span>
+        <span class='type'>(<tt>Optional[String]</tt>)</span>
       
       
         <em class="default">(defaults to: <tt>undef</tt>)</em>
@@ -169,7 +169,7 @@ is a destructive parameter and should be used with care.</p>
         <span class='name'>service_flags</span>
       
       
-        <span class='type'>(<tt>String</tt>)</span>
+        <span class='type'>(<tt>Optional[String]</tt>)</span>
       
       
         <em class="default">(defaults to: <tt>undef</tt>)</em>
@@ -187,7 +187,7 @@ is a destructive parameter and should be used with care.</p>
         <span class='name'>status</span>
       
       
-        <span class='type'>(<tt>String</tt>)</span>
+        <span class='type'>(<tt>Elasticsearch::Status</tt>)</span>
       
       
         <em class="default">(defaults to: <tt>$elasticsearch::status</tt>)</em>
@@ -299,23 +299,21 @@ href="mailto:tyler.langlois@elastic.co">tyler.langlois@elastic.co</a></p>
 90
 91
 92
-93
-94
-95</pre>
+93</pre>
       </td>
       <td>
         <pre class="code"><span class="info file"># File 'manifests/service.pp', line 43</span>
 
-define elasticsearch::service(
-  $ensure             = $elasticsearch::ensure,
-  $init_defaults      = undef,
-  $init_defaults_file = undef,
-  $init_template      = undef,
-  $service_flags      = undef,
-  $status             = $elasticsearch::status,
+define elasticsearch::service (
+  Enum[&#39;absent&#39;, &#39;present&#39;] $ensure             = $elasticsearch::ensure,
+  Hash                      $init_defaults      = {},
+  Optional[String]          $init_defaults_file = undef,
+  Optional[String]          $init_template      = undef,
+  Optional[String]          $service_flags      = undef,
+  Elasticsearch::Status     $status             = $elasticsearch::status,
 ) {
 
-  case $elasticsearch::real_service_provider {
+  case $elasticsearch::service_provider {
 
     &#39;init&#39;: {
       elasticsearch::service::init { $name:
@@ -353,11 +351,9 @@ define elasticsearch::service(
       }
     }
     default: {
-      fail(&quot;Unknown service provider ${elasticsearch::real_service_provider}&quot;)
+      fail(&quot;Unknown service provider ${elasticsearch::service_provider}&quot;)
     }
-
   }
-
 }</pre>
       </td>
     </tr>

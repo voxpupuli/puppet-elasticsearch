@@ -91,7 +91,7 @@ processes in general and is used in a platform-independent way. E.g.
         <span class='name'>ensure</span>
       
       
-        <span class='type'>(<tt>String</tt>)</span>
+        <span class='type'>(<tt>Enum['absent', 'present']</tt>)</span>
       
       
         <em class="default">(defaults to: <tt>$elasticsearch::ensure</tt>)</em>
@@ -117,7 +117,7 @@ used with care.</p>
         <span class='type'>(<tt>Hash</tt>)</span>
       
       
-        <em class="default">(defaults to: <tt>undef</tt>)</em>
+        <em class="default">(defaults to: <tt>{}</tt>)</em>
       
       
         &mdash;
@@ -132,7 +132,7 @@ used with care.</p>
         <span class='name'>init_defaults_file</span>
       
       
-        <span class='type'>(<tt>String</tt>)</span>
+        <span class='type'>(<tt>Optional[String]</tt>)</span>
       
       
         <em class="default">(defaults to: <tt>undef</tt>)</em>
@@ -150,7 +150,7 @@ used with care.</p>
         <span class='name'>init_template</span>
       
       
-        <span class='type'>(<tt>String</tt>)</span>
+        <span class='type'>(<tt>Optional[String]</tt>)</span>
       
       
         <em class="default">(defaults to: <tt>undef</tt>)</em>
@@ -168,7 +168,7 @@ used with care.</p>
         <span class='name'>status</span>
       
       
-        <span class='type'>(<tt>String</tt>)</span>
+        <span class='type'>(<tt>Elasticsearch::Status</tt>)</span>
       
       
         <em class="default">(defaults to: <tt>$elasticsearch::status</tt>)</em>
@@ -357,41 +357,21 @@ href="mailto:tyler.langlois@elastic.co">tyler.langlois@elastic.co</a></p>
 163
 164
 165
-166
-167
-168
-169
-170
-171
-172
-173
-174
-175
-176
-177
-178
-179
-180
-181
-182
-183
-184
-185</pre>
+166</pre>
       </td>
       <td>
         <pre class="code"><span class="info file"># File 'manifests/service/init.pp', line 39</span>
 
 define elasticsearch::service::init (
-  $ensure             = $elasticsearch::ensure,
-  $init_defaults      = undef,
-  $init_defaults_file = undef,
-  $init_template      = undef,
-  $status             = $elasticsearch::status,
+  Enum[&#39;absent&#39;, &#39;present&#39;] $ensure             = $elasticsearch::ensure,
+  Hash                      $init_defaults      = {},
+  Optional[String]          $init_defaults_file = undef,
+  Optional[String]          $init_template      = undef,
+  Elasticsearch::Status     $status             = $elasticsearch::status,
 ) {
 
   #### Service management
 
-  # set params: in operation
   if $ensure == &#39;present&#39; {
 
     case $status {
@@ -416,15 +396,8 @@ define elasticsearch::service::init (
         $service_ensure = undef
         $service_enable = false
       }
-      # unknown status
-      # note: don&#39;t forget to update the parameter check in init.pp if you
-      #       add a new or change an existing status.
-      default: {
-        fail(&quot;\&quot;${status}\&quot; is an unknown service status value&quot;)
-      }
+      default: { }
     }
-
-  # set params: removal
   } else {
 
     # make sure the service is stopped and disabled (the removal itself will be
@@ -434,17 +407,29 @@ define elasticsearch::service::init (
 
   }
 
+  if(has_key($init_defaults, &#39;ES_USER&#39;) and $init_defaults[&#39;ES_USER&#39;] != $elasticsearch::elasticsearch_user) {
+    fail(&#39;Found ES_USER setting for init_defaults but is not same as elasticsearch_user setting. Please use elasticsearch_user setting.&#39;)
+  }
+
+  $new_init_defaults = merge(
+    {
+      &#39;ES_USER&#39; =&gt; $elasticsearch::elasticsearch_user,
+      &#39;ES_GROUP&#39; =&gt; $elasticsearch::elasticsearch_group,
+      &#39;MAX_OPEN_FILES&#39; =&gt; &#39;65536&#39;,
+    },
+    $init_defaults
+  )
+
   $notify_service = $elasticsearch::restart_config_change ? {
     true  =&gt; Service[&quot;elasticsearch-instance-${name}&quot;],
     false =&gt; undef,
   }
 
+  if ($ensure == &#39;present&#39;) {
 
-  if ( $ensure == &#39;present&#39; ) {
-
-    # defaults file content. Either from a hash or file
+    # Defaults file, either from file source or from hash to augeas commands
     if ($init_defaults_file != undef) {
-      file { &quot;${elasticsearch::params::defaults_location}/elasticsearch-${name}&quot;:
+      file { &quot;${elasticsearch::defaults_location}/elasticsearch-${name}&quot;:
         ensure =&gt; $ensure,
         source =&gt; $init_defaults_file,
         owner  =&gt; &#39;root&#39;,
@@ -453,32 +438,14 @@ define elasticsearch::service::init (
         before =&gt; Service[&quot;elasticsearch-instance-${name}&quot;],
         notify =&gt; $notify_service,
       }
-
     } else {
-
-      if ($init_defaults != undef and is_hash($init_defaults) ) {
-        if(has_key($init_defaults, &#39;ES_USER&#39;)) {
-          if($init_defaults[&#39;ES_USER&#39;] != $elasticsearch::elasticsearch_user) {
-            fail(&#39;Found ES_USER setting for init_defaults but is not same as elasticsearch_user setting. Please use elasticsearch_user setting.&#39;)
-          }
-        }
-      }
-
-      $init_defaults_pre_hash = {
-        &#39;ES_USER&#39; =&gt; $elasticsearch::elasticsearch_user,
-        &#39;ES_GROUP&#39; =&gt; $elasticsearch::elasticsearch_group,
-        &#39;MAX_OPEN_FILES&#39; =&gt; &#39;65536&#39;,
-      }
-      $new_init_defaults = merge($init_defaults_pre_hash, $init_defaults)
-
       augeas { &quot;defaults_${name}&quot;:
-        incl    =&gt; &quot;${elasticsearch::params::defaults_location}/elasticsearch-${name}&quot;,
+        incl    =&gt; &quot;${elasticsearch::defaults_location}/elasticsearch-${name}&quot;,
         lens    =&gt; &#39;Shellvars.lns&#39;,
         changes =&gt; template(&quot;${module_name}/etc/sysconfig/defaults.erb&quot;),
         before  =&gt; Service[&quot;elasticsearch-instance-${name}&quot;],
         notify  =&gt; $notify_service,
       }
-
     }
 
     # init file from template
@@ -502,14 +469,14 @@ define elasticsearch::service::init (
 
     }
 
-  } else {
+  } else { # absent
 
     file { &quot;/etc/init.d/elasticsearch-${name}&quot;:
       ensure    =&gt; &#39;absent&#39;,
       subscribe =&gt; Service[&quot;elasticsearch-instance-${name}&quot;],
     }
 
-    file { &quot;${elasticsearch::params::defaults_location}/elasticsearch-${name}&quot;:
+    file { &quot;${elasticsearch::defaults_location}/elasticsearch-${name}&quot;:
       ensure    =&gt; &#39;absent&#39;,
       subscribe =&gt; Service[&quot;elasticsearch-${$name}&quot;],
     }
@@ -518,15 +485,10 @@ define elasticsearch::service::init (
 
   # action
   service { &quot;elasticsearch-instance-${name}&quot;:
-    ensure     =&gt; $service_ensure,
-    enable     =&gt; $service_enable,
-    name       =&gt; &quot;elasticsearch-${name}&quot;,
-    hasstatus  =&gt; $elasticsearch::params::service_hasstatus,
-    hasrestart =&gt; $elasticsearch::params::service_hasrestart,
-    pattern    =&gt; $elasticsearch::params::service_pattern,
+    ensure =&gt; $service_ensure,
+    enable =&gt; $service_enable,
+    name   =&gt; &quot;elasticsearch-${name}&quot;,
   }
-
-
 }</pre>
       </td>
     </tr>

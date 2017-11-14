@@ -86,7 +86,7 @@
         <span class='name'>ensure</span>
       
       
-        <span class='type'>(<tt>String</tt>)</span>
+        <span class='type'>(<tt>Enum['absent', 'present']</tt>)</span>
       
       
         <em class="default">(defaults to: <tt>$elasticsearch::ensure</tt>)</em>
@@ -110,7 +110,7 @@ is a destructive parameter and should be used with care.</p>
         <span class='name'>ca_certificate</span>
       
       
-        <span class='type'>(<tt>String</tt>)</span>
+        <span class='type'>(<tt>Optional[Tea::Absolutepath]</tt>)</span>
       
       
         <em class="default">(defaults to: <tt>undef</tt>)</em>
@@ -128,7 +128,7 @@ is a destructive parameter and should be used with care.</p>
         <span class='name'>certificate</span>
       
       
-        <span class='type'>(<tt>String</tt>)</span>
+        <span class='type'>(<tt>Optional[Tea::Absolutepath]</tt>)</span>
       
       
         <em class="default">(defaults to: <tt>undef</tt>)</em>
@@ -147,7 +147,7 @@ ca_certificate.</p>
         <span class='name'>config</span>
       
       
-        <span class='type'>(<tt>Hash</tt>)</span>
+        <span class='type'>(<tt>Optional[Hash]</tt>)</span>
       
       
         <em class="default">(defaults to: <tt>undef</tt>)</em>
@@ -165,10 +165,10 @@ ca_certificate.</p>
         <span class='name'>configdir</span>
       
       
-        <span class='type'>(<tt>String</tt>)</span>
+        <span class='type'>(<tt>Tea::Absolutepath</tt>)</span>
       
       
-        <em class="default">(defaults to: <tt>undef</tt>)</em>
+        <em class="default">(defaults to: <tt>&quot;${elasticsearch::configdir}/${name}&quot;</tt>)</em>
       
       
         &mdash;
@@ -203,7 +203,7 @@ setting if your packages deviate from the norm (/etc/elasticsearch).</p>
         <span class='name'>datadir</span>
       
       
-        <span class='type'>(<tt>String</tt>)</span>
+        <span class='type'>(<tt>Optional[Elasticsearch::Multipath]</tt>)</span>
       
       
         <em class="default">(defaults to: <tt>undef</tt>)</em>
@@ -300,7 +300,7 @@ rotates by name, and the second one by size.</p>
         <span class='type'>(<tt>Hash</tt>)</span>
       
       
-        <em class="default">(defaults to: <tt>undef</tt>)</em>
+        <em class="default">(defaults to: <tt>{}</tt>)</em>
       
       
         &mdash;
@@ -315,7 +315,7 @@ rotates by name, and the second one by size.</p>
         <span class='name'>init_defaults_file</span>
       
       
-        <span class='type'>(<tt>String</tt>)</span>
+        <span class='type'>(<tt>Optional[Tea::Absolutepath]</tt>)</span>
       
       
         <em class="default">(defaults to: <tt>undef</tt>)</em>
@@ -351,7 +351,7 @@ rotates by name, and the second one by size.</p>
         <span class='name'>jvm_options</span>
       
       
-        <span class='type'>(<tt>Array</tt>)</span>
+        <span class='type'>(<tt>Array[String]</tt>)</span>
       
       
         <em class="default">(defaults to: <tt>$elasticsearch::jvm_options</tt>)</em>
@@ -369,7 +369,7 @@ rotates by name, and the second one by size.</p>
         <span class='name'>keystore_password</span>
       
       
-        <span class='type'>(<tt>String</tt>)</span>
+        <span class='type'>(<tt>Optional[String]</tt>)</span>
       
       
         <em class="default">(defaults to: <tt>undef</tt>)</em>
@@ -387,7 +387,7 @@ rotates by name, and the second one by size.</p>
         <span class='name'>keystore_path</span>
       
       
-        <span class='type'>(<tt>String</tt>)</span>
+        <span class='type'>(<tt>Optional[Tea::Absolutepath]</tt>)</span>
       
       
         <em class="default">(defaults to: <tt>undef</tt>)</em>
@@ -402,31 +402,13 @@ rotates by name, and the second one by size.</p>
   
     <li>
       
-        <span class='name'>log4j2_ensure</span>
-      
-      
-        <span class='type'>(<tt>String</tt>)</span>
-      
-      
-        <em class="default">(defaults to: <tt>$elasticsearch::log4j2_ensure</tt>)</em>
-      
-      
-        &mdash;
-        <div class='inline'>
-<p>State of the log4j2 logging configuration file.</p>
-</div>
-      
-    </li>
-  
-    <li>
-      
         <span class='name'>logdir</span>
       
       
-        <span class='type'>(<tt>String</tt>)</span>
+        <span class='type'>(<tt>Tea::Absolutepath</tt>)</span>
       
       
-        <em class="default">(defaults to: <tt>undef</tt>)</em>
+        <em class="default">(defaults to: <tt>&quot;${elasticsearch::logdir}/${name}&quot;</tt>)</em>
       
       
         &mdash;
@@ -444,7 +426,7 @@ rotates by name, and the second one by size.</p>
         <span class='type'>(<tt>Hash</tt>)</span>
       
       
-        <em class="default">(defaults to: <tt>undef</tt>)</em>
+        <em class="default">(defaults to: <tt>{}</tt>)</em>
       
       
         &mdash;
@@ -459,7 +441,7 @@ rotates by name, and the second one by size.</p>
         <span class='name'>logging_file</span>
       
       
-        <span class='type'>(<tt>String</tt>)</span>
+        <span class='type'>(<tt>Optional[String]</tt>)</span>
       
       
         <em class="default">(defaults to: <tt>undef</tt>)</em>
@@ -496,7 +478,7 @@ logging.yml file</p>
         <span class='name'>logging_template</span>
       
       
-        <span class='type'>(<tt>String</tt>)</span>
+        <span class='type'>(<tt>Optional[String]</tt>)</span>
       
       
         <em class="default">(defaults to: <tt>undef</tt>)</em>
@@ -512,28 +494,10 @@ $module_name/elasticsearch/logging.yml.erb</p>
   
     <li>
       
-        <span class='name'>logging_yml_ensure</span>
-      
-      
-        <span class='type'>(<tt>String</tt>)</span>
-      
-      
-        <em class="default">(defaults to: <tt>$elasticsearch::logging_yml_ensure</tt>)</em>
-      
-      
-        &mdash;
-        <div class='inline'>
-<p>State of the logging.yml logging configuration file.</p>
-</div>
-      
-    </li>
-  
-    <li>
-      
         <span class='name'>private_key</span>
       
       
-        <span class='type'>(<tt>String</tt>)</span>
+        <span class='type'>(<tt>Optional[Tea::Absolutepath]</tt>)</span>
       
       
         <em class="default">(defaults to: <tt>undef</tt>)</em>
@@ -607,7 +571,7 @@ present in the specified secrets hash.</p>
         <span class='name'>secrets</span>
       
       
-        <span class='type'>(<tt>Hash</tt>)</span>
+        <span class='type'>(<tt>Optional[Hash]</tt>)</span>
       
       
         <em class="default">(defaults to: <tt>undef</tt>)</em>
@@ -627,7 +591,7 @@ unmanaged.</p>
         <span class='name'>security_plugin</span>
       
       
-        <span class='type'>(<tt>String</tt>)</span>
+        <span class='type'>(<tt>Optional[Enum['shield', 'x-pack']]</tt>)</span>
       
       
         <em class="default">(defaults to: <tt>$elasticsearch::security_plugin</tt>)</em>
@@ -646,7 +610,7 @@ certificates. Inherited from top-level Elasticsearch class.</p>
         <span class='name'>service_flags</span>
       
       
-        <span class='type'>(<tt>String</tt>)</span>
+        <span class='type'>(<tt>Optional[String]</tt>)</span>
       
       
         <em class="default">(defaults to: <tt>undef</tt>)</em>
@@ -684,7 +648,7 @@ certificate, private_key and keystore_password parameters to be set.</p>
         <span class='name'>status</span>
       
       
-        <span class='type'>(<tt>String</tt>)</span>
+        <span class='type'>(<tt>Elasticsearch::Status</tt>)</span>
       
       
         <em class="default">(defaults to: <tt>$elasticsearch::status</tt>)</em>
@@ -711,7 +675,7 @@ to start the service plus assuring it is running on the desired node.</p>
         <span class='name'>system_key</span>
       
       
-        <span class='type'>(<tt>String</tt>)</span>
+        <span class='type'>(<tt>Optional[String]</tt>)</span>
       
       
         <em class="default">(defaults to: <tt>$elasticsearch::system_key</tt>)</em>
@@ -765,6 +729,12 @@ href="mailto:tyler.langlois@elastic.co">tyler.langlois@elastic.co</a></p>
         <pre class="lines">
 
 
+127
+128
+129
+130
+131
+132
 133
 134
 135
@@ -1143,103 +1113,45 @@ href="mailto:tyler.langlois@elastic.co">tyler.langlois@elastic.co</a></p>
 508
 509
 510
-511
-512
-513
-514
-515
-516
-517
-518
-519
-520
-521
-522
-523
-524
-525
-526
-527
-528
-529
-530
-531
-532
-533
-534
-535
-536
-537
-538
-539
-540
-541
-542
-543
-544
-545
-546
-547
-548
-549
-550
-551
-552
-553
-554
-555
-556
-557
-558
-559
-560
-561
-562
-563
-564
-565</pre>
+511</pre>
       </td>
       <td>
-        <pre class="code"><span class="info file"># File 'manifests/instance.pp', line 133</span>
+        <pre class="code"><span class="info file"># File 'manifests/instance.pp', line 127</span>
 
 define elasticsearch::instance (
-  $ensure                        = $elasticsearch::ensure,
-  $ca_certificate                = undef,
-  $certificate                   = undef,
-  $config                        = undef,
-  $configdir                     = undef,
-  $daily_rolling_date_pattern    = $elasticsearch::daily_rolling_date_pattern,
-  $datadir                       = undef,
-  $datadir_instance_directories  = $elasticsearch::datadir_instance_directories,
-  $deprecation_logging           = false,
-  $deprecation_logging_level     = &#39;DEBUG&#39;,
-  $file_rolling_type             = $elasticsearch::file_rolling_type,
-  $init_defaults                 = undef,
-  $init_defaults_file            = undef,
-  $init_template                 = $elasticsearch::init_template,
-  $jvm_options                   = $elasticsearch::jvm_options,
-  $keystore_password             = undef,
-  $keystore_path                 = undef,
-  $log4j2_ensure                 = $elasticsearch::log4j2_ensure,
-  $logdir                        = undef,
-  $logging_config                = undef,
-  $logging_file                  = undef,
-  $logging_level                 = $elasticsearch::default_logging_level,
-  $logging_template              = undef,
-  $logging_yml_ensure            = $elasticsearch::logging_yml_ensure,
-  $private_key                   = undef,
-  $purge_secrets                 = $elasticsearch::purge_secrets,
-  $rolling_file_max_backup_index = $elasticsearch::rolling_file_max_backup_index,
-  $rolling_file_max_file_size    = $elasticsearch::rolling_file_max_file_size,
-  $secrets                       = undef,
-  $security_plugin               = $elasticsearch::security_plugin,
-  $service_flags                 = undef,
-  $ssl                           = false,
-  $status                        = $elasticsearch::status,
-  $system_key                    = $elasticsearch::system_key,
+  Enum[&#39;absent&#39;, &#39;present&#39;]          $ensure                        = $elasticsearch::ensure,
+  Optional[Tea::Absolutepath]        $ca_certificate                = undef,
+  Optional[Tea::Absolutepath]        $certificate                   = undef,
+  Optional[Hash]                     $config                        = undef,
+  Tea::Absolutepath                  $configdir                     = &quot;${elasticsearch::configdir}/${name}&quot;,
+  String                             $daily_rolling_date_pattern    = $elasticsearch::daily_rolling_date_pattern,
+  Optional[Elasticsearch::Multipath] $datadir                       = undef,
+  Boolean                            $datadir_instance_directories  = $elasticsearch::datadir_instance_directories,
+  Boolean                            $deprecation_logging           = false,
+  String                             $deprecation_logging_level     = &#39;DEBUG&#39;,
+  String                             $file_rolling_type             = $elasticsearch::file_rolling_type,
+  Hash                               $init_defaults                 = {},
+  Optional[Tea::Absolutepath]        $init_defaults_file            = undef,
+  String                             $init_template                 = $elasticsearch::init_template,
+  Array[String]                      $jvm_options                   = $elasticsearch::jvm_options,
+  Optional[String]                   $keystore_password             = undef,
+  Optional[Tea::Absolutepath]        $keystore_path                 = undef,
+  Tea::Absolutepath                  $logdir                        = &quot;${elasticsearch::logdir}/${name}&quot;,
+  Hash                               $logging_config                = {},
+  Optional[String]                   $logging_file                  = undef,
+  String                             $logging_level                 = $elasticsearch::default_logging_level,
+  Optional[String]                   $logging_template              = undef,
+  Optional[Tea::Absolutepath]        $private_key                   = undef,
+  Boolean                            $purge_secrets                 = $elasticsearch::purge_secrets,
+  Integer                            $rolling_file_max_backup_index = $elasticsearch::rolling_file_max_backup_index,
+  String                             $rolling_file_max_file_size    = $elasticsearch::rolling_file_max_file_size,
+  Optional[Hash]                     $secrets                       = undef,
+  Optional[Enum[&#39;shield&#39;, &#39;x-pack&#39;]] $security_plugin               = $elasticsearch::security_plugin,
+  Optional[String]                   $service_flags                 = undef,
+  Boolean                            $ssl                           = false,
+  Elasticsearch::Status              $status                        = $elasticsearch::status,
+  Optional[String]                   $system_key                    = $elasticsearch::system_key,
 ) {
-
-  require elasticsearch::params
 
   File {
     owner =&gt; $elasticsearch::elasticsearch_user,
@@ -1267,20 +1179,12 @@ define elasticsearch::instance (
     false =&gt; undef,
   }
 
-  # Instance config directory
-  if ($configdir == undef) {
-    $instance_configdir = &quot;${elasticsearch::configdir}/${name}&quot;
-  } else {
-    $instance_configdir = $configdir
-  }
-
   if ($ensure == &#39;present&#39;) {
 
     # Configuration hash
     if ($config == undef) {
       $instance_config = {}
     } else {
-      validate_hash($config)
       $instance_config = deep_implode($config)
     }
 
@@ -1292,7 +1196,6 @@ define elasticsearch::instance (
 
     # String or array for data dir(s)
     if ($datadir == undef) {
-      validate_bool($datadir_instance_directories)
       if ($datadir_instance_directories) {
         if (is_array($elasticsearch::datadir)) {
           $instance_datadir = array_suffix($elasticsearch::datadir, &quot;/${name}&quot;)
@@ -1317,19 +1220,17 @@ define elasticsearch::instance (
       $_log4j_content = undef
     } else {
 
-      if(is_hash($elasticsearch::logging_config)) {
-        $main_logging_config = deep_implode($elasticsearch::logging_config)
-      } else {
-        $main_logging_config = { }
-      }
+      $main_logging_config = deep_implode($elasticsearch::logging_config)
+      $instance_logging_config = deep_implode($logging_config)
 
-      if(is_hash($logging_config)) {
-        $instance_logging_config = deep_implode($logging_config)
-      } else {
-        $instance_logging_config = { }
-      }
       $logging_hash = merge(
-        $elasticsearch::params::logging_defaults,
+        # Shipped defaults
+        {
+          &#39;action&#39;                 =&gt; &#39;DEBUG&#39;,
+          &#39;com.amazonaws&#39;          =&gt; &#39;WARN&#39;,
+          &#39;index.search.slowlog&#39;   =&gt; &#39;TRACE, index_search_slow_log_file&#39;,
+          &#39;index.indexing.slowlog&#39; =&gt; &#39;TRACE, index_indexing_slow_log_file&#39;,
+        },
         $main_logging_config,
         $instance_logging_config
       )
@@ -1346,11 +1247,7 @@ define elasticsearch::instance (
       $logging_source = undef
     }
 
-    if ($elasticsearch::x_config != undef) {
-      $main_config = deep_implode($elasticsearch::x_config)
-    } else {
-      $main_config = { }
-    }
+    $main_config = deep_implode($elasticsearch::config)
 
     $instance_datadir_config = { &#39;path.data&#39; =&gt; $instance_datadir }
 
@@ -1360,22 +1257,13 @@ define elasticsearch::instance (
       $dirs = $instance_datadir
     }
 
-    # Manage instance log directory
-    if ($logdir == undef) {
-      $instance_logdir = &quot;${elasticsearch::logdir}/${name}&quot;
-    } else {
-      $instance_logdir = $logdir
-    }
-
-    $instance_logdir_config = { &#39;path.logs&#39; =&gt; $instance_logdir }
-
-    validate_bool($ssl)
     if $ssl {
-      validate_absolute_path($ca_certificate, $certificate, $private_key)
-      validate_string($keystore_password)
+      if ($keystore_password == undef) {
+        fail(&#39;keystore_password required&#39;)
+      }
 
       if ($keystore_path == undef) {
-        $_keystore_path = &quot;${instance_configdir}/${security_plugin}/${name}.ks&quot;
+        $_keystore_path = &quot;${configdir}/${security_plugin}/${name}.ks&quot;
       } else {
         validate_absolute_path($keystore_path)
         $_keystore_path = $keystore_path
@@ -1416,18 +1304,14 @@ define elasticsearch::instance (
       }
     } else { $tls_config = {} }
 
-    if $system_key != undef {
-      validate_string($system_key)
-    }
-
     exec { &quot;mkdir_logdir_elasticsearch_${name}&quot;:
-      command =&gt; &quot;mkdir -p ${instance_logdir}&quot;,
-      creates =&gt; $instance_logdir,
+      command =&gt; &quot;mkdir -p ${logdir}&quot;,
+      creates =&gt; $logdir,
       require =&gt; Class[&#39;elasticsearch::package&#39;],
-      before  =&gt; File[$instance_logdir],
+      before  =&gt; File[$logdir],
     }
 
-    file { $instance_logdir:
+    file { $logdir:
       ensure  =&gt; &#39;directory&#39;,
       owner   =&gt; $elasticsearch::elasticsearch_user,
       group   =&gt; undef,
@@ -1454,13 +1338,13 @@ define elasticsearch::instance (
     }
 
     exec { &quot;mkdir_configdir_elasticsearch_${name}&quot;:
-      command =&gt; &quot;mkdir -p ${instance_configdir}&quot;,
+      command =&gt; &quot;mkdir -p ${configdir}&quot;,
       creates =&gt; $elasticsearch::configdir,
       require =&gt; Class[&#39;elasticsearch::package&#39;],
       before  =&gt; Elasticsearch::Service[$name],
     }
 
-    file { $instance_configdir:
+    file { $configdir:
       ensure  =&gt; &#39;directory&#39;,
       mode    =&gt; &#39;0755&#39;,
       purge   =&gt; $elasticsearch::purge_configdir,
@@ -1469,8 +1353,7 @@ define elasticsearch::instance (
       before  =&gt; Elasticsearch::Service[$name],
     }
 
-    validate_array($jvm_options)
-    file { &quot;${instance_configdir}/jvm.options&quot;:
+    file { &quot;${configdir}/jvm.options&quot;:
       before  =&gt; Elasticsearch::Service[$name],
       content =&gt; template(&quot;${module_name}/etc/elasticsearch/jvm.options.erb&quot;),
       group   =&gt; $elasticsearch::elasticsearch_group,
@@ -1479,16 +1362,16 @@ define elasticsearch::instance (
     }
 
     file {
-      &quot;${instance_configdir}/logging.yml&quot;:
-        ensure  =&gt; $logging_yml_ensure,
+      &quot;${configdir}/logging.yml&quot;:
+        ensure  =&gt; file,
         content =&gt; $logging_content,
         source  =&gt; $logging_source,
         mode    =&gt; &#39;0644&#39;,
         notify  =&gt; $notify_service,
         require =&gt; Class[&#39;elasticsearch::package&#39;],
         before  =&gt; Elasticsearch::Service[$name];
-      &quot;${instance_configdir}/log4j2.properties&quot;:
-        ensure  =&gt; $log4j2_ensure,
+      &quot;${configdir}/log4j2.properties&quot;:
+        ensure  =&gt; file,
         content =&gt; $_log4j_content,
         source  =&gt; $logging_source,
         mode    =&gt; &#39;0644&#39;,
@@ -1497,13 +1380,13 @@ define elasticsearch::instance (
         before  =&gt; Elasticsearch::Service[$name];
     }
 
-    file { &quot;${instance_configdir}/scripts&quot;:
+    file { &quot;${configdir}/scripts&quot;:
       ensure =&gt; &#39;link&#39;,
-      target =&gt; &quot;${elasticsearch::params::homedir}/scripts&quot;,
+      target =&gt; &quot;${elasticsearch::homedir}/scripts&quot;,
     }
 
     if $security_plugin != undef {
-      file { &quot;${instance_configdir}/${security_plugin}&quot;:
+      file { &quot;${configdir}/${security_plugin}&quot;:
         ensure  =&gt; &#39;directory&#39;,
         mode    =&gt; &#39;0755&#39;,
         source  =&gt; &quot;${elasticsearch::configdir}/${security_plugin}&quot;,
@@ -1516,12 +1399,12 @@ define elasticsearch::instance (
     }
 
     if $system_key != undef {
-      file { &quot;${instance_configdir}/${security_plugin}/system_key&quot;:
+      file { &quot;${configdir}/${security_plugin}/system_key&quot;:
         ensure  =&gt; &#39;file&#39;,
         source  =&gt; $system_key,
         mode    =&gt; &#39;0400&#39;,
         before  =&gt; Elasticsearch::Service[$name],
-        require =&gt; File[&quot;${instance_configdir}/${security_plugin}&quot;],
+        require =&gt; File[&quot;${configdir}/${security_plugin}&quot;],
       }
     }
 
@@ -1530,52 +1413,39 @@ define elasticsearch::instance (
       $main_config,
       $instance_node_name,
       $instance_datadir_config,
-      $instance_logdir_config,
+      { &#39;path.logs&#39; =&gt; $logdir },
       $tls_config,
       $instance_config
     )
 
     # defaults file content
     # ensure user did not provide both init_defaults and init_defaults_file
-    if (($init_defaults != undef) and ($init_defaults_file != undef)) {
+    if ((!empty($init_defaults)) and ($init_defaults_file != undef)) {
       fail (&#39;Only one of $init_defaults and $init_defaults_file should be defined&#39;)
     }
 
-    if (is_hash($elasticsearch::init_defaults)) {
-      $global_init_defaults = $elasticsearch::init_defaults
-    } else {
-      $global_init_defaults = { }
-    }
-
-    $instance_init_defaults_main = {
-      &#39;CONF_DIR&#39;     =&gt; $instance_configdir,
-      &#39;ES_PATH_CONF&#39; =&gt; $instance_configdir,
-      &#39;ES_HOME&#39;      =&gt; $elasticsearch::params::homedir,
-      &#39;LOG_DIR&#39;      =&gt; $instance_logdir,
-    }
-
-    if (is_hash($init_defaults)) {
-      $instance_init_defaults = $init_defaults
-    } else {
-      $instance_init_defaults = { }
-    }
     $init_defaults_new = merge(
-      { &#39;DATA_DIR&#39;  =&gt; $elasticsearch::params::datadir },
-      { &#39;ES_JVM_OPTIONS&#39; =&gt; &quot;${instance_configdir}/jvm.options&quot; },
-      $global_init_defaults,
-      $instance_init_defaults_main,
-      $instance_init_defaults
+      { &#39;DATA_DIR&#39;  =&gt; $elasticsearch::_datadir_default },
+      $elasticsearch::init_defaults,
+      {
+        &#39;CONF_DIR&#39;       =&gt; $configdir,
+        &#39;ES_HOME&#39;        =&gt; $elasticsearch::homedir,
+        &#39;ES_JVM_OPTIONS&#39; =&gt; &quot;${configdir}/jvm.options&quot;,
+        &#39;ES_PATH_CONF&#39;   =&gt; $configdir,
+        &#39;LOG_DIR&#39;        =&gt; $logdir,
+      },
+      $init_defaults
     )
 
     $user = $elasticsearch::elasticsearch_user
     $group = $elasticsearch::elasticsearch_group
 
     datacat_fragment { &quot;main_config_${name}&quot;:
-      target =&gt; &quot;${instance_configdir}/elasticsearch.yml&quot;,
+      target =&gt; &quot;${configdir}/elasticsearch.yml&quot;,
       data   =&gt; $instance_conf,
     }
 
-    datacat { &quot;${instance_configdir}/elasticsearch.yml&quot;:
+    datacat { &quot;${configdir}/elasticsearch.yml&quot;:
       template =&gt; &quot;${module_name}/etc/elasticsearch/elasticsearch.yml.erb&quot;,
       notify   =&gt; $notify_service,
       require  =&gt; Class[&#39;elasticsearch::package&#39;],
@@ -1597,12 +1467,11 @@ define elasticsearch::instance (
         $instance_secrets = {}
       }
 
-      validate_bool($purge_secrets)
-
       elasticsearch_keystore { $name :
-        purge    =&gt; $purge_secrets,
-        settings =&gt; merge($main_secrets, $instance_secrets),
-        notify   =&gt; $notify_service,
+        configdir =&gt; $elasticsearch::configdir,
+        purge     =&gt; $purge_secrets,
+        settings  =&gt; merge($main_secrets, $instance_secrets),
+        notify    =&gt; $notify_service,
       }
     }
 
@@ -1611,14 +1480,14 @@ define elasticsearch::instance (
 
   } else {
 
-    file { $instance_configdir:
+    file { $configdir:
       ensure  =&gt; &#39;absent&#39;,
       recurse =&gt; true,
       force   =&gt; true,
     }
 
     $require_service = undef
-    $before_service  = File[$instance_configdir]
+    $before_service  = File[$configdir]
 
     $init_defaults_new = {}
   }
@@ -1633,7 +1502,6 @@ define elasticsearch::instance (
     require            =&gt; $require_service,
     before             =&gt; $before_service,
   }
-
 }</pre>
       </td>
     </tr>

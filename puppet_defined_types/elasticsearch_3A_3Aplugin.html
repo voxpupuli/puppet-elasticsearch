@@ -76,8 +76,6 @@
 <p>This define allows you to install arbitrary Elasticsearch plugins either by
 using the default repositories or by specifying an URL</p>
 
-<p>All default values are defined in the elasticsearch::params class.</p>
-
   </div>
 </div>
 <div class="tags">
@@ -111,7 +109,7 @@ using the default repositories or by specifying an URL</p>
         <span class='name'>ensure</span>
       
       
-        <span class='type'>(<tt>String</tt>)</span>
+        <span class='type'>(<tt>Enum['absent', 'present']</tt>)</span>
       
       
         <em class="default">(defaults to: <tt>&#39;present&#39;</tt>)</em>
@@ -130,7 +128,7 @@ ensure a plugin is not installed</p>
         <span class='name'>configdir</span>
       
       
-        <span class='type'>(<tt>String</tt>)</span>
+        <span class='type'>(<tt>Tea::Absolutepath</tt>)</span>
       
       
         <em class="default">(defaults to: <tt>$elasticsearch::configdir</tt>)</em>
@@ -138,7 +136,8 @@ ensure a plugin is not installed</p>
       
         &mdash;
         <div class='inline'>
-<p>Path to the Elasticsearch configuration directory.</p>
+<p>Path to the elasticsearch configuration directory (ES_PATH_CONF) to which
+the plugin should be installed.</p>
 </div>
       
     </li>
@@ -148,10 +147,10 @@ ensure a plugin is not installed</p>
         <span class='name'>instances</span>
       
       
-        <span class='type'>(<tt>Enum[String, Array]</tt>)</span>
+        <span class='type'>(<tt>Variant[String, Array[String]]</tt>)</span>
       
       
-        <em class="default">(defaults to: <tt>undef</tt>)</em>
+        <em class="default">(defaults to: <tt>[]</tt>)</em>
       
       
         &mdash;
@@ -166,7 +165,7 @@ ensure a plugin is not installed</p>
         <span class='name'>module_dir</span>
       
       
-        <span class='type'>(<tt>String</tt>)</span>
+        <span class='type'>(<tt>Optional[String]</tt>)</span>
       
       
         <em class="default">(defaults to: <tt>undef</tt>)</em>
@@ -186,7 +185,7 @@ auto generated value</p>
         <span class='name'>proxy_host</span>
       
       
-        <span class='type'>(<tt>String</tt>)</span>
+        <span class='type'>(<tt>Optional[String]</tt>)</span>
       
       
         <em class="default">(defaults to: <tt>undef</tt>)</em>
@@ -204,7 +203,7 @@ auto generated value</p>
         <span class='name'>proxy_password</span>
       
       
-        <span class='type'>(<tt>String</tt>)</span>
+        <span class='type'>(<tt>Optional[String]</tt>)</span>
       
       
         <em class="default">(defaults to: <tt>undef</tt>)</em>
@@ -222,7 +221,7 @@ auto generated value</p>
         <span class='name'>proxy_port</span>
       
       
-        <span class='type'>(<tt>Integer</tt>)</span>
+        <span class='type'>(<tt>Optional[Tea::Port]</tt>)</span>
       
       
         <em class="default">(defaults to: <tt>undef</tt>)</em>
@@ -240,7 +239,7 @@ auto generated value</p>
         <span class='name'>proxy_username</span>
       
       
-        <span class='type'>(<tt>String</tt>)</span>
+        <span class='type'>(<tt>Optional[String]</tt>)</span>
       
       
         <em class="default">(defaults to: <tt>undef</tt>)</em>
@@ -258,7 +257,7 @@ auto generated value</p>
         <span class='name'>source</span>
       
       
-        <span class='type'>(<tt>String</tt>)</span>
+        <span class='type'>(<tt>Optional[String]</tt>)</span>
       
       
         <em class="default">(defaults to: <tt>undef</tt>)</em>
@@ -277,7 +276,7 @@ node and use it for installation. Useful for offline installation</p>
         <span class='name'>url</span>
       
       
-        <span class='type'>(<tt>String</tt>)</span>
+        <span class='type'>(<tt>Optional[Tea::HTTPUrl]</tt>)</span>
       
       
         <em class="default">(defaults to: <tt>undef</tt>)</em>
@@ -355,6 +354,7 @@ href="mailto:tyler.langlois@elastic.co">tyler.langlois@elastic.co</a></p>
         <pre class="lines">
 
 
+54
 55
 56
 57
@@ -442,38 +442,30 @@ href="mailto:tyler.langlois@elastic.co">tyler.langlois@elastic.co</a></p>
 139
 140
 141
-142
-143
-144
-145
-146
-147
-148
-149
-150</pre>
+142</pre>
       </td>
       <td>
-        <pre class="code"><span class="info file"># File 'manifests/plugin.pp', line 55</span>
+        <pre class="code"><span class="info file"># File 'manifests/plugin.pp', line 54</span>
 
 define elasticsearch::plugin (
-  $ensure         = &#39;present&#39;,
-  $configdir      = $elasticsearch::configdir,
-  $instances      = undef,
-  $module_dir     = undef,
-  $proxy_host     = undef,
-  $proxy_password = undef,
-  $proxy_port     = undef,
-  $proxy_username = undef,
-  $source         = undef,
-  $url            = undef,
+  Enum[&#39;absent&#39;, &#39;present&#39;]      $ensure         = &#39;present&#39;,
+  Tea::Absolutepath              $configdir      = $elasticsearch::configdir,
+  Variant[String, Array[String]] $instances      = [],
+  Optional[String]               $module_dir     = undef,
+  Optional[String]               $proxy_host     = undef,
+  Optional[String]               $proxy_password = undef,
+  Optional[Tea::Port]            $proxy_port     = undef,
+  Optional[String]               $proxy_username = undef,
+  Optional[String]               $source         = undef,
+  Optional[Tea::HTTPUrl]         $url            = undef,
 ) {
 
   include elasticsearch
 
   case $ensure {
-    &#39;installed&#39;, &#39;present&#39;: {
+    &#39;present&#39;: {
       if empty($instances) and $elasticsearch::restart_plugin_change {
-        fail(&#39;no $instances defined, even tho `restart_plugin_change` is set!&#39;)
+        fail(&#39;no $instances defined, even though `restart_plugin_change` is set!&#39;)
       }
 
       $_file_ensure = &#39;directory&#39;
@@ -483,9 +475,7 @@ define elasticsearch::plugin (
       $_file_ensure = $ensure
       $_file_before = File[$elasticsearch::plugindir]
     }
-    default: {
-      fail(&quot;&#39;${ensure}&#39; is not a valid ensure parameter value&quot;)
-    }
+    default: { }
   }
 
   if ! empty($instances) and $elasticsearch::restart_plugin_change {
@@ -526,11 +516,6 @@ define elasticsearch::plugin (
   } else {
     $file_source = undef
   }
-
-  if ($url != undef) {
-    validate_string($url)
-  }
-  validate_absolute_path($configdir)
 
   $_module_dir = es_plugin_name($module_dir, $name)
 

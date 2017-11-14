@@ -102,7 +102,7 @@
         <span class='name'>ensure</span>
       
       
-        <span class='type'>(<tt>String</tt>)</span>
+        <span class='type'>(<tt>Enum['absent', 'present']</tt>)</span>
       
       
         <em class="default">(defaults to: <tt>&#39;present&#39;</tt>)</em>
@@ -211,27 +211,24 @@ href="mailto:tyler.langlois@elastic.co">tyler.langlois@elastic.co</a></p>
 53
 54
 55
-56
-57</pre>
+56</pre>
       </td>
       <td>
         <pre class="code"><span class="info file"># File 'manifests/user.pp', line 24</span>
 
 define elasticsearch::user (
-  $password,
-  $ensure = &#39;present&#39;,
-  $roles  = [],
+  String                    $password,
+  Enum[&#39;absent&#39;, &#39;present&#39;] $ensure = &#39;present&#39;,
+  Array                     $roles  = [],
 ) {
-  validate_string($ensure, $password)
-  validate_array($roles)
-  if $elasticsearch::security_plugin == undef or ! ($elasticsearch::security_plugin in [&#39;shield&#39;, &#39;x-pack&#39;]) {
-    fail(&quot;\&quot;${elasticsearch::security_plugin}\&quot; is not a valid security_plugin parameter value&quot;)
+  if $elasticsearch::security_plugin == undef {
+    fail(&quot;\&quot;${elasticsearch::security_plugin}\&quot; required&quot;)
   }
-
 
   if $password =~ /^\$2a\$/ {
     elasticsearch_user { $name:
       ensure          =&gt; $ensure,
+      configdir       =&gt; $elasticsearch::configdir,
       hashed_password =&gt; $password,
     }
   } else {
@@ -240,9 +237,10 @@ define elasticsearch::user (
       &#39;x-pack&#39; =&gt; &#39;users&#39;,
     }
     elasticsearch_user { $name:
-      ensure   =&gt; $ensure,
-      password =&gt; $password,
-      provider =&gt; $_provider,
+      ensure    =&gt; $ensure,
+      configdir =&gt; $elasticsearch::configdir,
+      password  =&gt; $password,
+      provider  =&gt; $_provider,
     }
   }
 
