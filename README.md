@@ -21,7 +21,7 @@
 
 This module sets up [Elasticsearch](https://www.elastic.co/overview/elasticsearch/) instances with additional resource for plugins, templates, and more.
 
-This module is actively tested against Elasticsearch 2.x and 5.x.
+This module is actively tested against Elasticsearch 2.x, 5.x, and 6.x.
 
 ## Setup
 
@@ -62,15 +62,11 @@ Declare the top-level `elasticsearch` class (managing repositories) and set up a
 ```puppet
 include ::java
 
-class { 'elasticsearch':
-  manage_repo  => true,
-  repo_version => '5.x',
-}
-
+class { 'elasticsearch': }
 elasticsearch::instance { 'es-01': }
 ```
 
-**Note**: Elasticsearch 5.x requires a recent version of the JVM.
+**Note**: Elasticsearch 6.x requires a recent version of the JVM.
 
 ## Usage
 
@@ -83,7 +79,7 @@ The following are some parameters that may be useful to override:
 
 ```puppet
 class { 'elasticsearch':
-  version => '1.4.2'
+  version => '6.0.0'
 }
 ```
 
@@ -208,7 +204,7 @@ Note that `module_dir` is where the plugin will install itself to and must match
 #### From an official repository
 
 ```puppet
-elasticsearch::plugin { 'lmenezes/elasticsearch-kopf':
+elasticsearch::plugin { 'x-pack':
   instances => 'instance_name'
 }
 ```
@@ -257,7 +253,7 @@ elasticsearch::plugin { 'elasticsearch/elasticsearch-cloud-aws/2.4.1': }
 
 Please note that this does not work when you specify 'latest' as a version number.
 
-#### ES 2.x official plugins
+#### ES 2.x, 5.x, and 6.x official plugins
 For the Elasticsearch commercial plugins you can refer them to the simple name.
 
 See [Plugin installation](https://www.elastic.co/guide/en/elasticsearch/plugins/current/installation.html) for more details.
@@ -445,12 +441,13 @@ class { 'elasticsearch':
 }
 ```
 
-For 2.x versions of Elasticsearch, use `repo_version => '2.x'`.
+For 2.x versions of Elasticsearch onward, use the major version of Elasticsearch suffixed by an `x`.
+For example:
 
 ```puppet
 class { 'elasticsearch':
   manage_repo  => true,
-  repo_version => '2.x',
+  repo_version => '6.x',
 }
 ```
 
@@ -567,7 +564,7 @@ For example, the following manifest will install Elasticseach with a single inst
 ```puppet
 class { 'elasticsearch':
   manage_repo     => true,
-  repo_version    => '5.x',
+  repo_version    => '6.x',
   security_plugin => 'x-pack',
 }
 
