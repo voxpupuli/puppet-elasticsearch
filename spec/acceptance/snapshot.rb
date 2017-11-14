@@ -9,6 +9,7 @@ describe 'Integration testing' do
           'cluster.name' => '#{test_settings['cluster_name']}',
           'network.host' => '0.0.0.0',
         },
+        manage_repo => false,
         package_url => '#{test_settings['integration_package'][:file]}',
         restart_on_change => true,
         security_plugin => 'x-pack',
@@ -56,7 +57,7 @@ describe 'Integration testing' do
       it { should be_installed }
     end
 
-    describe file(test_settings['pid_a']) do
+    describe file(test_settings['pid_a']), :with_retries do
       it { should be_file }
       its(:content) { should match(/[0-9]+/) }
     end
