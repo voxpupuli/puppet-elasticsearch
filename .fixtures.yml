@@ -18,9 +18,6 @@ fixtures:
     apt:
       repo: puppetlabs/apt
       ref: 2.2.2
-    tea:
-      repo: puppet/tea
-      ref: 0.2.0
     zypprepo:
       repo: darin/zypprepo
       ref: 1.0.2
