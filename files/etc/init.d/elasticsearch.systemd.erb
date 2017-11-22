@@ -15,7 +15,7 @@ Group=<%= @resource[:group] %>
 ExecStartPre=-/usr/share/elasticsearch/bin/elasticsearch-systemd-pre-exec
 
 ExecStart=/usr/share/elasticsearch/bin/elasticsearch \
-                                                -p <%= @resource[:pid_dir] %>/elasticsearch-<%= @resource[:instance] %>.pid \
+                                                -p <%= @resource[:pid_dir] %>/elasticsearch-<%= @resource[:instance] %>.pid --quiet \
                                                 <%= opt_flags.join(' ') %>
 
 # StandardOutput is configured to redirect to journalctl since
