@@ -1,1 +1,1 @@
-type Elasticsearch::Multipath = Variant[Array[Tea::Absolutepath], Tea::Absolutepath]
+type Elasticsearch::Multipath = Variant[Array[Stdlib::Absolutepath], Stdlib::Absolutepath]
