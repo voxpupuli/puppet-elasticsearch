@@ -2,6 +2,7 @@
 
 #### Features
 * Removed `tea` module dependency for pre-existing types in `stdlib` module.
+* Support `file` as a `file_rolling_type`.
 
 #### Fixes
 
