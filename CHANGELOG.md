@@ -1,4 +1,11 @@
-## 6.0.0 (Month Day, Year)
+## x.x.x (Month Day, Year)
+
+#### Features
+* Removed `tea` module dependency for pre-existing types in `stdlib` module.
+
+#### Fixes
+
+## 6.0.0 (November 14, 2017)
 
 Major version upgrade with several important deprecations:
 

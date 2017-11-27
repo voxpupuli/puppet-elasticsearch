@@ -53,15 +53,15 @@
 #
 define elasticsearch::plugin (
   Enum['absent', 'present']      $ensure         = 'present',
-  Tea::Absolutepath              $configdir      = $elasticsearch::configdir,
+  Stdlib::Absolutepath           $configdir      = $elasticsearch::configdir,
   Variant[String, Array[String]] $instances      = [],
   Optional[String]               $module_dir     = undef,
   Optional[String]               $proxy_host     = undef,
   Optional[String]               $proxy_password = undef,
-  Optional[Tea::Port]            $proxy_port     = undef,
+  Optional[Integer[0, 65535]]    $proxy_port     = undef,
   Optional[String]               $proxy_username = undef,
   Optional[String]               $source         = undef,
-  Optional[Tea::HTTPUrl]         $url            = undef,
+  Optional[Stdlib::HTTPUrl]      $url            = undef,
 ) {
 
   include elasticsearch

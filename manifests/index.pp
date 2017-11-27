@@ -43,17 +43,17 @@
 # @author Tyler Langlois <tyler.langlois@elastic.co>
 #
 define elasticsearch::index (
-  Enum['absent', 'present']   $ensure                  = 'present',
-  Optional[String]            $api_basic_auth_password = $elasticsearch::api_basic_auth_password,
-  Optional[String]            $api_basic_auth_username = $elasticsearch::api_basic_auth_username,
-  Optional[Tea::Absolutepath] $api_ca_file             = $elasticsearch::api_ca_file,
-  Optional[Tea::Absolutepath] $api_ca_path             = $elasticsearch::api_ca_path,
-  String                      $api_host                = $elasticsearch::api_host,
-  Tea::Port                   $api_port                = $elasticsearch::api_port,
-  Enum['http', 'https']       $api_protocol            = $elasticsearch::api_protocol,
-  Integer                     $api_timeout             = $elasticsearch::api_timeout,
-  Hash                        $settings                = {},
-  Boolean                     $validate_tls            = $elasticsearch::validate_tls,
+  Enum['absent', 'present']      $ensure                  = 'present',
+  Optional[String]               $api_basic_auth_password = $elasticsearch::api_basic_auth_password,
+  Optional[String]               $api_basic_auth_username = $elasticsearch::api_basic_auth_username,
+  Optional[Stdlib::Absolutepath] $api_ca_file             = $elasticsearch::api_ca_file,
+  Optional[Stdlib::Absolutepath] $api_ca_path             = $elasticsearch::api_ca_path,
+  String                         $api_host                = $elasticsearch::api_host,
+  Integer[0, 65535]              $api_port                = $elasticsearch::api_port,
+  Enum['http', 'https']          $api_protocol            = $elasticsearch::api_protocol,
+  Integer                        $api_timeout             = $elasticsearch::api_timeout,
+  Hash                           $settings                = {},
+  Boolean                        $validate_tls            = $elasticsearch::validate_tls,
 ) {
 
   es_instance_conn_validator { "${name}-index-conn-validator":
