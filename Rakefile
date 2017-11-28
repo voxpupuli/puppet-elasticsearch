@@ -185,19 +185,3 @@ namespace :artifacts do
     FileUtils.rm_rf(Dir.glob('spec/fixtures/artifacts/*'))
   end
 end
-
-def fetch_archives(archives)
-  archives.each do |url, orig_fp|
-    fp = "spec/fixtures/artifacts/#{orig_fp}"
-    if File.exist? fp
-      if fp.end_with? 'tar.gz' and !system("tar -tzf #{fp} &>/dev/null")
-        puts "Archive #{fp} corrupt, re-fetching..."
-        File.delete fp
-      else
-        puts "Already retrieved intact archive #{fp}..."
-        next
-      end
-    end
-    get url, fp
-  end
-end
