@@ -123,6 +123,15 @@ shared_examples 'plugin provider' do |version|
       end
     end # of setup
 
+    describe 'java_opts' do
+      it 'uses authentication credentials' do
+        resource[:java_opts] = ['-Des.plugins.staging=4a2ffaf5']
+        expect(provider.with_environment do
+          ENV['ES_JAVA_OPTS']
+        end).to eq('-Des.plugins.staging=4a2ffaf5')
+      end
+    end
+
     describe 'plugin_name' do
       let(:resource_name) { 'appbaseio/dejaVu' }
 

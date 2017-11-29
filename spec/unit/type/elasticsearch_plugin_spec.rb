@@ -5,7 +5,7 @@ describe Puppet::Type.type(:elasticsearch_plugin) do
 
   describe 'input validation' do
     describe 'when validating attributes' do
-      %i[configdir name source url proxy].each do |param|
+      %i[configdir java_opts name source url proxy].each do |param|
         it "should have a #{param} parameter" do
           expect(described_class.attrtype(param)).to eq(:param)
         end
