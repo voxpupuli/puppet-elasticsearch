@@ -318,7 +318,7 @@ class elasticsearch (
   Elasticsearch::Multipath                        $datadir,
   Boolean                                         $datadir_instance_directories,
   String                                          $default_logging_level,
-  Stdlib::Absolutepath                            $defaults_location,
+  Optional[Stdlib::Absolutepath]                  $defaults_location,
   Optional[String]                                $download_tool,
   String                                          $elasticsearch_group,
   String                                          $elasticsearch_user,
