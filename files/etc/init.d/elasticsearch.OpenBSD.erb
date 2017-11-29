@@ -15,7 +15,7 @@ rc_reload=NO
 rc_start() {
 	${rcexec} \
 		"ES_INCLUDE=\"/etc/elasticsearch/elasticsearch.in.sh\" \
-		"CONF_DIR=\"/etc/elasticsearch\"" \
+		"ES_JVM_OPTIONS=\"/etc/elasticsearch/<%= @resource[:instance] %>/jvm.options\"" \
 		JAVA_HOME=\"$(/usr/local/bin/javaPathHelper -h elasticsearch)\" \
 		${daemon} ${daemon_flags}"
 }
