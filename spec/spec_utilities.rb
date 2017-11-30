@@ -64,3 +64,16 @@ def fetch_archives(archives)
     get url, fp
   end
 end
+
+def pid_for(instance)
+  if fact('operatingsystem') == 'Ubuntu' \
+      and Gem::Version.new(fact('operatingsystemrelease')) \
+      < Gem::Version.new('15.04')
+    "/var/run/elasticsearch-#{instance}.pid"
+  elsif fact('operatingsystem') == 'Debian' \
+      and fact('lsbmajdistrelease').to_i <= 7
+    "/var/run/elasticsearch-#{instance}.pid"
+  else
+    "/var/run/elasticsearch/elasticsearch-#{instance}.pid"
+  end
+end
