@@ -1,4 +1,6 @@
-shared_examples 'basic acceptance tests' do |instance|
+require 'json'
+
+shared_examples 'basic acceptance tests' do |instance, es_port|
   context 'manifest' do
     it 'applies cleanly' do
       apply_manifest manifest, :catch_failures => true
@@ -16,24 +18,23 @@ shared_examples 'basic acceptance tests' do |instance|
     describe package('elasticsearch') do
       it { should be_installed }
     end
-  end
 
-    describe file(test_settings['pid_a']) do
+    describe file(pid_for(instance)) do
       it { should be_file }
       its(:content) { should match(/[0-9]+/) }
     end
 
-    describe file('/etc/elasticsearch/es-01/elasticsearch.yml') do
+    describe file("/etc/elasticsearch/#{instance}/elasticsearch.yml") do
       it { should be_file }
-      it { should contain 'name: elasticsearch001' }
-      it { should contain '/var/lib/elasticsearch/es-01' }
+      it { should contain "name: #{node_name}" }
+      it { should contain "/var/lib/elasticsearch/#{instance}" }
     end
 
     describe file('/usr/share/elasticsearch/templates_import') do
       it { should be_directory }
     end
 
-    describe file('/var/lib/elasticsearch/es-01') do
+    describe file("/var/lib/elasticsearch/#{instance}") do
       it { should be_directory }
     end
 
@@ -41,20 +42,18 @@ shared_examples 'basic acceptance tests' do |instance|
       it { should be_directory }
     end
 
-    describe file('/etc/elasticsearch/es-01/scripts') do
+    describe file("/etc/elasticsearch/#{instance}/scripts") do
       it { should be_symlink }
     end
 
-    describe port(test_settings['port_a']) do
+    describe port(es_port) do
       it 'open', :with_retries do
         should be_listening
       end
     end
 
     describe server :container do
-      describe http(
-        "http://localhost:#{test_settings['port_a']}/_nodes/_local"
-      ) do
+      describe http("http://localhost:#{es_port}/_nodes/_local") do
         it 'serves requests', :with_retries do
           expect(response.status).to eq(200)
         end
@@ -64,35 +63,8 @@ shared_examples 'basic acceptance tests' do |instance|
           expect(
             json['settings']['path']
           ).to include(
-            'data' => '/var/lib/elasticsearch/es-01'
+            'data' => "/var/lib/elasticsearch/#{instance}"
           )
-        end
-      end
-    end
-  end
-
-  context 'example manifest' do
-    it { apply_manifest(manifest, :catch_failures => true) }
-    it { apply_manifest(manifest, :catch_changes  => true) }
-
-    describe package('kibana') do
-      it { is_expected.to be_installed }
-    end
-
-    describe service('kibana') do
-      it { is_expected.to be_enabled }
-      it { is_expected.to be_running }
-    end
-
-    describe port(5602) { it { should be_listening } }
-
-    describe server :container do
-      describe http('http://localhost:5602') do
-        it('returns OK', :api) { expect(response.status).to eq(200) }
-        it('is live', :api) { expect(response['kbn-name']).to eq('kibana') }
-        it 'installs the correct version', :api do
-          ver = version.count('-') >= 1 ? version.split('-')[0..-2].join('-') : version
-          expect(response['kbn-version']).to eq(ver)
         end
       end
     end
