@@ -21,6 +21,9 @@
 # @param instances
 #   Specify all the instances related
 #
+# @param java_opts
+#   Array of Java options to be passed to `ES_JAVA_OPTS`
+#
 # @param module_dir
 #   Directory name where the module has been installed
 #   This is automatically generated based on the module name
@@ -55,6 +58,7 @@ define elasticsearch::plugin (
   Enum['absent', 'present']      $ensure         = 'present',
   Stdlib::Absolutepath           $configdir      = $elasticsearch::configdir,
   Variant[String, Array[String]] $instances      = [],
+  Array[String]                  $java_opts      = [],
   Optional[String]               $module_dir     = undef,
   Optional[String]               $proxy_host     = undef,
   Optional[String]               $proxy_password = undef,
@@ -127,6 +131,7 @@ define elasticsearch::plugin (
     ensure                     => $ensure,
     configdir                  => $configdir,
     elasticsearch_package_name => $elasticsearch::package_name,
+    java_opts                  => $java_opts,
     source                     => $file_source,
     url                        => $url,
     proxy                      => $_proxy,
