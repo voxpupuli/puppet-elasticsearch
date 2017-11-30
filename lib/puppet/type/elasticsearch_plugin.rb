@@ -20,6 +20,11 @@ Puppet::Type.newtype(:elasticsearch_plugin) do
     desc 'Name of the system Elasticsearch package.'
   end
 
+  newparam(:java_opts) do
+    desc 'Optional array of Java options for ES_JAVA_OPTS.'
+    defaultto []
+  end
+
   newparam(:url) do
     desc 'Url of the package'
   end
