@@ -5,6 +5,7 @@
 * Support `file` as a `file_rolling_type`.
 
 #### Fixes
+* Fixed issue with `ES_PATH_CONF` being unset in CentOS 6 SysV init files.
 
 ## 6.0.0 (November 14, 2017)
 
