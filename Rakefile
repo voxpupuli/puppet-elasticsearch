@@ -117,6 +117,7 @@ beaker_node_sets.each do |node|
   desc "Run the snapshot tests against the #{node} nodeset"
   task "beaker:#{node}:snapshot" => %w[
     spec_prep
+    artifact:prep
     artifact:snapshot:deb
     artifact:snapshot:rpm
   ] do
