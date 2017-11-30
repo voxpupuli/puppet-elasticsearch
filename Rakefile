@@ -3,7 +3,6 @@ require 'rubygems'
 require 'puppetlabs_spec_helper/rake_tasks'
 require 'puppet_blacksmith/rake_tasks'
 require 'net/http'
-require 'nokogiri'
 require 'uri'
 require 'fileutils'
 require 'rspec/core/rake_task'
@@ -49,7 +48,7 @@ PuppetLint.configuration.log_format = \
 
 # Append custom cleanup tasks to :clean
 task :clean => %i[
-  artifacts:clean
+  artifact:clean
   spec_clean
 ]
 
@@ -91,7 +90,7 @@ RSpec::Core::RakeTask.new(:spec_unit) do |t|
 end
 task :spec_unit => :spec_prep
 
-task :beaker => [:spec_prep, 'artifacts:prep']
+task :beaker => [:spec_prep, 'artifact:prep']
 
 desc 'Run all linting/unit tests.'
 task :intake => %i[
@@ -102,26 +101,36 @@ task :intake => %i[
   spec_puppet
 ]
 
-desc 'Run snapshot tests'
-RSpec::Core::RakeTask.new('beaker:snapshot') do |c|
-  c.pattern = 'spec/acceptance/snapshot.rb'
-  if Rake::Task.task_defined? 'artifacts:snapshot:not_found'
+# Plumbing for snapshot tests
+desc 'Run the snapshot tests'
+RSpec::Core::RakeTask.new('beaker:snapshot') do |task|
+  task.rspec_opts = ['--color']
+  task.pattern = 'spec/acceptance/snapshot.rb'
+
+  if Rake::Task.task_defined? 'artifact:snapshot:not_found'
     puts 'No snapshot artifacts found, skipping snapshot tests.'
     exit(0)
   end
 end
-task 'beaker:snapshot' => [
-  'artifacts:prep',
-  'artifacts:snapshot:deb',
-  'artifacts:snapshot:rpm',
-  :spec_prep
-]
+
+beaker_node_sets.each do |node|
+  desc "Run the snapshot tests against the #{node} nodeset"
+  task "beaker:#{node}:snapshot" => %w[
+    spec_prep
+    artifact:snapshot:deb
+    artifact:snapshot:rpm
+  ] do
+    ENV['BEAKER_set'] = node
+    Rake::Task['beaker:snapshot'].reenable
+    Rake::Task['beaker:snapshot'].invoke
+  end
+end
 
 desc 'Run acceptance tests'
 RSpec::Core::RakeTask.new('beaker:acceptance') do |c|
   c.pattern = 'spec/acceptance/0*_spec.rb'
 end
-task 'beaker:acceptance' => [:spec_prep, 'artifacts:prep']
+task 'beaker:acceptance' => [:spec_prep, 'artifact:prep']
 
 desc 'Setup a dummy host only, do not run any tests'
 RSpec::Core::RakeTask.new('beaker:noop') do |c|
@@ -130,7 +139,7 @@ RSpec::Core::RakeTask.new('beaker:noop') do |c|
 end
 task 'beaker:noop' => [:spec_prep]
 
-namespace :artifacts do
+namespace :artifact do
   desc 'Fetch artifacts for tests'
   task :prep do
     dl_base = 'https://download.elastic.co/elasticsearch/elasticsearch'
@@ -143,23 +152,48 @@ namespace :artifacts do
   end
 
   namespace :snapshot do
-    dls = Nokogiri::HTML(open('https://www.elastic.co/downloads/elasticsearch'))
-    div = dls.at_css('#preview-release-id')
+    manifest = JSON.parse(
+      open('https://snapshots.elastic.co/manifest.json').read
+    )
+    ENV['snapshot_version'] = manifest['version']
 
-    if div.nil?
-      puts 'No preview release available; skipping snapshot download'
+    downloads = manifest['projects']['elasticsearch']['packages'].select do |pkg, _|
+      pkg =~ /(?:deb|rpm)/
+    end.map do |package, urls|
+      [
+        package.split('.').last,
+        urls.map do |type, remote|
+          # This is temporary and can be removed once the links work.
+          uri = URI(remote)
+
+          [
+            type,
+            "#{uri.scheme}://#{uri.host}/#{uri.path.split('/')[2..-1].join('/')}"
+          ]
+        end.to_h
+      ]
+    end.to_h
+
+    # We end up with something like:
+    # {
+    #   'rpm' => {'url' => 'https://...', 'sha_url' => 'https://...'},
+    #   'deb' => {'url' => 'https://...', 'sha_url' => 'https://...'}
+    # }
+    # Note that checksums are currently broken on the Elastic unified release
+    # side; once they start working we can verify them.
+
+    if downloads.empty?
+      puts 'No snapshot release available; skipping snapshot download'
       %w[deb rpm].each { |ext| task ext }
       task 'not_found'
     else
-      div
-        .at_css('.downloads')
-        .xpath('li/a[contains(text(), "rpm") or contains(text(), "deb")]')
-        .each do |anchor|
-        filename = artifact(anchor.attr('href'))
-        link = artifact("elasticsearch-snapshot.#{anchor.text.split(' ').first.downcase}")
-        checksum = filename + '.sha1'
+      # Download snapshot files
+      downloads.each_pair do |extension, urls|
+        filename = artifact urls['url']
+        checksum = artifact urls['sha_url']
+        link = artifact "elasticsearch-snapshot.#{extension}"
 
-        task anchor.text.split(' ').first.downcase => link
+        task extension => link
         file link => filename do
           unless File.exist?(link) and File.symlink?(link) \
               and File.readlink(link) == filename
@@ -168,13 +202,14 @@ namespace :artifacts do
           end
         end
 
-        file filename => checksum do
-          get anchor.attr('href'), filename
+        # file filename => checksum do
+        file filename do
+          get urls['url'], filename
         end
 
         task checksum do
           File.delete checksum if File.exist? checksum
-          get "#{anchor.attr('href')}.sha1", checksum
+          get urls['sha_url'], checksum
         end
       end
     end

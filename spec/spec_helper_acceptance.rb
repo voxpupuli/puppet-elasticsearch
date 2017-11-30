@@ -17,6 +17,10 @@ end
 
 RSpec.configure do |c|
   c.add_setting :test_settings, :default => {}
+  unless ENV['snapshot_version'].nil?
+    c.add_setting :snapshot_version
+    c.snapshot_version = ENV['snapshot_version']
+  end
 
   # rspec-retry
   c.display_try_failure_messages = true
