@@ -46,6 +46,8 @@ jobs:
      - TASK=beaker:ubuntu-server-1604-x64
    - stage: snapshots
      env:
+     - TASK=beaker:ubuntu-server-1404-x64:snapshot
+   - env:
      - TASK=beaker:ubuntu-server-1604-x64:snapshot
    - env:
      - TASK=beaker:centos-6-x64:snapshot
