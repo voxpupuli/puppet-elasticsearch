@@ -168,7 +168,7 @@ RSpec.configure do |c|
     hosts.each do |host|
       copy_hiera_data_to(host, 'spec/fixtures/hiera/hieradata/')
 
-      modules = %w[archive datacat java java_ks stdlib]
+      modules = %w[archive datacat java java_ks stdlib elastic_stack]
 
       dist_module = {
         'Debian' => ['apt'],

@@ -4,13 +4,15 @@ describe 'elasticsearch 5.x', :if => v5x_capable? do
   describe 'basic installation', :with_cleanup do
     describe 'manifest' do
       pp = <<-EOS
+        class { 'elastic_stack::repo':
+          version => #{test_settings['repo_version']},
+        }
         class { 'elasticsearch':
           config => {
             'node.name' => 'elasticsearch001',
             'cluster.name' => '#{test_settings['cluster_name']}',
             'network.host' => '0.0.0.0',
           },
-          repo_version => '#{test_settings['repo_version5x']}',
           restart_on_change => true,
         }
 

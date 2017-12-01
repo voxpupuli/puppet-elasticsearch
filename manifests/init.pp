@@ -180,31 +180,9 @@
 #   Whether or not keys present in the keystore will be removed if they are not
 #   present in the specified secrets hash.
 #
-# @param repo_baseurl
-#   If a custom repository URL is needed (such as for installations behind
-#   restrictive firewalls), this parameter overrides the upstream repository
-#   URL. Note that any additional changes to the repository metdata (such as
-#   signing keys and so on) will need to be handled appropriately.
-#
-# @param repo_key_id
-#   The apt GPG key id.
-#
-# @param repo_key_source
-#   URL of the repository GPG key.
-#
-# @param repo_priority
-#   Repository priority. yum and apt supported.
-#
-# @param repo_proxy
-#   URL for repository proxy.
-#
 # @param repo_stage
 #   Use stdlib stage setup for managing the repo instead of relationship
 #   ordering.
-#
-# @param repo_version
-#   Elastic repositories are versioned per major version (5.x, 6.x). This
-#   parameter controls which version to use.
 #
 # @param restart_on_change
 #   Determines if the application should be automatically restarted
@@ -348,13 +326,7 @@ class elasticsearch (
   Boolean                                         $purge_configdir,
   Boolean                                         $purge_package_dir,
   Boolean                                         $purge_secrets,
-  Optional[String]                                $repo_baseurl,
-  String                                          $repo_key_id,
-  Stdlib::HTTPUrl                                 $repo_key_source,
-  Optional[Integer]                               $repo_priority,
-  Optional[String]                                $repo_proxy,
   Variant[Boolean, String]                        $repo_stage,
-  String                                          $repo_version,
   Boolean                                         $restart_on_change,
   Hash                                            $roles,
   Integer                                         $rolling_file_max_backup_index,
@@ -423,9 +395,9 @@ class elasticsearch (
   if ($manage_repo == true) {
     if ($repo_stage == false) {
       # Use normal relationship ordering
-      contain elasticsearch::repo
+      contain elastic_stack::repo
 
-      Class['elasticsearch::repo']
+      Class['elastic_stack::repo']
       -> Class['elasticsearch::package']
 
     } else {
@@ -434,7 +406,8 @@ class elasticsearch (
         stage { $repo_stage:  before => Stage['main'] }
       }
 
-      class { 'elasticsearch::repo':
+      include elastic_stack::repo
+      Class<|title == 'elastic_stack::repo'|>{
         stage => $repo_stage,
       }
     }

@@ -5,12 +5,14 @@ describe '::elasticsearch' do
   describe 'single instance' do
     describe 'manifest' do
       pp = <<-EOS
+        class { 'elastic_stack::repo':
+          version => #{test_settings['repo_version']},
+        }
         class { 'elasticsearch':
           config => {
             'cluster.name' => '#{test_settings['cluster_name']}',
             'network.host' => '0.0.0.0',
           },
-          repo_version => '#{test_settings['repo_version']}',
         }
 
         elasticsearch::instance { 'es-01':
@@ -84,7 +86,7 @@ describe '::elasticsearch' do
           expect(
             json['settings']['path']
           ).to include(
-            'data' => '/var/lib/elasticsearch/es-01'
+            'data' => ['/var/lib/elasticsearch/es-01']
           )
         end
       end
@@ -94,12 +96,14 @@ describe '::elasticsearch' do
   describe 'multiple instances' do
     it 'should run successfully' do
       pp = <<-EOS
+        class { 'elastic_stack::repo':
+          version => #{test_settings['repo_version']},
+        }
         class { 'elasticsearch':
           config => {
             'cluster.name' => '#{test_settings['cluster_name']}',
             'network.host' => '0.0.0.0',
           },
-          repo_version => '#{test_settings['repo_version']}',
         }
 
         elasticsearch::instance { 'es-01':

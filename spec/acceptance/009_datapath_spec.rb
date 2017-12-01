@@ -5,12 +5,14 @@ describe 'elasticsearch::datadir' do
   describe 'single data dir from class', :with_cleanup do
     describe 'manifest' do
       pp = <<-EOS
+        class { 'elastic_stack::repo':
+          version => #{test_settings['repo_version']},
+        }
         class { 'elasticsearch':
           config => {
             'cluster.name' => '#{test_settings['cluster_name']}',
             'network.host' => '0.0.0.0',
           },
-          repo_version => '#{test_settings['repo_version']}',
           datadir => '/var/lib/elasticsearch-data'
         }
 
@@ -53,7 +55,7 @@ describe 'elasticsearch::datadir' do
           json = JSON.parse(response.body)['nodes'].values.first
           expect(
             json['settings']['path']['data']
-          ).to eq('/var/lib/elasticsearch-data/es-01')
+          ).to eq(['/var/lib/elasticsearch-data/es-01'])
         end
       end
     end
@@ -62,12 +64,14 @@ describe 'elasticsearch::datadir' do
   describe 'single data dir from instance', :with_cleanup do
     describe 'manifest' do
       pp = <<-EOS
+        class { 'elastic_stack::repo':
+          version => #{test_settings['repo_version']},
+        }
         class { 'elasticsearch':
           config => {
             'cluster.name' => '#{test_settings['cluster_name']}',
             'network.host' => '0.0.0.0',
           },
-          repo_version => '#{test_settings['repo_version']}',
         }
 
         elasticsearch::instance { 'es-01':
@@ -119,12 +123,14 @@ describe 'elasticsearch::datadir' do
   describe 'multiple data dirs from class', :with_cleanup do
     describe 'manifest' do
       pp = <<-EOS
+        class { 'elastic_stack::repo':
+          version => #{test_settings['repo_version']},
+        }
         class { 'elasticsearch':
           config => {
             'cluster.name' => '#{test_settings['cluster_name']}',
             'network.host' => '0.0.0.0',
           },
-          repo_version => '#{test_settings['repo_version']}',
           datadir => [
             '/var/lib/elasticsearch-01',
             '/var/lib/elasticsearch-02'
@@ -186,12 +192,14 @@ describe 'elasticsearch::datadir' do
   describe 'multiple data dirs from instance', :with_cleanup do
     describe 'manifest' do
       pp = <<-EOS
+        class { 'elastic_stack::repo':
+          version => #{test_settings['repo_version']},
+        }
         class { 'elasticsearch':
           config => {
             'cluster.name' => '#{test_settings['cluster_name']}',
             'network.host' => '0.0.0.0',
           },
-          repo_version => '#{test_settings['repo_version']}',
         }
 
         elasticsearch::instance { 'es-01':

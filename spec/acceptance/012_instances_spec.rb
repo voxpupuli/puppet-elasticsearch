@@ -5,12 +5,14 @@ describe 'elasticsearch::instance' do
   describe 'two instances' do
     describe 'manifest' do
       pp = <<-EOS
+        class { 'elastic_stack::repo':
+          version => #{test_settings['repo_version']},
+        }
         class { 'elasticsearch':
           config => {
             'cluster.name' => '#{test_settings['cluster_name']}',
             'network.host' => '0.0.0.0',
           },
-          repo_version => '#{test_settings['repo_version']}',
         }
 
         elasticsearch::instance { 'es-01':
@@ -110,12 +112,14 @@ describe 'elasticsearch::instance' do
   describe 'removing instance 2', :with_cleanup do
     describe 'manifest' do
       pp = <<-EOS
+        class { 'elastic_stack::repo':
+          version => #{test_settings['repo_version']},
+        }
         class { 'elasticsearch':
           config => {
             'cluster.name' => '#{test_settings['cluster_name']}',
             'network.host' => '0.0.0.0',
           },
-          repo_version => '#{test_settings['repo_version']}',
         }
 
         elasticsearch::instance { 'es-01':
