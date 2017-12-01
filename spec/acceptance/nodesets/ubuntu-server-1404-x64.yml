@@ -14,6 +14,7 @@ HOSTS:
       - add-apt-repository -y ppa:openjdk-r/ppa
       - apt-get update
       - apt-get install -y openjdk-8-jre-headless
+      - update-ca-certificates -f
       - ln -sf /sbin/initctl.distrib /sbin/initctl
       - locale-gen en_US en_US.UTF-8
       - dpkg-reconfigure locales
