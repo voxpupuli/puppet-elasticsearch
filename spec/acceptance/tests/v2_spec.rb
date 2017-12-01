@@ -1,10 +1,11 @@
 require 'spec_helper_acceptance'
-require 'helpers/acceptance/tests/class_shared_examples.rb'
+require 'helpers/acceptance/tests/basic_shared_examples.rb'
+require 'helpers/acceptance/tests/template_shared_examples.rb'
+require 'helpers/acceptance/tests/removal_shared_examples.rb'
 
 describe 'elasticsearch class v2' do
-  let(:node_name) { 'elasticsearch001' }
   let(:manifest) do
-    <<-MANIFEST
+    <<~MANIFEST
       class { 'elasticsearch':
         config => {
           'cluster.name' => '#{test_settings['cluster_name']}',
@@ -12,15 +13,41 @@ describe 'elasticsearch class v2' do
         },
         repo_version => '2.x',
       }
-
-      elasticsearch::instance { 'es-01':
-        config => {
-          'node.name' => '#{node_name}',
-          'http.port' => 9200,
-        }
-      }
     MANIFEST
   end
 
-  include_examples 'class manifests', 'es-01', '9200'
+  # Single-node
+  include_examples(
+    'basic acceptance tests',
+    'es-01' => {
+      'http.port' => 9200,
+      'node.name' => 'elasticsearch001'
+    }
+  )
+
+  # Dual-node
+  include_examples(
+    'basic acceptance tests',
+    'es-01' => {
+      'http.port' => 9200,
+      'node.name' => 'elasticsearch001'
+    },
+    'es-02' => {
+      'http.port' => 9201,
+      'node.name' => 'elasticsearch002'
+    }
+  )
+
+  include_examples 'module removal', %w[es-01 es-02]
+
+  include_examples(
+    'template operations',
+    {
+      'es-01' => {
+        'http.port' => 9200,
+        'node.name' => 'elasticsearch001'
+      }
+    },
+    test_settings['template']
+  )
 end
