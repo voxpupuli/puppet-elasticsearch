@@ -2,10 +2,10 @@ require 'json'
 
 test_settings['cluster_name'] = SecureRandom.hex(10)
 
-test_settings['repo_version2x']          = '2.x'
-test_settings['repo_version5x']          = '5.x'
+test_settings['repo_version5']          = 5
+test_settings['repo_version6']          = 6
 # Default repo
-test_settings['repo_version']            = test_settings['repo_version2x']
+test_settings['repo_version']            = test_settings['repo_version5']
 test_settings['install_package_version'] = '2.4.2'
 test_settings['upgrade_package_version'] = '2.4.3'
 test_settings['package_name']            = 'elasticsearch'

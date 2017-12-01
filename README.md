@@ -52,7 +52,8 @@ We recommend managing your Java installation with the [puppetlabs-java](https://
 
 When using the repository management, the following module dependencies are required:
 
-* Debian/Ubuntu: [Puppetlabs/apt](http://forge.puppetlabs.com/puppetlabs/apt)
+* General: [Elastic/elastic_stack](https://forge.puppet.com/elastic/elastic_stack)
+* Debian/Ubuntu: [Puppetlabs/apt](https://forge.puppetlabs.com/puppetlabs/apt)
 * OpenSuSE/SLES: [Darin/zypprepo](https://forge.puppetlabs.com/darin/zypprepo)
 
 ### Beginning with Elasticsearch
@@ -431,32 +432,29 @@ There are two different ways of installing Elasticsearch:
 
 #### Repository
 
-This option allows you to use an existing repository for package installation.
-The `repo_version` corresponds with the `major.minor` version of Elasticsearch for versions before 2.x.
+
+##### Choosing a Elasticsearch major version
+
+This module uses the related "elastic/elastic_stack" module to manage package repositories. Since there is a separate repository for each major version of the Elastic stack, if you don't want the default version (6), it's necessary to select which version to configure, like this:
+
 
 ```puppet
+class { 'elastic_stack::repo':
+  version => 5,
+}
+
 class { 'elasticsearch':
-  manage_repo  => true,
-  repo_version => '1.4',
+  version => '5.6.4',
 }
 ```
 
-For 2.x versions of Elasticsearch onward, use the major version of Elasticsearch suffixed by an `x`.
-For example:
+##### Manual repository management
+
+You may want to manage repositories manually. You can disable automatic repository management like this:
 
 ```puppet
 class { 'elasticsearch':
-  manage_repo  => true,
-  repo_version => '6.x',
-}
-```
-
-For users who may wish to install via a local repository (for example, through a mirror), the `repo_baseurl` parameter is available:
-
-```puppet
-class { 'elasticsearch':
-  manage_repo => true,
-  repo_baseurl => 'https://repo.local/yum'
+  manage_repo => false,
 }
 ```
 
@@ -563,8 +561,6 @@ For example, the following manifest will install Elasticseach with a single inst
 
 ```puppet
 class { 'elasticsearch':
-  manage_repo     => true,
-  repo_version    => '6.x',
   security_plugin => 'x-pack',
 }
 
@@ -576,8 +572,6 @@ The following manifest will do the same, but with Shield:
 
 ```puppet
 class { 'elasticsearch':
-  manage_repo     => true,
-  repo_version    => '2.x',
   security_plugin => 'shield',
 }
 

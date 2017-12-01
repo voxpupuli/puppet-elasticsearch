@@ -11,12 +11,15 @@ describe 'elasticsearch::elasticsearch_user', :then_purge do
         group { 'esuser': ensure => 'present' }
         group { 'esgroup': ensure => 'present' }
 
+        class { 'elastic_stack::repo':
+          version => #{test_settings['repo_version']},
+        }
+
         class { 'elasticsearch':
           config => {
             'cluster.name' => '#{test_settings['cluster_name']}',
             'network.host' => '0.0.0.0',
           },
-          repo_version => '#{test_settings['repo_version']}',
           elasticsearch_user => 'esuser',
           elasticsearch_group => 'esgroup'
         }

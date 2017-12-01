@@ -8,8 +8,10 @@ describe 'elasticsearch x-pack security',
   # Template manifest
   let :base_manifest do
     <<-EOF
+      class { 'elastic_stack::repo':
+        version => #{test_settings['repo_version']},
+      }
       class { 'elasticsearch' :
-        repo_version => '#{test_settings['repo_version5x']}',
         config => {
           'cluster.name' => '#{test_settings['cluster_name']}',
           'http.port' => #{test_settings['port_a']},

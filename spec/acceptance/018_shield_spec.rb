@@ -5,8 +5,10 @@ describe 'elasticsearch shield', :with_certificates, :then_purge do
   # Template manifest
   let :base_manifest do
     <<-EOF
+      class { 'elastic_stack::repo':
+        version => #{test_settings['repo_version']},
+      }
       class { 'elasticsearch' :
-        repo_version => '#{test_settings['repo_version']}',
         config => {
           'cluster.name' => '#{test_settings['cluster_name']}',
           'http.port' => #{test_settings['port_a']},

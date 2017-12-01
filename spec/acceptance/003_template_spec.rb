@@ -18,13 +18,15 @@ describe 'elasticsearch::template', :with_cleanup do
     context 'from source', :with_cleanup do
       it 'should run successfully' do
         pp = <<-EOS
+          class { 'elastic_stack::repo':
+            version => #{test_settings['repo_version']},
+          }
           class { 'elasticsearch':
             config => {
               'node.name' => 'elasticsearch001',
               'cluster.name' => '#{test_settings['cluster_name']}',
               'network.host' => '0.0.0.0',
             },
-            repo_version => '#{test_settings['repo_version']}',
           }
 
           elasticsearch::instance { 'es-01':
@@ -67,13 +69,15 @@ describe 'elasticsearch::template', :with_cleanup do
     describe 'from content' do
       it 'should run successfully' do
         pp = <<-EOS
+          class { 'elastic_stack::repo':
+            version => #{test_settings['repo_version']},
+          }
           class { 'elasticsearch':
             config => {
               'node.name' => 'elasticsearch001',
               'cluster.name' => '#{test_settings['cluster_name']}',
               'network.host' => '0.0.0.0',
             },
-            repo_version => '#{test_settings['repo_version']}',
           }
 
           elasticsearch::instance { 'es-01':
@@ -117,13 +121,15 @@ describe 'elasticsearch::template', :with_cleanup do
   describe 'invalid json template' do
     it 'should fail to apply cleanly' do
       pp = <<-EOS
+        class { 'elastic_stack::repo':
+          version => #{test_settings['repo_version']},
+        }
         class { 'elasticsearch':
           config => {
             'node.name' => 'elasticsearch001',
             'cluster.name' => '#{test_settings['cluster_name']}',
             'network.host' => '0.0.0.0',
           },
-          repo_version => '#{test_settings['repo_version']}',
         }
 
         elasticsearch::instance { 'es-01':

@@ -4,8 +4,10 @@ require 'json'
 describe 'hiera' do
   let :base_manifest do
     <<-EOS
+      class { 'elastic_stack::repo':
+        version => #{test_settings['repo_version']},
+      }
       class { 'elasticsearch':
-        repo_version => '#{test_settings['repo_version']}',
         restart_on_change => true,
       }
     EOS
