@@ -210,12 +210,17 @@ class Puppet::Provider::ElasticPlugin < Puppet::Provider
   def with_environment(&block)
     env_vars = {
       'ES_JAVA_OPTS' => @resource[:java_opts],
-      'ES_PATH_CONF' => @resource[:configdir]
+      'ES_PATH_CONF' => @resource[:configdir],
+      'JAVA_HOME'    => @resource[:java_home]
     }
     saved_vars = {}
 
     if !is2x? and @resource[:proxy]
       env_vars['ES_JAVA_OPTS'] += proxy_args(@resource[:proxy])
+    end
+
+    if @resource[:java_home].nil? or @resource[:java_home] == ''
+      env_vars.delete('JAVA_HOME')
     end
 
     env_vars['ES_JAVA_OPTS'] = env_vars['ES_JAVA_OPTS'].join(' ')
