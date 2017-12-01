@@ -10,7 +10,10 @@ HOSTS:
     docker_cmd: ["/sbin/init"]
     docker_preserve_image: true
     docker_image_commands:
-      - apt-get install -yq libssl-dev
+      - apt-get install -yq libssl-dev software-properties-common
+      - add-apt-repository -y ppa:openjdk-r/ppa
+      - apt-get update
+      - apt-get install -y openjdk-8-jre-headless
       - ln -sf /sbin/initctl.distrib /sbin/initctl
       - locale-gen en_US en_US.UTF-8
       - dpkg-reconfigure locales

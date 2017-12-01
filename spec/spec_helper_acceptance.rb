@@ -191,12 +191,13 @@ RSpec.configure do |c|
     end
 
     # Use the Java class once before the suite of tests
-    apply_manifest <<~EOS
-      class { "java" :
-        distribution => "jre",
-        #{'package => "java-1.8.0-openjdk-headless",' if f['os']['name'] == 'CentOS' and f['os']['release']['major'].to_i == 6}
-      }
-    EOS
+    unless shell('command -v java', :accept_all_exit_codes => true).exit_code.zero?
+      apply_manifest <<~MANIFEST
+        class { "java" :
+          distribution => "jre",
+        }
+      MANIFEST
+    end
   end
 
   c.after :suite do
