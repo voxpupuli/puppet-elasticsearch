@@ -135,9 +135,6 @@ hosts.each do |host|
   scp_to host,
          snapshot_package[:src],
          snapshot_package[:dst]
-  scp_to host,
-         "#{files_dir}/elasticsearch-kopf.zip",
-         '/tmp/elasticsearch-kopf.zip'
 
   RSpec.configuration.test_settings['snapshot_package'] = \
     "file:#{snapshot_package[:dst]}"
