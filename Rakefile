@@ -147,9 +147,11 @@ namespace :artifact do
     dl_base = 'https://download.elastic.co/elasticsearch/elasticsearch'
     fetch_archives(
       'https://github.com/lmenezes/elasticsearch-kopf/archive/v2.1.1.zip' => \
-      'elasticsearch-kopf.zip',
+        'elasticsearch-kopf.zip',
       "#{dl_base}/elasticsearch-2.3.5.deb" => 'elasticsearch-2.3.5.deb',
-      "#{dl_base}/elasticsearch-2.3.5.rpm" => 'elasticsearch-2.3.5.rpm'
+      "#{dl_base}/elasticsearch-2.3.5.rpm" => 'elasticsearch-2.3.5.rpm',
+      'https://download.elastic.co/elasticsearch/release/org/elasticsearch/plugin/analysis-icu/2.4.1/analysis-icu-2.4.1.zip' => \
+        'elasticsearch-plugin-2.x_analysis-icu.zip'
     )
   end
 
