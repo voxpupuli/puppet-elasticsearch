@@ -8,6 +8,7 @@
 * Plugins can now have their `JAVA_HOME` set through the `java_home` parameter.
 
 #### Fixes
+* Fixed issue with `ES_PATH_CONF` being unset in SysV init files.
 
 ## 6.0.0 (November 14, 2017)
 
