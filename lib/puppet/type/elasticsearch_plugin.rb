@@ -25,6 +25,10 @@ Puppet::Type.newtype(:elasticsearch_plugin) do
     defaultto []
   end
 
+  newparam(:java_home) do
+    desc 'Optional string to set the environment variable JAVA_HOME.'
+  end
+
   newparam(:url) do
     desc 'Url of the package'
   end

@@ -5,6 +5,7 @@
 * Support `file` as a `file_rolling_type`.
 * Added `java_opts` parameter to `elasticsearch::plugin` resource.
 * Brought some options in `jvm.options` up-to-date with upstream.
+* Plugins can now have their `JAVA_HOME` set through the `java_home` parameter.
 
 #### Fixes
 
