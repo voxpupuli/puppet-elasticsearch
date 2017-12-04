@@ -140,7 +140,10 @@ describe 'Integration testing' do
     describe 'installing x-pack' do
       let(:pp) do
         manifest + <<~XPACK
-          elasticsearch::plugin { 'x-pack' : instances => 'es-01' }
+          elasticsearch::plugin { 'x-pack' :
+            instances => 'es-01',
+            url => "https://snapshots.elastic.co/downloads/elasticsearch-plugins/x-pack/x-pack-#{RSpec.configuration.snapshot_version}.zip",
+          }
 
           Elasticsearch::Instance['es-01'] {
             ssl                  => true,

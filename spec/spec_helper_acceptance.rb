@@ -17,6 +17,10 @@ end
 
 RSpec.configure do |c|
   c.add_setting :test_settings, :default => {}
+  unless ENV['snapshot_version'].nil?
+    c.add_setting :snapshot_version
+    c.snapshot_version = ENV['snapshot_version']
+  end
 
   # rspec-retry
   c.display_try_failure_messages = true
@@ -169,7 +173,7 @@ RSpec.configure do |c|
       dist_module = {
         'Debian' => ['apt'],
         'Suse'   => ['zypprepo'],
-        'RedHat' => ['yum', 'concat']
+        'RedHat' => ['concat']
       }[f['os']['family']]
 
       modules += dist_module unless dist_module.nil?
@@ -187,12 +191,13 @@ RSpec.configure do |c|
     end
 
     # Use the Java class once before the suite of tests
-    apply_manifest <<~EOS
-      class { "java" :
-        distribution => "jre",
-        #{'package => "java-1.8.0-openjdk-headless",' if f['os']['name'] == 'CentOS' and f['os']['release']['major'].to_i == 6}
-      }
-    EOS
+    unless shell('command -v java', :accept_all_exit_codes => true).exit_code.zero?
+      apply_manifest <<~MANIFEST
+        class { "java" :
+          distribution => "jre",
+        }
+      MANIFEST
+    end
   end
 
   c.after :suite do
