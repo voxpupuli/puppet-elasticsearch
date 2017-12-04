@@ -31,7 +31,10 @@
 #   If set to `unmanaged`, the service will not be started at boot time and Puppet
 #   does not care whether the service is running or not. For example, this may
 #   be useful if a cluster management software is used to decide when to start
-#   the service plus assuring it is running on the desired node.
+#   the service plus assuring it is running on the desired node. If set to
+#   `onboot` the service will be enabled at boot time but Puppet does not
+#   care if the service is running or not. `onboot` might be useful for
+#   migrations or other maintenance situations.
 #
 # @author Richard Pijnenburg <richard.pijnenburg@elasticsearch.com>
 # @author Tyler Langlois <tyler.langlois@elastic.co>
@@ -69,6 +72,12 @@ define elasticsearch::service::openrc (
       'unmanaged': {
         $service_ensure = undef
         $service_enable = false
+      }
+      # starts service on boot, do not care whether currently running
+      # or not
+      'onboot': {
+        $service_ensure = undef
+        $service_enable = true
       }
       default: { }
     }

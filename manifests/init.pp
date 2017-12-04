@@ -277,7 +277,10 @@
 #   If set to `unmanaged`, the service will not be started at boot time and Puppet
 #   does not care whether the service is running or not. For example, this may
 #   be useful if a cluster management software is used to decide when to start
-#   the service plus assuring it is running on the desired node.
+#   the service plus assuring it is running on the desired node. If set to
+#   `onboot` the service will be enabled at boot time but Puppet does not
+#   care if the service is running or not. `onboot` might be useful for
+#   migrations or other maintenance situations.
 #
 # @param system_key
 #   Source for the Shield/x-pack system key. Valid values are any that are
