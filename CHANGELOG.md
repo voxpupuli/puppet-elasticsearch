@@ -4,6 +4,7 @@
 * Removed `tea` module dependency for pre-existing types in `stdlib` module.
 * Support `file` as a `file_rolling_type`.
 * Added `java_opts` parameter to `elasticsearch::plugin` resource.
+* Plugins can now have their `JAVA_HOME` set through the `java_home` parameter.
 
 #### Fixes
 
