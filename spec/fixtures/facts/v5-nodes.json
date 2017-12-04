@@ -91,7 +91,6 @@
           "-XX:+UseConcMarkSweepGC",
           "-XX:CMSInitiatingOccupancyFraction=75",
           "-XX:+UseCMSInitiatingOccupancyOnly",
-          "-XX:+DisableExplicitGC",
           "-XX:+AlwaysPreTouch",
           "-Xss1m",
           "-Djava.awt.headless=true",
