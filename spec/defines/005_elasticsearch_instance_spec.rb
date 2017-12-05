@@ -774,16 +774,23 @@ describe 'elasticsearch::instance', :type => 'define' do
                 -Dio.netty.noUnsafe=true.
                 -Dio.netty.recycler.maxCapacityPerThread=0.
                 -Djava.awt.headless=true.
-                -Djdk.io.permissionsUseCanonicalPath=true.
                 -Djna.nosys=true.
                 -Dlog4j.shutdownHookEnabled=false.
-                -Dlog4j.skipJansi=true.
                 -Dlog4j2.disable.jmx=true.
                 -XX:\+AlwaysPreTouch.
                 -XX:\+HeapDumpOnOutOfMemoryError.
+                -XX:\+PrintGCApplicationStoppedTime.
+                -XX:\+PrintGCDateStamps.
+                -XX:\+PrintGCDetails.
+                -XX:\+PrintTenuringDistribution.
                 -XX:\+UseCMSInitiatingOccupancyOnly.
                 -XX:\+UseConcMarkSweepGC.
+                -XX:\+UseGCLogFileRotation.
+                -XX:-OmitStackTraceInFastThrow.
                 -XX:CMSInitiatingOccupancyFraction=75.
+                -XX:GCLogFileSize=64m.
+                -XX:NumberOfGCLogFiles=32.
+                -Xloggc:\/var\/log\/elasticsearch\/es-instance\/gc.log.
                 -Xms4g.
                 -Xmx4g.
                 -Xss1m.
@@ -810,16 +817,23 @@ describe 'elasticsearch::instance', :type => 'define' do
                 -Dio.netty.noUnsafe=true.
                 -Dio.netty.recycler.maxCapacityPerThread=0.
                 -Djava.awt.headless=true.
-                -Djdk.io.permissionsUseCanonicalPath=true.
                 -Djna.nosys=true.
                 -Dlog4j.shutdownHookEnabled=false.
-                -Dlog4j.skipJansi=true.
                 -Dlog4j2.disable.jmx=true.
                 -XX:\+AlwaysPreTouch.
                 -XX:\+HeapDumpOnOutOfMemoryError.
+                -XX:\+PrintGCApplicationStoppedTime.
+                -XX:\+PrintGCDateStamps.
+                -XX:\+PrintGCDetails.
+                -XX:\+PrintTenuringDistribution.
                 -XX:\+UseCMSInitiatingOccupancyOnly.
                 -XX:\+UseConcMarkSweepGC.
+                -XX:\+UseGCLogFileRotation.
+                -XX:-OmitStackTraceInFastThrow.
                 -XX:CMSInitiatingOccupancyFraction=75.
+                -XX:GCLogFileSize=64m.
+                -XX:NumberOfGCLogFiles=32.
+                -Xloggc:\/var\/log\/elasticsearch\/es-instance\/gc.log.
                 -Xms8g.
                 -Xmx8g.
                 -Xss1m.

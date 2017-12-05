@@ -18,14 +18,21 @@ defaults = {
   '-Djava.awt.headless=' => '-Djava.awt.headless=true',
   '-Dfile.encoding=' => '-Dfile.encoding=UTF-8',
   '-Djna.nosys=' => '-Djna.nosys=true',
-  '-Djdk.io.permissionsUseCanonicalPath' => '-Djdk.io.permissionsUseCanonicalPath=true',
+  'OmitStackTraceInFastThrow' => '-XX:-OmitStackTraceInFastThrow',
   '-Dio.netty.noUnsafe' => '-Dio.netty.noUnsafe=true',
   '-Dio.netty.noKeySetOptimization' => '-Dio.netty.noKeySetOptimization=true',
   '-Dio.netty.recycler.maxCapacityPerThread' => '-Dio.netty.recycler.maxCapacityPerThread=0',
   '-Dlog4j.shutdownHookEnabled' => '-Dlog4j.shutdownHookEnabled=false',
   '-Dlog4j2.disable.jmx' => '-Dlog4j2.disable.jmx=true',
-  '-Dlog4j.skipJansi' => '-Dlog4j.skipJansi=true',
-  'HeapDumpOnOutOfMemoryError' => '-XX:+HeapDumpOnOutOfMemoryError'
+  'HeapDumpOnOutOfMemoryError' => '-XX:+HeapDumpOnOutOfMemoryError',
+  'PrintGCDetails' => '-XX:+PrintGCDetails',
+  'PrintGCDateStamps' => '-XX:+PrintGCDateStamps',
+  'PrintTenuringDistribution' => '-XX:+PrintTenuringDistribution',
+  'PrintGCApplicationStoppedTime' => '-XX:+PrintGCApplicationStoppedTime',
+  'Xloggc' => "-Xloggc:#{@logdir}/gc.log",
+  'UseGCLogFileRotation' => '-XX:+UseGCLogFileRotation',
+  'NumberOfGCLogFiles' => '-XX:NumberOfGCLogFiles=32',
+  'GCLogFileSize' => '-XX:GCLogFileSize=64m',
 }
 defaults.each {|k,v| set_default(@jvm_options, k, v)}
 
