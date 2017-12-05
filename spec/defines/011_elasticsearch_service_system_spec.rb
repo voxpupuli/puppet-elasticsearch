@@ -75,6 +75,18 @@ describe 'elasticsearch::service::systemd', :type => 'define' do
         it { should contain_augeas('defaults_es-systemd') }
       end
 
+      context 'onboot' do
+        let(:params) do {
+          :ensure => 'present',
+          :status => 'onboot'
+        } end
+
+        it { should contain_elasticsearch__service__systemd('es-systemd') }
+        it { should contain_service('elasticsearch-instance-es-systemd')
+          .with(:enable => true) }
+        it { should contain_augeas('defaults_es-systemd') }
+      end
+
       context 'defaults file' do
         context 'set via file' do
           let(:params) do {

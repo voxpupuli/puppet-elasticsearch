@@ -6,6 +6,7 @@
 * Added `java_opts` parameter to `elasticsearch::plugin` resource.
 * Brought some options in `jvm.options` up-to-date with upstream.
 * Plugins can now have their `JAVA_HOME` set through the `java_home` parameter.
+* Added `onboot` service status.
 
 #### Fixes
 * Fixed issue with `ES_PATH_CONF` being unset in SysV init files.

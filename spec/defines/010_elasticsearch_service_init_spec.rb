@@ -58,6 +58,18 @@ describe 'elasticsearch::service::init', :type => 'define' do
         it { should contain_augeas('defaults_es-service-init') }
       end
 
+      context 'onboot' do
+        let(:params) do {
+          :ensure => 'present',
+          :status => 'onboot'
+        } end
+
+        it { should contain_elasticsearch__service__init('es-service-init') }
+        it { should contain_service('elasticsearch-instance-es-service-init')
+          .with(:enable => true) }
+        it { should contain_augeas('defaults_es-service-init') }
+      end
+
       context 'defaults file' do
         context 'set via file' do
           let :params do {
