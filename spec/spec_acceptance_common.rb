@@ -77,7 +77,7 @@ when 'Suse'
   test_settings['pid_b'] = '/var/run/elasticsearch/elasticsearch-es-02.pid'
 end
 
-test_settings['datadir_1'] = ['/var/lib/elasticsearch-data/1/']
+test_settings['datadir_1'] = '/var/lib/elasticsearch-data/1/'
 test_settings['datadir_2'] = '/var/lib/elasticsearch-data/2/'
 test_settings['datadir_3'] = '/var/lib/elasticsearch-data/3/'
 
