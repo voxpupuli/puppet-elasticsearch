@@ -114,7 +114,7 @@ describe 'elasticsearch::datadir' do
           json = JSON.parse(response.body)['nodes'].values.first
           expect(
             json['settings']['path']['data']
-          ).to eq(test_settings['datadir_1'])
+          ).to eq([test_settings['datadir_1']])
         end
       end
     end
