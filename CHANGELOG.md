@@ -1,4 +1,4 @@
-## x.x.x (Month Day, Year)
+## 6.1.0 (December 18, 2017)
 
 #### Features
 * Removed `tea` module dependency for pre-existing types in `stdlib` module.
