@@ -147,6 +147,10 @@ class elasticsearch::package {
 
       }
 
+    } else {
+      if ($facts['os']['family'] == 'Debian') {
+        Class['apt::update'] -> Package[$elasticsearch::package_name]
+      }
     }
 
   # Package removal
