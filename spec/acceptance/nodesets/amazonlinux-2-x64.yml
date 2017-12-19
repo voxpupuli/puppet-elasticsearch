@@ -8,7 +8,7 @@ HOSTS:
     docker_cmd: ["/sbin/init"]
     docker_preserve_image: true
     docker_image_commands:
-      - yum install -y wget which cronie iproute
+      - yum install -y java-1.8.0-openjdk-headless net-tools wget which cronie iproute
       - mkdir -p /etc/selinux/targeted/contexts/
       - echo '<busconfig><selinux></selinux></busconfig>' > /etc/selinux/targeted/contexts/dbus_contexts
       - rm /lib/systemd/system/systemd*udev*
