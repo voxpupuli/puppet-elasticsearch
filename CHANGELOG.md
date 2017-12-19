@@ -1,6 +1,7 @@
 ## x.x.x (Month Day, Year)
 
 #### Features
+* Add support for Amazon Linux 2
 
 #### Fixes
 
