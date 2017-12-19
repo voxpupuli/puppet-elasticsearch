@@ -1,3 +1,9 @@
+## x.x.x (Month Day, Year)
+
+#### Features
+
+#### Fixes
+
 ## 6.1.0 (December 18, 2017)
 
 #### Features
