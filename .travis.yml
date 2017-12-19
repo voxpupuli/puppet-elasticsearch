@@ -32,8 +32,6 @@ jobs:
    - env:
      - TASK=beaker:amazonlinux-1-x64
    - env:
-     - TASK=beaker:amazonlinux-2-x64
-   - env:
      - TASK=beaker:oracle-6-x64
    - env:
      - TASK=beaker:oracle-7-x64
