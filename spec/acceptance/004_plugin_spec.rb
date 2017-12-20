@@ -6,6 +6,9 @@ shared_examples 'plugin behavior' do |version, user, plugin, offline, config|
     context 'official repo', :with_cleanup do
       describe 'manifest' do
         pp = <<-EOS
+          class { 'elastic_stack::repo':
+            version => #{version},
+          }
           class { 'elasticsearch':
             config => {
               'node.name' => 'elasticsearch001',
@@ -340,7 +343,7 @@ describe 'elasticsearch::plugin' do
   end
 
   include_examples 'plugin behavior',
-                   test_settings['repo_version2x'],
+                   test_settings['repo_version'],
                    'elasticsearch',
                    {
                      prefix: 'lmenezes/elasticsearch-',
@@ -350,7 +353,6 @@ describe 'elasticsearch::plugin' do
                    },
                    'kopf',
                    <<-EOS
-                     repo_version => '#{test_settings['repo_version2x']}',
-                     version => '2.0.0',
+                     version => '5.6.5',
                    EOS
 end
