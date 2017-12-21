@@ -200,6 +200,7 @@ class Puppet::Provider::ElasticREST < Puppet::Provider
         self.class.format_uri(resource[:name], @property_flush)
       )
     )
+    Puppet.debug("Generated URI = #{uri.inspect}")
 
     case @property_flush[:ensure]
     when :absent
@@ -207,6 +208,7 @@ class Puppet::Provider::ElasticREST < Puppet::Provider
     else
       req = Net::HTTP::Put.new uri.request_uri
       req.body = generate_body
+      Puppet.debug("Generated body looks like: #{req.body.inspect}")
       # As of Elasticsearch 6.x, required when requesting with a payload (so we
       # set it always to be safe)
       req['Content-Type'] = 'application/json' if req['Content-Type'].nil?
@@ -231,6 +233,7 @@ class Puppet::Provider::ElasticREST < Puppet::Provider
 
     # Attempt to return useful error output
     unless response.code.to_i == 200
+      Puppet.debug("Non-OK reponse: Body = #{response.body.inspect}")
       json = JSON.parse(response.body)
 
       err_msg = if json.key? 'error'
