@@ -16,6 +16,9 @@ describe Puppet::Type.type(:elasticsearch_keystore).provider(:elasticsearch_keys
   let(:instances) { [] }
 
   before do
+    Facter.clear
+    Facter.add('osfamily') { setcode { 'Debian' } }
+
     allow(described_class)
       .to receive(:command)
       .with(:keystore)
