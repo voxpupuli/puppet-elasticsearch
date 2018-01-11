@@ -153,26 +153,15 @@ namespace :artifact do
   end
 
   namespace :snapshot do
-    manifest = JSON.parse(
-      open('https://snapshots.elastic.co/manifest.json').read
-    )
-    ENV['snapshot_version'] = manifest['version']
+    catalog = JSON.parse(
+      open('https://0ym978vhv1.execute-api.us-east-1.amazonaws.com/dev/branches/6.x').read
+    )['latest']
+    ENV['snapshot_version'] = catalog['version']
 
-    downloads = manifest['projects']['elasticsearch']['packages'].select do |pkg, _|
+    downloads = catalog['projects']['elasticsearch']['packages'].select do |pkg, _|
       pkg =~ /(?:deb|rpm)/
     end.map do |package, urls|
-      [
-        package.split('.').last,
-        urls.map do |type, remote|
-          # This is temporary and can be removed once the links work.
-          uri = URI(remote)
-
-          [
-            type,
-            "#{uri.scheme}://#{uri.host}/#{uri.path.split('/')[2..-1].join('/')}"
-          ]
-        end.to_h
-      ]
+      [ package.split('.').last, urls ]
     end.to_h
 
     # We end up with something like:
