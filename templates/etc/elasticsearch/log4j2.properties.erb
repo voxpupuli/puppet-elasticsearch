@@ -9,6 +9,13 @@ appender.console.name = console
 appender.console.layout.type = PatternLayout
 appender.console.layout.pattern = [%d{ISO8601}][%-5p][%-25c{1.}] %marker%m%n
 
+<%- if @file_rolling_type == 'file' -%>
+appender.fixed.type = File
+appender.fixed.name = fixed
+appender.fixed.fileName = ${sys:es.logs.base_path}${sys:file.separator}${sys:es.logs.cluster_name}.log
+appender.fixed.layout.type = PatternLayout
+appender.fixed.layout.pattern = [%d{ISO8601}][%-5p][%-25c{1.}] %marker%.-10000m%n
+<%- else -%>
 appender.rolling.type = RollingFile
 appender.rolling.name = rolling
 appender.rolling.fileName = ${sys:es.logs.base_path}${sys:file.separator}${sys:es.logs.cluster_name}.log
@@ -28,10 +35,15 @@ appender.rolling.policies.size.size = <%= @rolling_file_max_file_size %>
 appender.rolling.strategy.type = DefaultRolloverStrategy
 appender.rolling.strategy.max = <%= @rolling_file_max_backup_index %>
 <%- end -%>
+<%- end -%>
 
 rootLogger.level = <%= @logging_level.downcase %>
 rootLogger.appenderRef.console.ref = console
+<%- if @file_rolling_type == 'file' -%>
+rootLogger.appenderRef.fixed.ref = fixed
+<%- else -%>
 rootLogger.appenderRef.rolling.ref = rolling
+<%- end -%>
 
 appender.deprecation_rolling.type = RollingFile
 appender.deprecation_rolling.name = deprecation_rolling
