@@ -4,6 +4,7 @@
 * Add support for Amazon Linux 2
 
 #### Fixes
+* Fixed an issue when setting `file_rolling_type => file` in Elasticsearch 6.
 
 ## 6.1.0 (December 18, 2017)
 
