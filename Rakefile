@@ -154,7 +154,7 @@ namespace :artifact do
 
   namespace :snapshot do
     catalog = JSON.parse(
-      open('https://0ym978vhv1.execute-api.us-east-1.amazonaws.com/dev/branches/6.x').read
+      open('https://0ym978vhv1.execute-api.us-east-1.amazonaws.com/dev/branches/6.2').read
     )['latest']
     ENV['snapshot_version'] = catalog['version']
 
