@@ -100,18 +100,27 @@ class Puppet::Provider::ElasticREST < Puppet::Provider
 
     response = rest http, req, validate_tls, timeout, username, password
 
+    results = []
+
     if response.respond_to? :code and response.code.to_i == 200
-      JSON.parse(response.body).map do |object_name, api_object|
-        {
-          :name => object_name,
-          :ensure => :present,
-          metadata => process_metadata(api_object),
-          :provider => name
-        }
-      end
-    else
-      []
+      results = process_body(response.body)
     end
+
+    return results
+  end
+
+  # Process the JSON response body
+  def self.process_body(body)
+    results = JSON.parse(body).map do |object_name, api_object|
+      {
+        :name     => object_name,
+        :ensure   => :present,
+        metadata  => process_metadata(api_object),
+        :provider => name
+      }
+    end
+
+    return results
   end
 
   # Passes API objects through arbitrary Procs/lambdas in order to postprocess
@@ -167,9 +176,21 @@ class Puppet::Provider::ElasticREST < Puppet::Provider
     @property_flush = {}
   end
 
+  # Generate a request body
+  def generate_body
+    JSON.generate(
+      if metadata != :content and @property_flush[:ensure] == :present
+        { metadata.to_s => resource[metadata] }
+      else
+        resource[metadata]
+      end
+    )
+  end
+
   # Call Elasticsearch's REST API to appropriately PUT/DELETE/or otherwise
   # update any managed API objects.
   def flush
+    Puppet.debug('Got to flush')
     uri = URI(
       format(
         '%s://%s:%d/%s',
@@ -185,13 +206,7 @@ class Puppet::Provider::ElasticREST < Puppet::Provider
       req = Net::HTTP::Delete.new uri.request_uri
     else
       req = Net::HTTP::Put.new uri.request_uri
-      req.body = JSON.generate(
-        if metadata != :content and @property_flush[:ensure] == :present
-          { metadata.to_s => resource[metadata] }
-        else
-          resource[metadata]
-        end
-      )
+      req.body = generate_body
       # As of Elasticsearch 6.x, required when requesting with a payload (so we
       # set it always to be safe)
       req['Content-Type'] = 'application/json' if req['Content-Type'].nil?
