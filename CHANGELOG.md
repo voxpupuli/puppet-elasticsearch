@@ -5,6 +5,7 @@
 
 #### Fixes
 * Fixed an issue when setting `file_rolling_type => file` in Elasticsearch 6.
+* Removed ExecStartPre=- from systemd template
 
 ## 6.1.0 (December 18, 2017)
 
