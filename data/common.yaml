@@ -58,6 +58,7 @@ elasticsearch::security_logging_content: ~
 elasticsearch::security_logging_source: ~
 elasticsearch::security_plugin: ~
 elasticsearch::service_provider: systemd
+elasticsearch::snapshot_repositories: {}
 elasticsearch::status: enabled
 elasticsearch::system_key: ~
 elasticsearch::systemd_service_path: /lib/systemd/system
