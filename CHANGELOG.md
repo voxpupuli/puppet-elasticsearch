@@ -1,4 +1,4 @@
-## x.x.x (Month Day, Year)
+## 6.2.0 (February 9, 2018)
 
 #### Features
 * Add support for Amazon Linux 2
