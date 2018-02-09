@@ -32,6 +32,7 @@ This module is actively tested against Elasticsearch 2.x, 5.x, and 6.x.
 * Elasticsearch configuration file.
 * Elasticsearch service.
 * Elasticsearch plugins.
+* Elasticsearch snapshot repositories.
 * Elasticsearch templates.
 * Elasticsearch ingest pipelines.
 * Elasticsearch index settings.
@@ -403,6 +404,35 @@ elasticsearch::index { 'foo':
 ```puppet
 elasticsearch::index { 'foo':
   ensure => 'absent'
+}
+```
+
+### Snapshot Repositories
+
+By default snapshot_repositories use the top-level `elasticsearch::api_*` settings to communicate with Elasticsearch.
+The following is an example of how to override these settings:
+
+```puppet
+elasticsearch::snapshot_repository { 'backups':
+  api_protocol            => 'https',
+  api_host                => $::ipaddress,
+  api_port                => 9201,
+  api_timeout             => 60,
+  api_basic_auth_username => 'admin',
+  api_basic_auth_password => 'adminpassword',
+  api_ca_file             => '/etc/ssl/certs',
+  api_ca_path             => '/etc/pki/certs',
+  validate_tls            => false,
+  location                => '/backups',
+}
+```
+
+#### Delete a snapshot repository
+
+```puppet
+elasticsearch::snapshot_repository { 'backups':
+  ensure   => 'absent',
+  location => '/backup'
 }
 ```
 
