@@ -2,6 +2,7 @@
 
 #### Features
 * Add support for Amazon Linux 2
+* Add support for managing Elasticsearch Snapshot Repository resources
 
 #### Fixes
 * Fixed an issue when setting `file_rolling_type => file` in Elasticsearch 6.
