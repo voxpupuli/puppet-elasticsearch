@@ -268,6 +268,9 @@
 # @param service_provider
 #   The service resource type provider to use when managing elasticsearch instances.
 #
+# @param snapshot_repositories
+#   Define snapshot repositories via a hash. This is mainly used with Hiera's auto binding.
+#
 # @param status
 #   To define the status of the service. If set to `enabled`, the service will
 #   be run and will be started at boot time. If set to `disabled`, the service
@@ -365,6 +368,7 @@ class elasticsearch (
   Optional[String]                                $security_logging_source,
   Optional[Enum['shield', 'x-pack']]              $security_plugin,
   Enum['init', 'openbsd', 'openrc', 'systemd']    $service_provider,
+  Hash                                            $snapshot_repositories,
   Elasticsearch::Status                           $status,
   Optional[String]                                $system_key,
   Stdlib::Absolutepath                            $systemd_service_path,
@@ -417,6 +421,7 @@ class elasticsearch (
   create_resources('elasticsearch::plugin', $::elasticsearch::plugins)
   create_resources('elasticsearch::role', $::elasticsearch::roles)
   create_resources('elasticsearch::script', $::elasticsearch::scripts)
+  create_resources('elasticsearch::snapshot_repository', $::elasticsearch::snapshot_repositories)
   create_resources('elasticsearch::template', $::elasticsearch::templates)
   create_resources('elasticsearch::user', $::elasticsearch::users)
 
@@ -474,6 +479,8 @@ class elasticsearch (
     -> Elasticsearch::Pipeline <| |>
     Class['elasticsearch::config']
     -> Elasticsearch::Index <| |>
+    Class['elasticsearch::config']
+    -> Elasticsearch::Snapshot_repository <| |>
 
   } else {
 
@@ -495,6 +502,8 @@ class elasticsearch (
     Elasticsearch::Pipeline <| |>
     -> Class['elasticsearch::config']
     Elasticsearch::Index <| |>
+    -> Class['elasticsearch::config']
+    Elasticsearch::Snapshot_repository <| |>
     -> Class['elasticsearch::config']
 
   }
@@ -533,6 +542,10 @@ class elasticsearch (
   -> Elasticsearch::Index <| |>
   Elasticsearch::User <| |>
   -> Elasticsearch::Index <| |>
+  Elasticsearch::Role <| |>
+  -> Elasticsearch::Snapshot_repository <| |>
+  Elasticsearch::User <| |>
+  -> Elasticsearch::Snapshot_repository <| |>
 
   # Manage users/roles before instances (req'd to keep dir in sync)
   Elasticsearch::Role <| |>
@@ -547,11 +560,15 @@ class elasticsearch (
   -> Elasticsearch::Pipeline <| |>
   Elasticsearch::Instance <| ensure == 'present' |>
   -> Elasticsearch::Index <| |>
+  Elasticsearch::Instance <| ensure == 'present' |>
+  -> Elasticsearch::Snapshot_repository <| |>
   # Ensure instances are stopped after managing REST resources
   Elasticsearch::Template <| |>
   -> Elasticsearch::Instance <| ensure == 'absent' |>
   Elasticsearch::Pipeline <| |>
   -> Elasticsearch::Instance <| ensure == 'absent' |>
   Elasticsearch::Index <| |>
+  -> Elasticsearch::Instance <| ensure == 'absent' |>
+  Elasticsearch::Snapshot_repository <| |>
   -> Elasticsearch::Instance <| ensure == 'absent' |>
 }

@@ -388,8 +388,16 @@ describe 'elasticsearch', :type => 'class' do
       context 'create_resource' do
         # Helper for these tests
         def singular(s)
-          s == 'indices' ? 'index' : s[0..-2]
+          case s
+          when'indices'
+            'index'
+          when 'snapshot_repositories'
+            'snapshot_repository'
+          else
+            s[0..-2]
+          end
         end
+
         {
           'indices' => { 'test-index' => {} },
           'instances' => { 'es-instance' => {} },
@@ -399,6 +407,7 @@ describe 'elasticsearch', :type => 'class' do
           'scripts' => {
             'foo' => { 'source' => 'puppet:///path/to/foo.groovy' }
           },
+          'snapshot_repositories' => { 'backup' => { 'location' => '/backups' } },
           'templates' => { 'foo' => { 'content' => {} } },
           'users' => { 'elastic' => { 'password' => 'foobar' } }
         }.each_pair do |deftype, params|
