@@ -4,7 +4,7 @@
     <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>
-  Resource Type: es_instance_conn_validator
+  Resource Type: elasticsearch_snapshot_repository
   
     &mdash; Documentation by YARD 0.9.12
   
@@ -15,7 +15,7 @@
   <link rel="stylesheet" href="../css/common.css" type="text/css" charset="utf-8" />
 
 <script type="text/javascript" charset="utf-8">
-  pathId = "puppet_types::es_instance_conn_validator";
+  pathId = "puppet_types::elasticsearch_snapshot_repository";
   relpath = '../';
 </script>
 
@@ -39,7 +39,7 @@
     <a href="../_index.html">Index (e)</a> &raquo;
     <span class='title'><span class='object_link'>Resource Types</span></span>
      &raquo; 
-    <span class="title">es_instance_conn_validator</span>
+    <span class="title">elasticsearch_snapshot_repository</span>
   
 </div>
 
@@ -59,12 +59,12 @@
         <div class="clear"></div>
       </div>
 
-      <div id="content"><h1>Resource Type: es_instance_conn_validator</h1>
+      <div id="content"><h1>Resource Type: elasticsearch_snapshot_repository</h1>
 <div class="box_info">
   <dl>
     <dt>Defined in:</dt>
     <dd>
-      lib/puppet/type/es_instance_conn_validator.rb
+      lib/puppet/type/elasticsearch_snapshot_repository.rb
     </dd>
   </dl>
   
@@ -72,7 +72,7 @@
     <dt>Providers:</dt>
     <dd>
       
-        <span class='object_link'><a href="../puppet_providers_es_instance_conn_validator/tcp_port.html" title="puppet_providers_es_instance_conn_validator::tcp_port (puppet_provider)">tcp_port</a></span><br/>
+        <span class='object_link'><a href="../puppet_providers_elasticsearch_snapshot_repository/ruby.html" title="puppet_providers_elasticsearch_snapshot_repository::ruby (puppet_provider)">ruby</a></span><br/>
       
     </dd>
   </dl>
@@ -83,9 +83,7 @@
 <div class="docstring">
   <div class="discussion">
     
-<p>Verify that a connection can be successfully established between a node and
-the Elasticsearch instance. It could potentially be used for other purposes
-such as monitoring.</p>
+<p>Manages Elasticsearch snapshot repositories.</p>
 
   </div>
 </div>
@@ -96,6 +94,38 @@ such as monitoring.</p>
 <div class="tags">
   <p class="tag_title">Properties</p>
   <ul>
+    
+    <li>
+      <span class="name">chunk_size</span>
+      
+      
+      <div class="docstring">
+        <div class="discussion">
+          
+<p>File chunk size</p>
+
+        </div>
+      </div>
+      
+      
+    </li>
+    
+    <li>
+      <span class="name">compress</span>
+      
+      <span class="default"> (defaults to: <em>true</em>)</span>
+      
+      
+      <div class="docstring">
+        <div class="discussion">
+          
+<p>Compress the repository data</p>
+
+        </div>
+      </div>
+      
+      
+    </li>
     
     <li>
       <span class="name">ensure</span>
@@ -131,6 +161,51 @@ such as monitoring.</p>
       
     </li>
     
+    <li>
+      <span class="name">location</span>
+      
+      
+      <div class="docstring">
+        <div class="discussion">
+          
+<p>Repository location</p>
+
+        </div>
+      </div>
+      
+      
+    </li>
+    
+    <li>
+      <span class="name">max_restore_rate</span>
+      
+      
+      <div class="docstring">
+        <div class="discussion">
+          
+<p>Maximum Restore rate</p>
+
+        </div>
+      </div>
+      
+      
+    </li>
+    
+    <li>
+      <span class="name">max_snapshot_rate</span>
+      
+      
+      <div class="docstring">
+        <div class="discussion">
+          
+<p>Maximum Snapshot rate</p>
+
+        </div>
+      </div>
+      
+      
+    </li>
+    
   </ul>
 </div>
 
@@ -146,7 +221,7 @@ such as monitoring.</p>
       <div class="docstring">
         <div class="discussion">
           
-<p>An arbitrary name used as the identity of the resource.</p>
+<p>Repository name.</p>
 
         </div>
       </div>
@@ -155,52 +230,15 @@ such as monitoring.</p>
     </li>
     
     <li>
-      <span class="name">port</span>
+      <span class="name">type</span>
       
-      <span class="default"> (defaults to: <em>9200</em>)</span>
-      
-      
-      <div class="docstring">
-        <div class="discussion">
-          
-<p>The port that the Elasticsearch instance should be listening on.</p>
-
-        </div>
-      </div>
-      
-      
-    </li>
-    
-    <li>
-      <span class="name">server</span>
-      
-      <span class="default"> (defaults to: <em>localhost</em>)</span>
+      <span class="default"> (defaults to: <em>fs</em>)</span>
       
       
       <div class="docstring">
         <div class="discussion">
           
-<p>DNS name or IP address of the server where Elasticsearch instance should be
-running.</p>
-
-        </div>
-      </div>
-      
-      
-    </li>
-    
-    <li>
-      <span class="name">timeout</span>
-      
-      <span class="default"> (defaults to: <em>60</em>)</span>
-      
-      
-      <div class="docstring">
-        <div class="discussion">
-          
-<p>The max number of seconds that the validator should wait before giving up
-and deciding that the Elasticsearch instance is not running; defaults to 60
-seconds.</p>
+<p>Repository type</p>
 
         </div>
       </div>

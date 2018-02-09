@@ -6,7 +6,7 @@
 <title>
   Defined Type: elasticsearch::instance
   
-    &mdash; Documentation by YARD 0.9.9
+    &mdash; Documentation by YARD 0.9.12
   
 </title>
 
@@ -110,7 +110,7 @@ is a destructive parameter and should be used with care.</p>
         <span class='name'>ca_certificate</span>
       
       
-        <span class='type'>(<tt>Optional[Tea::Absolutepath]</tt>)</span>
+        <span class='type'>(<tt>Optional[Stdlib::Absolutepath]</tt>)</span>
       
       
         <em class="default">(defaults to: <tt>undef</tt>)</em>
@@ -128,7 +128,7 @@ is a destructive parameter and should be used with care.</p>
         <span class='name'>certificate</span>
       
       
-        <span class='type'>(<tt>Optional[Tea::Absolutepath]</tt>)</span>
+        <span class='type'>(<tt>Optional[Stdlib::Absolutepath]</tt>)</span>
       
       
         <em class="default">(defaults to: <tt>undef</tt>)</em>
@@ -165,7 +165,7 @@ ca_certificate.</p>
         <span class='name'>configdir</span>
       
       
-        <span class='type'>(<tt>Tea::Absolutepath</tt>)</span>
+        <span class='type'>(<tt>Stdlib::Absolutepath</tt>)</span>
       
       
         <em class="default">(defaults to: <tt>&quot;${elasticsearch::configdir}/${name}&quot;</tt>)</em>
@@ -315,7 +315,7 @@ rotates by name, and the second one by size.</p>
         <span class='name'>init_defaults_file</span>
       
       
-        <span class='type'>(<tt>Optional[Tea::Absolutepath]</tt>)</span>
+        <span class='type'>(<tt>Optional[Stdlib::Absolutepath]</tt>)</span>
       
       
         <em class="default">(defaults to: <tt>undef</tt>)</em>
@@ -387,7 +387,7 @@ rotates by name, and the second one by size.</p>
         <span class='name'>keystore_path</span>
       
       
-        <span class='type'>(<tt>Optional[Tea::Absolutepath]</tt>)</span>
+        <span class='type'>(<tt>Optional[Stdlib::Absolutepath]</tt>)</span>
       
       
         <em class="default">(defaults to: <tt>undef</tt>)</em>
@@ -405,7 +405,7 @@ rotates by name, and the second one by size.</p>
         <span class='name'>logdir</span>
       
       
-        <span class='type'>(<tt>Tea::Absolutepath</tt>)</span>
+        <span class='type'>(<tt>Stdlib::Absolutepath</tt>)</span>
       
       
         <em class="default">(defaults to: <tt>&quot;${elasticsearch::logdir}/${name}&quot;</tt>)</em>
@@ -497,7 +497,7 @@ $module_name/elasticsearch/logging.yml.erb</p>
         <span class='name'>private_key</span>
       
       
-        <span class='type'>(<tt>Optional[Tea::Absolutepath]</tt>)</span>
+        <span class='type'>(<tt>Optional[Stdlib::Absolutepath]</tt>)</span>
       
       
         <em class="default">(defaults to: <tt>undef</tt>)</em>
@@ -1120,10 +1120,10 @@ href="mailto:tyler.langlois@elastic.co">tyler.langlois@elastic.co</a></p>
 
 define elasticsearch::instance (
   Enum[&#39;absent&#39;, &#39;present&#39;]          $ensure                        = $elasticsearch::ensure,
-  Optional[Tea::Absolutepath]        $ca_certificate                = undef,
-  Optional[Tea::Absolutepath]        $certificate                   = undef,
+  Optional[Stdlib::Absolutepath]     $ca_certificate                = undef,
+  Optional[Stdlib::Absolutepath]     $certificate                   = undef,
   Optional[Hash]                     $config                        = undef,
-  Tea::Absolutepath                  $configdir                     = &quot;${elasticsearch::configdir}/${name}&quot;,
+  Stdlib::Absolutepath               $configdir                     = &quot;${elasticsearch::configdir}/${name}&quot;,
   String                             $daily_rolling_date_pattern    = $elasticsearch::daily_rolling_date_pattern,
   Optional[Elasticsearch::Multipath] $datadir                       = undef,
   Boolean                            $datadir_instance_directories  = $elasticsearch::datadir_instance_directories,
@@ -1131,17 +1131,17 @@ define elasticsearch::instance (
   String                             $deprecation_logging_level     = &#39;DEBUG&#39;,
   String                             $file_rolling_type             = $elasticsearch::file_rolling_type,
   Hash                               $init_defaults                 = {},
-  Optional[Tea::Absolutepath]        $init_defaults_file            = undef,
+  Optional[Stdlib::Absolutepath]     $init_defaults_file            = undef,
   String                             $init_template                 = $elasticsearch::init_template,
   Array[String]                      $jvm_options                   = $elasticsearch::jvm_options,
   Optional[String]                   $keystore_password             = undef,
-  Optional[Tea::Absolutepath]        $keystore_path                 = undef,
-  Tea::Absolutepath                  $logdir                        = &quot;${elasticsearch::logdir}/${name}&quot;,
+  Optional[Stdlib::Absolutepath]     $keystore_path                 = undef,
+  Stdlib::Absolutepath               $logdir                        = &quot;${elasticsearch::logdir}/${name}&quot;,
   Hash                               $logging_config                = {},
   Optional[String]                   $logging_file                  = undef,
   String                             $logging_level                 = $elasticsearch::default_logging_level,
   Optional[String]                   $logging_template              = undef,
-  Optional[Tea::Absolutepath]        $private_key                   = undef,
+  Optional[Stdlib::Absolutepath]     $private_key                   = undef,
   Boolean                            $purge_secrets                 = $elasticsearch::purge_secrets,
   Integer                            $rolling_file_max_backup_index = $elasticsearch::rolling_file_max_backup_index,
   String                             $rolling_file_max_file_size    = $elasticsearch::rolling_file_max_file_size,

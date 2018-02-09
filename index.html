@@ -6,7 +6,7 @@
 <title>
   File: README
   
-    &mdash; Documentation by YARD 0.9.9
+    &mdash; Documentation by YARD 0.9.12
   
 </title>
 
@@ -118,6 +118,8 @@ instances with additional resource for plugins, templates, and more.</p>
 <p>Elasticsearch service.</p>
 </li><li>
 <p>Elasticsearch plugins.</p>
+</li><li>
+<p>Elasticsearch snapshot repositories.</p>
 </li><li>
 <p>Elasticsearch templates.</p>
 </li><li>
@@ -491,6 +493,33 @@ index creation time.</p>
 
 <pre class="code ruby"><code class="ruby">elasticsearch::index { &#39;foo&#39;:
   ensure =&gt; &#39;absent&#39;
+}</code></pre>
+
+<h3 id="label-Snapshot+Repositories">Snapshot Repositories</h3>
+
+<p>By default snapshot_repositories use the top-level
+<code>elasticsearch::api_*</code> settings to communicate with
+Elasticsearch. The following is an example of how to override these
+settings:</p>
+
+<pre class="code ruby"><code class="ruby">elasticsearch::snapshot_repository { &#39;backups&#39;:
+  api_protocol            =&gt; &#39;https&#39;,
+  api_host                =&gt; $::ipaddress,
+  api_port                =&gt; 9201,
+  api_timeout             =&gt; 60,
+  api_basic_auth_username =&gt; &#39;admin&#39;,
+  api_basic_auth_password =&gt; &#39;adminpassword&#39;,
+  api_ca_file             =&gt; &#39;/etc/ssl/certs&#39;,
+  api_ca_path             =&gt; &#39;/etc/pki/certs&#39;,
+  validate_tls            =&gt; false,
+  location                =&gt; &#39;/backups&#39;,
+}</code></pre>
+
+<h4 id="label-Delete+a+snapshot+repository">Delete a snapshot repository</h4>
+
+<pre class="code ruby"><code class="ruby">elasticsearch::snapshot_repository { &#39;backups&#39;:
+  ensure   =&gt; &#39;absent&#39;,
+  location =&gt; &#39;/backup&#39;
 }</code></pre>
 
 <h3 id="label-Connection+Validator">Connection Validator</h3>

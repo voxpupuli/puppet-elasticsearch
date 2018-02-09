@@ -6,7 +6,7 @@
 <title>
   Defined Type: elasticsearch::template
   
-    &mdash; Documentation by YARD 0.9.9
+    &mdash; Documentation by YARD 0.9.12
   
 </title>
 
@@ -148,7 +148,7 @@ API.</p>
         <span class='name'>api_ca_file</span>
       
       
-        <span class='type'>(<tt>Optional[Tea::AbsolutePath]</tt>)</span>
+        <span class='type'>(<tt>Optional[Stdlib::Absolutepath]</tt>)</span>
       
       
         <em class="default">(defaults to: <tt>$elasticsearch::api_ca_file</tt>)</em>
@@ -167,7 +167,7 @@ communicating with the Elasticsearch API over HTTPS.</p>
         <span class='name'>api_ca_path</span>
       
       
-        <span class='type'>(<tt>Optional[Tea::AbsolutePath]</tt>)</span>
+        <span class='type'>(<tt>Optional[Stdlib::Absolutepath]</tt>)</span>
       
       
         <em class="default">(defaults to: <tt>$elasticsearch::api_ca_path</tt>)</em>
@@ -204,7 +204,7 @@ certs when communicating with the Elasticsearch API over HTTPS.</p>
         <span class='name'>api_port</span>
       
       
-        <span class='type'>(<tt>Tea::Port</tt>)</span>
+        <span class='type'>(<tt>Integer[0, 65535]</tt>)</span>
       
       
         <em class="default">(defaults to: <tt>$elasticsearch::api_port</tt>)</em>
@@ -404,10 +404,10 @@ define elasticsearch::template (
   Enum[&#39;absent&#39;, &#39;present&#39;]       $ensure                  = &#39;present&#39;,
   Optional[String]                $api_basic_auth_password = $elasticsearch::api_basic_auth_password,
   Optional[String]                $api_basic_auth_username = $elasticsearch::api_basic_auth_username,
-  Optional[Tea::AbsolutePath]     $api_ca_file             = $elasticsearch::api_ca_file,
-  Optional[Tea::AbsolutePath]     $api_ca_path             = $elasticsearch::api_ca_path,
+  Optional[Stdlib::Absolutepath]  $api_ca_file             = $elasticsearch::api_ca_file,
+  Optional[Stdlib::Absolutepath]  $api_ca_path             = $elasticsearch::api_ca_path,
   String                          $api_host                = $elasticsearch::api_host,
-  Tea::Port                       $api_port                = $elasticsearch::api_port,
+  Integer[0, 65535]               $api_port                = $elasticsearch::api_port,
   Enum[&#39;http&#39;, &#39;https&#39;]           $api_protocol            = $elasticsearch::api_protocol,
   Integer                         $api_timeout             = $elasticsearch::api_timeout,
   Optional[Variant[String, Hash]] $content                 = undef,

@@ -6,7 +6,7 @@
 <title>
   Defined Type: elasticsearch::plugin
   
-    &mdash; Documentation by YARD 0.9.9
+    &mdash; Documentation by YARD 0.9.12
   
 </title>
 
@@ -128,7 +128,7 @@ ensure a plugin is not installed</p>
         <span class='name'>configdir</span>
       
       
-        <span class='type'>(<tt>Tea::Absolutepath</tt>)</span>
+        <span class='type'>(<tt>Stdlib::Absolutepath</tt>)</span>
       
       
         <em class="default">(defaults to: <tt>$elasticsearch::configdir</tt>)</em>
@@ -156,6 +156,42 @@ the plugin should be installed.</p>
         &mdash;
         <div class='inline'>
 <p>Specify all the instances related</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>java_opts</span>
+      
+      
+        <span class='type'>(<tt>Array[String]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>[]</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>Array of Java options to be passed to <code>ES_JAVA_OPTS</code></p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>java_home</span>
+      
+      
+        <span class='type'>(<tt>Optional[Stdlib::Absolutepath]</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>undef</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>Path to JAVA_HOME, if Java is installed in a non-standard location.</p>
 </div>
       
     </li>
@@ -221,7 +257,7 @@ auto generated value</p>
         <span class='name'>proxy_port</span>
       
       
-        <span class='type'>(<tt>Optional[Tea::Port]</tt>)</span>
+        <span class='type'>(<tt>Optional[Integer[0, 65535]]</tt>)</span>
       
       
         <em class="default">(defaults to: <tt>undef</tt>)</em>
@@ -276,7 +312,7 @@ node and use it for installation. Useful for offline installation</p>
         <span class='name'>url</span>
       
       
-        <span class='type'>(<tt>Optional[Tea::HTTPUrl]</tt>)</span>
+        <span class='type'>(<tt>Optional[Stdlib::HTTPUrl]</tt>)</span>
       
       
         <em class="default">(defaults to: <tt>undef</tt>)</em>
@@ -354,12 +390,6 @@ href="mailto:tyler.langlois@elastic.co">tyler.langlois@elastic.co</a></p>
         <pre class="lines">
 
 
-54
-55
-56
-57
-58
-59
 60
 61
 62
@@ -442,22 +472,34 @@ href="mailto:tyler.langlois@elastic.co">tyler.langlois@elastic.co</a></p>
 139
 140
 141
-142</pre>
+142
+143
+144
+145
+146
+147
+148
+149
+150
+151
+152</pre>
       </td>
       <td>
-        <pre class="code"><span class="info file"># File 'manifests/plugin.pp', line 54</span>
+        <pre class="code"><span class="info file"># File 'manifests/plugin.pp', line 60</span>
 
 define elasticsearch::plugin (
   Enum[&#39;absent&#39;, &#39;present&#39;]      $ensure         = &#39;present&#39;,
-  Tea::Absolutepath              $configdir      = $elasticsearch::configdir,
+  Stdlib::Absolutepath           $configdir      = $elasticsearch::configdir,
   Variant[String, Array[String]] $instances      = [],
+  Array[String]                  $java_opts      = [],
+  Optional[Stdlib::Absolutepath] $java_home      = undef,
   Optional[String]               $module_dir     = undef,
   Optional[String]               $proxy_host     = undef,
   Optional[String]               $proxy_password = undef,
-  Optional[Tea::Port]            $proxy_port     = undef,
+  Optional[Integer[0, 65535]]    $proxy_port     = undef,
   Optional[String]               $proxy_username = undef,
   Optional[String]               $source         = undef,
-  Optional[Tea::HTTPUrl]         $url            = undef,
+  Optional[Stdlib::HTTPUrl]      $url            = undef,
 ) {
 
   include elasticsearch
@@ -523,6 +565,8 @@ define elasticsearch::plugin (
     ensure                     =&gt; $ensure,
     configdir                  =&gt; $configdir,
     elasticsearch_package_name =&gt; $elasticsearch::package_name,
+    java_opts                  =&gt; $java_opts,
+    java_home                  =&gt; $java_home,
     source                     =&gt; $file_source,
     url                        =&gt; $url,
     proxy                      =&gt; $_proxy,
