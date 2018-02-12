@@ -3,6 +3,7 @@
 #### Features
 
 #### Fixes
+* Rewrote the `exists?` logic for the `elasticsearch_plugin` provider. This fundamentally changes how the module detects the presence of plugins but should be backwards compatible.
 
 ## 6.2.0 (February 9, 2018)
 
