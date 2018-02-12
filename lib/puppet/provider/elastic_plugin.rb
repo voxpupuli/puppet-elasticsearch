@@ -21,8 +21,6 @@ class Puppet::Provider::ElasticPlugin < Puppet::Provider
   end
 
   def exists?
-    plugin_path = @resource[:plugin_path] || Puppet_X::Elastic.plugin_name(@resource[:name])
-
     # First, attempt to list whether the named plugin exists by finding a
     # plugin descriptor file, which each plugin should have. We must wildcard
     # the name to match meta plugins, see upstream issue for this change:
@@ -59,6 +57,10 @@ class Puppet::Provider::ElasticPlugin < Puppet::Provider
     end
 
     true
+  end
+
+  def plugin_path
+    @resource[:plugin_path] || Puppet_X::Elastic.plugin_name(@resource[:name])
   end
 
   # Intelligently returns the correct installation arguments for version 1
