@@ -31,9 +31,7 @@ class Puppet::Provider::ElasticPlugin < Puppet::Provider
     begin
       # Use the basic name format that the plugin tool supports in order to
       # determine the version from the resource name.
-      plugin_version = Puppet_X::Elastic.plugin_version(
-        @resource[:name]
-      ).gsub(/^[^0-9]*/, '')
+      plugin_version = Puppet_X::Elastic.plugin_version(@resource[:name])
 
       # Naively parse the Java .properties file to check version equality.
       # Because we don't have the luxury of installing arbitrary gems, perform
