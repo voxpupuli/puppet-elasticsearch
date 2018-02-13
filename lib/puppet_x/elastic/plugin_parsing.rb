@@ -7,7 +7,9 @@ module Puppet_X
     end
 
     def self.plugin_version(raw_name)
-      plugin_split(raw_name, 2, false)
+      v = plugin_split(raw_name, 2, false).gsub(/^[^0-9]*/, '')
+      raise ElasticPluginParseFailure, "could not parse version, got '#{v}'" if v.empty?
+      v
     end
 
     # Attempt to guess at the plugin's final directory name
