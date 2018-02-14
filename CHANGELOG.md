@@ -1,6 +1,7 @@
-## x.x.x (Month Day, Year)
+## 6.2.1 (February 14, 2018)
 
-#### Features
+This is primarily a bugfix release to address an issue when installing Elasticsearch 6.2.x plugins such as X-Pack that use the new meta-plugin architecture.
+While the change has been tested with several plugins and versions of Elasticsearch, if any unexpected behavior arises, help is available on the [Elastic forums](https://discuss.elastic.co/) or via [an issue in the puppet-elasticsearch Github repository](https://github.com/elastic/puppet-elasticsearch/issues).
 
 #### Fixes
 * Rewrote the `exists?` logic for the `elasticsearch_plugin` provider. This fundamentally changes how the module detects the presence of plugins but should be backwards compatible.
