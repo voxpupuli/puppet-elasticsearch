@@ -1,3 +1,9 @@
+## x.x.x (Month Day, Year)
+
+#### Features
+
+#### Fixes
+
 ## 6.2.1 (February 14, 2018)
 
 This is primarily a bugfix release to address an issue when installing Elasticsearch 6.2.x plugins such as X-Pack that use the new meta-plugin architecture.
