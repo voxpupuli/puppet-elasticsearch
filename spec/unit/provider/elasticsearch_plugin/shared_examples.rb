@@ -155,7 +155,7 @@ shared_examples 'plugin provider' do |version|
       let(:resource_name) { 'appbaseio/dejaVu' }
 
       it 'maintains mixed-case names' do
-        expect(provider.pluginfile).to include('dejaVu')
+        expect(provider.plugin_path).to include('dejaVu')
       end
     end
 
