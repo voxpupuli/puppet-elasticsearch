@@ -16,7 +16,7 @@ describe 'elasticsearch::snapshot_repository', :type => 'define' do
         :common => ''
       ) }
 
-      let(:title) { 'foo' }
+      let(:title) { 'backup' }
       let(:pre_condition) do
         'class { "elasticsearch" : }'
       end
@@ -57,13 +57,13 @@ describe 'elasticsearch::snapshot_repository', :type => 'define' do
           }
         end
 
-        it { should contain_elasticsearch__snapshot_repository('foo') }
+        it { should contain_elasticsearch__snapshot_repository('backup') }
         it do
-          should contain_es_instance_conn_validator('foo-snapshot')
-            .that_comes_before('Elasticsearch_snapshot_repository[foo]')
+          should contain_es_instance_conn_validator('backup-snapshot')
+            .that_comes_before('Elasticsearch_snapshot_repository[backup]')
         end
         it 'passes through parameters' do
-          should contain_elasticsearch_snapshot_repository('foo').with(
+          should contain_elasticsearch_snapshot_repository('backup').with(
             :ensure       => 'present',
             :location     => '/var/lib/elasticsearch/backup',
             :protocol     => 'https',
@@ -101,7 +101,7 @@ describe 'elasticsearch::snapshot_repository', :type => 'define' do
         end
 
         it do
-          should contain_elasticsearch_snapshot_repository('foo').with(
+          should contain_elasticsearch_snapshot_repository('backup').with(
             :ensure       => 'present',
             :location     => '/var/lib/elasticsearch/backup',
             :protocol     => 'https',
@@ -126,7 +126,7 @@ describe 'elasticsearch::snapshot_repository', :type => 'define' do
         end
 
         it 'removes snapshot repository' do
-          should contain_elasticsearch_snapshot_repository('foo').with(:ensure => 'absent')
+          should contain_elasticsearch_snapshot_repository('backup').with(:ensure => 'absent')
         end
       end
     end
