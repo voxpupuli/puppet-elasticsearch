@@ -20,7 +20,8 @@ group :test do
   gem 'rspec-puppet-facts'
   gem 'rspec-puppet-utils'
   gem 'rspec-retry'
-  gem 'rubocop'
+  # Required to test against Ruby 1.9
+  gem 'rubocop', '~> 0.41.2'
   gem 'rubysl-securerandom'
   gem 'webmock'
 

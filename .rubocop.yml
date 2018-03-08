@@ -1,8 +1,10 @@
 AllCops:
-  TargetRubyVersion: 2.3
-
-Metrics/BlockLength:
-  Enabled: false
+  Exclude:
+    - pkg/**/*
+    - spec/fixtures/**/*
+  Include:
+    - Rakefile
+  TargetRubyVersion: 1.9
 
 Style/AndOr:
   Enabled: false
@@ -29,9 +31,6 @@ Style/MultilineBlockChain:
   Enabled: false
 
 Style/MultilineBlockLayout:
-  Enabled: false
-
-Style/MultilineIfModifier:
   Enabled: false
 
 Style/Not:
