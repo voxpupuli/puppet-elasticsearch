@@ -107,7 +107,7 @@ class Puppet::Provider::ElasticPlugin < Puppet::Provider
   def proxy_args(url)
     parsed = URI(url)
     %w[http https].map do |schema|
-      %i[host port user password].map do |param|
+      [:host, :port, :user, :password].map do |param|
         option = parsed.send(param)
         "-D#{schema}.proxy#{param.to_s.capitalize}=#{option}" unless option.nil?
       end
