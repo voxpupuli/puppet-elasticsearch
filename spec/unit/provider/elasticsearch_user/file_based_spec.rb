@@ -15,24 +15,24 @@ require 'spec_helper_rspec'
 
       context 'with one user' do
         it 'should return one resource' do
-          expect(described_class.parse(%q{
+          expect(described_class.parse(%(
             elastic:$2a$10$DddrTs0PS3qNknUTq0vpa.g.0JpU.jHDdlKp1xox1W5ZHX.w8Cc8C
-          }.gsub(/^\s+/, ''))[0]).to eq({
+          ).gsub(/^\s+/, ''))[0]).to eq(
             :name => 'elastic',
             :hashed_password => '$2a$10$DddrTs0PS3qNknUTq0vpa.g.0JpU.jHDdlKp1xox1W5ZHX.w8Cc8C',
-            :record_type => provider,
-          })
+            :record_type => provider
+          )
         end
       end
 
       context 'with multiple users' do
         it 'should return three resources' do
-          expect(described_class.parse(%q{
+          expect(described_class.parse(%(
 
             admin:$2a$10$DddrTs0PS3qNknUTq0vpa.g.0JpU.jHDdlKp1xox1W5ZHX.w8Cc8C
             user:$2a$10$caYr8GhYeJ2Yo0yEhQhQvOjLSwt8Lm6MKQWx8WSnZ/L/IL5sGdQFu
             kibana:$2a$10$daYr8GhYeJ2Yo0yEhQhQvOjLSwt8Lm6MKQWx8WSnZ/L/IL5sGdQFu
-          }.gsub(/^\s+/, '')).length).to eq(3)
+          ).gsub(/^\s+/, '')).length).to eq(3)
         end
       end
     end # of describe instances

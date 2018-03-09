@@ -2,7 +2,6 @@ require 'spec_helper_rspec'
 
 [:shield, :xpack].each do |provider|
   describe Puppet::Type.type(:elasticsearch_role).provider(provider) do
-
     describe 'instances' do
       it 'should have an instance method' do
         expect(described_class).to respond_to :instances
@@ -16,27 +15,27 @@ require 'spec_helper_rspec'
 
       context 'with one role' do
         it 'should return one resource' do
-          expect(described_class.parse(%q{
+          expect(described_class.parse(%(
             admin:
               cluster: all
               indices:
                 '*': all
-          })[0]).to eq({
+          ))[0]).to eq(
             :ensure => :present,
             :name => 'admin',
             :privileges => {
               'cluster' => 'all',
               'indices' => {
-                '*' => 'all',
-              },
-            },
-          })
+                '*' => 'all'
+              }
+            }
+          )
         end
       end
 
       context 'with multiple roles' do
         it 'should return three resources' do
-          expect(described_class.parse(%q{
+          expect(described_class.parse(%(
             admin:
               cluster: all
               indices:
@@ -48,7 +47,7 @@ require 'spec_helper_rspec'
               cluster: monitor
               indices:
                 '*': all
-          }).length).to eq(3)
+          )).length).to eq(3)
         end
       end
     end # of describe instances

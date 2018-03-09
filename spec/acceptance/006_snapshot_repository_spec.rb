@@ -4,7 +4,7 @@ require 'json'
 describe 'elasticsearch::snapshot_repository', :with_cleanup do
   describe 'valid snapshot repository', :with_cleanup do
     it 'should run successfully' do
-      pp = <<-EOS
+      pp = <<-MANIFEST
         class { 'elasticsearch':
           config       => {
             'node.name'    => 'elasticsearch001',
@@ -28,7 +28,7 @@ describe 'elasticsearch::snapshot_repository', :with_cleanup do
           location    => '/var/lib/elasticsearch/backup',
           require     => Elasticsearch::Instance['es-01']
         }
-      EOS
+      MANIFEST
 
       # Run it twice and test for idempotency
       apply_manifest pp, :catch_failures => true
@@ -104,10 +104,9 @@ describe 'elasticsearch::snapshot_repository', :with_cleanup do
               'location'          => '/var/lib/elasticsearch/backup',
               'max_restore_rate'  => '20mb',
               'max_snapshot_rate' => '80mb'
-          ))
+            ))
         end
       end
     end
   end
-
 end

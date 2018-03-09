@@ -1,9 +1,10 @@
 require 'spec_helper'
 
+# rubocop:disable Style/BracesAroundHashParameters
+# rubocop:disable Style/IndentHash
 describe 'concat_merge' do
-
   describe 'exception handling' do
-    it { is_expected.to run.with_params().and_raise_error(
+    it { is_expected.to run.with_params.and_raise_error(
       Puppet::ParseError, /wrong number of arguments/i
     ) }
 
@@ -24,7 +25,7 @@ describe 'concat_merge' do
     context 'single keys' do
       it { is_expected.to run.with_params({
         'key1' => 'value1'
-      },{
+      }, {
         'key1' => 'value2'
       }).and_return({
         'key1' => 'value2'
@@ -32,9 +33,9 @@ describe 'concat_merge' do
 
       it { is_expected.to run.with_params({
         'key1' => 'value1'
-      },{
+      }, {
         'key1' => 'value2'
-      },{
+      }, {
         'key1' => 'value3'
       }).and_return({
         'key1' => 'value3'
@@ -45,7 +46,7 @@ describe 'concat_merge' do
       it { is_expected.to run.with_params({
         'key1' => 'value1',
         'key2' => 'value2'
-      },{
+      }, {
         'key1' => 'value2'
       }).and_return({
         'key1' => 'value2',
@@ -55,9 +56,9 @@ describe 'concat_merge' do
       it { is_expected.to run.with_params({
         'key1' => 'value1',
         'key2' => 'value1'
-      },{
+      }, {
         'key1' => 'value2'
-      },{
+      }, {
         'key1' => 'value3',
         'key2' => 'value2'
       }).and_return({
@@ -71,25 +72,25 @@ describe 'concat_merge' do
     context 'single keys' do
       it { is_expected.to run.with_params({
         'key1' => ['value1']
-      },{
+      }, {
         'key1' => ['value2']
       }).and_return({
-        'key1' => ['value1', 'value2']
+        'key1' => %w[value1 value2]
       }) }
 
       it { is_expected.to run.with_params({
         'key1' => ['value1']
-      },{
+      }, {
         'key1' => ['value2']
-      },{
+      }, {
         'key1' => ['value3']
       }).and_return({
-        'key1' => ['value1', 'value2', 'value3']
+        'key1' => %w[value1 value2 value3]
       }) }
 
       it { is_expected.to run.with_params({
         'key1' => ['value1']
-      },{
+      }, {
         'key1' => 'value2'
       }).and_return({
         'key1' => 'value2'
@@ -97,7 +98,7 @@ describe 'concat_merge' do
 
       it { is_expected.to run.with_params({
         'key1' => 'value1'
-      },{
+      }, {
         'key1' => ['value2']
       }).and_return({
         'key1' => ['value2']
@@ -108,32 +109,32 @@ describe 'concat_merge' do
       it { is_expected.to run.with_params({
         'key1' => ['value1'],
         'key2' => ['value3']
-      },{
+      }, {
         'key1' => ['value2'],
         'key2' => ['value4']
       }).and_return({
-        'key1' => ['value1', 'value2'],
-        'key2' => ['value3', 'value4']
+        'key1' => %w[value1 value2],
+        'key2' => %w[value3 value4]
       }) }
 
       it { is_expected.to run.with_params({
         'key1' => ['value1'],
         'key2' => ['value1.1']
-      },{
+      }, {
         'key1' => ['value2'],
         'key2' => ['value2.1']
-      },{
+      }, {
         'key1' => ['value3'],
         'key2' => ['value3.1']
       }).and_return({
-        'key1' => ['value1', 'value2', 'value3'],
+        'key1' => %w[value1 value2 value3],
         'key2' => ['value1.1', 'value2.1', 'value3.1']
       }) }
 
       it { is_expected.to run.with_params({
         'key1' => ['value1'],
         'key2' => 'value1'
-      },{
+      }, {
         'key1' => 'value2',
         'key2' => ['value2']
       }).and_return({
@@ -144,13 +145,13 @@ describe 'concat_merge' do
       it { is_expected.to run.with_params({
         'key1' => 'value1',
         'key2' => ['value1']
-      },{
+      }, {
         'key1' => ['value2'],
         'key2' => 'value2'
-      }).and_return({
+      }).and_return(
         'key1' => ['value2'],
         'key2' => 'value2'
-      }) }
+      ) }
     end
   end
 
@@ -164,5 +165,4 @@ describe 'concat_merge' do
     expect(argument1).to eq(original1)
     expect(argument2).to eq(original2)
   end
-
 end

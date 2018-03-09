@@ -87,7 +87,7 @@ describe 'Integration testing' do
   describe 'Template tests', :template => true do
     describe 'Insert a template with valid json content' do
       let(:pp) do
-        manifest + <<~TEMPLATE
+        manifest + <<-TEMPLATE
           elasticsearch::template { 'foo':
             ensure => 'present',
             source => 'puppet:///modules/another/good.json'
@@ -122,7 +122,7 @@ describe 'Integration testing' do
 
     describe 'Insert a template with bad json content' do
       let(:pp) do
-        manifest + <<~TEMPLATE
+        manifest + <<-TEMPLATE
           elasticsearch::template { 'foo':
             ensure => 'present',
             source => 'puppet:///modules/another/bad.json'
@@ -139,7 +139,7 @@ describe 'Integration testing' do
   describe 'security', :with_certificates => true do
     describe 'installing x-pack' do
       let(:pp) do
-        manifest + <<~XPACK
+        manifest + <<-XPACK
           elasticsearch::plugin { 'x-pack' :
             instances => 'es-01',
             url => "https://snapshots.elastic.co/downloads/elasticsearch-plugins/x-pack/x-pack-#{RSpec.configuration.snapshot_version}.zip",

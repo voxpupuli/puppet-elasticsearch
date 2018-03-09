@@ -1,6 +1,5 @@
 require 'spec_helper'
 
-# rubocop:disable Metrics/LineLength
 describe 'elasticsearch::instance', :type => 'define' do
   let(:title) { 'es-instance' }
   let(:pre_condition) { 'class { "elasticsearch": }' }
@@ -277,7 +276,7 @@ describe 'elasticsearch::instance', :type => 'define' do
           }
 
           include_examples 'data directories',
-                          ['elasticsearch-data', 'elasticsearch-data/es-instance']
+                           ['elasticsearch-data', 'elasticsearch-data/es-instance']
         end
 
         context 'single from instance config' do
@@ -768,7 +767,7 @@ describe 'elasticsearch::instance', :type => 'define' do
         context 'from parent class' do
           it do
             should contain_file('/etc/elasticsearch/es-instance/jvm.options')
-              .with_content(/
+              .with_content(%r{
                 -Dfile.encoding=UTF-8.
                 -Dio.netty.noKeySetOptimization=true.
                 -Dio.netty.noUnsafe=true.
@@ -795,7 +794,7 @@ describe 'elasticsearch::instance', :type => 'define' do
                 -Xmx4g.
                 -Xss1m.
                 -server.
-              /xm)
+              }xm)
           end
         end
 
@@ -811,7 +810,7 @@ describe 'elasticsearch::instance', :type => 'define' do
 
           it do
             should contain_file('/etc/elasticsearch/es-instance/jvm.options')
-              .with_content(/
+              .with_content(%r{
                 -Dfile.encoding=UTF-8.
                 -Dio.netty.noKeySetOptimization=true.
                 -Dio.netty.noUnsafe=true.
@@ -838,7 +837,7 @@ describe 'elasticsearch::instance', :type => 'define' do
                 -Xmx8g.
                 -Xss1m.
                 -server.
-              /xm)
+              }xm)
           end
         end
       end

@@ -15,22 +15,22 @@ require 'spec_helper_rspec'
 
       context 'with one role' do
         it 'should return one resource' do
-          expect(described_class.parse(%q{
+          expect(described_class.parse(%(
             admin:
               - "cn=users,dc=example,dc=com"
-          })[0]).to eq({
+          ))[0]).to eq(
             :ensure => :present,
             :name => 'admin',
             :mappings => [
-              "cn=users,dc=example,dc=com"
+              'cn=users,dc=example,dc=com'
             ]
-          })
+          )
         end
       end
 
       context 'with multiple roles' do
         it 'should return three resources' do
-          expect(described_class.parse(%q{
+          expect(described_class.parse(%(
             admin:
               - "cn=users,dc=example,dc=com"
             user:
@@ -39,7 +39,7 @@ require 'spec_helper_rspec'
               - "cn=John Doe,cn=other users,dc=example,dc=com"
             power_user:
               - "cn=admins,dc=example,dc=com"
-          }).length).to eq(3)
+          )).length).to eq(3)
         end
       end
     end # of describe instances

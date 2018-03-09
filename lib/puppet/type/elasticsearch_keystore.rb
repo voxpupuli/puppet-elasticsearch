@@ -47,11 +47,11 @@ Puppet::Type.newtype(:elasticsearch_keystore) do
 
       removed_settings = currentvalue - newvalue
       unless removed_settings.empty?
-        if resource[:purge]
-          ret << "removed: #{removed_settings.join(', ')}"
-        else
-          ret << "would have removed: #{removed_settings.join(', ')}, but purging is disabled"
-        end
+        ret << if resource[:purge]
+                 "removed: #{removed_settings.join(', ')}"
+               else
+                 "would have removed: #{removed_settings.join(', ')}, but purging is disabled"
+               end
       end
 
       ret

@@ -4,7 +4,7 @@ Puppet::Type.type(:elasticsearch_user).provide(
   :xpack,
   :parent => Puppet::Provider::ElasticParsedFile
 ) do
-  desc "Provider for X-Pack esusers using plain files."
+  desc 'Provider for X-Pack esusers using plain files.'
 
   xpack_config 'users'
   confine :exists => default_target
@@ -12,10 +12,10 @@ Puppet::Type.type(:elasticsearch_user).provide(
   has_feature :manages_encrypted_passwords
 
   text_line :comment,
-            :match => %r{^\s*#}
+            :match => /^\s*#/
 
   record_line :xpack,
-              :fields => %w{name hashed_password},
+              :fields => %w[name hashed_password],
               :separator => ':',
               :joiner => ':'
 

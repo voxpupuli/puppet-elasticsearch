@@ -67,9 +67,9 @@ describe 'elasticsearch', :type => 'class' do
 
       context 'java installation' do
         let(:pre_condition) do
-          <<~EOS
+          <<-MANIFEST
             include ::java
-          EOS
+          MANIFEST
         end
 
         it { should contain_class('elasticsearch::config')
@@ -236,9 +236,9 @@ describe 'elasticsearch', :type => 'class' do
         when 'SuSE'
           it { should contain_class('elasticsearch::repo') }
           it { should contain_exec('elasticsearch_suse_import_gpg') }
-          it { should contain_zypprepo('elasticsearch')
-            .with(
-              :baseurl => 'http://packages.elastic.co/elasticsearch/1.0/centos') }
+          it { should contain_zypprepo(
+              'elasticsearch'
+          ).with(:baseurl => 'http://packages.elastic.co/elasticsearch/1.0/centos')}
           it { should contain_exec(
             'elasticsearch_zypper_refresh_elasticsearch'
           ) }
@@ -310,7 +310,7 @@ describe 'elasticsearch', :type => 'class' do
         it { should contain_file('/etc/elasticsearch/elasticsearch.yml')
           .with(:ensure => 'absent') }
         it { should contain_file('/etc/elasticsearch/jvm.options')
-            .with(:ensure => 'absent') }
+          .with(:ensure => 'absent') }
         it { should contain_file('/etc/elasticsearch/logging.yml')
           .with(:ensure => 'absent') }
         it { should contain_file('/etc/elasticsearch/log4j2.properties')
@@ -389,7 +389,7 @@ describe 'elasticsearch', :type => 'class' do
         # Helper for these tests
         def singular(s)
           case s
-          when'indices'
+          when 'indices'
             'index'
           when 'snapshot_repositories'
             'snapshot_repository'
