@@ -2,6 +2,7 @@ AllCops:
   Exclude:
     - pkg/**/*
     - spec/fixtures/**/*
+    - vendor/**/*
   Include:
     - Rakefile
   TargetRubyVersion: 1.9
