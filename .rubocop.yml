@@ -6,6 +6,15 @@ AllCops:
     - Rakefile
   TargetRubyVersion: 1.9
 
+Metrics/AbcSize:
+  Enabled: false
+
+Metrics/LineLength:
+  Enabled: false
+
+Metrics/MethodLength:
+  Enabled: false
+
 Style/AndOr:
   Enabled: false
 
@@ -13,6 +22,12 @@ Style/BlockDelimiters:
   Enabled: false
 
 Style/BlockEndNewline:
+  Enabled: false
+
+Style/ClassAndModuleCamelCase:
+  Enabled: false
+
+Style/ClassAndModuleChildren:
   Enabled: false
 
 Style/FirstParameterIndentation:
@@ -27,6 +42,9 @@ Style/HashSyntax:
 Style/IndentArray:
   Enabled: false
 
+Style/Lambda:
+  Enabled: false
+
 Style/MultilineBlockChain:
   Enabled: false
 
@@ -35,3 +53,10 @@ Style/MultilineBlockLayout:
 
 Style/Not:
   Enabled: false
+
+# This is the default post-0.41.2 rubocop, set it to be forward-compatible here.
+Style/PercentLiteralDelimiters:
+  PreferredDelimiters:
+    '%r': '{}'
+    '%w': '[]'
+    '%W': '[]'
