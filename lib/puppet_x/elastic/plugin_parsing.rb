@@ -1,6 +1,7 @@
 class ElasticPluginParseFailure < StandardError; end
 
 module Puppet_X
+  # Custom functions for plugin string parsing.
   module Elastic
     def self.plugin_name(raw_name)
       plugin_split(raw_name, 1)

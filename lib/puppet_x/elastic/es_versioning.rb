@@ -12,7 +12,7 @@ module Puppet_X
         'data' => 'DATA_DIR',
         'work' => 'WORK_DIR',
         'conf' => 'CONF_DIR'
-      }
+      }.freeze
 
       # Create an array of command-line flags to append to an `elasticsearch`
       # startup command.

@@ -4,7 +4,6 @@ require 'puppet_x/elastic/deep_to_i'
 require 'puppet_x/elastic/deep_implode'
 require 'puppet_x/elastic/elasticsearch_rest_resource'
 
-# rubocop:disable Metrics/BlockLength
 Puppet::Type.newtype(:elasticsearch_index) do
   extend ElasticsearchRESTResource
 

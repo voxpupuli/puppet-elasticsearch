@@ -1,4 +1,4 @@
-$LOAD_PATH.unshift(File.join(File.dirname(__FILE__),'..','..','lib'))
+$LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', '..', 'lib'))
 
 require 'spec_helper_rspec'
 require 'puppet/provider/elastic_yaml'
@@ -10,7 +10,6 @@ class String
 end
 
 describe Puppet::Provider::ElasticYaml do
-
   subject do
     described_class.tap do |o|
       o.instance_eval { @metadata = :metadata }
@@ -45,7 +44,7 @@ describe Puppet::Provider::ElasticYaml do
   describe 'to_file' do
     it 'returns sorted yaml' do
       expect(described_class.to_file(unsorted_hash).flattened).to(
-        eq(%q{
+        eq(%(
           role:
             alpha: foobar
             beta: foobaz
@@ -60,7 +59,7 @@ describe Puppet::Provider::ElasticYaml do
               delta: 3
               gamma: 4
               zeta: 5
-        }.flattened)
+        ).flattened)
       )
     end
   end

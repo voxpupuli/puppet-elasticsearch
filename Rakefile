@@ -161,7 +161,7 @@ namespace :artifact do
     downloads = catalog['projects']['elasticsearch']['packages'].select do |pkg, _|
       pkg =~ /(?:deb|rpm)/
     end.map do |package, urls|
-      [ package.split('.').last, urls ]
+      [package.split('.').last, urls]
     end.to_h
 
     # We end up with something like:

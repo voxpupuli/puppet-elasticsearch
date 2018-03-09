@@ -6,8 +6,8 @@ require 'puppet_x/elastic/plugin_parsing'
 
 # Generalized parent class for providers that behave like Elasticsearch's plugin
 # command line tool.
+# rubocop:disable Metrics/ClassLength
 class Puppet::Provider::ElasticPlugin < Puppet::Provider
-
   # Elasticsearch's home directory.
   #
   # @return String
@@ -115,6 +115,7 @@ class Puppet::Provider::ElasticPlugin < Puppet::Provider
   end
 
   # Install this plugin on the host.
+  # rubocop:disable Metrics/CyclomaticComplexity
   def create
     commands = []
     commands += proxy_args(@resource[:proxy]) if is2x? and @resource[:proxy]
@@ -137,6 +138,7 @@ class Puppet::Provider::ElasticPlugin < Puppet::Provider
       raise "Failed to install plugin. Received error: #{e.inspect}"
     end
   end
+  # rubocop:enable Metrics/CyclomaticComplexity
 
   # Remove this plugin from the host.
   def destroy
@@ -188,7 +190,7 @@ class Puppet::Provider::ElasticPlugin < Puppet::Provider
       ENV[env_var] = value
     end
 
-    ret = block.call
+    ret = block.yield
 
     saved_vars.each do |env_var, value|
       ENV[env_var] = value

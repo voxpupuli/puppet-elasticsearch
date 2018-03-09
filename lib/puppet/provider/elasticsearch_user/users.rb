@@ -4,7 +4,7 @@ Puppet::Type.type(:elasticsearch_user).provide(
   :users,
   :parent => Puppet::Provider::ElasticUserCommand
 ) do
-  desc "Provider for X-Pack file (users) user resources."
+  desc 'Provider for X-Pack file (users) user resources.'
 
   has_feature :manages_plaintext_passwords
 
