@@ -3,7 +3,6 @@ require 'spec_helper_rspec'
 [:shield, :xpack].each do |provider|
   describe Puppet::Type.type(:elasticsearch_user_roles)
     .provider(provider) do
-
     describe 'instances' do
       it 'should have an instance method' do
         expect(described_class).to respond_to :instances
@@ -17,23 +16,23 @@ require 'spec_helper_rspec'
 
       context 'with one user' do
         it 'should return one resource' do
-          expect(described_class.parse(%q{
+          expect(described_class.parse(%(
             admin:elastic
             power_user:elastic
-          })[0]).to eq({
+          ))[0]).to eq(
             :name => 'elastic',
-            :roles => ['admin', 'power_user']
-          })
+            :roles => %w[admin power_user]
+          )
         end
       end
 
       context 'with multiple users' do
         it 'should return three resources' do
-          expect(described_class.parse(%q{
+          expect(described_class.parse(%(
             admin:elastic
             logstash:user
             kibana:kibana
-          }).length).to eq(3)
+          )).length).to eq(3)
         end
       end
     end # of describe instances

@@ -179,9 +179,11 @@ RSpec.configure do |c|
       modules += dist_module unless dist_module.nil?
 
       modules.each do |mod|
-        copy_module_to host,
+        copy_module_to(
+          host,
           :module_name => mod,
           :source      => "spec/fixtures/modules/#{mod}"
+        )
       end
 
       on(host, 'mkdir -p etc/puppet/modules/another/files/')
@@ -192,7 +194,7 @@ RSpec.configure do |c|
 
     # Use the Java class once before the suite of tests
     unless shell('command -v java', :accept_all_exit_codes => true).exit_code.zero?
-      apply_manifest <<~MANIFEST
+      apply_manifest <<-MANIFEST
         class { "java" :
           distribution => "jre",
         }

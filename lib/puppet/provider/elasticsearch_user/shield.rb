@@ -4,7 +4,7 @@ Puppet::Type.type(:elasticsearch_user).provide(
   :shield,
   :parent => Puppet::Provider::ElasticParsedFile
 ) do
-  desc "Provider for Shield esusers using plain files."
+  desc 'Provider for Shield esusers using plain files.'
 
   shield_config 'users'
   confine :exists => default_target
@@ -12,10 +12,10 @@ Puppet::Type.type(:elasticsearch_user).provide(
   has_feature :manages_encrypted_passwords
 
   text_line :comment,
-            :match => %r{^\s*#}
+            :match => /^\s*#/
 
   record_line :shield,
-              :fields => %w{name hashed_password},
+              :fields => %w[name hashed_password],
               :separator => ':',
               :joiner => ':'
 

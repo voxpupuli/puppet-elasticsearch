@@ -47,7 +47,7 @@ describe 'elasticsearch::user' do
       describe 'collector ordering' do
         describe 'when present' do
           let(:pre_condition) do
-            <<~EOS
+            <<-EOS
               class { 'elasticsearch':
                 security_plugin => 'shield',
               }
@@ -96,7 +96,7 @@ describe 'elasticsearch::user' do
 
         describe 'when absent' do
           let(:pre_condition) do
-            <<~EOS
+            <<-EOS
               class { 'elasticsearch':
                 security_plugin => 'shield',
               }

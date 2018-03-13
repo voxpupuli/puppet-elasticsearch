@@ -2,11 +2,11 @@ Puppet::Type.newtype(:elasticsearch_user) do
   desc 'Type to model Elasticsearch users.'
 
   feature :manages_encrypted_passwords,
-    'The provider can control the password hash without a need
-    to explicitly refresh.'
+          'The provider can control the password hash without a need
+          to explicitly refresh.'
 
   feature :manages_plaintext_passwords,
-    'The provider can control the password in plaintext form.'
+          'The provider can control the password in plaintext form.'
 
   ensurable
 
@@ -34,9 +34,11 @@ Puppet::Type.newtype(:elasticsearch_user) do
       end
     end
 
+    # rubocop:disable Style/PredicateName
     def is_to_s(_currentvalue)
       '[old password hash redacted]'
     end
+    # rubocop:enable Style/PredicateName
 
     def should_to_s(_newvalue)
       '[new password hash redacted]'

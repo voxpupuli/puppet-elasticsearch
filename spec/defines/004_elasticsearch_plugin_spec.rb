@@ -42,7 +42,7 @@ describe 'elasticsearch::plugin', :type => 'define' do
       context 'absent' do
         let(:params) do {
           :ensure => 'absent',
-          :instances  => 'es-plugin'
+          :instances => 'es-plugin'
         } end
 
         it { is_expected.to compile }

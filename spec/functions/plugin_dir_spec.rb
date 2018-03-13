@@ -1,10 +1,9 @@
 require 'spec_helper'
 
 describe 'plugin_dir' do
-
   describe 'exception handling' do
     describe 'with no arguments' do
-      it { is_expected.to run.with_params()
+      it { is_expected.to run.with_params
         .and_raise_error(Puppet::ParseError) }
     end
 
@@ -34,5 +33,4 @@ describe 'plugin_dir' do
       it { is_expected.to run.with_params(plugin).and_return(dir) }
     end
   end
-
 end
