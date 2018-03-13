@@ -3,6 +3,7 @@
 #### Features
 
 #### Fixes
+* Fixed language compatibility errors that could arise when using JRuby 1.7 on Puppet Servers.
 
 ## 6.2.1 (February 14, 2018)
 
