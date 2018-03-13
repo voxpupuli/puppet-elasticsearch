@@ -12,7 +12,7 @@ Puppet::Type.type(:elasticsearch_snapshot_repository).provide(
   mk_resource_methods
 
   def self.process_body(body)
-    Puppet.debug("Got to snapshot_repository.process_body")
+    Puppet.debug('Got to snapshot_repository.process_body')
 
     results = JSON.parse(body).map do |object_name, api_object|
       {
@@ -25,7 +25,7 @@ Puppet::Type.type(:elasticsearch_snapshot_repository).provide(
         :max_restore_rate  => api_object['settings']['max_restore_rate'],
         :max_snapshot_rate => api_object['settings']['max_snapshot_rate'],
         :provider          => name
-      }.reject { |k,v| v.nil? }
+      }.reject { |_k, v| v.nil? }
     end
     results
   end
@@ -47,6 +47,6 @@ Puppet::Type.type(:elasticsearch_snapshot_repository).provide(
     body['settings']['max_snapshot_rate'] = resource[:max_snapshot_rate] unless resource[:max_snapshot_rate].nil?
 
     # Convert to JSON and return
-    return JSON.generate(body)
+    JSON.generate(body)
   end
 end

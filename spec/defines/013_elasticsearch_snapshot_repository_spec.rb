@@ -22,7 +22,7 @@ describe 'elasticsearch::snapshot_repository', :type => 'define' do
       end
 
       describe 'parameter validation' do
-        %i[api_ca_file api_ca_path].each do |param|
+        [:api_ca_file, :api_ca_path].each do |param|
           let :params do
             {
               :ensure => 'present',
@@ -85,7 +85,7 @@ describe 'elasticsearch::snapshot_repository', :type => 'define' do
           }
         end
         let(:pre_condition) do
-          <<-EOS
+          <<-MANIFEST
             class { 'elasticsearch' :
               api_protocol => 'https',
               api_host => '127.0.0.1',
@@ -97,7 +97,7 @@ describe 'elasticsearch::snapshot_repository', :type => 'define' do
               api_ca_path => '/foo/',
               validate_tls => false,
             }
-          EOS
+          MANIFEST
         end
 
         it do

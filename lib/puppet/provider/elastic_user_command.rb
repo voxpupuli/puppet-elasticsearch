@@ -1,7 +1,6 @@
 # Parent provider for Elasticsearch Shield/X-Pack file-based user management
 # tools.
 class Puppet::Provider::ElasticUserCommand < Puppet::Provider
-
   attr_accessor :homedir
 
   # Elasticsearch's home directory.
@@ -50,7 +49,7 @@ class Puppet::Provider::ElasticUserCommand < Puppet::Provider
       {
         :name => user,
         :ensure => :present,
-        :provider => name,
+        :provider => name
       }
     end
   end

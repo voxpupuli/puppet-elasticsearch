@@ -1,7 +1,8 @@
-$LOAD_PATH.unshift(File.join(File.dirname(__FILE__),"..","..",".."))
+$LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', '..', '..'))
 
 require 'puppet_x/elastic/deep_implode'
 
+# Top-level Puppet functions
 module Puppet::Parser::Functions
   newfunction(
     :deep_implode,
@@ -29,17 +30,17 @@ module Puppet::Parser::Functions
     ENDHEREDOC
 
     if args.length != 1
-      raise Puppet::ParseError, ("deep_implode(): wrong number of arguments (#{args.length}; must be 1)")
+      raise Puppet::ParseError, "deep_implode(): wrong number of arguments (#{args.length}; must be 1)"
     end
 
     arg = args[0]
 
     unless arg.is_a? Hash
-      raise Puppet::ParseError, "deep_implode: unexpected argument type, only expects hashes"
+      raise Puppet::ParseError, 'deep_implode: unexpected argument type, only expects hashes'
     end
 
     return {} if arg.empty?
 
-    Puppet_X::Elastic::deep_implode arg
+    Puppet_X::Elastic.deep_implode arg
   end
 end

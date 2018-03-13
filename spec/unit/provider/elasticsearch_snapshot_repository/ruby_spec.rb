@@ -14,11 +14,11 @@ describe Puppet::Type.type(:elasticsearch_snapshot_repository).provider(:ruby) d
 
   let(:json_1) do
     {
-      "foobar1": {
-        "type": "fs",
-        "settings": {
-          "compress": true,
-          "location": "/bak1"
+      'foobar1' => {
+        'type' => 'fs',
+        'settings' => {
+          'compress' => true,
+          'location' => '/bak1'
         }
       }
     }
@@ -37,11 +37,11 @@ describe Puppet::Type.type(:elasticsearch_snapshot_repository).provider(:ruby) d
 
   let(:json_2) do
     {
-      "foobar2": {
-        "type": "fs",
-        "settings": {
-          "compress": true,
-          "location": "/bak2"
+      'foobar2' => {
+        'type' => 'fs',
+        'settings' => {
+          'compress' => true,
+          'location' => '/bak2'
         }
       }
     }

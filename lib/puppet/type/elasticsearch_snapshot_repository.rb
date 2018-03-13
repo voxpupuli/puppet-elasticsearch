@@ -2,7 +2,6 @@ $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', '..'))
 
 require 'puppet_x/elastic/elasticsearch_rest_resource'
 
-# rubocop:disable Metrics/BlockLength
 Puppet::Type.newtype(:elasticsearch_snapshot_repository) do
   extend ElasticsearchRESTResource
 
@@ -46,8 +45,7 @@ Puppet::Type.newtype(:elasticsearch_snapshot_repository) do
     desc 'Maximum Snapshot rate'
   end
 
-  # rubocop:disable Style/SignalException
   validate do
-    raise ArgumentError, "Location is required." if self[:location].nil?
+    raise ArgumentError, 'Location is required.' if self[:location].nil?
   end
 end # of newtype

@@ -1,8 +1,8 @@
 require 'openssl'
 
-def gen_certs num_certs, path
+def gen_certs(num_certs, path)
   ret = { :clients => [] }
-  serial = 1000000
+  serial = 1_000_000
   ca_key = OpenSSL::PKey::RSA.new 2048
 
   # CA Cert
@@ -12,7 +12,7 @@ def gen_certs num_certs, path
   serial += 1
   ca_cert.version = 2
   ca_cert.not_before = Time.now
-  ca_cert.not_after = Time.now + 86400
+  ca_cert.not_after = Time.now + 86_400
   ca_cert.public_key = ca_key.public_key
   ca_cert.subject = ca_name
   ca_cert.issuer = ca_name
@@ -29,7 +29,7 @@ def gen_certs num_certs, path
   ret[:ca] = {
     :cert => {
       :pem => ca_cert.to_pem,
-      :path => path + '/ca_cert.pem',
+      :path => path + '/ca_cert.pem'
     }
   }
 
@@ -39,19 +39,19 @@ def gen_certs num_certs, path
     ret[:clients] << {
       :key => {
         :pem => key.to_pem,
-        :path => path + '/' + i.to_s + '_key.pem',
+        :path => path + '/' + i.to_s + '_key.pem'
       },
       :cert => {
         :pem => cert.to_pem,
-        :path => path + '/' + i.to_s + '_cert.pem',
-      },
+        :path => path + '/' + i.to_s + '_cert.pem'
+      }
     }
   end
 
   ret
 end
 
-def gen_cert_pair serial, ca_cert
+def gen_cert_pair(serial, ca_cert)
   serial += 1
   # Node Key
   key = OpenSSL::PKey::RSA.new 2048

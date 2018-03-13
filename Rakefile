@@ -47,9 +47,9 @@ PuppetLint.configuration.log_format = \
   '%{path}:%{line}:%{check}:%{KIND}:%{message}'
 
 # Append custom cleanup tasks to :clean
-task :clean => %i[
-  artifact:clean
-  spec_clean
+task :clean => [
+  :'artifact:clean',
+  :spec_clean
 ]
 
 desc 'remove outdated module fixtures'
@@ -93,12 +93,13 @@ task :spec_unit => :spec_prep
 task :beaker => [:spec_prep, 'artifact:prep']
 
 desc 'Run all linting/unit tests.'
-task :intake => %i[
-  syntax
-  lint
-  validate
-  spec_unit
-  spec_puppet
+task :intake => [
+  :syntax,
+  :rubocop,
+  :lint,
+  :validate,
+  :spec_unit,
+  :spec_puppet
 ]
 
 # Plumbing for snapshot tests
@@ -161,7 +162,7 @@ namespace :artifact do
     downloads = catalog['projects']['elasticsearch']['packages'].select do |pkg, _|
       pkg =~ /(?:deb|rpm)/
     end.map do |package, urls|
-      [ package.split('.').last, urls ]
+      [package.split('.').last, urls]
     end.to_h
 
     # We end up with something like:

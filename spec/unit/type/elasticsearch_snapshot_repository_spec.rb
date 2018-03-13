@@ -9,7 +9,7 @@ describe Puppet::Type.type(:elasticsearch_snapshot_repository) do
     }
   end
 
-  describe "attribute validation for elasticsearch_snapshot_repository" do
+  describe 'attribute validation for elasticsearch_snapshot_repository' do
     [
       :name,
       :host,
@@ -86,9 +86,7 @@ describe Puppet::Type.type(:elasticsearch_snapshot_repository) do
       it 'should be required' do
         expect do
           described_class.new(
-            {
-              :name => resource_name,
-            }
+            :name => resource_name
           )
         end.to raise_error(Puppet::Error, /Location is required./)
       end

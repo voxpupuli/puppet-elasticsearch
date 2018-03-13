@@ -36,7 +36,7 @@ class Puppet::Provider::ElasticYaml < Puppet::Provider::ElasticParsedFile
       Hash[record.map { |k, v| [k.to_s, v] }]
     end.inject({}) do |hash, record|
       # Flatten array of hashes into single hash
-      hash.merge({ record['name'] => record.delete(@metadata.to_s) })
+      hash.merge(record['name'] => record.delete(@metadata.to_s))
     end.extend(Puppet_X::Elastic::SortedHash).to_yaml.split("\n")
 
     yaml.shift if yaml.first =~ /---/

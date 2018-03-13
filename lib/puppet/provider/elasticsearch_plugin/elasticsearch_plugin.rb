@@ -18,5 +18,4 @@ Puppet::Type.type(:elasticsearch_plugin).provide(
     commands :plugin => '/usr/share/elasticsearch/bin/elasticsearch-plugin'
     commands :es => '/usr/share/elasticsearch/bin/elasticsearch'
   end
-
 end
