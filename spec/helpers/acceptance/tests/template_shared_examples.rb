@@ -7,7 +7,7 @@ shared_examples 'template application' do |instances, name, template, param|
   include_examples(
     'manifest application',
     instances,
-    <<~TEMPLATE
+    <<-TEMPLATE
       elasticsearch::template { '#{name}':
         ensure => 'present',
         #{param}
@@ -20,7 +20,7 @@ shared_examples 'template application' do |instances, name, template, param|
   include_examples(
     'manifest application',
     instances,
-    <<~MANIFEST
+    <<-MANIFEST
       elasticsearch::template { '#{name}':
         ensure => absent,
       }
@@ -95,7 +95,7 @@ shared_examples 'template operations' do |instances, template|
         include_examples(
           'invalid manifest application',
           instances,
-          <<~TEMPLATE
+          <<-TEMPLATE
             elasticsearch::template { '#{SecureRandom.hex(8)}':
               ensure => 'present',
               file => 'puppet:///modules/another/bad.json'

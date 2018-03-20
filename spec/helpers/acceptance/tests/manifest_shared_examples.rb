@@ -3,7 +3,7 @@ shared_examples 'manifest application' do |instances, extra_manifest = ''|
     let(:applied_manifest) do
       manifest + instances.map do |instance, meta|
         config = meta.map { |k, v| "'#{k}' => '#{v}'," }.join(' ')
-        <<~MANIFEST
+        <<-MANIFEST
           elasticsearch::instance { '#{instance}':
             config => {
               #{config}
