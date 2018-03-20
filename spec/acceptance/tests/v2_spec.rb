@@ -11,7 +11,7 @@ describe 'elasticsearch class v2' do
   local_plugin_name = File.basename(local_plugin_path).split('_').last.split('.').first
 
   let(:manifest) do
-    <<~MANIFEST
+    <<-MANIFEST
       class { 'elasticsearch':
         config => {
           'cluster.name' => '#{test_settings['cluster_name']}',
@@ -61,7 +61,7 @@ describe 'elasticsearch class v2' do
 
   context 'with restart_on_changes' do
     let(:manifest) do
-      <<~MANIFEST
+      <<-MANIFEST
         class { 'elasticsearch':
           config => {
             'cluster.name' => '#{test_settings['cluster_name']}',

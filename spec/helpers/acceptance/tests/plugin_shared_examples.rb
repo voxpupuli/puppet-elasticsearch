@@ -31,7 +31,7 @@ shared_examples 'plugin acceptance tests' do |instances, plugins|
         include_examples(
           'manifest application',
           instances,
-          <<~PLUGIN
+          <<-PLUGIN
             elasticsearch::plugin { '#{plugins[:official]}':
               instances => 'es-01',
             }
@@ -54,7 +54,7 @@ shared_examples 'plugin acceptance tests' do |instances, plugins|
         include_examples(
           'invalid manifest application',
           instances,
-          <<~PLUGIN
+          <<-PLUGIN
             elasticsearch::plugin { 'elastic/non-existing':
               instances => 'es-01',
             }
@@ -67,7 +67,7 @@ shared_examples 'plugin acceptance tests' do |instances, plugins|
           include_examples(
             'manifest application',
             instances,
-            <<~PLUGIN
+            <<-PLUGIN
               elasticsearch::plugin { '#{plugins[:github][:repository]}#{plugins[:github][:name]}/v#{plugins[:github][:initial]}':
                 instances => 'es-01',
               }
@@ -87,7 +87,7 @@ shared_examples 'plugin acceptance tests' do |instances, plugins|
           include_examples(
             'manifest application',
             instances,
-            <<~PLUGIN
+            <<-PLUGIN
               elasticsearch::plugin { '#{plugins[:github][:repository]}#{plugins[:github][:name]}/v#{plugins[:github][:upgraded]}':
                 instances => 'es-01',
               }
@@ -116,7 +116,7 @@ shared_examples 'plugin acceptance tests' do |instances, plugins|
         include_examples(
           'manifest application',
           instances,
-          <<~PLUGIN
+          <<-PLUGIN
             elasticsearch::plugin { '#{plugins[:offline][:name]}':
               instances => 'es-01',
               source    => 'puppet:///modules/another/plugin.zip',
@@ -136,7 +136,7 @@ shared_examples 'plugin acceptance tests' do |instances, plugins|
         include_examples(
           'manifest application',
           instances,
-          <<~PLUGIN
+          <<-PLUGIN
             elasticsearch::plugin { '#{plugins[:remote][:name]}':
               instances => 'es-01',
               url       => '#{plugins[:remote][:url]}',
