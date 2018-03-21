@@ -4,6 +4,7 @@ require 'helpers/acceptance/tests/template_shared_examples.rb'
 require 'helpers/acceptance/tests/removal_shared_examples.rb'
 require 'helpers/acceptance/tests/plugin_shared_examples.rb'
 require 'helpers/acceptance/tests/snapshot_repository_shared_examples.rb'
+require 'helpers/acceptance/tests/datadir_shared_examples.rb'
 
 describe 'elasticsearch class v2' do
   local_plugin_path = Dir[
@@ -13,15 +14,13 @@ describe 'elasticsearch class v2' do
 
   let(:manifest) do
     <<-MANIFEST
-      class { 'elasticsearch':
-        config => {
-          'cluster.name' => '#{test_settings['cluster_name']}',
-          'network.host' => '0.0.0.0',
-        },
-        repo_version => '2.x',
-        # Hard version set here due to plugin incompatibilities.
-        version => '2.4.1',
-      }
+      config => {
+        'cluster.name' => '#{test_settings['cluster_name']}',
+        'network.host' => '0.0.0.0',
+      },
+      repo_version => '2.x',
+      # Hard version set here due to plugin incompatibilities.
+      version => '2.4.1',
     MANIFEST
   end
 
@@ -61,19 +60,7 @@ describe 'elasticsearch class v2' do
   )
 
   context 'with restart_on_changes' do
-    let(:manifest) do
-      <<-MANIFEST
-        class { 'elasticsearch':
-          config => {
-            'cluster.name' => '#{test_settings['cluster_name']}',
-            'network.host' => '0.0.0.0',
-          },
-          repo_version => '2.x',
-          restart_on_change => true,
-          version => '2.4.1',
-        }
-      MANIFEST
-    end
+    let(:manifest_class_parameters) { 'restart_on_change => true' }
 
     include_examples(
       'plugin acceptance tests',
@@ -103,4 +90,7 @@ describe 'elasticsearch class v2' do
 
   # Tests for elasticsearch::snapshot resources
   include_examples 'snapshot repository acceptance tests'
+
+  # `datadir` tests
+  include_examples 'datadir acceptance tests'
 end
