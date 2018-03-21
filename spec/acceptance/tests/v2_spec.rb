@@ -3,6 +3,7 @@ require 'helpers/acceptance/tests/basic_shared_examples.rb'
 require 'helpers/acceptance/tests/template_shared_examples.rb'
 require 'helpers/acceptance/tests/removal_shared_examples.rb'
 require 'helpers/acceptance/tests/plugin_shared_examples.rb'
+require 'helpers/acceptance/tests/snapshot_repository_shared_examples.rb'
 
 describe 'elasticsearch class v2' do
   local_plugin_path = Dir[
@@ -99,4 +100,7 @@ describe 'elasticsearch class v2' do
       }
     )
   end
+
+  # Tests for elasticsearch::snapshot resources
+  include_examples 'snapshot repository acceptance tests'
 end
