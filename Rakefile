@@ -129,10 +129,12 @@ beaker_node_sets.each do |node|
 end
 
 desc 'Run acceptance tests'
-RSpec::Core::RakeTask.new('beaker:acceptance') do |c|
-  c.pattern = 'spec/acceptance/0*_spec.rb'
+RSpec::Core::RakeTask.new(
+  'beaker:acceptance', [:version] => [:spec_prep, 'artifact:prep']
+) do |task, args|
+  task.pattern = 'spec/acceptance/tests/acceptance_spec.rb'
+  ENV['ELASTICSEARCH_FULL_VERSION'] = args[:version]
 end
-task 'beaker:acceptance' => [:spec_prep, 'artifact:prep']
 
 desc 'Setup a dummy host only, do not run any tests'
 RSpec::Core::RakeTask.new('beaker:noop') do |c|

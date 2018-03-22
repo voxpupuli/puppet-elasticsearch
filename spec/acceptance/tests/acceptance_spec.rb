@@ -6,7 +6,7 @@ require 'helpers/acceptance/tests/plugin_shared_examples.rb'
 require 'helpers/acceptance/tests/snapshot_repository_shared_examples.rb'
 require 'helpers/acceptance/tests/datadir_shared_examples.rb'
 
-describe 'elasticsearch class v2' do
+describe "elasticsearch v#{RSpec.configuration.elasticsearch_full_version} class" do
   local_plugin_path = Dir[
     "#{RSpec.configuration.test_settings['files_dir']}/elasticsearch-plugin-2*"
   ].first
@@ -18,9 +18,9 @@ describe 'elasticsearch class v2' do
         'cluster.name' => '#{test_settings['cluster_name']}',
         'network.host' => '0.0.0.0',
       },
-      repo_version => '2.x',
+      repo_version => '#{RSpec.configuration.elasticsearch_major_version}.x',
       # Hard version set here due to plugin incompatibilities.
-      version => '2.4.1',
+      version => '#{RSpec.configuration.elasticsearch_full_version}',
     MANIFEST
   end
 
