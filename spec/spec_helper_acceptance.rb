@@ -22,6 +22,13 @@ RSpec.configure do |c|
     c.snapshot_version = ENV['snapshot_version']
   end
 
+  unless ENV['ELASTICSEARCH_FULL_VERSION'].nil?
+    c.add_setting :elasticsearch_full_version
+    c.add_setting :elasticsearch_major_version
+    c.elasticsearch_full_version = ENV['ELASTICSEARCH_FULL_VERSION']
+    c.elasticsearch_major_version = c.elasticsearch_full_version.split('.').first
+  end
+
   # rspec-retry
   c.display_try_failure_messages = true
   c.default_sleep_interval = 5
