@@ -5,6 +5,7 @@ shared_examples 'manifest application' do |instances, extra_manifest = ''|
         config = meta.map { |k, v| "'#{k}' => '#{v}'," }.join(' ')
         <<-MANIFEST
           elasticsearch::instance { '#{instance}':
+            ensure => #{meta.empty? ? 'absent' : 'present'},
             config => {
               #{config}
             },
