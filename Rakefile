@@ -126,14 +126,20 @@ beaker_node_sets.each do |node|
     Rake::Task['beaker:snapshot'].reenable
     Rake::Task['beaker:snapshot'].invoke
   end
-end
 
-desc 'Run acceptance tests'
-RSpec::Core::RakeTask.new(
-  'beaker:acceptance', [:version] => [:spec_prep, 'artifact:prep']
-) do |task, args|
-  task.pattern = 'spec/acceptance/tests/acceptance_spec.rb'
-  ENV['ELASTICSEARCH_FULL_VERSION'] = args[:version]
+  desc "Run acceptance tests against #{node}"
+  RSpec::Core::RakeTask.new(
+    "beaker:#{node}:acceptance", [:version] => [:spec_prep, 'artifact:prep']
+  ) do |task, args|
+    ENV['BEAKER_set'] = node
+    args.with_defaults(:version => '6.2.3')
+    task.pattern = 'spec/acceptance/tests/acceptance_spec.rb'
+    task.rspec_opts = [
+      '--format documentation'
+    ] if ENV['CI'].nil?
+    ENV['ELASTICSEARCH_VERSION'] = args[:version]
+    Rake::Task['artifact:fetch'].invoke(args[:version])
+  end
 end
 
 desc 'Setup a dummy host only, do not run any tests'
@@ -144,7 +150,7 @@ end
 task 'beaker:noop' => [:spec_prep]
 
 namespace :artifact do
-  desc 'Fetch artifacts for tests'
+  desc 'Retrieve artifacts for tests'
   task :prep do
     dl_base = 'https://download.elastic.co/elasticsearch/elasticsearch'
     fetch_archives(
@@ -154,6 +160,16 @@ namespace :artifact do
       "#{dl_base}/elasticsearch-2.3.5.rpm" => 'elasticsearch-2.3.5.rpm',
       'https://download.elastic.co/elasticsearch/release/org/elasticsearch/plugin/analysis-icu/2.4.1/analysis-icu-2.4.1.zip' => \
         'elasticsearch-plugin-2.x_analysis-icu.zip'
+    )
+  end
+
+  desc 'Fetch specific installation artifacts'
+  task :fetch, [:version] do |_t, args|
+    fetch_archives(
+      %w[deb rpm].map do |ext|
+        url = derive_full_package_url(args[:version], ext)
+        [url, File.basename(url)]
+      end.to_h
     )
   end
 
