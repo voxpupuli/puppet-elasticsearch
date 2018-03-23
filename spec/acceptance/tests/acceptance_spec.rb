@@ -25,29 +25,44 @@ describe "elasticsearch v#{v[:elasticsearch_full_version]} class" do
     MANIFEST
   end
 
-  # Single-node
-  include_examples(
-    'basic acceptance tests',
-    'es-01' => {
-      'http.port' => 9200,
-      'node.name' => 'elasticsearch001'
-    }
-  )
+  context 'instance testing with' do
+    describe 'one' do
+      include_examples(
+        'basic acceptance tests',
+        'es-01' => {
+          'http.port' => 9200,
+          'node.name' => 'elasticsearch001'
+        }
+      )
+    end
 
-  # Dual-node
-  include_examples(
-    'basic acceptance tests',
-    'es-01' => {
-      'http.port' => 9200,
-      'node.name' => 'elasticsearch001'
-    },
-    'es-02' => {
-      'http.port' => 9201,
-      'node.name' => 'elasticsearch002'
-    }
-  )
+    describe 'two' do
+      include_examples(
+        'basic acceptance tests',
+        'es-01' => {
+          'http.port' => 9200,
+          'node.name' => 'elasticsearch001'
+        },
+        'es-02' => {
+          'http.port' => 9201,
+          'node.name' => 'elasticsearch002'
+        }
+      )
+    end
 
-  include_examples 'module removal', %w[es-01 es-02]
+    describe 'one absent' do
+      include_examples(
+        'basic acceptance tests',
+        'es-01' => {
+          'http.port' => 9200,
+          'node.name' => 'elasticsearch001'
+        },
+        'es-02' => {}
+      )
+    end
+
+    include_examples 'module removal', ['es-01']
+  end
 
   include_examples(
     'template operations',
