@@ -17,17 +17,19 @@ end
 
 RSpec.configure do |c|
   c.add_setting :test_settings, :default => {}
+  c.add_setting :v, :default => {}
   unless ENV['snapshot_version'].nil?
     c.add_setting :snapshot_version
     c.snapshot_version = ENV['snapshot_version']
   end
 
-  unless ENV['ELASTICSEARCH_FULL_VERSION'].nil?
-    c.add_setting :elasticsearch_full_version
-    c.add_setting :elasticsearch_major_version
-    c.elasticsearch_full_version = ENV['ELASTICSEARCH_FULL_VERSION']
-    c.elasticsearch_major_version = c.elasticsearch_full_version.split('.').first
+  unless ENV['ELASTICSEARCH_VERSION'].nil?
+    v[:elasticsearch_full_version] = ENV['ELASTICSEARCH_VERSION']
+    v[:elasticsearch_major_version] = v[:elasticsearch_full_version].split('.').first
+    v[:elasticsearch_package_url] = true
   end
+
+  v[:cluster_name] = SecureRandom.hex(10)
 
   # rspec-retry
   c.display_try_failure_messages = true
@@ -127,16 +129,16 @@ hosts.each do |host|
     on host, 'gem install ruby-augeas --no-ri --no-rdoc'
   end
 
-  ext = case f['os']['family']
-        when 'Debian'
-          'deb'
-        else
-          'rpm'
-        end
+  v[:ext] = case f['os']['family']
+            when 'Debian'
+              'deb'
+            else
+              'rpm'
+            end
 
   snapshot_package = {
-    :src => "#{files_dir}/elasticsearch-2.3.5.#{ext}",
-    :dst => "/tmp/elasticsearch-2.3.5.#{ext}"
+    :src => "#{files_dir}/elasticsearch-2.3.5.#{v[:ext]}",
+    :dst => "/tmp/elasticsearch-2.3.5.#{v[:ext]}"
   }
 
   scp_to host,
@@ -147,10 +149,19 @@ hosts.each do |host|
     "file:#{snapshot_package[:dst]}"
 
   test_settings['integration_package'] = {
-    :src => "#{files_dir}/elasticsearch-snapshot.#{ext}",
-    :dst => "/tmp/elasticsearch-snapshot.#{ext}",
-    :file => "file:/tmp/elasticsearch-snapshot.#{ext}"
+    :src => "#{files_dir}/elasticsearch-snapshot.#{v[:ext]}",
+    :dst => "/tmp/elasticsearch-snapshot.#{v[:ext]}",
+    :file => "file:/tmp/elasticsearch-snapshot.#{v[:ext]}"
   }
+
+  if v[:elasticsearch_package_url]
+    v[:elasticsearch_package_url] = \
+      derive_full_package_url(v[:elasticsearch_full_version], v[:ext])
+
+    package = Dir["#{test_settings['files_dir']}/*#{v[:elasticsearch_full_version]}.#{v[:ext]}"]
+    v[:elasticsearch_package_path] = package.first if package.one?
+    v[:elasticsearch_package_filename] = File.basename v[:elasticsearch_package_path]
+  end
 
   Infrataster::Server.define(:docker) do |server|
     server.address = host[:ip]

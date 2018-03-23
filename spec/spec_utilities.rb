@@ -28,6 +28,14 @@ def to_agent_version(puppet_version)
   }[puppet_version]
 end
 
+def derive_full_package_url(full_version, ext)
+  if full_version.start_with? '2'
+    "https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-#{full_version}.#{ext}"
+  else
+    "https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-#{full_version}.#{ext}"
+  end
+end
+
 def artifact(file)
   File.join(%w[spec fixtures artifacts] + [File.basename(file)])
 end
@@ -76,4 +84,9 @@ def pid_for(instance)
   else
     "/var/run/elasticsearch/elasticsearch-#{instance}.pid"
   end
+end
+
+# Helper to store arbitrary testing setting values
+def v
+  RSpec.configuration.v
 end
