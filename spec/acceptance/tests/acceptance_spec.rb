@@ -6,6 +6,7 @@ require 'helpers/acceptance/tests/plugin_shared_examples.rb'
 require 'helpers/acceptance/tests/snapshot_repository_shared_examples.rb'
 require 'helpers/acceptance/tests/datadir_shared_examples.rb'
 require 'helpers/acceptance/tests/package_url_shared_examples.rb'
+require 'helpers/acceptance/tests/hiera_shared_examples.rb'
 
 describe "elasticsearch v#{v[:elasticsearch_full_version]} class" do
   local_plugin_path = Dir[
@@ -104,12 +105,11 @@ describe "elasticsearch v#{v[:elasticsearch_full_version]} class" do
     )
   end
 
-  # Tests for elasticsearch::snapshot resources
   include_examples 'snapshot repository acceptance tests'
 
-  # `datadir` tests
   include_examples 'datadir acceptance tests'
 
-  # `package_url` tests
   include_examples 'package_url acceptance tests'
+
+  include_examples 'hiera acceptance tests'
 end
