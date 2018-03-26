@@ -20,7 +20,7 @@ shared_examples 'manifest application' do |instances, extra_manifest = ''|
           #{defined?(manifest_class_parameters) && manifest_class_parameters}
         }
 
-        #{instance_manifest}
+        #{defined?(skip_instance_manifests) || instance_manifest}
 
         #{extra_manifest}
       MANIFEST
