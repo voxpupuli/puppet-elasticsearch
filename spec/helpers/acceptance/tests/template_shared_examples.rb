@@ -4,28 +4,38 @@ require 'helpers/acceptance/tests/bad_manifest_shared_examples'
 
 # Describes how to apply a manifest with a template, verify it, and clean it up
 shared_examples 'template application' do |instances, name, template, param|
-  include_examples(
-    'manifest application',
-    instances,
-    <<-TEMPLATE
-      elasticsearch::template { '#{name}':
-        ensure => 'present',
-        #{param}
-      }
-    TEMPLATE
-  )
+  context 'present' do
+    let(:extra_manifest) do
+      <<-MANIFEST
+        elasticsearch::template { '#{name}':
+          ensure => 'present',
+          #{param}
+        }
+      MANIFEST
+    end
 
-  include_examples 'template content', instances, template
+    include_examples(
+      'manifest application',
+      instances
+    )
 
-  include_examples(
-    'manifest application',
-    instances,
-    <<-MANIFEST
-      elasticsearch::template { '#{name}':
-        ensure => absent,
-      }
-    MANIFEST
-  )
+    include_examples 'template content', instances, template
+  end
+
+  context 'absent' do
+    let(:extra_manifest) do
+      <<-MANIFEST
+        elasticsearch::template { '#{name}':
+          ensure => absent,
+        }
+      MANIFEST
+    end
+
+    include_examples(
+      'manifest application',
+      instances
+    )
+  end
 end
 
 # Verifies the content of a loaded index template.
@@ -92,15 +102,18 @@ shared_examples 'template operations' do |instances, template|
       end
 
       context 'bad json' do
-        include_examples(
-          'invalid manifest application',
-          instances,
-          <<-TEMPLATE
+        let(:extra_manifest) do
+          <<-MANIFEST
             elasticsearch::template { '#{SecureRandom.hex(8)}':
               ensure => 'present',
               file => 'puppet:///modules/another/bad.json'
             }
-          TEMPLATE
+          MANIFEST
+        end
+
+        include_examples(
+          'invalid manifest application',
+          instances
         )
       end
     end

@@ -1,4 +1,4 @@
-shared_examples 'invalid manifest application' do |instances, extra_manifest = ''|
+shared_examples 'invalid manifest application' do |instances|
   context "bad #{instances.count}-node manifest" do
     let(:applied_manifest) do
       manifest + instances.map do |instance, meta|

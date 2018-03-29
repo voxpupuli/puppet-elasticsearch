@@ -1,4 +1,4 @@
-shared_examples 'manifest application' do |instances, extra_manifest = ''|
+shared_examples 'manifest application' do |instances|
   context "#{instances.count}-node manifest" do
     let(:applied_manifest) do
       instance_manifest = instances.map do |instance, meta|
@@ -22,7 +22,7 @@ shared_examples 'manifest application' do |instances, extra_manifest = ''|
 
         #{defined?(skip_instance_manifests) || instance_manifest}
 
-        #{extra_manifest}
+        #{defined?(extra_manifest) && extra_manifest}
       MANIFEST
     end
 
