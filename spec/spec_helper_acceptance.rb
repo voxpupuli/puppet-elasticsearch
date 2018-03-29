@@ -25,7 +25,7 @@ RSpec.configure do |c|
 
   unless ENV['ELASTICSEARCH_VERSION'].nil?
     v[:elasticsearch_full_version] = ENV['ELASTICSEARCH_VERSION']
-    v[:elasticsearch_major_version] = v[:elasticsearch_full_version].split('.').first
+    v[:elasticsearch_major_version] = v[:elasticsearch_full_version].split('.').first.to_i
     v[:elasticsearch_package_url] = true
   end
 

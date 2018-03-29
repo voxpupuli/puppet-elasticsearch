@@ -129,14 +129,14 @@ beaker_node_sets.each do |node|
 
   desc "Run acceptance tests against #{node}"
   RSpec::Core::RakeTask.new(
-    "beaker:#{node}:acceptance", [:version] => [:spec_prep, 'artifact:prep']
+    "beaker:#{node}:acceptance", [:version, :filter] => [:spec_prep, 'artifact:prep']
   ) do |task, args|
     ENV['BEAKER_set'] = node
-    args.with_defaults(:version => '6.2.3')
+    args.with_defaults(:version => '6.2.3', :filter => nil)
     task.pattern = 'spec/acceptance/tests/acceptance_spec.rb'
-    task.rspec_opts = [
-      '--format documentation'
-    ] if ENV['CI'].nil?
+    task.rspec_opts = []
+    task.rspec_opts << '--format documentation' if ENV['CI'].nil?
+    task.rspec_opts << "--example '#{args[:filter]}'" if args[:filter]
     ENV['ELASTICSEARCH_VERSION'] = args[:version]
     Rake::Task['artifact:fetch'].invoke(args[:version])
   end
