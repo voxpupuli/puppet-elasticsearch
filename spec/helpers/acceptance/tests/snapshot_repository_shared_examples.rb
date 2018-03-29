@@ -4,15 +4,8 @@ require 'helpers/acceptance/tests/manifest_shared_examples'
 # Main entrypoint for snapshot tests
 shared_examples 'snapshot repository acceptance tests' do
   describe 'elasticsearch::snapshot_repository', :with_cleanup do
-    include_examples(
-      'manifest application',
-      {
-        'es-01' => {
-          'http.port' => 9200,
-          'path.repo' => '/var/lib/elasticsearch'
-        }
-      },
-      <<-TEMPLATE
+    let(:extra_manifest) do
+      <<-MANIFEST
         elasticsearch::snapshot_repository { 'backup':
           ensure            => 'present',
           api_timeout       => 60,
@@ -21,7 +14,15 @@ shared_examples 'snapshot repository acceptance tests' do
           max_snapshot_rate => '80mb',
           require           => Elasticsearch::Instance['es-01']
         }
-      TEMPLATE
+      MANIFEST
+    end
+
+    include_examples(
+      'manifest application',
+      'es-01' => {
+        'http.port' => 9200,
+        'path.repo' => '/var/lib/elasticsearch'
+      }
     )
 
     describe port(9200) do

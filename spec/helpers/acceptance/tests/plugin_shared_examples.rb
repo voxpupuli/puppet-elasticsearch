@@ -28,14 +28,16 @@ shared_examples 'plugin acceptance tests' do |instances, plugins|
   describe 'elasticsearch::plugin' do
     describe 'installation' do
       context 'using simple names', :with_cleanup do
-        include_examples(
-          'manifest application',
-          instances,
-          <<-PLUGIN
+        let(:extra_manifest) do
+          <<-MANIFEST
             elasticsearch::plugin { '#{plugins[:official]}':
               instances => 'es-01',
             }
-          PLUGIN
+          MANIFEST
+        end
+        include_examples(
+          'manifest application',
+          instances
         )
 
         describe file("/usr/share/elasticsearch/plugins/#{plugins[:official]}/") do
@@ -51,27 +53,33 @@ shared_examples 'plugin acceptance tests' do |instances, plugins|
       end
 
       context 'invalid plugins', :with_cleanup do
-        include_examples(
-          'invalid manifest application',
-          instances,
-          <<-PLUGIN
+        let(:extra_manifest) do
+          <<-MANIFEST
             elasticsearch::plugin { 'elastic/non-existing':
               instances => 'es-01',
             }
-          PLUGIN
+          MANIFEST
+        end
+
+        include_examples(
+          'invalid manifest application',
+          instances
         )
       end
 
       describe 'upgrades', :with_cleanup do
         context 'initial installation' do
-          include_examples(
-            'manifest application',
-            instances,
-            <<-PLUGIN
+          let(:extra_manifest) do
+            <<-MANIFEST
               elasticsearch::plugin { '#{plugins[:github][:repository]}#{plugins[:github][:name]}/v#{plugins[:github][:initial]}':
                 instances => 'es-01',
               }
-            PLUGIN
+            MANIFEST
+          end
+
+          include_examples(
+            'manifest application',
+            instances
           )
 
           include_examples(
@@ -84,14 +92,17 @@ shared_examples 'plugin acceptance tests' do |instances, plugins|
         end
 
         describe 'upgrading' do
-          include_examples(
-            'manifest application',
-            instances,
-            <<-PLUGIN
+          let(:extra_manifest) do
+            <<-MANIFEST
               elasticsearch::plugin { '#{plugins[:github][:repository]}#{plugins[:github][:name]}/v#{plugins[:github][:upgraded]}':
                 instances => 'es-01',
               }
-            PLUGIN
+            MANIFEST
+          end
+
+          include_examples(
+            'manifest application',
+            instances
           )
 
           include_examples(
@@ -113,15 +124,18 @@ shared_examples 'plugin acceptance tests' do |instances, plugins|
           "#{default['distmoduledir']}/another/files/plugin.zip"
         )
 
-        include_examples(
-          'manifest application',
-          instances,
-          <<-PLUGIN
+        let(:extra_manifest) do
+          <<-MANIFEST
             elasticsearch::plugin { '#{plugins[:offline][:name]}':
               instances => 'es-01',
               source    => 'puppet:///modules/another/plugin.zip',
             }
-          PLUGIN
+          MANIFEST
+        end
+
+        include_examples(
+          'manifest application',
+          instances
         )
 
         include_examples(
@@ -133,15 +147,18 @@ shared_examples 'plugin acceptance tests' do |instances, plugins|
       end
 
       describe 'via url', :with_cleanup do
-        include_examples(
-          'manifest application',
-          instances,
-          <<-PLUGIN
+        let(:extra_manifest) do
+          <<-MANIFEST
             elasticsearch::plugin { '#{plugins[:remote][:name]}':
               instances => 'es-01',
               url       => '#{plugins[:remote][:url]}',
             }
-          PLUGIN
+          MANIFEST
+        end
+
+        include_examples(
+          'manifest application',
+          instances
         )
 
         include_examples(
