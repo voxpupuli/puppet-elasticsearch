@@ -181,8 +181,6 @@ RSpec.configure do |c|
     ] + Beaker::DSL::InstallUtils::ModuleUtils::PUPPET_MODULE_INSTALL_IGNORE
 
     hosts.each do |host|
-      copy_hiera_data_to(host, 'spec/fixtures/hiera/hieradata/')
-
       modules = %w[archive datacat java java_ks stdlib]
 
       dist_module = {
