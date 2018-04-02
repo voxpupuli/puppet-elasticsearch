@@ -48,6 +48,7 @@ group :development do
 end
 
 group :system_tests do
+  gem 'bcrypt'
   gem 'beaker', '~> 3.7'
   gem 'beaker-rspec', '~> 6.0'
   gem 'docker-api', '~> 1.0'

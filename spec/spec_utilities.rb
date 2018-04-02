@@ -90,3 +90,7 @@ end
 def v
   RSpec.configuration.v
 end
+
+def semver(version)
+  Gem::Version.new version
+end

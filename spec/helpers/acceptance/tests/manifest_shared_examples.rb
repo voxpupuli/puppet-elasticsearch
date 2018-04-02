@@ -1,4 +1,4 @@
-shared_examples 'manifest application' do |instances|
+shared_examples 'manifest application' do |instances, idempotency_check = true|
   context "#{instances.count}-node manifest" do
     let(:applied_manifest) do
       instance_manifest = instances.map do |instance, meta|
@@ -30,8 +30,10 @@ shared_examples 'manifest application' do |instances|
       apply_manifest applied_manifest, :catch_failures => true
     end
 
-    it 'is idempotent' do
-      apply_manifest applied_manifest, :catch_changes => true
+    if idempotency_check
+      it 'is idempotent' do
+        apply_manifest applied_manifest, :catch_changes => true
+      end
     end
   end
 end

@@ -8,6 +8,7 @@ require 'helpers/acceptance/tests/datadir_shared_examples.rb'
 require 'helpers/acceptance/tests/package_url_shared_examples.rb'
 require 'helpers/acceptance/tests/hiera_shared_examples.rb'
 require 'helpers/acceptance/tests/usergroup_shared_examples.rb'
+require 'helpers/acceptance/tests/shield_shared_examples.rb'
 
 describe "elasticsearch v#{v[:elasticsearch_full_version]} class" do
   local_plugin_path = Dir[
@@ -115,4 +116,9 @@ describe "elasticsearch v#{v[:elasticsearch_full_version]} class" do
   include_examples 'hiera acceptance tests'
 
   include_examples 'user/group acceptance tests'
+
+  # Security-related tests (shield/x-pack)
+  if semver(v[:elasticsearch_full_version]) < semver('5.0.0')
+    include_examples 'shield acceptance tests'
+  end
 end
