@@ -18,7 +18,7 @@ shared_examples 'package_url acceptance tests' do
             'network.host' => '0.0.0.0',
           },
           manage_repo => false,
-          package_url => '#{v[:elasticsearch_package_url]}'
+          package_url => '#{v[:elasticsearch_package][:url]}'
         MANIFEST
       end
 
@@ -28,8 +28,8 @@ shared_examples 'package_url acceptance tests' do
     context 'via local filesystem', :with_cleanup do
       before :all do
         scp_to default,
-               v[:elasticsearch_package_path],
-               "/tmp/#{v[:elasticsearch_package_filename]}"
+               v[:elasticsearch_package][:path],
+               "/tmp/#{v[:elasticsearch_package][:filename]}"
       end
 
       let(:manifest) do
@@ -39,7 +39,7 @@ shared_examples 'package_url acceptance tests' do
             'network.host' => '0.0.0.0',
           },
           manage_repo => false,
-          package_url => 'file:/tmp/#{v[:elasticsearch_package_filename]}'
+          package_url => 'file:/tmp/#{v[:elasticsearch_package][:filename]}'
         MANIFEST
       end
 
@@ -51,8 +51,8 @@ shared_examples 'package_url acceptance tests' do
         shell "mkdir -p #{default['distmoduledir']}/another/files"
 
         scp_to default,
-               v[:elasticsearch_package_path],
-               "#{default['distmoduledir']}/another/files/#{v[:elasticsearch_package_filename]}"
+               v[:elasticsearch_package][:path],
+               "#{default['distmoduledir']}/another/files/#{v[:elasticsearch_package][:filename]}"
       end
 
       let(:manifest) do
@@ -63,7 +63,7 @@ shared_examples 'package_url acceptance tests' do
           },
           manage_repo => false,
           package_url =>
-            'puppet:///modules/another/#{v[:elasticsearch_package_filename]}',
+            'puppet:///modules/another/#{v[:elasticsearch_package][:filename]}',
         MANIFEST
       end
 

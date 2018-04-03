@@ -28,16 +28,36 @@ def to_agent_version(puppet_version)
   }[puppet_version]
 end
 
-def derive_full_package_url(full_version, ext)
-  if full_version.start_with? '2'
-    "https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-#{full_version}.#{ext}"
-  else
-    "https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-#{full_version}.#{ext}"
-  end
+def derive_artifact_urls_for(full_version, plugins = ['analysis-icu'])
+  derive_full_package_url(full_version).merge(
+    derive_plugin_urls_for(full_version, plugins)
+  )
 end
 
-def artifact(file)
-  File.join(%w[spec fixtures artifacts] + [File.basename(file)])
+def derive_full_package_url(full_version, extensions = %w[deb rpm])
+  extensions.map do |ext|
+    url = if full_version.start_with? '2'
+            "https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-#{full_version}.#{ext}"
+          else
+            "https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-#{full_version}.#{ext}"
+          end
+    [url, File.basename(url)]
+  end.to_h
+end
+
+def derive_plugin_urls_for(full_version, plugins = ['analysis-icu'])
+  plugins.map do |plugin|
+    url = if full_version.start_with? '2'
+            "https://download.elasticsearch.org/elasticsearch/release/org/elasticsearch/plugin/#{plugin}/#{full_version}/#{plugin}-#{full_version}.zip"
+          else
+            "https://artifacts.elastic.co/downloads/elasticsearch-plugins/#{plugin}/#{plugin}-#{full_version}.zip"
+          end
+    [url, File.join('plugins', File.basename(url))]
+  end.to_h
+end
+
+def artifact(file, fixture_path = [])
+  File.join(%w[spec fixtures artifacts] + fixture_path + [File.basename(file)])
 end
 
 def get(url, file_path)
