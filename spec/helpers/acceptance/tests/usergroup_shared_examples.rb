@@ -2,7 +2,7 @@ require 'json'
 require 'helpers/acceptance/tests/basic_shared_examples'
 
 shared_examples 'user/group acceptance tests' do
-  describe 'user/group parameters', :then_purge do
+  describe 'user/group parameters', :first_purge => true, :then_purge => true do
     describe 'with non-default values', :with_cleanup do
       let(:extra_manifest) do
         <<-MANIFEST
