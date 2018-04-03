@@ -93,6 +93,10 @@ RSpec.configure do |c|
   c.after :context, :then_purge do
     shell 'rm -rf {/usr/share,/etc,/var/lib}/elasticsearch*'
   end
+
+  c.before :context, :first_purge do
+    shell 'rm -rf {/usr/share,/etc,/var/lib}/elasticsearch*'
+  end
 end
 
 files_dir = ENV['files_dir'] || './spec/fixtures/artifacts'
