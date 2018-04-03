@@ -166,10 +166,7 @@ namespace :artifact do
   desc 'Fetch specific installation artifacts'
   task :fetch, [:version] do |_t, args|
     fetch_archives(
-      %w[deb rpm].map do |ext|
-        url = derive_full_package_url(args[:version], ext)
-        [url, File.basename(url)]
-      end.to_h
+      derive_artifact_urls_for(args[:version])
     )
   end
 

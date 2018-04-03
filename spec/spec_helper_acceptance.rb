@@ -26,7 +26,21 @@ RSpec.configure do |c|
   unless ENV['ELASTICSEARCH_VERSION'].nil?
     v[:elasticsearch_full_version] = ENV['ELASTICSEARCH_VERSION']
     v[:elasticsearch_major_version] = v[:elasticsearch_full_version].split('.').first.to_i
-    v[:elasticsearch_package_url] = true
+    v[:elasticsearch_package] = {}
+
+    v[:elasticsearch_plugins] = Dir[
+      artifact("*#{v[:elasticsearch_full_version]}.zip", ['plugins'])
+    ].map do |plugin|
+      plugin_filename = File.basename(plugin)
+      plugin_name = plugin_filename.match(/^(?<name>.+)-#{v[:elasticsearch_full_version]}.zip/)[:name]
+      [
+        plugin_name,
+        {
+          :path => plugin,
+          :url => derive_plugin_urls_for(v[:elasticsearch_full_version], [plugin_name]).keys.first
+        }
+      ]
+    end.to_h
   end
 
   v[:cluster_name] = SecureRandom.hex(10)
@@ -154,13 +168,14 @@ hosts.each do |host|
     :file => "file:/tmp/elasticsearch-snapshot.#{v[:ext]}"
   }
 
-  if v[:elasticsearch_package_url]
-    v[:elasticsearch_package_url] = \
-      derive_full_package_url(v[:elasticsearch_full_version], v[:ext])
-
-    package = Dir["#{test_settings['files_dir']}/*#{v[:elasticsearch_full_version]}.#{v[:ext]}"]
-    v[:elasticsearch_package_path] = package.first if package.one?
-    v[:elasticsearch_package_filename] = File.basename v[:elasticsearch_package_path]
+  if v[:elasticsearch_package]
+    v[:elasticsearch_package].merge!(
+      derive_full_package_url(
+        v[:elasticsearch_full_version], [v[:ext]]
+      ).flat_map do |url, filename|
+        [[:url, url], [:filename, filename], [:path, artifact(filename)]]
+      end.to_h
+    )
   end
 
   Infrataster::Server.define(:docker) do |server|
