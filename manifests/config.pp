@@ -69,8 +69,6 @@ class elasticsearch::config {
         ensure => 'absent';
       '/etc/elasticsearch/log4j2.properties':
         ensure => 'absent';
-      '/etc/init.d/elasticsearch':
-        ensure => 'absent';
     }
 
     if $elasticsearch::pid_dir {
@@ -98,7 +96,13 @@ class elasticsearch::config {
     if ($elasticsearch::service_provider == 'systemd') {
       # Mask default unit (from package)
       service { 'elasticsearch' :
+        ensure => false,
         enable => 'mask',
+      }
+    } else {
+      service { 'elasticsearch':
+        ensure => false,
+        enable => false,
       }
     }
 
