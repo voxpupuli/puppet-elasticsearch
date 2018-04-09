@@ -13,7 +13,10 @@ group :test do
   gem 'puppet-lint'
   gem 'puppet-strings'
   gem 'puppet-syntax'
-  gem 'puppetlabs_spec_helper'
+  gem 'puppetlabs_spec_helper',
+      :git => 'https://github.com/puppetlabs/puppetlabs_spec_helper',
+      :ref => '07efb9d5a90498ffcb9ac7b16caf8a96c3c160da',
+      :require => false
   gem 'rake'
   gem 'rspec', '~> 3.0'
   gem 'rspec-puppet', '~> 2.6'
