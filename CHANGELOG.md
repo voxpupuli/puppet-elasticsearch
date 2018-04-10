@@ -3,6 +3,7 @@
 #### Features
 
 #### Fixes
+* Ensure that the stock Elasticsearch service is not running.
 
 ## 6.2.2 (March 13, 2018)
 
