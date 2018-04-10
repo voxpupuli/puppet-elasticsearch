@@ -61,7 +61,7 @@ describe 'elasticsearch', :type => 'class' do
 
       # Systemd-specific files
       if test_pid == true
-        it { should contain_service('elasticsearch').with(:enable => 'mask') }
+        it { should contain_service('elasticsearch').with(:ensure => false).with(:enable => 'mask') }
         it { should contain_file('/usr/lib/tmpfiles.d/elasticsearch.conf') }
       end
 
@@ -305,8 +305,6 @@ describe 'elasticsearch', :type => 'class' do
         it { should contain_exec('remove_plugin_dir') }
 
         # file removal from package
-        it { should contain_file('/etc/init.d/elasticsearch')
-          .with(:ensure => 'absent') }
         it { should contain_file('/etc/elasticsearch/elasticsearch.yml')
           .with(:ensure => 'absent') }
         it { should contain_file('/etc/elasticsearch/jvm.options')

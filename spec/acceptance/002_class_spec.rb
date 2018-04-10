@@ -29,6 +29,11 @@ describe '::elasticsearch' do
       end
     end
 
+    describe service('elasticsearch') do
+      it { should_not be_running }
+      it { should_not be_enabled }
+    end
+
     describe service(test_settings['service_name_a']) do
       it { should be_enabled }
       it { should be_running }
