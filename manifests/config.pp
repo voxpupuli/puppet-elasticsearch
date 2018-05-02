@@ -64,7 +64,8 @@ class elasticsearch::config {
       '/etc/elasticsearch/elasticsearch.yml':
         ensure => 'absent';
       '/etc/elasticsearch/jvm.options':
-        ensure => 'absent';
+        ensure  => 'present',
+        content => '# jvm_options are now controllable on a per-instance basis but this file needs to stay here';
       '/etc/elasticsearch/logging.yml':
         ensure => 'absent';
       '/etc/elasticsearch/log4j2.properties':
