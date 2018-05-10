@@ -40,8 +40,8 @@ end
 
 # Verifies the content of a loaded index template.
 shared_examples 'template content' do |instances, template|
-  instances.each_value do |config|
-    describe port(config['http.port']) do
+  instances.each_value do |i|
+    describe port(i['config']['http.port']) do
       it 'open', :with_retries do
         should be_listening
       end
@@ -49,7 +49,7 @@ shared_examples 'template content' do |instances, template|
 
     describe server :container do
       describe http(
-        "http://localhost:#{config['http.port']}/_template",
+        "http://localhost:#{i['config']['http.port']}/_template",
         :params => { 'flat_settings' => 'false' }
       ) do
         it 'returns the installed template', :with_retries do

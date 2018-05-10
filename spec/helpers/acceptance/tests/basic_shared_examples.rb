@@ -32,7 +32,7 @@ shared_examples 'basic acceptance tests' do |instances|
 
         describe file("/etc/elasticsearch/#{instance}/elasticsearch.yml") do
           it { should be_file }
-          it { should contain "name: #{config['node.name']}" }
+          it { should contain "name: #{config['config']['node.name']}" }
           it { should contain "/var/lib/elasticsearch/#{instance}" }
         end
 
@@ -46,14 +46,14 @@ shared_examples 'basic acceptance tests' do |instances|
           it { should be_directory }
         end
 
-        describe port(config['http.port']) do
+        describe port(config['config']['http.port']) do
           it 'open', :with_retries do
             should be_listening
           end
         end
 
         describe server :container do
-          describe http("http://localhost:#{config['http.port']}/_nodes/_local") do
+          describe http("http://localhost:#{config['config']['http.port']}/_nodes/_local") do
             it 'serves requests', :with_retries do
               expect(response.status).to eq(200)
             end

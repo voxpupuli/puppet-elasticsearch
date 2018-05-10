@@ -1,14 +1,11 @@
 shared_examples 'manifest application' do |instances, idempotency_check = true|
   context "#{instances.count}-node manifest" do
     let(:applied_manifest) do
-      instance_manifest = instances.map do |instance, meta|
-        config = meta.map { |k, v| "'#{k}' => '#{v}'," }.join(' ')
+      instance_manifest = instances.map do |instance, parameters|
         <<-MANIFEST
           elasticsearch::instance { '#{instance}':
-            ensure => #{meta.empty? ? 'absent' : 'present'},
-            config => {
-              #{config}
-            },
+            ensure => #{parameters.empty? ? 'absent' : 'present'},
+            #{parameters.map { |k, v| "#{k} => #{v}," }.join("\n")}
             #{defined?(manifest_instance_parameters) && manifest_instance_parameters}
           }
         MANIFEST

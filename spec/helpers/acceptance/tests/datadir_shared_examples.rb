@@ -21,7 +21,7 @@ shared_examples 'datadir directory validation' do |instances, datapaths|
       end
     end
 
-    describe port(config['http.port']) do
+    describe port(config['config']['http.port']) do
       it 'open', :with_retries do
         should be_listening
       end
@@ -29,7 +29,7 @@ shared_examples 'datadir directory validation' do |instances, datapaths|
 
     describe server :container do
       describe http(
-        "http://localhost:#{config['http.port']}/_nodes/_local"
+        "http://localhost:#{config['config']['http.port']}/_nodes/_local"
       ) do
         it 'uses a custom data path' do
           json = JSON.parse(response.body)['nodes'].values.first
@@ -47,7 +47,9 @@ shared_examples 'datadir acceptance tests' do
     instances =
       {
         'es-01' => {
-          'http.port' => 9200
+          'config' => {
+            'http.port' => 9200
+          }
         }
       }
 

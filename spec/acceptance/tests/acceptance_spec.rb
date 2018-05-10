@@ -29,8 +29,10 @@ describe "elasticsearch v#{v[:elasticsearch_full_version]} class" do
       include_examples(
         'basic acceptance tests',
         'es-01' => {
-          'http.port' => 9200,
-          'node.name' => 'elasticsearch001'
+          'config' => {
+            'http.port' => 9200,
+            'node.name' => 'elasticsearch001'
+          }
         }
       )
     end
@@ -39,12 +41,16 @@ describe "elasticsearch v#{v[:elasticsearch_full_version]} class" do
       include_examples(
         'basic acceptance tests',
         'es-01' => {
-          'http.port' => 9200,
-          'node.name' => 'elasticsearch001'
+          'config' => {
+            'http.port' => 9200,
+            'node.name' => 'elasticsearch001'
+          }
         },
         'es-02' => {
-          'http.port' => 9201,
-          'node.name' => 'elasticsearch002'
+          'config' => {
+            'http.port' => 9201,
+            'node.name' => 'elasticsearch002'
+          }
         }
       )
     end
@@ -53,8 +59,10 @@ describe "elasticsearch v#{v[:elasticsearch_full_version]} class" do
       include_examples(
         'basic acceptance tests',
         'es-01' => {
-          'http.port' => 9200,
-          'node.name' => 'elasticsearch001'
+          'config' => {
+            'http.port' => 9200,
+            'node.name' => 'elasticsearch001'
+          }
         },
         'es-02' => {}
       )
@@ -67,8 +75,10 @@ describe "elasticsearch v#{v[:elasticsearch_full_version]} class" do
     'template operations',
     {
       'es-01' => {
-        'http.port' => 9200,
-        'node.name' => 'elasticsearch001'
+        'config' => {
+          'http.port' => 9200,
+          'node.name' => 'elasticsearch001'
+        }
       }
     },
     test_settings['template']

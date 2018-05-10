@@ -6,7 +6,9 @@ shared_examples 'package_url acceptance tests' do
     instances =
       {
         'es-01' => {
-          'http.port' => 9200
+          'config' => {
+            'http.port' => 9200
+          }
         }
       }
 

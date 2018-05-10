@@ -6,9 +6,7 @@ shared_examples 'hiera tests with' do |yamlname, instances, additional_yaml = {}
   before :all do
     Tempfile.create([yamlname, '.yaml']) do |temp|
       temp << {
-        'elasticsearch::instances' => instances.map do |instance, config|
-          [instance, { 'config' => config }]
-        end.to_h
+        'elasticsearch::instances' => instances
       }.merge(additional_yaml).to_yaml
       temp.flush
 
@@ -30,7 +28,7 @@ shared_examples 'hiera tests with' do |yamlname, instances, additional_yaml = {}
 end
 
 shared_examples 'hiera acceptance tests' do
-  describe 'hiera' do
+  describe 'hiera', :then_purge do
     before :all do
       shell "mkdir -p #{hiera_datadir(default)}"
     end
@@ -43,8 +41,10 @@ shared_examples 'hiera acceptance tests' do
         'hiera tests with',
         'singleinstance',
         'es-hiera-single' => {
-          'node.name' => 'es-hiera-single',
-          'http.port' => 9200
+          'config' => {
+            'node.name' => 'es-hiera-single',
+            'http.port' => 9200
+          }
         }
       )
     end
@@ -55,8 +55,10 @@ shared_examples 'hiera acceptance tests' do
         'singleplugin',
         {
           'es-hiera-single' => {
-            'node.name' => 'es-hiera-single',
-            'http.port' => 9200
+            'config' => {
+              'node.name' => 'es-hiera-single',
+              'http.port' => 9200
+            }
           }
         },
         'elasticsearch::plugins' => {
@@ -74,8 +76,10 @@ shared_examples 'hiera acceptance tests' do
         'plugin API response',
         {
           'es-hiera-single' => {
-            'node.name' => 'es-hiera-single',
-            'http.port' => 9200
+            'config' => {
+              'node.name' => 'es-hiera-single',
+              'http.port' => 9200
+            }
           }
         },
         'installs the plugin',
@@ -88,14 +92,18 @@ shared_examples 'hiera acceptance tests' do
         'hiera tests with',
         'multipleinstances',
         'es-hiera-multiple-1' => {
-          'node.name' => 'es-hiera-multiple-1',
-          'network.host' => '0.0.0.0',
-          'http.port' => 9201
+          'config' => {
+            'node.name' => 'es-hiera-multiple-1',
+            'network.host' => '0.0.0.0',
+            'http.port' => 9201
+          }
         },
         'es-hiera-multiple-2' => {
-          'node.name' => 'es-hiera-multiple-2',
-          'network.host' => '0.0.0.0',
-          'http.port' => 9202
+          'config' => {
+            'node.name' => 'es-hiera-multiple-2',
+            'network.host' => '0.0.0.0',
+            'http.port' => 9202
+          }
         }
       )
     end

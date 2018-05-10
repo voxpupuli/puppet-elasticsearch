@@ -28,8 +28,10 @@ shared_examples 'user/group acceptance tests' do
       include_examples(
         'basic acceptance tests',
         'es-01' => {
-          'http.port' => 9200,
-          'node.name' => 'elasticsearch001'
+          'config' => {
+            'http.port' => 9200,
+            'node.name' => 'elasticsearch001'
+          }
         }
       )
 
