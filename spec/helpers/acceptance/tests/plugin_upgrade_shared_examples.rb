@@ -9,8 +9,10 @@ shared_examples 'plugin upgrade acceptance tests' do |plugin|
 
     instances = {
       'es-01' => {
-        'http.port' => 9200,
-        'node.name' => 'elasticsearch001'
+        'config' => {
+          'http.port' => 9200,
+          'node.name' => 'elasticsearch001'
+        }
       }
     }
 

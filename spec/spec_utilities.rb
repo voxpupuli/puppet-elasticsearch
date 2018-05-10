@@ -1,3 +1,5 @@
+require 'bcrypt'
+
 def to_agent_version(puppet_version)
   # REF: https://docs.puppet.com/puppet/latest/reference/about_agent.html
   {
@@ -113,4 +115,8 @@ end
 
 def semver(version)
   Gem::Version.new version
+end
+
+def bcrypt(value)
+  BCrypt::Password.create(value)
 end

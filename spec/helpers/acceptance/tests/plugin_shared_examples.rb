@@ -7,8 +7,10 @@ shared_examples 'plugin acceptance tests' do |plugins|
   describe 'elasticsearch::plugin' do
     instances = {
       'es-01' => {
-        'http.port' => 9200,
-        'node.name' => 'elasticsearch001'
+        'config' => {
+          'http.port' => 9200,
+          'node.name' => 'elasticsearch001'
+        }
       }
     }
 

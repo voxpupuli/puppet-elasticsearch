@@ -20,8 +20,10 @@ shared_examples 'snapshot repository acceptance tests' do
     include_examples(
       'manifest application',
       'es-01' => {
-        'http.port' => 9200,
-        'path.repo' => '/var/lib/elasticsearch'
+        'config' => {
+          'http.port' => 9200,
+          'path.repo' => '/var/lib/elasticsearch'
+        }
       }
     )
 
