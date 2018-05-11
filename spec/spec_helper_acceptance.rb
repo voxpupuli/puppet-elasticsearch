@@ -27,6 +27,11 @@ RSpec.configure do |c|
     v[:elasticsearch_full_version] = ENV['ELASTICSEARCH_VERSION']
     v[:elasticsearch_major_version] = v[:elasticsearch_full_version].split('.').first.to_i
     v[:elasticsearch_package] = {}
+    v[:template] = if v[:elasticsearch_major_version] < 6
+                     JSON.load(File.new('spec/fixtures/templates/pre_6.0.json'))
+                   else
+                     JSON.load(File.new('spec/fixtures/templates/post_6.0.json'))
+                   end
 
     v[:elasticsearch_plugins] = Dir[
       artifact("*#{v[:elasticsearch_full_version]}.zip", ['plugins'])
