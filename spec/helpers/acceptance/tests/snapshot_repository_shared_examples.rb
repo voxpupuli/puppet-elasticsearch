@@ -17,15 +17,17 @@ shared_examples 'snapshot repository acceptance tests' do
       MANIFEST
     end
 
-    include_examples(
-      'manifest application',
+    instance = {
       'es-01' => {
         'config' => {
           'http.port' => 9200,
           'path.repo' => '/var/lib/elasticsearch'
         }
       }
-    )
+    }
+    instance['es-01']['config']['path.repo'] = [instance['es-01']['config']['path.repo']] if v[:elasticsearch_major_version] > 2
+
+    include_examples('manifest application', instance)
 
     describe port(9200) do
       it 'open', :with_retries do

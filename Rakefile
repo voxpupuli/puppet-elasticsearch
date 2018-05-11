@@ -104,9 +104,12 @@ task :intake => [
 
 # Plumbing for snapshot tests
 desc 'Run the snapshot tests'
-RSpec::Core::RakeTask.new('beaker:snapshot') do |task|
+RSpec::Core::RakeTask.new('beaker:snapshot', [:filter]) do |task, args|
   task.rspec_opts = ['--color']
-  task.pattern = 'spec/acceptance/snapshot.rb'
+  task.pattern = 'spec/acceptance/tests/acceptance_spec.rb'
+  task.rspec_opts = []
+  task.rspec_opts << '--format documentation' if ENV['CI'].nil?
+  task.rspec_opts << "--example '#{args[:filter]}'" if args[:filter]
 
   if Rake::Task.task_defined? 'artifact:snapshot:not_found'
     puts 'No snapshot artifacts found, skipping snapshot tests.'
@@ -116,15 +119,15 @@ end
 
 beaker_node_sets.each do |node|
   desc "Run the snapshot tests against the #{node} nodeset"
-  task "beaker:#{node}:snapshot" => %w[
+  task "beaker:#{node}:snapshot", [:filter] => %w[
     spec_prep
     artifact:prep
     artifact:snapshot:deb
     artifact:snapshot:rpm
-  ] do
+  ] do |_task, args|
     ENV['BEAKER_set'] = node
     Rake::Task['beaker:snapshot'].reenable
-    Rake::Task['beaker:snapshot'].invoke
+    Rake::Task['beaker:snapshot'].invoke args[:filter]
   end
 
   desc "Run acceptance tests against #{node}"
@@ -172,12 +175,12 @@ namespace :artifact do
 
   namespace :snapshot do
     catalog = JSON.parse(
-      open('https://0ym978vhv1.execute-api.us-east-1.amazonaws.com/dev/branches/6.2').read
+      open('https://artifacts-api.elastic.co/v1/branches/6.x').read
     )['latest']
     ENV['snapshot_version'] = catalog['version']
 
     downloads = catalog['projects']['elasticsearch']['packages'].select do |pkg, _|
-      pkg =~ /(?:deb|rpm)/
+      pkg =~ /(?:deb|rpm)/ and pkg !~ /oss/
     end.map do |package, urls|
       [package.split('.').last, urls]
     end.to_h
