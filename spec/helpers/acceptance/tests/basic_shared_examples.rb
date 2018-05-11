@@ -60,10 +60,12 @@ shared_examples 'basic acceptance tests' do |instances|
 
             it 'uses the default data path' do
               json = JSON.parse(response.body)['nodes'].values.first
+              expected = "/var/lib/elasticsearch/#{instance}"
+              expected = [expected] if v[:elasticsearch_major_version] > 2
               expect(
                 json['settings']['path']
               ).to include(
-                'data' => "/var/lib/elasticsearch/#{instance}"
+                'data' => expected
               )
             end
           end

@@ -106,7 +106,7 @@ describe "elasticsearch v#{v[:elasticsearch_full_version]} class" do
 
   include_examples 'package_url acceptance tests'
 
-  include_examples 'hiera acceptance tests'
+  include_examples 'hiera acceptance tests', v[:elasticsearch_plugins]
 
   include_examples 'user/group acceptance tests'
 
