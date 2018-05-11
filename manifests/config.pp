@@ -116,6 +116,13 @@ class elasticsearch::config {
           'rm ES_PATH_CONF',
         ],
       }
+
+      file { "${elasticsearch::defaults_location}/elasticsearch":
+        ensure => 'file',
+        group  => $elasticsearch::elasticsearch_group,
+        owner  => $elasticsearch::elasticsearch_user,
+        mode   => '0640';
+      }
     }
 
     if $::elasticsearch::security_plugin != undef and ($::elasticsearch::security_plugin in ['shield', 'x-pack']) {
