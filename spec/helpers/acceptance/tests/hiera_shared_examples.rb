@@ -27,7 +27,7 @@ shared_examples 'hiera tests with' do |yamlname, instances, additional_yaml = {}
   )
 end
 
-shared_examples 'hiera acceptance tests' do
+shared_examples 'hiera acceptance tests' do |plugins|
   describe 'hiera', :then_purge do
     before :all do
       shell "mkdir -p #{hiera_datadir(default)}"
@@ -49,42 +49,43 @@ shared_examples 'hiera acceptance tests' do
       )
     end
 
-    describe 'with one plugin' do
-      include_examples(
-        'hiera tests with',
-        'singleplugin',
-        {
-          'es-hiera-single' => {
-            'config' => {
-              'node.name' => 'es-hiera-single',
-              'http.port' => 9200
+    plugins.each_pair do |plugin, _meta|
+      describe "with plugin #{plugin}" do
+        include_examples(
+          'hiera tests with',
+          'singleplugin',
+          {
+            'es-hiera-single' => {
+              'config' => {
+                'node.name' => 'es-hiera-single',
+                'http.port' => 9200
+              }
+            }
+          },
+          'elasticsearch::plugins' => {
+            plugin => {
+              'ensure' => 'present',
+              'instances' => [
+                'es-hiera-single'
+              ]
             }
           }
-        },
-        'elasticsearch::plugins' => {
-          'mobz/elasticsearch-head' => {
-            'ensure' => 'present',
-            'module_dir' => 'head',
-            'instances' => [
-              'es-hiera-single'
-            ]
-          }
-        }
-      )
+        )
 
-      include_examples(
-        'plugin API response',
-        {
-          'es-hiera-single' => {
-            'config' => {
-              'node.name' => 'es-hiera-single',
-              'http.port' => 9200
+        include_examples(
+          'plugin API response',
+          {
+            'es-hiera-single' => {
+              'config' => {
+                'node.name' => 'es-hiera-single',
+                'http.port' => 9200
+              }
             }
-          }
-        },
-        'installs the plugin',
-        'name' => 'head'
-      )
+          },
+          'installs the plugin',
+          'name' => plugin
+        )
+      end
     end
 
     describe 'with two instances' do
