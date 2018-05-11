@@ -31,14 +31,25 @@ describe "elasticsearch v#{v[:elasticsearch_full_version]} class" do
   instances = es_01.merge es_02
 
   let(:manifest) do
+    package = if v[:snapshot_version].nil?
+                <<-MANIFEST
+                  repo_version => '#{v[:elasticsearch_major_version]}.x',
+                  # Hard version set here due to plugin incompatibilities.
+                  version => '#{v[:elasticsearch_full_version]}',
+                MANIFEST
+              else
+                <<-MANIFEST
+                  manage_repo => false,
+                  package_url => '#{v[:snapshot_package]}',
+                MANIFEST
+              end
+
     <<-MANIFEST
       config => {
         'cluster.name' => '#{v[:cluster_name]}',
         'network.host' => '0.0.0.0',
       },
-      repo_version => '#{v[:elasticsearch_major_version]}.x',
-      # Hard version set here due to plugin incompatibilities.
-      version => '#{v[:elasticsearch_full_version]}',
+      #{package}
     MANIFEST
   end
 
@@ -60,7 +71,7 @@ describe "elasticsearch v#{v[:elasticsearch_full_version]} class" do
 
   include_examples('template operations', es_01, v[:template])
 
-  include_examples('plugin acceptance tests', v[:elasticsearch_plugins])
+  include_examples('plugin acceptance tests', v[:elasticsearch_plugins]) unless v[:elasticsearch_plugins].empty?
 
   # Only pre-5.x versions supported versions differing from core ES
   if semver(v[:elasticsearch_full_version]) < semver('5.0.0')
@@ -77,7 +88,8 @@ describe "elasticsearch v#{v[:elasticsearch_full_version]} class" do
 
   include_examples 'datadir acceptance tests'
 
-  include_examples 'package_url acceptance tests'
+  # Skip this for snapshot testing, as we only have package files anyway.
+  include_examples 'package_url acceptance tests' if v[:snapshot_version].nil?
 
   include_examples 'hiera acceptance tests', v[:elasticsearch_plugins]
 

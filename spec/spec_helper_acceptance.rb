@@ -17,10 +17,12 @@ end
 
 RSpec.configure do |c|
   c.add_setting :test_settings, :default => {}
+  # General-purpose spec-global variables
   c.add_setting :v, :default => {}
+
   unless ENV['snapshot_version'].nil?
-    c.add_setting :snapshot_version
-    c.snapshot_version = ENV['snapshot_version']
+    v[:snapshot_version] = ENV['snapshot_version']
+    ENV['ELASTICSEARCH_VERSION'] = ENV['snapshot_version']
   end
 
   unless ENV['ELASTICSEARCH_VERSION'].nil?
@@ -198,6 +200,15 @@ hosts.each do |host|
 end
 
 RSpec.configure do |c|
+  unless v[:snapshot_version].nil?
+    c.before :suite do
+      scp_to default,
+             "#{files_dir}/elasticsearch-snapshot.#{v[:ext]}",
+             "/tmp/elasticsearch-snapshot.#{v[:ext]}"
+      v[:snapshot_package] = "file:/tmp/elasticsearch-snapshot.#{v[:ext]}"
+    end
+  end
+
   c.before :suite do
     # Install module and dependencies
     install_dev_puppet_module :ignore_list => [
