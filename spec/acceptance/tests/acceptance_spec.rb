@@ -44,12 +44,28 @@ describe "elasticsearch v#{v[:elasticsearch_full_version]} class" do
                 MANIFEST
               end
 
+    heap = if v[:elasticsearch_major_version] > 2
+             <<-MANIFEST
+               jvm_options => [
+                 '-Xms128m',
+                 '-Xmx128m',
+               ],
+             MANIFEST
+           else
+             <<-MANIFEST
+               init_defaults => {
+                 'ES_HEAP_SIZE' => '128m',
+               },
+             MANIFEST
+           end
+
     <<-MANIFEST
       config => {
         'cluster.name' => '#{v[:cluster_name]}',
         'network.host' => '0.0.0.0',
       },
       #{package}
+      #{heap}
     MANIFEST
   end
 
