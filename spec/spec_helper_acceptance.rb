@@ -126,7 +126,7 @@ hosts.each do |host|
   end
 
   case host.name
-  when /debian-9/, /opensuse/
+  when /debian-9/
     # A few special cases need to be installed from gems (if the distro is
     # very new and has no puppet repo package or has no upstream packages).
     install_puppet_from_gem(
@@ -242,9 +242,17 @@ RSpec.configure do |c|
 
     # Use the Java class once before the suite of tests
     unless shell('command -v java', :accept_all_exit_codes => true).exit_code.zero?
+      java = case f['os']['name']
+             when 'OpenSuSE'
+               'package => "java-1_8_0-openjdk-headless",'
+             else
+               ''
+             end
+
       apply_manifest <<-MANIFEST
         class { "java" :
           distribution => "jre",
+          #{java}
         }
       MANIFEST
     end
