@@ -42,7 +42,7 @@ jobs:
    - env:
      - TASK=beaker:centos-7-x64:acceptance
    - env:
-     - TASK=beaker:centos-7-x64:access_key[2.4.6]
+     - TASK=beaker:centos-7-x64:acceptance[2.4.6]
    - env:
      - TASK=beaker:amazonlinux-1-x64:acceptance
    - env:
