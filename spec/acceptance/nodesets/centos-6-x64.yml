@@ -5,7 +5,7 @@ HOSTS:
       - database
       - dashboard
     platform: el-6-x86_64
-    image: centos:6.7
+    image: centos:6.9
     hypervisor: docker
     docker_cmd: ["/sbin/init"]
     docker_preserve_image: true
