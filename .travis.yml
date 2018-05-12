@@ -38,7 +38,13 @@ jobs:
      env:
      - TASK=beaker:centos-6-x64
    - env:
+     - TASK=beaker:centos-6-x64
+     - ELASTICSEARCH_VERSION=2.4.6
+   - env:
      - TASK=beaker:centos-7-x64
+   - env:
+     - TASK=beaker:centos-7-x64
+     - ELASTICSEARCH_VERSION=2.4.6
    - env:
      - TASK=beaker:amazonlinux-1-x64
    - env:
@@ -56,7 +62,13 @@ jobs:
    - env:
      - TASK=beaker:ubuntu-server-1404-x64
    - env:
+     - TASK=beaker:ubuntu-server-1404-x64
+     - ELASTICSEARCH_VERSION=2.4.6
+   - env:
      - TASK=beaker:ubuntu-server-1604-x64
+   - env:
+     - TASK=beaker:ubuntu-server-1604-x64
+     - ELASTICSEARCH_VERSION=2.4.6
    - stage: snapshots
      env:
      - TASK=beaker:ubuntu-server-1404-x64:snapshot
