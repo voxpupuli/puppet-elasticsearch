@@ -52,8 +52,6 @@ jobs:
    - env:
      - TASK=beaker:opensuse-42-x64:acceptance
    - env:
-     - TASK=beaker:debian-7-x64:acceptance
-   - env:
      - TASK=beaker:debian-8-x64:acceptance
    - env:
      - TASK=beaker:debian-9-x64:acceptance
