@@ -200,7 +200,7 @@ hosts.each do |host|
 end
 
 RSpec.configure do |c|
-  unless v[:snapshot_version].nil?
+  if v[:is_snapshot]
     c.before :suite do
       scp_to default,
              "#{files_dir}/elasticsearch-snapshot.#{v[:ext]}",
