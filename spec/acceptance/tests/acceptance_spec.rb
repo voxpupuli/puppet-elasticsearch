@@ -31,7 +31,7 @@ describe "elasticsearch v#{v[:elasticsearch_full_version]} class" do
   instances = es_01.merge es_02
 
   let(:manifest) do
-    package = if v[:snapshot_version].nil?
+    package = if not v[:is_snapshot]
                 <<-MANIFEST
                   repo_version => '#{v[:elasticsearch_major_version]}.x',
                   # Hard version set here due to plugin incompatibilities.
@@ -89,7 +89,7 @@ describe "elasticsearch v#{v[:elasticsearch_full_version]} class" do
   include_examples 'datadir acceptance tests'
 
   # Skip this for snapshot testing, as we only have package files anyway.
-  include_examples 'package_url acceptance tests' if v[:snapshot_version].nil?
+  include_examples 'package_url acceptance tests' unless v[:is_snapshot]
 
   include_examples 'hiera acceptance tests', v[:elasticsearch_plugins]
 
