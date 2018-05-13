@@ -57,7 +57,7 @@ end
 shared_examples 'secured request' do |test_desc, instances, path, http_test, expected, user = nil, pass = nil, tls = false|
   instances.each_value do |i|
     describe port(i['config']['http.port']) do
-      it 'open', :with_retries do
+      it 'open', :with_generous_retries do
         should be_listening
       end
     end
