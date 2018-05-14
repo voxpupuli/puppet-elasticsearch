@@ -6,6 +6,7 @@
 * Ensure that the stock Elasticsearch service is not running.
 * Service files for removed instances were previously set to ensure => absent on removal. Because this limits Puppet's ability to verify that the named service is running or not, these service files are always present now whether an instance is set to present or absent.
 * The service defaults file now enforces user/group ownership inline with the service user runtime.
+* The `scripts` configuration directory is now recursively copied instead of symlinked to avoid Elasticsearch security manager permission errors.
 
 ## 6.2.2 (March 13, 2018)
 
