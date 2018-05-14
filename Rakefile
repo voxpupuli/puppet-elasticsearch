@@ -111,7 +111,7 @@ RSpec::Core::RakeTask.new('beaker:snapshot', [:filter]) do |task, args|
   task.rspec_opts << '--format documentation' if ENV['CI'].nil?
   task.rspec_opts << "--example '#{args[:filter]}'" if args[:filter]
 
-  ENV['SNAPSHOT_TEST'] = true
+  ENV['SNAPSHOT_TEST'] = 'true'
   if Rake::Task.task_defined? 'artifact:snapshot:not_found'
     puts 'No snapshot artifacts found, skipping snapshot tests.'
     exit(0)
