@@ -25,7 +25,7 @@ RSpec.configure do |c|
     v[:is_snapshot] = ENV['SNAPSHOT_TEST'] == 'true'
   end
 
-  unless ENV['ELASTICSEARCH_VERSION'].nil? or v[:snapshot_version].nil?
+  unless ENV['ELASTICSEARCH_VERSION'].nil? and v[:snapshot_version].nil?
     v[:elasticsearch_full_version] = ENV['ELASTICSEARCH_VERSION'] || v[:snapshot_version]
     v[:elasticsearch_major_version] = v[:elasticsearch_full_version].split('.').first.to_i
     v[:elasticsearch_package] = {}
