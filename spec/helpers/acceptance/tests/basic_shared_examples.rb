@@ -35,10 +35,6 @@ shared_examples 'basic acceptance tests' do |instances|
           it { should contain "name: #{config['config']['node.name']}" }
           it { should contain "/var/lib/elasticsearch/#{instance}" }
         end
-
-        describe file("/etc/elasticsearch/#{instance}/scripts") do
-          it { should be_symlink }
-        end
       end
 
       unless config.empty?
