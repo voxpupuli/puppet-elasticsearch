@@ -24,10 +24,10 @@ jobs:
       - TASK=beaker:centos-6-x64:snapshot
     - env:
       - TASK=beaker:centos-7-x64:snapshot
-   - env:
-     - TASK=beaker:debian-8-x64:snapshot
-   - env:
-     - TASK=beaker:debian-9-x64:snapshot
+    - env:
+      - TASK=beaker:debian-8-x64:snapshot
+    - env:
+      - TASK=beaker:debian-9-x64:snapshot
   include:
    - stage: intake
      env:
