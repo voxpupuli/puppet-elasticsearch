@@ -4,6 +4,8 @@ require 'helpers/acceptance/tests/manifest_shared_examples'
 # Main entrypoint for snapshot tests
 shared_examples 'snapshot repository acceptance tests' do
   describe 'elasticsearch::snapshot_repository', :with_cleanup do
+    let(:manifest_class_parameters) { 'restart_on_change => true' }
+
     let(:extra_manifest) do
       <<-MANIFEST
         elasticsearch::snapshot_repository { 'backup':
