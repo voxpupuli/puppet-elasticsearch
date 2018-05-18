@@ -90,7 +90,7 @@ RSpec::Core::RakeTask.new(:spec_unit) do |t|
 end
 task :spec_unit => :spec_prep
 
-task :beaker => [:spec_prep, 'artifact:prep']
+task :beaker => [:spec_prep]
 
 desc 'Run all linting/unit tests.'
 task :intake => [
@@ -122,7 +122,6 @@ beaker_node_sets.each do |node|
   desc "Run the snapshot tests against the #{node} nodeset"
   task "beaker:#{node}:snapshot", [:filter] => %w[
     spec_prep
-    artifact:prep
     artifact:snapshot:deb
     artifact:snapshot:rpm
   ] do |_task, args|
@@ -133,7 +132,7 @@ beaker_node_sets.each do |node|
 
   desc "Run acceptance tests against #{node}"
   RSpec::Core::RakeTask.new(
-    "beaker:#{node}:acceptance", [:version, :filter] => [:spec_prep, 'artifact:prep']
+    "beaker:#{node}:acceptance", [:version, :filter] => [:spec_prep]
   ) do |task, args|
     ENV['BEAKER_set'] = node
     args.with_defaults(:version => '6.2.3', :filter => nil)
@@ -147,19 +146,6 @@ beaker_node_sets.each do |node|
 end
 
 namespace :artifact do
-  desc 'Retrieve artifacts for tests'
-  task :prep do
-    dl_base = 'https://download.elastic.co/elasticsearch/elasticsearch'
-    fetch_archives(
-      'https://github.com/lmenezes/elasticsearch-kopf/archive/v2.1.1.zip' => \
-        'elasticsearch-kopf.zip',
-      "#{dl_base}/elasticsearch-2.3.5.deb" => 'elasticsearch-2.3.5.deb',
-      "#{dl_base}/elasticsearch-2.3.5.rpm" => 'elasticsearch-2.3.5.rpm',
-      'https://download.elastic.co/elasticsearch/release/org/elasticsearch/plugin/analysis-icu/2.4.1/analysis-icu-2.4.1.zip' => \
-        'elasticsearch-plugin-2.x_analysis-icu.zip'
-    )
-  end
-
   desc 'Fetch specific installation artifacts'
   task :fetch, [:version] do |_t, args|
     fetch_archives(
