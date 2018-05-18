@@ -24,6 +24,10 @@ jobs:
       - TASK=beaker:centos-6-x64:snapshot
     - env:
       - TASK=beaker:centos-7-x64:snapshot
+    - env:
+      - TASK=beaker:debian-8-x64:snapshot
+    - env:
+      - TASK=beaker:debian-9-x64:snapshot
   include:
    - stage: intake
      env:
@@ -36,27 +40,65 @@ jobs:
      - PUPPET_VERSION='~> 5.0'
    - stage: acceptance
      env:
-     - TASK=beaker:centos-6-x64
+     - TASK=beaker:centos-6-x64:acceptance
    - env:
-     - TASK=beaker:centos-7-x64
+     - TASK=beaker:centos-6-x64:acceptance[5.6.9]
    - env:
-     - TASK=beaker:amazonlinux-1-x64
+     - TASK=beaker:centos-6-x64:acceptance[2.4.6]
    - env:
-     - TASK=beaker:oracle-6-x64
+     - TASK=beaker:centos-7-x64:acceptance
    - env:
-     - TASK=beaker:oracle-7-x64
+     - TASK=beaker:centos-7-x64:acceptance[5.6.9]
    - env:
-     - TASK=beaker:opensuse-42-x64
+     - TASK=beaker:centos-7-x64:acceptance[2.4.6]
    - env:
-     - TASK=beaker:debian-7-x64
+     - TASK=beaker:amazonlinux-1-x64:acceptance
    - env:
-     - TASK=beaker:debian-8-x64
+     - TASK=beaker:amazonlinux-1-x64:acceptance[5.6.9]
    - env:
-     - TASK=beaker:debian-9-x64
+     - TASK=beaker:amazonlinux-1-x64:acceptance[2.4.6]
    - env:
-     - TASK=beaker:ubuntu-server-1404-x64
+     - TASK=beaker:oracle-6-x64:acceptance
    - env:
-     - TASK=beaker:ubuntu-server-1604-x64
+     - TASK=beaker:oracle-6-x64:acceptance[5.6.9]
+   - env:
+     - TASK=beaker:oracle-6-x64:acceptance[2.4.6]
+   - env:
+     - TASK=beaker:oracle-7-x64:acceptance
+   - env:
+     - TASK=beaker:oracle-7-x64:acceptance[5.6.9]
+   - env:
+     - TASK=beaker:oracle-7-x64:acceptance[2.4.6]
+   - env:
+     - TASK=beaker:opensuse-42-x64:acceptance
+   - env:
+     - TASK=beaker:opensuse-42-x64:acceptance[5.6.9]
+   - env:
+     - TASK=beaker:opensuse-42-x64:acceptance[2.4.6]
+   - env:
+     - TASK=beaker:debian-8-x64:acceptance
+   - env:
+     - TASK=beaker:debian-8-x64:acceptance[5.6.9]
+   - env:
+     - TASK=beaker:debian-8-x64:acceptance[2.4.6]
+   - env:
+     - TASK=beaker:debian-9-x64:acceptance
+   - env:
+     - TASK=beaker:debian-9-x64:acceptance[5.6.9]
+   - env:
+     - TASK=beaker:debian-9-x64:acceptance[2.4.6]
+   - env:
+     - TASK=beaker:ubuntu-server-1404-x64:acceptance
+   - env:
+     - TASK=beaker:ubuntu-server-1404-x64:acceptance[5.6.9]
+   - env:
+     - TASK=beaker:ubuntu-server-1404-x64:acceptance[2.4.6]
+   - env:
+     - TASK=beaker:ubuntu-server-1604-x64:acceptance
+   - env:
+     - TASK=beaker:ubuntu-server-1604-x64:acceptance[5.6.9]
+   - env:
+     - TASK=beaker:ubuntu-server-1604-x64:acceptance[2.4.6]
    - stage: snapshots
      env:
      - TASK=beaker:ubuntu-server-1404-x64:snapshot
@@ -66,6 +108,10 @@ jobs:
      - TASK=beaker:centos-6-x64:snapshot
    - env:
      - TASK=beaker:centos-7-x64:snapshot
+   - env:
+     - TASK=beaker:debian-8-x64:snapshot
+   - env:
+     - TASK=beaker:debian-9-x64:snapshot
 
 notifications:
   slack:

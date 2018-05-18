@@ -104,10 +104,14 @@ task :intake => [
 
 # Plumbing for snapshot tests
 desc 'Run the snapshot tests'
-RSpec::Core::RakeTask.new('beaker:snapshot') do |task|
+RSpec::Core::RakeTask.new('beaker:snapshot', [:filter]) do |task, args|
   task.rspec_opts = ['--color']
-  task.pattern = 'spec/acceptance/snapshot.rb'
+  task.pattern = 'spec/acceptance/tests/acceptance_spec.rb'
+  task.rspec_opts = []
+  task.rspec_opts << '--format documentation' if ENV['CI'].nil?
+  task.rspec_opts << "--example '#{args[:filter]}'" if args[:filter]
 
+  ENV['SNAPSHOT_TEST'] = 'true'
   if Rake::Task.task_defined? 'artifact:snapshot:not_found'
     puts 'No snapshot artifacts found, skipping snapshot tests.'
     exit(0)
@@ -116,51 +120,61 @@ end
 
 beaker_node_sets.each do |node|
   desc "Run the snapshot tests against the #{node} nodeset"
-  task "beaker:#{node}:snapshot" => %w[
+  task "beaker:#{node}:snapshot", [:filter] => %w[
     spec_prep
     artifact:prep
     artifact:snapshot:deb
     artifact:snapshot:rpm
-  ] do
+  ] do |_task, args|
     ENV['BEAKER_set'] = node
     Rake::Task['beaker:snapshot'].reenable
-    Rake::Task['beaker:snapshot'].invoke
+    Rake::Task['beaker:snapshot'].invoke args[:filter]
+  end
+
+  desc "Run acceptance tests against #{node}"
+  RSpec::Core::RakeTask.new(
+    "beaker:#{node}:acceptance", [:version, :filter] => [:spec_prep, 'artifact:prep']
+  ) do |task, args|
+    ENV['BEAKER_set'] = node
+    args.with_defaults(:version => '6.2.3', :filter => nil)
+    task.pattern = 'spec/acceptance/tests/acceptance_spec.rb'
+    task.rspec_opts = []
+    task.rspec_opts << '--format documentation' if ENV['CI'].nil?
+    task.rspec_opts << "--example '#{args[:filter]}'" if args[:filter]
+    ENV['ELASTICSEARCH_VERSION'] ||= args[:version]
+    Rake::Task['artifact:fetch'].invoke(ENV['ELASTICSEARCH_VERSION'])
   end
 end
 
-desc 'Run acceptance tests'
-RSpec::Core::RakeTask.new('beaker:acceptance') do |c|
-  c.pattern = 'spec/acceptance/0*_spec.rb'
-end
-task 'beaker:acceptance' => [:spec_prep, 'artifact:prep']
-
-desc 'Setup a dummy host only, do not run any tests'
-RSpec::Core::RakeTask.new('beaker:noop') do |c|
-  ENV['BEAKER_destroy'] = 'no'
-  c.pattern = 'spec/acceptance/*basic_spec.rb'
-end
-task 'beaker:noop' => [:spec_prep]
-
 namespace :artifact do
-  desc 'Fetch artifacts for tests'
+  desc 'Retrieve artifacts for tests'
   task :prep do
     dl_base = 'https://download.elastic.co/elasticsearch/elasticsearch'
     fetch_archives(
       'https://github.com/lmenezes/elasticsearch-kopf/archive/v2.1.1.zip' => \
-      'elasticsearch-kopf.zip',
+        'elasticsearch-kopf.zip',
       "#{dl_base}/elasticsearch-2.3.5.deb" => 'elasticsearch-2.3.5.deb',
-      "#{dl_base}/elasticsearch-2.3.5.rpm" => 'elasticsearch-2.3.5.rpm'
+      "#{dl_base}/elasticsearch-2.3.5.rpm" => 'elasticsearch-2.3.5.rpm',
+      'https://download.elastic.co/elasticsearch/release/org/elasticsearch/plugin/analysis-icu/2.4.1/analysis-icu-2.4.1.zip' => \
+        'elasticsearch-plugin-2.x_analysis-icu.zip'
+    )
+  end
+
+  desc 'Fetch specific installation artifacts'
+  task :fetch, [:version] do |_t, args|
+    fetch_archives(
+      derive_artifact_urls_for(args[:version])
     )
   end
 
   namespace :snapshot do
     catalog = JSON.parse(
-      open('https://0ym978vhv1.execute-api.us-east-1.amazonaws.com/dev/branches/6.2').read
+      open('https://artifacts-api.elastic.co/v1/branches/6.x').read
     )['latest']
     ENV['snapshot_version'] = catalog['version']
 
     downloads = catalog['projects']['elasticsearch']['packages'].select do |pkg, _|
-      pkg =~ /(?:deb|rpm)/
+      pkg =~ /(?:deb|rpm)/ and pkg !~ /oss/
     end.map do |package, urls|
       [package.split('.').last, urls]
     end.to_h

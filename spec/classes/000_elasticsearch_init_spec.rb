@@ -58,6 +58,14 @@ describe 'elasticsearch', :type => 'class' do
 
       # Varies depending on distro
       it { should contain_augeas("#{defaults_path}/elasticsearch") }
+      it do
+        should contain_file("#{defaults_path}/elasticsearch").with(
+          :ensure => 'file',
+          :group  => 'elasticsearch',
+          :owner  => 'elasticsearch',
+          :mode   => '0640'
+        )
+      end
 
       # Systemd-specific files
       if test_pid == true

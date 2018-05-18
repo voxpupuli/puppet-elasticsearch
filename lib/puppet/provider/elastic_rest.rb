@@ -26,7 +26,6 @@ class Puppet::Provider::ElasticREST < Puppet::Provider
   #
   # @return Net::HTTPResponse
   # rubocop:disable Metrics/CyclomaticComplexity
-  # rubocop:disable Metrics/ParameterLists
   # rubocop:disable Metrics/PerceivedComplexity
   def self.rest(http, \
                 req, \
@@ -61,7 +60,6 @@ class Puppet::Provider::ElasticREST < Puppet::Provider
     end
   end
   # rubocop:enable Metrics/CyclomaticComplexity
-  # rubocop:enable Metrics/ParameterLists
   # rubocop:enable Metrics/PerceivedComplexity
 
   # Helper to format a remote URL request for Elasticsearch which takes into
@@ -86,7 +84,6 @@ class Puppet::Provider::ElasticREST < Puppet::Provider
   # @return Array
   #   an array of Hashes representing the found API objects, whether they be
   #   templates, pipelines, et cetera.
-  # rubocop:disable Metrics/ParameterLists
   def self.api_objects(protocol = 'http', \
                        validate_tls = true, \
                        host = 'localhost', \
@@ -116,7 +113,6 @@ class Puppet::Provider::ElasticREST < Puppet::Provider
 
     results
   end
-  # rubocop:enable Metrics/ParameterLists
 
   # Process the JSON response body
   def self.process_body(body)
