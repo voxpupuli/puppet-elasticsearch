@@ -16,6 +16,9 @@ Metrics/LineLength:
 Metrics/MethodLength:
   Enabled: false
 
+Metrics/ParameterLists:
+  Enabled: false
+
 Style/AndOr:
   Enabled: false
 

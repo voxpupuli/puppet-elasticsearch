@@ -122,33 +122,7 @@ define elasticsearch::service::init (
       }
     }
 
-    # init file from template
-    if ($init_template != undef) {
-
-      elasticsearch_service_file { "/etc/init.d/elasticsearch-${name}":
-        ensure       => $ensure,
-        content      => file($init_template),
-        instance     => $name,
-        notify       => $notify_service,
-        package_name => $elasticsearch::package_name,
-      }
-      -> file { "/etc/init.d/elasticsearch-${name}":
-        ensure => $ensure,
-        owner  => 'root',
-        group  => '0',
-        mode   => '0755',
-        before => Service["elasticsearch-instance-${name}"],
-        notify => $notify_service,
-      }
-
-    }
-
   } else { # absent
-
-    file { "/etc/init.d/elasticsearch-${name}":
-      ensure    => 'absent',
-      subscribe => Service["elasticsearch-instance-${name}"],
-    }
 
     file { "${elasticsearch::defaults_location}/elasticsearch-${name}":
       ensure    => 'absent',
@@ -157,7 +131,28 @@ define elasticsearch::service::init (
 
   }
 
-  # action
+  # Note that service files are persisted even in the case of absent instances.
+  # This is to ensure that manifest can remain idempotent and have the service
+  # file available in order to permit Puppet to introspect system state.
+  # init file from template
+  if ($init_template != undef) {
+    elasticsearch_service_file { "/etc/init.d/elasticsearch-${name}":
+      ensure       => 'present',
+      content      => file($init_template),
+      instance     => $name,
+      notify       => $notify_service,
+      package_name => $elasticsearch::package_name,
+    }
+    -> file { "/etc/init.d/elasticsearch-${name}":
+      ensure => 'file',
+      owner  => 'root',
+      group  => '0',
+      mode   => '0755',
+      before => Service["elasticsearch-instance-${name}"],
+      notify => $notify_service,
+    }
+  }
+
   service { "elasticsearch-instance-${name}":
     ensure => $service_ensure,
     enable => $service_enable,
