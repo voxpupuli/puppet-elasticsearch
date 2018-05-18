@@ -16,4 +16,11 @@ class Puppet::Provider::ElasticParsedFile < Puppet::Provider::ParsedFile
   def self.xpack_config(val)
     @default_target ||= "/etc/elasticsearch/x-pack/#{val}"
   end
+
+  # Find/set an oss x-pack configuration file.
+  #
+  # @return String
+  def self.oss_xpack_config(val)
+    @default_target ||= "/etc/elasticsearch/#{val}"
+  end
 end
