@@ -6,7 +6,7 @@ Puppet::Type.type(:elasticsearch_user).provide(
 ) do
   desc 'Provider for OSS X-Pack users using plain files.'
 
-  xpack_config 'users'
+  oss_xpack_config 'users'
   confine :exists => default_target
 
   has_feature :manages_encrypted_passwords
