@@ -25,7 +25,7 @@ class Puppet::Provider::ElasticPlugin < Puppet::Provider
     # plugin descriptor file, which each plugin should have. We must wildcard
     # the name to match meta plugins, see upstream issue for this change:
     # https://github.com/elastic/elasticsearch/pull/28022
-    properties = Dir[File.join(@resource[:plugin_dir], plugin_path, '*plugin-descriptor.properties')]
+    properties = Dir[File.join(@resource[:plugin_dir], plugin_path, '**', '*plugin-descriptor.properties')]
     return false if properties.empty?
 
     begin
