@@ -61,6 +61,13 @@ class elasticsearch::config {
         group  => $elasticsearch::elasticsearch_group,
         owner  => $elasticsearch::elasticsearch_user,
         mode   => '0755';
+      "${elasticsearch::configdir}/scripts":
+        ensure  => 'directory',
+        source  => "${elasticsearch::homedir}/scripts",
+        mode    => '0755',
+        recurse => 'remote',
+        owner   => $elasticsearch::elasticsearch_user,
+        group   => $elasticsearch::elasticsearch_group;
       '/etc/elasticsearch/elasticsearch.yml':
         ensure => 'absent';
       '/etc/elasticsearch/jvm.options':
@@ -126,8 +133,11 @@ class elasticsearch::config {
     }
 
     if $::elasticsearch::security_plugin != undef and ($::elasticsearch::security_plugin in ['shield', 'x-pack']) {
-      file { "/etc/elasticsearch/${::elasticsearch::security_plugin}" :
+      file { "${::elasticsearch::configdir}/${::elasticsearch::security_plugin}" :
         ensure => 'directory',
+        owner  => 'root',
+        group  => '0',
+        mode   => '0755',
       }
     }
 
