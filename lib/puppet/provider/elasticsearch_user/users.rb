@@ -12,4 +12,6 @@ Puppet::Type.type(:elasticsearch_user).provide(
 
   commands :users_cli => "#{homedir}/bin/x-pack/users"
   commands :es => "#{homedir}/bin/elasticsearch"
+
+  confine :false => (Puppet::FileSystem.exist? "#{homedir}/bin/elasticsearch-users")
 end
