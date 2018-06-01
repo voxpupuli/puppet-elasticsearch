@@ -117,6 +117,9 @@
 # @param jvm_options
 #   Array of options to set in jvm_options.
 #
+# @param license
+#   Optional Elasticsearch license in hash or string form.
+#
 # @param logdir
 #   Directory that will be used for Elasticsearch logging.
 #
@@ -333,6 +336,7 @@ class elasticsearch (
   String                                          $init_template,
   Hash                                            $instances,
   Array[String]                                   $jvm_options,
+  Optional[Variant[String, Hash]]                 $license,
   Stdlib::Absolutepath                            $logdir,
   Hash                                            $logging_config,
   Optional[String]                                $logging_file,
@@ -443,6 +447,10 @@ class elasticsearch (
         stage => $repo_stage,
       }
     }
+  }
+
+  if ($license != undef) {
+    contain elasticsearch::license
   }
 
   #### Manage relationships
