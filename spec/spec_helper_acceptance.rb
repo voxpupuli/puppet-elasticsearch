@@ -97,6 +97,16 @@ RSpec.configure do |c|
     end
   end
 
+  c.before :context, :with_license do
+    if ENV['license_path']
+      create_remote_file hosts, '/tmp/license.json', IO.read(ENV['license_path'])
+      v[:elasticsearch_license_path] = '/tmp/license.json'
+    else
+      puts 'No license found!'
+      exit(1)
+    end
+  end
+
   c.after :context, :then_purge do
     shell 'rm -rf {/usr/share,/etc,/var/lib}/elasticsearch*'
   end

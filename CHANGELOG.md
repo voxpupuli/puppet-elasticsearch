@@ -1,6 +1,7 @@
 ## x.x.x (Month Day, Year)
 
 #### Features
+* Added support for managing Elasticsearch licenses.
 
 #### Fixes
 * Ensure that the stock Elasticsearch service is not running.
