@@ -78,7 +78,7 @@ shared_examples 'secured request' do |test_desc, instances, path, http_test, exp
 end
 
 shared_examples 'security acceptance tests' do |default_instances|
-  describe 'security plugin operations', :then_purge, :with_license, :with_certificates do
+  describe 'security plugin operations', :if => vault_available?, :then_purge => true, :with_license => true, :with_certificates => true do
     superuser_role = v[:elasticsearch_major_version] > 2 ? 'superuser' : 'admin'
     rand_string = lambda { [*('a'..'z')].sample(8).join }
 

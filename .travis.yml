@@ -2,117 +2,116 @@ sudo: required
 group: deprecated-2017Q4
 services:
 - docker
-
 cache:
   bundler: true
   directories:
   - spec/fixtures/artifacts
   - spec/fixtures/modules
-
 language: ruby
-
 script: travis_retry bundle exec rake $TASK
-
 jobs:
-  # This looks like a transient issue with Travis for now
   allow_failures:
-    - env:
-      - TASK=beaker:ubuntu-server-1404-x64:snapshot
-    - env:
-      - TASK=beaker:ubuntu-server-1604-x64:snapshot
-    - env:
-      - TASK=beaker:centos-6-x64:snapshot
-    - env:
-      - TASK=beaker:centos-7-x64:snapshot
-    - env:
-      - TASK=beaker:debian-8-x64:snapshot
-    - env:
-      - TASK=beaker:debian-9-x64:snapshot
+  - env:
+    - TASK=beaker:ubuntu-server-1404-x64:snapshot
+  - env:
+    - TASK=beaker:ubuntu-server-1604-x64:snapshot
+  - env:
+    - TASK=beaker:centos-6-x64:snapshot
+  - env:
+    - TASK=beaker:centos-7-x64:snapshot
+  - env:
+    - TASK=beaker:debian-8-x64:snapshot
+  - env:
+    - TASK=beaker:debian-9-x64:snapshot
   include:
-   - stage: intake
-     env:
-     - TASK=intake
-     - PUPPET_VERSION='~> 4.5.0'
-   - env:
-     - TASK=intake
-   - env:
-     - TASK=intake
-     - PUPPET_VERSION='~> 5.0'
-   - stage: acceptance
-     env:
-     - TASK=beaker:centos-6-x64:acceptance
-   - env:
-     - TASK=beaker:centos-6-x64:acceptance[5.6.9]
-   - env:
-     - TASK=beaker:centos-6-x64:acceptance[2.4.6]
-   - env:
-     - TASK=beaker:centos-7-x64:acceptance
-   - env:
-     - TASK=beaker:centos-7-x64:acceptance[5.6.9]
-   - env:
-     - TASK=beaker:centos-7-x64:acceptance[2.4.6]
-   - env:
-     - TASK=beaker:amazonlinux-1-x64:acceptance
-   - env:
-     - TASK=beaker:amazonlinux-1-x64:acceptance[5.6.9]
-   - env:
-     - TASK=beaker:amazonlinux-1-x64:acceptance[2.4.6]
-   - env:
-     - TASK=beaker:oracle-6-x64:acceptance
-   - env:
-     - TASK=beaker:oracle-6-x64:acceptance[5.6.9]
-   - env:
-     - TASK=beaker:oracle-6-x64:acceptance[2.4.6]
-   - env:
-     - TASK=beaker:oracle-7-x64:acceptance
-   - env:
-     - TASK=beaker:oracle-7-x64:acceptance[5.6.9]
-   - env:
-     - TASK=beaker:oracle-7-x64:acceptance[2.4.6]
-   - env:
-     - TASK=beaker:opensuse-42-x64:acceptance
-   - env:
-     - TASK=beaker:opensuse-42-x64:acceptance[5.6.9]
-   - env:
-     - TASK=beaker:opensuse-42-x64:acceptance[2.4.6]
-   - env:
-     - TASK=beaker:debian-8-x64:acceptance
-   - env:
-     - TASK=beaker:debian-8-x64:acceptance[5.6.9]
-   - env:
-     - TASK=beaker:debian-8-x64:acceptance[2.4.6]
-   - env:
-     - TASK=beaker:debian-9-x64:acceptance
-   - env:
-     - TASK=beaker:debian-9-x64:acceptance[5.6.9]
-   - env:
-     - TASK=beaker:debian-9-x64:acceptance[2.4.6]
-   - env:
-     - TASK=beaker:ubuntu-server-1404-x64:acceptance
-   - env:
-     - TASK=beaker:ubuntu-server-1404-x64:acceptance[5.6.9]
-   - env:
-     - TASK=beaker:ubuntu-server-1404-x64:acceptance[2.4.6]
-   - env:
-     - TASK=beaker:ubuntu-server-1604-x64:acceptance
-   - env:
-     - TASK=beaker:ubuntu-server-1604-x64:acceptance[5.6.9]
-   - env:
-     - TASK=beaker:ubuntu-server-1604-x64:acceptance[2.4.6]
-   - stage: snapshots
-     env:
-     - TASK=beaker:ubuntu-server-1404-x64:snapshot
-   - env:
-     - TASK=beaker:ubuntu-server-1604-x64:snapshot
-   - env:
-     - TASK=beaker:centos-6-x64:snapshot
-   - env:
-     - TASK=beaker:centos-7-x64:snapshot
-   - env:
-     - TASK=beaker:debian-8-x64:snapshot
-   - env:
-     - TASK=beaker:debian-9-x64:snapshot
-
+  - stage: intake
+    env:
+    - TASK=intake
+    - PUPPET_VERSION='~> 4.5.0'
+  - env:
+    - TASK=intake
+  - env:
+    - TASK=intake
+    - PUPPET_VERSION='~> 5.0'
+  - stage: acceptance
+    env:
+    - TASK=beaker:centos-6-x64:acceptance
+  - env:
+    - TASK=beaker:centos-6-x64:acceptance[5.6.9]
+  - env:
+    - TASK=beaker:centos-6-x64:acceptance[2.4.6]
+  - env:
+    - TASK=beaker:centos-7-x64:acceptance
+  - env:
+    - TASK=beaker:centos-7-x64:acceptance[5.6.9]
+  - env:
+    - TASK=beaker:centos-7-x64:acceptance[2.4.6]
+  - env:
+    - TASK=beaker:amazonlinux-1-x64:acceptance
+  - env:
+    - TASK=beaker:amazonlinux-1-x64:acceptance[5.6.9]
+  - env:
+    - TASK=beaker:amazonlinux-1-x64:acceptance[2.4.6]
+  - env:
+    - TASK=beaker:oracle-6-x64:acceptance
+  - env:
+    - TASK=beaker:oracle-6-x64:acceptance[5.6.9]
+  - env:
+    - TASK=beaker:oracle-6-x64:acceptance[2.4.6]
+  - env:
+    - TASK=beaker:oracle-7-x64:acceptance
+  - env:
+    - TASK=beaker:oracle-7-x64:acceptance[5.6.9]
+  - env:
+    - TASK=beaker:oracle-7-x64:acceptance[2.4.6]
+  - env:
+    - TASK=beaker:opensuse-42-x64:acceptance
+  - env:
+    - TASK=beaker:opensuse-42-x64:acceptance[5.6.9]
+  - env:
+    - TASK=beaker:opensuse-42-x64:acceptance[2.4.6]
+  - env:
+    - TASK=beaker:debian-8-x64:acceptance
+  - env:
+    - TASK=beaker:debian-8-x64:acceptance[5.6.9]
+  - env:
+    - TASK=beaker:debian-8-x64:acceptance[2.4.6]
+  - env:
+    - TASK=beaker:debian-9-x64:acceptance
+  - env:
+    - TASK=beaker:debian-9-x64:acceptance[5.6.9]
+  - env:
+    - TASK=beaker:debian-9-x64:acceptance[2.4.6]
+  - env:
+    - TASK=beaker:ubuntu-server-1404-x64:acceptance
+  - env:
+    - TASK=beaker:ubuntu-server-1404-x64:acceptance[5.6.9]
+  - env:
+    - TASK=beaker:ubuntu-server-1404-x64:acceptance[2.4.6]
+  - env:
+    - TASK=beaker:ubuntu-server-1604-x64:acceptance
+  - env:
+    - TASK=beaker:ubuntu-server-1604-x64:acceptance[5.6.9]
+  - env:
+    - TASK=beaker:ubuntu-server-1604-x64:acceptance[2.4.6]
+  - stage: snapshots
+    env:
+    - TASK=beaker:ubuntu-server-1404-x64:snapshot
+  - env:
+    - TASK=beaker:ubuntu-server-1604-x64:snapshot
+  - env:
+    - TASK=beaker:centos-6-x64:snapshot
+  - env:
+    - TASK=beaker:centos-7-x64:snapshot
+  - env:
+    - TASK=beaker:debian-8-x64:snapshot
+  - env:
+    - TASK=beaker:debian-9-x64:snapshot
 notifications:
   slack:
     secure: T1FO+ttrJNH+bXmNR6349qcttG68Qr1xmMqVVRnUr7+129GQO5174Z8MFC8ck0qOCZGHO7GCNO5seNFflrjF/5EKbdkmVnqhf9gVa9kN7I4psMzxJX9bp29xJA6m3wA4VqCosDKVFSfilDZujAblWT+KDHZLjP8sEWEnHPvCjf69S2XDQEWUoxZan5V9IJQas4XR+hMdIZTA3ChVrEyqRfeehAZImbAr/LH8zChZaTdHZQY7p2rN3+qVNi3+GISV9fNPpOCynnX/ACbdUaRt3+1etxGGaQMPzGmTejN3VlMw4OZRXImb6HQ2rXE+fNCASXiKiwylxTbriQsS0dFv4skxH03YlYM8pqaBpeIOwzf4n45tTzdAQZJMC5cOb+RvwS7qkAwuaVlVxiiA+MWRG/UcFpWS+iNn4KEKxbpBjYP8X1JIP9DlHLME7DNMM2pePv9X6ZjY6eDhVM1gbKi77dXOo5y2Sp0ru8QkLpIKFVXS01O+x7oDHHv2Osvih0jNMgM66Byso3KJYJ6EJ0D2/3Q9ZNpVM4CMuIY5pBQfXf691zqkBHI6JUnU6VMw97cH0k6Gq0ypZoW5trXdnRC5aEg4jKKid84zKmAeTpj/iMuagyb/a5msJstIVboynRtfDHR0J8WWhfSU2wzqKAb6L66iyRe62Fe8OGzLhk2+KNU=
+env:
+  global:
+  - secure: V6rj6mR4BhciKstHEEj3DHtj67m0ruwsF35FO+xS10VG75M+dNInD6y1MsJ26l/FuN0UIrks/iVA+nqCd481EP7ZNiH8z8LUDiKgJIabW/YTwWwSAAKXqNnUjjbykuM3iujvyOkK2bzM0bLzAY6pkGIyJWsokXTym2YYCTouAtSgvT+2uUVohqpmp36wZcJUnJnxvC19VgxFnQ5muE2TGdh20OIYT6EbCUlcRrIcWVf5hadNLNmBsQ43ej/kENdMHYGrlOLjQqRgFfKJv0NcY1bJgGs+Rh/J+JNu1DoQ/3y1TkK+7uxJsA0DqgzM6Vg/Otd/3XtpcbGy/0n0LPKYDHbJHPkx3yTXxezqFKlqD74DBMDD4ryIZKGS2X3tWe2sOmo449Y9OBSzD4qUzAeGykIJJ3tpXkeloONM7sSL4zGdsBt2Htyb/i38p04hxCE9SUyxjXT4j6BxqhV//MI4GW8Rxc35t9pG66hn2ipFbc6zjIRVtg8u/bp0tyLA/+0GEFlYnrDQ4IZgmdboxZzMoF3zhjc8HPzGGAeeuU4A3GwFCW4PmPRwWdl84ooAc4JyUrlcpme7Dj8gAL/yfOr5YqMsIKtH3FiQuW5ZPSw7EacTb2TCUVT4lZv/X4luZfrEz21yVBFiOVaxHzMMoMAS77MkmJesW412MxQ5qQOalMs=
+  - secure: fewg9nNWZD7UkbVUAdZ8LmWcZMbrt8U7L2N0SAFRpKQwmGx++cQ21lGLJCvRcVg7hqwSU2qT91duq6HdVoT1vHtuJE/5GM4WsdfdhvfX+XeJzUbySbehCL5EM4PwKj3sQTQ1S9UdpvVC2Zh9ADUg/HYr5VgmDzsQNqQCNCO6dLd4fhWXqYAGrvd5Ie84akmzYSg/rc1yelu2aL1h10iEgUAm0hwMI53PswR8Gq9T4masXAAKN6gDejhikfnDLQ2c9/arZQFzYWxFtamwYKPhMA1K9zf6VSqhqsr3U/t7dBY7uQ3VWsij8cx8xt/Ogf+rDg1nr7UqV/AJZaSxaaaMzSbLg6mcBGIy1jzvyeAQLWWN1ovkKY6eyBNRQ8CL5mHR8mP/k6dTIoxwBRfofZljZB3lBliaPhLCYPqnokxnKfJW2DyJpdZVvgtY5jEPoHHyG1h7IEr/jVPMrI86uw0fYoFdAzJ56G3k1PwXOm3ctBj27HUQ1SuR/+0nEVgLnlDrgADneehM5UvAo89QuygAJVvUWi/FBexF8AalpUHwcN85t7IhYC3ggu79+MZ5p3NKq0HQEArwCIa9zYzcyInbDJfswfWNXC4808ioDcoqrNu2DvFn1olSSXnQ/zMkZNVuGBRVF0iIBDo3xZ254WhUbZMdZvsX3kouXdLEo98m4xE=
+  - secure: GvwRxxuQY3DCK7i5bW4Wv2I1Vu1AUrprc/X1ZsijR65IpPlJXBLeEdOQJkrttsaNzn6H6+9tfWfUvCp/B2X7alUb7/Z2EDiC29TBAe+NcSJcu+COOazF5J7l9CWx43RmSy6Y4IDdN3zgwrNvMsLPuXquq8KLIT7ikIGNb1V0hEmiG/X2SWwdIagUXNCy2tUInAWTrDxKPeyPLZuYBMXBdulI8kTHt1r/Il2zYLRSCcpeWwnjTmwfAvKaIg6UaeE0Lxj5v7XqEW2W2gr57kb4CX340gBp9UlgCeCSbMAqv1US1RTrxH//lw8Yj881EiWymEAT+FyIMTqLfeDvge7AL5+0dhSuI5ODiL8COkQSy4QzQH8cXiJLk5BrTFgEiooP3XKHtVyuM5ZC9k5SDD5TYld9S4cY4DWYGMEtlWkBi/4zZBtj7ODl95m/x5RN27IkMxC8doAIY/+y8yKVer2IkL1NJSqiTk3YYQ7UEfTnrkzCu1RLbxya3VZ/U1py6kXoxe32q8Grljrq8rxVyqvEY9tdW/IF+c9y7Zw/p9YIwrIFDdjcVOOPn04B0leFcGztc/Ks767vEEEifR1KLNAW6mHGgrC9k1xYmyspTXgEPJ3UN6UQyDKI3adp+EhpoMSKO65y37ufNELrgwmzkjof3KekqHeYQlBbxI42W6huaGQ=
