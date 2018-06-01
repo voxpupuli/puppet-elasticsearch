@@ -161,24 +161,6 @@ hosts.each do |host|
               'rpm'
             end
 
-  snapshot_package = {
-    :src => "#{files_dir}/elasticsearch-2.3.5.#{v[:ext]}",
-    :dst => "/tmp/elasticsearch-2.3.5.#{v[:ext]}"
-  }
-
-  scp_to host,
-         snapshot_package[:src],
-         snapshot_package[:dst]
-
-  RSpec.configuration.test_settings['snapshot_package'] = \
-    "file:#{snapshot_package[:dst]}"
-
-  test_settings['integration_package'] = {
-    :src => "#{files_dir}/elasticsearch-snapshot.#{v[:ext]}",
-    :dst => "/tmp/elasticsearch-snapshot.#{v[:ext]}",
-    :file => "file:/tmp/elasticsearch-snapshot.#{v[:ext]}"
-  }
-
   if v[:elasticsearch_package]
     v[:elasticsearch_package].merge!(
       derive_full_package_url(
