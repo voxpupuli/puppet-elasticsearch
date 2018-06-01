@@ -25,8 +25,8 @@ class Puppet::Provider::ElasticPlugin < Puppet::Provider
     # plugin descriptor file, which each plugin should have. We must wildcard
     # the name to match meta plugins, see upstream issue for this change:
     # https://github.com/elastic/elasticsearch/pull/28022
-    properties = Dir[File.join(@resource[:plugin_dir], plugin_path, '*plugin-descriptor.properties')]
-    return false if properties.empty?
+    properties_files = Dir[File.join(@resource[:plugin_dir], plugin_path, '**', '*plugin-descriptor.properties')]
+    return false if properties_files.empty?
 
     begin
       # Use the basic name format that the plugin tool supports in order to
@@ -36,24 +36,31 @@ class Puppet::Provider::ElasticPlugin < Puppet::Provider
       # Naively parse the Java .properties file to check version equality.
       # Because we don't have the luxury of installing arbitrary gems, perform
       # simple parse with a degree of safety checking in the call chain
-      installed_version = IO.readlines(properties.first).map(&:strip).reject do |line|
-        line.start_with?('#') or line.empty?
-      end.map do |property|
-        property.split('=')
-      end.reject do |pairs|
-        pairs.length != 2
-      end.to_h['version']
+      #
+      # Note that x-pack installs "meta" plugins which bundle multiple plugins
+      # in one. Therefore, we need to find the first "sub" plugin that
+      # indicates which version of x-pack this is.
+      properties = properties_files.sort.map do |prop_file|
+        IO.readlines(prop_file).map(&:strip).reject do |line|
+          line.start_with?('#') or line.empty?
+        end.map do |property|
+          property.split('=')
+        end.reject do |pairs|
+          pairs.length != 2
+        end.to_h
+      end.find { |prop| prop.key? 'version' }
 
-      if installed_version != plugin_version
+      if properties and properties['version'] != plugin_version
         debug "Elasticsearch plugin #{@resource[:name]} not version #{plugin_version}, reinstalling"
         destroy
         return false
       end
     rescue ElasticPluginParseFailure
-      # If there is no version string, we do not check version equality
-      debug "No version found in #{@resource[:name]}, not enforcing any version"
+      debug "Failed to parse plugin version for #{@resource[:name]}"
     end
 
+    # If there is no version string, we do not check version equality
+    debug "No version found in #{@resource[:name]}, not enforcing any version"
     true
   end
 
