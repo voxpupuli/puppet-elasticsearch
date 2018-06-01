@@ -39,7 +39,7 @@ define elasticsearch::user (
   } else {
     $_provider = $elasticsearch::security_plugin ? {
       'shield' => 'esusers',
-      'x-pack' => ['elasticsearch_users', 'users'],
+      'x-pack' => ['users', 'elasticsearch_users'],
     }
     elasticsearch_user { $name:
       ensure    => $ensure,
