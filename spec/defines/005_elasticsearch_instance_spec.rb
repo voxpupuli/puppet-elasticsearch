@@ -196,8 +196,8 @@ describe 'elasticsearch::instance', :type => 'define' do
           it { should contain_file('/etc/elasticsearch/es-instance/jvm.options') }
           it { should contain_file('/usr/share/elasticsearch/scripts') }
           it do
-            should contain_file('/etc/elasticsearch/es-instance/scripts').with(
-              :source => '/usr/share/elasticsearch/scripts'
+            should contain_file('/etc/elasticsearch/es-instance').with(
+              :source => '/etc/elasticsearch'
             )
           end
         end
@@ -222,8 +222,13 @@ describe 'elasticsearch::instance', :type => 'define' do
           it { should contain_file('/etc/elasticsearch-config/es-instance/log4j2.properties') }
           it { should contain_file('/usr/share/elasticsearch/scripts') }
           it do
-            should contain_file('/etc/elasticsearch-config/es-instance/scripts').with(
+            should contain_file('/etc/elasticsearch-config/scripts').with(
               :source => '/usr/share/elasticsearch/scripts'
+            )
+          end
+          it do
+            should contain_file('/etc/elasticsearch-config/es-instance').with(
+              :source => '/etc/elasticsearch-config'
             )
           end
         end
@@ -244,8 +249,13 @@ describe 'elasticsearch::instance', :type => 'define' do
           it { should contain_file('/etc/elasticsearch-config/es-instance/log4j2.properties') }
           it { should contain_file('/usr/share/elasticsearch/scripts') }
           it do
-            should contain_file('/etc/elasticsearch-config/es-instance/scripts').with(
+            should contain_file('/etc/elasticsearch/scripts').with(
               :source => '/usr/share/elasticsearch/scripts'
+            )
+          end
+          it do
+            should contain_file('/etc/elasticsearch-config/es-instance').with(
+              :source => '/etc/elasticsearch'
             )
           end
         end
@@ -572,8 +582,7 @@ describe 'elasticsearch::instance', :type => 'define' do
         it { should contain_file('/etc/elasticsearch/es-instance')
           .with(
             :owner => owner,
-            :group => group,
-            :mode  => '0755'
+            :group => group
           ) }
         it { should contain_datacat('/etc/elasticsearch/es-instance/elasticsearch.yml')
           .with(

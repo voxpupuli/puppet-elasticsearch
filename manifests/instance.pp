@@ -350,7 +350,7 @@ define elasticsearch::instance (
       before  => Elasticsearch::Service[$name],
     }
     -> file { $configdir:
-      ensure  => 'directory',
+      ensure       => 'directory',
       # Copy files from the stock configuration directory _into_ the instance
       # configuration directory. This lets us pull in miscellaneous files that
       # utilities may create (like X-Pack user/role files) into instance
@@ -360,22 +360,23 @@ define elasticsearch::instance (
       # Special care is needed to avoid copying in _some_ directories/files to
       # avoid overwriting instance-specific configuration files or other instance
       # directories.
-      ignore  => [
+      ignore       => [
         "${elasticsearch::configdir}/elasticsearch.yml",
         "${elasticsearch::configdir}/jvm.options",
         "${elasticsearch::configdir}/logging.yml",
         "${elasticsearch::configdir}/log4j2.properties",
       ],
-      recurse => 'remote',
-      source  => $elasticsearch::configdir,
-      purge   => $elasticsearch::purge_configdir,
-      force   => $elasticsearch::purge_configdir,
-      tag     => [
+      recurse      => 'remote',
+      recurselimit => 1,
+      source       => $elasticsearch::configdir,
+      purge        => $elasticsearch::purge_configdir,
+      force        => $elasticsearch::purge_configdir,
+      tag          => [
         'elasticsearch_instance_configdir',
       ],
-      require => Class['elasticsearch::package'],
-      before  => Elasticsearch::Service[$name],
-      notify  => $notify_service,
+      require      => Class['elasticsearch::package'],
+      before       => Elasticsearch::Service[$name],
+      notify       => $notify_service,
     }
 
     # Do _not_ copy in instance directories. This avoids a) recursing
@@ -410,6 +411,19 @@ define elasticsearch::instance (
         notify  => $notify_service,
         require => Class['elasticsearch::package'],
         before  => Elasticsearch::Service[$name];
+    }
+
+    if $security_plugin != undef {
+      file { "${configdir}/${security_plugin}":
+        ensure  => 'directory',
+        mode    => '0755',
+        source  => "${elasticsearch::configdir}/${security_plugin}",
+        recurse => 'remote',
+        owner   => 'root',
+        group   => '0',
+        before  => Elasticsearch::Service[$name],
+        notify  => $notify_service,
+      }
     }
 
     if $system_key != undef {
