@@ -6,7 +6,7 @@ module Puppet_X
     # decoded JSON from the Elasticsearch API to be seen as out-of-sync
     # when the parsed template hash is compared against the puppet hash.
     def self.deep_to_i(obj)
-      if obj.is_a? String and obj =~ /^[0-9]+$/
+      if obj.is_a? String and obj =~ /^-?[0-9]+$/
         obj.to_i
       elsif obj.is_a? Array
         obj.map { |element| deep_to_i(element) }
