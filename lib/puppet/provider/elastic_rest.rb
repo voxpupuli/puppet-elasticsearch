@@ -13,6 +13,7 @@ class Puppet::Provider::ElasticREST < Puppet::Provider
     attr_accessor :discrete_resource_creation
     attr_accessor :metadata
     attr_accessor :metadata_pipeline
+    attr_accessor :query_string
   end
 
   # Fetch arbitrary metadata for the class from an instance object.
@@ -20,6 +21,13 @@ class Puppet::Provider::ElasticREST < Puppet::Provider
   # @return String
   def metadata
     self.class.metadata
+  end
+
+  # Retrieve the class query_string variable
+  #
+  # @return String
+  def query_string
+    self.class.query_string
   end
 
   # Perform a REST API request against the indicated endpoint.
@@ -65,7 +73,7 @@ class Puppet::Provider::ElasticREST < Puppet::Provider
   # Helper to format a remote URL request for Elasticsearch which takes into
   # account path ordering, et cetera.
   def self.format_uri(resource_path, property_flush = {})
-    return api_uri if resource_path.nil?
+    return api_uri if resource_path.nil? or api_resource_style == :bare
     if discrete_resource_creation and not property_flush[:ensure].nil?
       resource_path
     else
@@ -207,6 +215,8 @@ class Puppet::Provider::ElasticREST < Puppet::Provider
         self.class.format_uri(resource[:name], @property_flush)
       )
     )
+    uri.query = URI.encode_www_form query_string if query_string
+
     Puppet.debug("Generated URI = #{uri.inspect}")
 
     case @property_flush[:ensure]

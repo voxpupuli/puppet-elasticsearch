@@ -13,6 +13,8 @@ require 'yaml'
 require 'json'
 require_relative 'spec/spec_utilities'
 
+ENV['VAULT_APPROLE_ROLE_ID'] = '48adc137-3270-fc4a-ae65-1306919d4bb0'
+
 # Workaround for certain rspec/beaker versions
 module TempFixForRakeLastComment
   def last_comment

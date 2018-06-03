@@ -108,6 +108,12 @@ def pid_for(instance)
   end
 end
 
+def vault_available?
+  %w[VAULT_ADDR VAULT_APPROLE_ROLE_ID VAULT_APPROLE_SECRET_ID VAULT_PATH].select do |var|
+    ENV[var].nil?
+  end.empty?
+end
+
 # Helper to store arbitrary testing setting values
 def v
   RSpec.configuration.v

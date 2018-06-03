@@ -3,6 +3,7 @@ require 'securerandom'
 require 'thread'
 require 'infrataster/rspec'
 require 'rspec/retry'
+require 'vault'
 
 require_relative 'spec_helper_tls'
 require_relative 'spec_utilities'
@@ -95,6 +96,25 @@ RSpec.configure do |c|
         create_remote_file hosts, params[:path], params[:pem]
       end
     end
+  end
+
+  c.before :context, :with_license do
+    Vault.address = ENV['VAULT_ADDR']
+    Vault.auth.approle ENV['VAULT_APPROLE_ROLE_ID'], ENV['VAULT_APPROLE_SECRET_ID']
+    licenses = Vault.with_retries(Vault::HTTPConnectionError) do
+      Vault.logical.read(ENV['VAULT_PATH'])
+    end.data
+
+    raise 'No license found!' unless licenses
+
+    license = case v[:elasticsearch_major_version]
+              when 2
+                licenses[:v2]
+              else
+                licenses[:v5]
+              end
+    create_remote_file hosts, '/tmp/license.json', license
+    v[:elasticsearch_license_path] = '/tmp/license.json'
   end
 
   c.after :context, :then_purge do
