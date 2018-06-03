@@ -50,4 +50,5 @@ group :system_tests do
   gem 'beaker-rspec', '~> 6.0'
   gem 'docker-api', '~> 1.0'
   gem 'infrataster'
+  gem 'vault'
 end

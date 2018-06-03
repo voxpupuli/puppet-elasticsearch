@@ -24,6 +24,7 @@ elasticsearch::init_defaults_file: ~
 elasticsearch::init_template: "%{module_name}/etc/init.d/elasticsearch.systemd.erb"
 elasticsearch::instances: {}
 elasticsearch::jvm_options: []
+elasticsearch::license: ~
 elasticsearch::logdir: /var/log/elasticsearch
 elasticsearch::logging_config: {}
 elasticsearch::logging_file: ~
