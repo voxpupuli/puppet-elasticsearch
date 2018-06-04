@@ -1,9 +1,37 @@
 ## x.x.x (Month Day, Year)
 
 #### Features
-* Add support for Amazon Linux 2
+* Added support for managing Elasticsearch licenses.
 
 #### Fixes
+* Ensure that the stock Elasticsearch service is not running.
+* Service files for removed instances were previously set to ensure => absent on removal. Because this limits Puppet's ability to verify that the named service is running or not, these service files are always present now whether an instance is set to present or absent.
+* The service defaults file now enforces user/group ownership inline with the service user runtime.
+* The `scripts` configuration directory is now recursively copied instead of symlinked to avoid Elasticsearch security manager permission errors.
+* X-Pack and other meta-plugins are now properly detected as installed by the native plugin provider.
+
+## 6.2.2 (March 13, 2018)
+
+#### Fixes
+* Fixed language compatibility errors that could arise when using JRuby 1.7 on Puppet Servers.
+
+## 6.2.1 (February 14, 2018)
+
+This is primarily a bugfix release to address an issue when installing Elasticsearch 6.2.x plugins such as X-Pack that use the new meta-plugin architecture.
+While the change has been tested with several plugins and versions of Elasticsearch, if any unexpected behavior arises, help is available on the [Elastic forums](https://discuss.elastic.co/) or via [an issue in the puppet-elasticsearch Github repository](https://github.com/elastic/puppet-elasticsearch/issues).
+
+#### Fixes
+* Rewrote the `exists?` logic for the `elasticsearch_plugin` provider. This fundamentally changes how the module detects the presence of plugins but should be backwards compatible.
+
+## 6.2.0 (February 9, 2018)
+
+#### Features
+* Add support for Amazon Linux 2
+* Add support for managing Elasticsearch Snapshot Repository resources
+
+#### Fixes
+* Fixed an issue when setting `file_rolling_type => file` in Elasticsearch 6.
+* Removed ExecStartPre=- from systemd template
 
 ## 6.1.0 (December 18, 2017)
 

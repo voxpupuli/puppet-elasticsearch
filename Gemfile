@@ -13,14 +13,15 @@ group :test do
   gem 'puppet-lint'
   gem 'puppet-strings'
   gem 'puppet-syntax'
-  gem 'puppetlabs_spec_helper'
+  gem 'puppetlabs_spec_helper', '>= 2.7.0'
   gem 'rake'
   gem 'rspec', '~> 3.0'
   gem 'rspec-puppet', '~> 2.6'
   gem 'rspec-puppet-facts'
   gem 'rspec-puppet-utils'
   gem 'rspec-retry'
-  gem 'rubocop'
+  # Required to test against Ruby 1.9
+  gem 'rubocop', '~> 0.41.2'
   gem 'rubysl-securerandom'
   gem 'webmock'
 
@@ -44,8 +45,10 @@ group :development do
 end
 
 group :system_tests do
+  gem 'bcrypt'
   gem 'beaker', '~> 3.7'
   gem 'beaker-rspec', '~> 6.0'
   gem 'docker-api', '~> 1.0'
   gem 'infrataster'
+  gem 'vault'
 end

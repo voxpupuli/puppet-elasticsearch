@@ -32,10 +32,12 @@ This module is actively tested against Elasticsearch 2.x, 5.x, and 6.x.
 * Elasticsearch configuration file.
 * Elasticsearch service.
 * Elasticsearch plugins.
+* Elasticsearch snapshot repositories.
 * Elasticsearch templates.
 * Elasticsearch ingest pipelines.
 * Elasticsearch index settings.
 * Elasticsearch Shield/X-Pack users, roles, and certificates.
+* Elasticsearch licenses.
 * Elasticsearch keystores.
 
 ### Requirements
@@ -407,6 +409,35 @@ elasticsearch::index { 'foo':
 }
 ```
 
+### Snapshot Repositories
+
+By default snapshot_repositories use the top-level `elasticsearch::api_*` settings to communicate with Elasticsearch.
+The following is an example of how to override these settings:
+
+```puppet
+elasticsearch::snapshot_repository { 'backups':
+  api_protocol            => 'https',
+  api_host                => $::ipaddress,
+  api_port                => 9201,
+  api_timeout             => 60,
+  api_basic_auth_username => 'admin',
+  api_basic_auth_password => 'adminpassword',
+  api_ca_file             => '/etc/ssl/certs',
+  api_ca_path             => '/etc/pki/certs',
+  validate_tls            => false,
+  location                => '/backups',
+}
+```
+
+#### Delete a snapshot repository
+
+```puppet
+elasticsearch::snapshot_repository { 'backups':
+  ensure   => 'absent',
+  location => '/backup'
+}
+```
+
 ### Connection Validator
 
 This module offers a way to make sure an instance has been started and is up and running before
@@ -730,6 +761,26 @@ elasticsearch::instance { 'es-01':
   system_key => '/local/path/to/key',
 }
 ```
+
+### Licensing
+
+If you use the aforementioned Shield/X-Pack plugins, you may need to install a user license to leverage particular features outside of a trial license.
+This module can handle installation of licenses without the need to write custom `exec` or `curl` code to install license data.
+
+You may instruct the module to install a license through the `elasticsearch::license` parameter:
+
+```puppet
+class { 'elasticsearch':
+  license => $license,
+  security_plugin => 'x-pack',
+}
+```
+
+The `license` parameter will accept either a Puppet hash representation of the license file json or a plain json string that will be parsed into a native Puppet hash.
+Although dependencies are automatically created to ensure that any `elasticsearch::instance` resources are listening and ready before API calls are made, you may need to set the appropriate `api_*` parameters to ensure that the module can interact with the Elasticsearch API over the appropriate port, protocol, and with sufficient user rights to install the license.
+
+The native provider for licenses will _not_ print license signatures as part of Puppet's changelog to ensure that sensitive values are not included in console output or Puppet reports.
+Any fields present in the `license` parameter that differ from the license installed in a cluster will trigger a flush of the resource and new `POST` to the Elasticsearch API with the license content, though the sensitive `signature` field is not compared as it is not returned from the Elasticsearch licensing APIs.
 
 ### Data directories
 

@@ -10,8 +10,9 @@ HOSTS:
     docker_cmd: ["/sbin/init"]
     docker_preserve_image: true
     docker_image_commands:
-      - yum install -y wget which
+      - yum install -y tar wget which java-1.8.0-openjdk-headless
       - rm /etc/init/tty.conf
-      - echo -e "elasticsearch hard nproc 2048\nelasticsearch soft nproc 2048" >> /etc/security/limits.conf
+      - echo -e "elasticsearch hard nproc 4096\nelasticsearch soft nproc 4096" >> /etc/security/limits.conf
+      - echo -e "esuser hard nproc 4096\nesuser soft nproc 4096" >> /etc/security/limits.conf
 CONFIG:
   log_level: warn

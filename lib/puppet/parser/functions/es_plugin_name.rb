@@ -1,7 +1,8 @@
-$LOAD_PATH.unshift(File.join(File.dirname(__FILE__),"..","..",".."))
+$LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', '..', '..'))
 
 require 'puppet_x/elastic/plugin_parsing'
 
+# Top-level Puppet functions
 module Puppet::Parser::Functions
   newfunction(
     :es_plugin_name,
@@ -22,9 +23,9 @@ module Puppet::Parser::Functions
     @return String
     ENDHEREDOC
 
-    if args.length < 1
+    if args.empty?
       raise Puppet::ParseError,
-        'wrong number of arguments, at least one value required'
+            'wrong number of arguments, at least one value required'
     end
 
     ret = args.select do |arg|
@@ -32,10 +33,10 @@ module Puppet::Parser::Functions
     end.first
 
     if ret
-      Puppet_X::Elastic::plugin_name ret
+      Puppet_X::Elastic.plugin_name ret
     else
       raise Puppet::Error,
-        'could not determine plugin name'
+            'could not determine plugin name'
     end
   end
 end

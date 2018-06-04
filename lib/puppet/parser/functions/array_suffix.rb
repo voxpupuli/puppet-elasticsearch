@@ -1,9 +1,9 @@
-#
-# suffix.rb
-#
-
+# Top-level Puppet functions
 module Puppet::Parser::Functions
-  newfunction(:array_suffix, :type => :rvalue, :doc => <<-EOS
+  newfunction(
+    :array_suffix,
+    :type => :rvalue,
+    :doc => <<-EOS
 This function applies a suffix to all elements in an array.
 
 *Examples:*
@@ -15,10 +15,9 @@ Will return: ['ap','bp','cp']
 @return Array
     EOS
   ) do |arguments|
-
     # Technically we support two arguments but only first is mandatory ...
-    raise(Puppet::ParseError, "array_suffix(): Wrong number of arguments " +
-      "given (#{arguments.size} for 1)") if arguments.size < 1
+    raise(Puppet::ParseError, 'array_suffix(): Wrong number of arguments ' \
+      "given (#{arguments.size} for 1)") if arguments.empty?
 
     array = arguments[0]
 

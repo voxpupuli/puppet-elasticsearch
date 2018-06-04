@@ -87,6 +87,8 @@ Puppet::Type.type(:elasticsearch_keystore).provide(
     @property_flush = {}
   end
 
+  # rubocop:disable Metrics/CyclomaticComplexity
+  # rubocop:disable Metrics/PerceivedComplexity
   def flush
     case @property_flush[:ensure]
     when :present
@@ -124,6 +126,8 @@ Puppet::Type.type(:elasticsearch_keystore).provide(
       u[:name] == resource[:name]
     end
   end
+  # rubocop:enable Metrics/CyclomaticComplexity
+  # rubocop:enable Metrics/PerceivedComplexity
 
   # settings property setter
   #

@@ -4,6 +4,7 @@ require 'openssl'
 
 # Parent class encapsulating general-use functions for children REST-based
 # providers.
+# rubocop:disable Metrics/ClassLength
 class Puppet::Provider::ElasticREST < Puppet::Provider
   class << self
     attr_accessor :api_discovery_uri
@@ -12,6 +13,7 @@ class Puppet::Provider::ElasticREST < Puppet::Provider
     attr_accessor :discrete_resource_creation
     attr_accessor :metadata
     attr_accessor :metadata_pipeline
+    attr_accessor :query_string
   end
 
   # Fetch arbitrary metadata for the class from an instance object.
@@ -21,15 +23,24 @@ class Puppet::Provider::ElasticREST < Puppet::Provider
     self.class.metadata
   end
 
+  # Retrieve the class query_string variable
+  #
+  # @return String
+  def query_string
+    self.class.query_string
+  end
+
   # Perform a REST API request against the indicated endpoint.
   #
   # @return Net::HTTPResponse
-  def self.rest http, \
+  # rubocop:disable Metrics/CyclomaticComplexity
+  # rubocop:disable Metrics/PerceivedComplexity
+  def self.rest(http, \
                 req, \
                 validate_tls = true, \
                 timeout = 10, \
                 username = nil, \
-                password = nil
+                password = nil)
 
     if username and password
       req.basic_auth username, password
@@ -50,17 +61,19 @@ class Puppet::Provider::ElasticREST < Puppet::Provider
     rescue EOFError => e
       # Because the provider attempts a best guess at API access, we
       # only fail when HTTP operations fail for mutating methods.
-      unless %w(GET OPTIONS HEAD).include? req.method
+      unless %w[GET OPTIONS HEAD].include? req.method
         raise Puppet::Error,
-          "Received '#{e}' from the Elasticsearch API. Are your API settings correct?"
+              "Received '#{e}' from the Elasticsearch API. Are your API settings correct?"
       end
     end
   end
+  # rubocop:enable Metrics/CyclomaticComplexity
+  # rubocop:enable Metrics/PerceivedComplexity
 
   # Helper to format a remote URL request for Elasticsearch which takes into
   # account path ordering, et cetera.
   def self.format_uri(resource_path, property_flush = {})
-    return api_uri if resource_path.nil?
+    return api_uri if resource_path.nil? or api_resource_style == :bare
     if discrete_resource_creation and not property_flush[:ensure].nil?
       resource_path
     else
@@ -79,7 +92,7 @@ class Puppet::Provider::ElasticREST < Puppet::Provider
   # @return Array
   #   an array of Hashes representing the found API objects, whether they be
   #   templates, pipelines, et cetera.
-  def self.api_objects protocol = 'http', \
+  def self.api_objects(protocol = 'http', \
                        validate_tls = true, \
                        host = 'localhost', \
                        port = 9200, \
@@ -87,7 +100,7 @@ class Puppet::Provider::ElasticREST < Puppet::Provider
                        username = nil, \
                        password = nil, \
                        ca_file = nil, \
-                       ca_path = nil
+                       ca_path = nil)
 
     uri = URI("#{protocol}://#{host}:#{port}/#{format_uri(api_discovery_uri)}")
     http = Net::HTTP.new uri.host, uri.port
@@ -100,18 +113,27 @@ class Puppet::Provider::ElasticREST < Puppet::Provider
 
     response = rest http, req, validate_tls, timeout, username, password
 
+    results = []
+
     if response.respond_to? :code and response.code.to_i == 200
-      JSON.parse(response.body).map do |object_name, api_object|
-        {
-          :name => object_name,
-          :ensure => :present,
-          metadata => process_metadata(api_object),
-          :provider => name
-        }
-      end
-    else
-      []
+      results = process_body(response.body)
     end
+
+    results
+  end
+
+  # Process the JSON response body
+  def self.process_body(body)
+    results = JSON.parse(body).map do |object_name, api_object|
+      {
+        :name     => object_name,
+        :ensure   => :present,
+        metadata  => process_metadata(api_object),
+        :provider => name
+      }
+    end
+
+    results
   end
 
   # Passes API objects through arbitrary Procs/lambdas in order to postprocess
@@ -156,7 +178,7 @@ class Puppet::Provider::ElasticREST < Puppet::Provider
       # Flatten and deduplicate the array, instantiate providers, and do the
       # typical association dance
     end.flatten.uniq.map { |resource| new resource }.each do |prov|
-      if resource = resources[prov.name]
+      if (resource = resources[prov.name])
         resource.provider = prov
       end
     end
@@ -167,9 +189,23 @@ class Puppet::Provider::ElasticREST < Puppet::Provider
     @property_flush = {}
   end
 
+  # Generate a request body
+  def generate_body
+    JSON.generate(
+      if metadata != :content and @property_flush[:ensure] == :present
+        { metadata.to_s => resource[metadata] }
+      else
+        resource[metadata]
+      end
+    )
+  end
+
   # Call Elasticsearch's REST API to appropriately PUT/DELETE/or otherwise
   # update any managed API objects.
+  # rubocop:disable Metrics/CyclomaticComplexity
+  # rubocop:disable Metrics/PerceivedComplexity
   def flush
+    Puppet.debug('Got to flush')
     uri = URI(
       format(
         '%s://%s:%d/%s',
@@ -179,19 +215,17 @@ class Puppet::Provider::ElasticREST < Puppet::Provider
         self.class.format_uri(resource[:name], @property_flush)
       )
     )
+    uri.query = URI.encode_www_form query_string if query_string
+
+    Puppet.debug("Generated URI = #{uri.inspect}")
 
     case @property_flush[:ensure]
     when :absent
       req = Net::HTTP::Delete.new uri.request_uri
     else
       req = Net::HTTP::Put.new uri.request_uri
-      req.body = JSON.generate(
-        if metadata != :content and @property_flush[:ensure] == :present
-          { metadata.to_s => resource[metadata] }
-        else
-          resource[metadata]
-        end
-      )
+      req.body = generate_body
+      Puppet.debug("Generated body looks like: #{req.body.inspect}")
       # As of Elasticsearch 6.x, required when requesting with a payload (so we
       # set it always to be safe)
       req['Content-Type'] = 'application/json' if req['Content-Type'].nil?
@@ -216,6 +250,7 @@ class Puppet::Provider::ElasticREST < Puppet::Provider
 
     # Attempt to return useful error output
     unless response.code.to_i == 200
+      Puppet.debug("Non-OK reponse: Body = #{response.body.inspect}")
       json = JSON.parse(response.body)
 
       err_msg = if json.key? 'error'
@@ -234,6 +269,8 @@ class Puppet::Provider::ElasticREST < Puppet::Provider
 
       raise Puppet::Error, "Elasticsearch API responded with: #{err_msg}"
     end
+    # rubocop:enable Metrics/CyclomaticComplexity
+    # rubocop:enable Metrics/PerceivedComplexity
 
     @property_hash = self.class.api_objects(
       resource[:protocol],

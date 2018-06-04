@@ -14,7 +14,6 @@ describe 'elasticsearch::service::systemd', :type => 'define' do
       }
     ]
   ).each do |os, facts|
-
     context "on #{os}" do
       let(:facts) { facts.merge(
           :scenario => '',
@@ -30,7 +29,7 @@ describe 'elasticsearch::service::systemd', :type => 'define' do
       end
 
       if facts[:os]['name'] == 'OpenSuSE' and
-        facts[:os]['release']['major'].to_i >= 13
+         facts[:os]['release']['major'].to_i >= 13
         let(:systemd_service_path) { '/usr/lib/systemd/system' }
       else
         let(:systemd_service_path) { '/lib/systemd/system' }

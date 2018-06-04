@@ -10,7 +10,7 @@ describe Puppet::Type.type(:elasticsearch_role) do
       end
     end
 
-    %i[ensure privileges].each do |prop|
+    [:ensure, :privileges].each do |prop|
       it "should have a #{prop} property" do
         expect(described_class.attrtype(prop)).to eq(:property)
       end

@@ -6,8 +6,8 @@ require 'puppet_x/elastic/plugin_parsing'
 
 # Generalized parent class for providers that behave like Elasticsearch's plugin
 # command line tool.
+# rubocop:disable Metrics/ClassLength
 class Puppet::Provider::ElasticPlugin < Puppet::Provider
-
   # Elasticsearch's home directory.
   #
   # @return String
@@ -21,66 +21,51 @@ class Puppet::Provider::ElasticPlugin < Puppet::Provider
   end
 
   def exists?
-    if !File.exists?(pluginfile)
-      debug "Plugin file #{pluginfile} does not exist"
-      return false
-    elsif File.exists?(pluginfile) && readpluginfile != pluginfile_content
-      debug "Got #{readpluginfile} Expected #{pluginfile_content}. Removing for reinstall"
-      self.destroy
-      return false
-    else
-      debug "Plugin exists"
-      return true
+    # First, attempt to list whether the named plugin exists by finding a
+    # plugin descriptor file, which each plugin should have. We must wildcard
+    # the name to match meta plugins, see upstream issue for this change:
+    # https://github.com/elastic/elasticsearch/pull/28022
+    properties_files = Dir[File.join(@resource[:plugin_dir], plugin_path, '**', '*plugin-descriptor.properties')]
+    return false if properties_files.empty?
+
+    begin
+      # Use the basic name format that the plugin tool supports in order to
+      # determine the version from the resource name.
+      plugin_version = Puppet_X::Elastic.plugin_version(@resource[:name])
+
+      # Naively parse the Java .properties file to check version equality.
+      # Because we don't have the luxury of installing arbitrary gems, perform
+      # simple parse with a degree of safety checking in the call chain
+      #
+      # Note that x-pack installs "meta" plugins which bundle multiple plugins
+      # in one. Therefore, we need to find the first "sub" plugin that
+      # indicates which version of x-pack this is.
+      properties = properties_files.sort.map do |prop_file|
+        IO.readlines(prop_file).map(&:strip).reject do |line|
+          line.start_with?('#') or line.empty?
+        end.map do |property|
+          property.split('=')
+        end.reject do |pairs|
+          pairs.length != 2
+        end.to_h
+      end.find { |prop| prop.key? 'version' }
+
+      if properties and properties['version'] != plugin_version
+        debug "Elasticsearch plugin #{@resource[:name]} not version #{plugin_version}, reinstalling"
+        destroy
+        return false
+      end
+    rescue ElasticPluginParseFailure
+      debug "Failed to parse plugin version for #{@resource[:name]}"
     end
+
+    # If there is no version string, we do not check version equality
+    debug "No version found in #{@resource[:name]}, not enforcing any version"
+    true
   end
 
-  # Returns the content that should be written to the pluginfile.
-  #
-  # @return String
-  def pluginfile_content
-    return @resource[:name] if is1x?
-
-    if @resource[:name].split("/").count == 1 # Official plugin
-      version = plugin_version(@resource[:name])
-      return "#{@resource[:name]}/#{version}"
-    else
-      return @resource[:name]
-    end
-  end
-
-  # Get the path for the `.name` file for the provider helper.
-  #
-  # @return String
-  #   path for the pluginfile
-  def pluginfile
-    if @resource[:plugin_path]
-      File.join(
-        @resource[:plugin_dir],
-        @resource[:plugin_path],
-        '.name'
-      )
-    else
-      File.join(
-        @resource[:plugin_dir],
-        Puppet_X::Elastic::plugin_name(@resource[:name]),
-        '.name'
-      )
-    end
-  end
-
-  # Write plugfile file `.name` contents to disk.
-  def writepluginfile
-    File.open(pluginfile, 'w') do |file|
-      file.write pluginfile_content
-    end
-  end
-
-  # Get pluginfile contents.
-  #
-  # @return String
-  def readpluginfile
-    f = File.open(pluginfile)
-    f.readline
+  def plugin_path
+    @resource[:plugin_path] || Puppet_X::Elastic.plugin_name(@resource[:name])
   end
 
   # Intelligently returns the correct installation arguments for version 1
@@ -91,20 +76,18 @@ class Puppet::Provider::ElasticPlugin < Puppet::Provider
   def install1x
     if !@resource[:url].nil?
       [
-        Puppet_X::Elastic::plugin_name(@resource[:name]),
+        Puppet_X::Elastic.plugin_name(@resource[:name]),
         '--url',
         @resource[:url]
       ]
     elsif !@resource[:source].nil?
       [
-        Puppet_X::Elastic::plugin_name(@resource[:name]),
+        Puppet_X::Elastic.plugin_name(@resource[:name]),
         '--url',
         "file://#{@resource[:source]}"
       ]
     else
-      [
-        @resource[:name]
-      ]
+      [@resource[:name]]
     end
   end
 
@@ -115,17 +98,11 @@ class Puppet::Provider::ElasticPlugin < Puppet::Provider
   #   arguments to pass to the plugin installation utility
   def install2x
     if !@resource[:url].nil?
-      [
-        @resource[:url]
-      ]
+      [@resource[:url]]
     elsif !@resource[:source].nil?
-      [
-        "file://#{@resource[:source]}"
-      ]
+      ["file://#{@resource[:source]}"]
     else
-      [
-        @resource[:name]
-      ]
+      [@resource[:name]]
     end
   end
 
@@ -134,19 +111,18 @@ class Puppet::Provider::ElasticPlugin < Puppet::Provider
   #
   # @return Array
   #   of flags for command-line tools
-  def proxy_args url
+  def proxy_args(url)
     parsed = URI(url)
-    ['http', 'https'].map do |schema|
+    %w[http https].map do |schema|
       [:host, :port, :user, :password].map do |param|
         option = parsed.send(param)
-        if not option.nil?
-          "-D#{schema}.proxy#{param.to_s.capitalize}=#{option}"
-        end
+        "-D#{schema}.proxy#{param.to_s.capitalize}=#{option}" unless option.nil?
       end
     end.flatten.compact
   end
 
   # Install this plugin on the host.
+  # rubocop:disable Metrics/CyclomaticComplexity
   def create
     commands = []
     commands += proxy_args(@resource[:proxy]) if is2x? and @resource[:proxy]
@@ -168,14 +144,13 @@ class Puppet::Provider::ElasticPlugin < Puppet::Provider
       retry if retry_times < retry_count
       raise "Failed to install plugin. Received error: #{e.inspect}"
     end
-
-    writepluginfile
   end
+  # rubocop:enable Metrics/CyclomaticComplexity
 
   # Remove this plugin from the host.
   def destroy
     with_environment do
-      plugin(['remove', Puppet_X::Elastic::plugin_name(@resource[:name])])
+      plugin(['remove', Puppet_X::Elastic.plugin_name(@resource[:name])])
     end
   end
 
@@ -191,26 +166,19 @@ class Puppet::Provider::ElasticPlugin < Puppet::Provider
   end
 
   def is2x?
-    (Puppet::Util::Package.versioncmp(es_version, '2.0.0') >= 0) && (Puppet::Util::Package.versioncmp(es_version, '3.0.0') < 0)
+    (Puppet::Util::Package.versioncmp(es_version, '2.0.0') >= 0) && \
+      (Puppet::Util::Package.versioncmp(es_version, '3.0.0') < 0)
   end
 
   def batch_capable?
     Puppet::Util::Package.versioncmp(es_version, '2.2.0') >= 0
   end
 
-  # Determine the plugin version.
-  def plugin_version(plugin_name)
-    _vendor, _plugin, version = plugin_name.split('/')
-    return es_version if is2x? && version.nil?
-    return version.scan(/\d+\.\d+\.\d+(?:\-\S+)?/).first unless version.nil?
-    false
-  end
-
   # Run a command wrapped in necessary env vars
   def with_environment(&block)
     env_vars = {
       'ES_JAVA_OPTS' => @resource[:java_opts],
-      'ES_PATH_CONF' => @resource[:configdir],
+      'ES_PATH_CONF' => @resource[:configdir]
     }
     saved_vars = {}
 
@@ -229,7 +197,7 @@ class Puppet::Provider::ElasticPlugin < Puppet::Provider
       ENV[env_var] = value
     end
 
-    ret = block.call
+    ret = block.yield
 
     saved_vars.each do |env_var, value|
       ENV[env_var] = value

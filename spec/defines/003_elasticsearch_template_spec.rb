@@ -22,7 +22,7 @@ describe 'elasticsearch::template', :type => 'define' do
       end
 
       describe 'parameter validation' do
-        %i[api_ca_file api_ca_path].each do |param|
+        [:api_ca_file, :api_ca_path].each do |param|
           let :params do
             {
               :ensure => 'present',

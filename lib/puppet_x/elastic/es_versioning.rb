@@ -12,11 +12,11 @@ module Puppet_X
         'data' => 'DATA_DIR',
         'work' => 'WORK_DIR',
         'conf' => 'CONF_DIR'
-      }
+      }.freeze
 
       # Create an array of command-line flags to append to an `elasticsearch`
       # startup command.
-      def self.opt_flags(package_name, catalog, opts = DEFAULT_OPTS)
+      def self.opt_flags(package_name, catalog, opts = DEFAULT_OPTS.dup)
         opt_flag = opt_flag(min_version('5.0.0', package_name, catalog))
 
         opts.delete 'work' if min_version '5.0.0', package_name, catalog

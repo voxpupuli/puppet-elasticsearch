@@ -58,18 +58,26 @@ describe 'elasticsearch', :type => 'class' do
 
       # Varies depending on distro
       it { should contain_augeas("#{defaults_path}/elasticsearch") }
+      it do
+        should contain_file("#{defaults_path}/elasticsearch").with(
+          :ensure => 'file',
+          :group  => 'elasticsearch',
+          :owner  => 'elasticsearch',
+          :mode   => '0640'
+        )
+      end
 
       # Systemd-specific files
       if test_pid == true
-        it { should contain_service('elasticsearch').with(:enable => 'mask') }
+        it { should contain_service('elasticsearch').with(:ensure => false).with(:enable => 'mask') }
         it { should contain_file('/usr/lib/tmpfiles.d/elasticsearch.conf') }
       end
 
       context 'java installation' do
         let(:pre_condition) do
-          <<~EOS
+          <<-MANIFEST
             include ::java
-          EOS
+          MANIFEST
         end
 
         it { should contain_class('elasticsearch::config')
@@ -209,7 +217,7 @@ describe 'elasticsearch', :type => 'class' do
       context 'When managing the repository' do
         let(:params) do
           default_params.merge(
-            :manage_repo => true,
+            :manage_repo => true
           )
         end
 
@@ -251,12 +259,10 @@ describe 'elasticsearch', :type => 'class' do
         it { should contain_exec('remove_plugin_dir') }
 
         # file removal from package
-        it { should contain_file('/etc/init.d/elasticsearch')
-          .with(:ensure => 'absent') }
         it { should contain_file('/etc/elasticsearch/elasticsearch.yml')
           .with(:ensure => 'absent') }
         it { should contain_file('/etc/elasticsearch/jvm.options')
-            .with(:ensure => 'absent') }
+          .with(:ensure => 'absent') }
         it { should contain_file('/etc/elasticsearch/logging.yml')
           .with(:ensure => 'absent') }
         it { should contain_file('/etc/elasticsearch/log4j2.properties')
@@ -322,8 +328,16 @@ describe 'elasticsearch', :type => 'class' do
       context 'create_resource' do
         # Helper for these tests
         def singular(s)
-          s == 'indices' ? 'index' : s[0..-2]
+          case s
+          when 'indices'
+            'index'
+          when 'snapshot_repositories'
+            'snapshot_repository'
+          else
+            s[0..-2]
+          end
         end
+
         {
           'indices' => { 'test-index' => {} },
           'instances' => { 'es-instance' => {} },
@@ -333,6 +347,7 @@ describe 'elasticsearch', :type => 'class' do
           'scripts' => {
             'foo' => { 'source' => 'puppet:///path/to/foo.groovy' }
           },
+          'snapshot_repositories' => { 'backup' => { 'location' => '/backups' } },
           'templates' => { 'foo' => { 'content' => {} } },
           'users' => { 'elastic' => { 'password' => 'foobar' } }
         }.each_pair do |deftype, params|

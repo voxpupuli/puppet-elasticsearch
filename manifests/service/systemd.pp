@@ -121,62 +121,9 @@ define elasticsearch::service::systemd (
       }
     }
 
-    # init file from template
-    if ($init_template != undef) {
-
-      # Check for values in init defaults we may want to set in the init template
-      if (has_key($new_init_defaults, 'MAX_OPEN_FILES')) {
-        $nofile = $new_init_defaults['MAX_OPEN_FILES']
-      } else {
-        $nofile = '65536'
-      }
-
-      if (has_key($new_init_defaults, 'MAX_LOCKED_MEMORY')) {
-        $memlock = $new_init_defaults['MAX_LOCKED_MEMORY']
-      } else {
-        $memlock = undef
-      }
-
-      if (has_key($new_init_defaults, 'MAX_THREADS')) {
-        $nproc = $new_init_defaults['MAX_THREADS']
-      } else {
-        $nproc = '4096'
-      }
-
-      elasticsearch_service_file { "${elasticsearch::systemd_service_path}/elasticsearch-${name}.service":
-        ensure            => $ensure,
-        content           => file($init_template),
-        defaults_location => $elasticsearch::defaults_location,
-        group             => $elasticsearch::elasticsearch_group,
-        homedir           => $elasticsearch::homedir,
-        instance          => $name,
-        memlock           => $memlock,
-        nofile            => $nofile,
-        nproc             => $nproc,
-        package_name      => $elasticsearch::package_name,
-        pid_dir           => $elasticsearch::pid_dir,
-        user              => $elasticsearch::elasticsearch_user,
-        notify            => $notify_service,
-      }
-      -> file { "${elasticsearch::systemd_service_path}/elasticsearch-${name}.service":
-        ensure => $ensure,
-        owner  => 'root',
-        group  => 'root',
-        before => Service["elasticsearch-instance-${name}"],
-        notify => $notify_service,
-      }
-
-    }
-
     $service_require = Exec["systemd_reload_${name}"]
 
   } else { # absent
-
-    file { "${elasticsearch::systemd_service_path}/elasticsearch-${name}.service":
-      ensure    => 'absent',
-      subscribe => Service["elasticsearch-instance-${name}"],
-      notify    => Exec["systemd_reload_${name}"],
-    }
 
     file { "${elasticsearch::defaults_location}/elasticsearch-${name}":
       ensure    => 'absent',
@@ -192,7 +139,51 @@ define elasticsearch::service::systemd (
     refreshonly => true,
   }
 
-  # action
+  # init file from template
+  if ($init_template != undef) {
+    # Check for values in init defaults we may want to set in the init template
+    if (has_key($new_init_defaults, 'MAX_OPEN_FILES')) {
+      $nofile = $new_init_defaults['MAX_OPEN_FILES']
+    } else {
+      $nofile = '65536'
+    }
+
+    if (has_key($new_init_defaults, 'MAX_LOCKED_MEMORY')) {
+      $memlock = $new_init_defaults['MAX_LOCKED_MEMORY']
+    } else {
+      $memlock = undef
+    }
+
+    if (has_key($new_init_defaults, 'MAX_THREADS')) {
+      $nproc = $new_init_defaults['MAX_THREADS']
+    } else {
+      $nproc = '4096'
+    }
+
+    elasticsearch_service_file { "${elasticsearch::systemd_service_path}/elasticsearch-${name}.service":
+      ensure            => 'present',
+      content           => file($init_template),
+      defaults_location => $elasticsearch::defaults_location,
+      group             => $elasticsearch::elasticsearch_group,
+      homedir           => $elasticsearch::homedir,
+      instance          => $name,
+      memlock           => $memlock,
+      nofile            => $nofile,
+      nproc             => $nproc,
+      package_name      => $elasticsearch::package_name,
+      pid_dir           => $elasticsearch::pid_dir,
+      user              => $elasticsearch::elasticsearch_user,
+      notify            => $notify_service,
+    }
+    -> file { "${elasticsearch::systemd_service_path}/elasticsearch-${name}.service":
+      ensure => 'file',
+      owner  => 'root',
+      group  => 'root',
+      before => Service["elasticsearch-instance-${name}"],
+      notify => $notify_service,
+    }
+  }
+
   service { "elasticsearch-instance-${name}":
     ensure   => $service_ensure,
     enable   => $service_enable,

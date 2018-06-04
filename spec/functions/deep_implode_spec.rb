@@ -1,9 +1,10 @@
 require 'spec_helper'
 
+# rubocop:disable Style/BracesAroundHashParameters
+# rubocop:disable Style/IndentHash
 describe 'deep_implode' do
-
   describe 'exception handling' do
-    it { is_expected.to run.with_params().and_raise_error(
+    it { is_expected.to run.with_params.and_raise_error(
       Puppet::ParseError, /wrong number of arguments/i
     ) }
 
@@ -33,7 +34,7 @@ describe 'deep_implode' do
       }) }
 
       it { is_expected.to run.with_params({
-        'key' => { 'subkey' => {'subsubkey' => { 'bottom' => value } } }
+        'key' => { 'subkey' => { 'subsubkey' => { 'bottom' => value } } }
       }).and_return({
         'key.subkey.subsubkey.bottom' => value
       }) }
@@ -68,14 +69,14 @@ describe 'deep_implode' do
       },
       'key1.subkey1' => ['value2']
     }).and_return({
-      'key1.subkey1' => ['value2', 'value1']
+      'key1.subkey1' => %w[value2 value1]
     }) }
 
     it { is_expected.to run.with_params({
       'key1' => {
-        'subkey1' => {'key2' => 'value1'}
+        'subkey1' => { 'key2' => 'value1' }
       },
-      'key1.subkey1' => {'key3' => 'value2'}
+      'key1.subkey1' => { 'key3' => 'value2' }
     }).and_return({
       'key1.subkey1.key2' => 'value1',
       'key1.subkey1.key3' => 'value2'
@@ -83,16 +84,16 @@ describe 'deep_implode' do
 
     it { is_expected.to run.with_params({
       'key1' => {
-        'subkey1' => {'key2' => ['value1']}
+        'subkey1' => { 'key2' => ['value1'] }
       },
-      'key1.subkey1' => {'key2' => ['value2']}
+      'key1.subkey1' => { 'key2' => ['value2'] }
     }).and_return({
-      'key1.subkey1.key2' => ['value2', 'value1']
+      'key1.subkey1.key2' => %w[value2 value1]
     }) }
 
     it { is_expected.to run.with_params({
       'key1' => {
-        'subkey1' => {'key2' => 'value1'},
+        'subkey1' => { 'key2' => 'value1' },
         'subkey1.key2' => 'value2'
       }
     }).and_return({
@@ -107,5 +108,4 @@ describe 'deep_implode' do
     subject.execute(argument1)
     expect(argument1).to eq(original1)
   end
-
 end
