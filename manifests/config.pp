@@ -25,17 +25,17 @@ class elasticsearch::config {
       $elasticsearch::configdir:
         ensure => 'directory',
         group  => $elasticsearch::elasticsearch_group,
-        owner  => $elasticsearch::elasticsearch_user,
-        mode   => '0755';
+        owner  => 'root',
+        mode   => '2750';
       $elasticsearch::datadir:
         ensure => 'directory',
         group  => $elasticsearch::elasticsearch_group,
         owner  => $elasticsearch::elasticsearch_user;
       $elasticsearch::logdir:
         ensure  => 'directory',
-        group   => undef,
+        group   => $elasticsearch::elasticsearch_group,
         owner   => $elasticsearch::elasticsearch_user,
-        mode    => '0755',
+        mode    => '0750',
         recurse => true;
       $elasticsearch::plugindir:
         ensure => 'directory',
@@ -136,8 +136,8 @@ class elasticsearch::config {
       file { "${::elasticsearch::configdir}/${::elasticsearch::security_plugin}" :
         ensure => 'directory',
         owner  => 'root',
-        group  => '0',
-        mode   => '0755',
+        group  => $elasticsearch::elasticsearch_group,
+        mode   => '0750',
       }
     }
 
