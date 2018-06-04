@@ -10,6 +10,9 @@ HOSTS:
     docker_cmd: ["/bin/systemd"]
     docker_preserve_image: true
     docker_image_commands:
+      - echo 'deb http://ftp.debian.org/debian jessie-backports main' >> /etc/apt/sources.list
+      - apt-get update
+      - apt-get install -yq -t jessie-backports openjdk-8-jre-headless
       - apt-get install -yq wget net-tools apt-transport-https
       - rm /lib/systemd/system/systemd*udev*
       - rm /lib/systemd/system/getty.target

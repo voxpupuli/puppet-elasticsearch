@@ -16,6 +16,9 @@ describe Puppet::Type.type(:elasticsearch_keystore).provider(:elasticsearch_keys
   let(:instances) { [] }
 
   before do
+    Facter.clear
+    Facter.add('osfamily') { setcode { 'Debian' } }
+
     allow(described_class)
       .to receive(:command)
       .with(:keystore)
@@ -108,7 +111,7 @@ describe Puppet::Type.type(:elasticsearch_keystore).provider(:elasticsearch_keys
             [executable, 'create'],
             :custom_environment => {
               'ES_INCLUDE' => '/etc/default/elasticsearch-es-03',
-              'ES_PATH_CONF' => "/etc/elasticsearch/es-03"
+              'ES_PATH_CONF' => '/etc/elasticsearch/es-03'
             },
             :uid => 'elasticsearch', :gid => 'elasticsearch'
           )

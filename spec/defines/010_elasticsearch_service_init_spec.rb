@@ -3,7 +3,7 @@ require 'spec_helper'
 describe 'elasticsearch::service::init', :type => 'define' do
   let(:title) { 'es-service-init' }
   let(:pre_condition) do
-    <<~EOS
+    <<-EOS
       class { "elasticsearch":
         config => { "node" => {"name" => "test" }}
       }
@@ -103,7 +103,7 @@ describe 'elasticsearch::service::init', :type => 'define' do
 
         context 'restarts when "restart_on_change" is true' do
           let(:pre_condition) do
-            <<~EOS
+            <<-EOS
               class { "elasticsearch":
                 config => { "node" => {"name" => "test" }},
                 restart_on_change => true
@@ -171,7 +171,7 @@ describe 'elasticsearch::service::init', :type => 'define' do
 
         context 'does not restart when "restart_on_change" is false' do
           let(:pre_condition) do
-            <<~EOS
+            <<-EOS
               class { "elasticsearch":
                 config => { "node" => {"name" => "test" }},
               }
@@ -212,7 +212,7 @@ describe 'elasticsearch::service::init', :type => 'define' do
 
       context 'init file' do
         let(:pre_condition) do
-          <<~EOS
+          <<-EOS
             class { "elasticsearch":
               config => { "node" => {"name" => "test" }}
             }
@@ -246,7 +246,7 @@ describe 'elasticsearch::service::init', :type => 'define' do
 
         context 'restarts when "restart_on_change" is true' do
           let(:pre_condition) do
-            <<~EOS
+            <<-EOS
               class { "elasticsearch":
                 config => { "node" => {"name" => "test" }},
                 restart_on_change => true
@@ -275,7 +275,7 @@ describe 'elasticsearch::service::init', :type => 'define' do
 
         context 'does not restart when "restart_on_change" is false' do
           let(:pre_condition) do
-            <<~EOS
+            <<-EOS
               class { "elasticsearch":
                 config => { "node" => {"name" => "test" }},
               }

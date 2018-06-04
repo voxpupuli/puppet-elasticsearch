@@ -24,6 +24,7 @@ elasticsearch::init_defaults_file: ~
 elasticsearch::init_template: "%{module_name}/etc/init.d/elasticsearch.systemd.erb"
 elasticsearch::instances: {}
 elasticsearch::jvm_options: []
+elasticsearch::license: ~
 elasticsearch::logdir: /var/log/elasticsearch
 elasticsearch::logging_config: {}
 elasticsearch::logging_file: ~
@@ -52,6 +53,7 @@ elasticsearch::security_logging_content: ~
 elasticsearch::security_logging_source: ~
 elasticsearch::security_plugin: ~
 elasticsearch::service_provider: systemd
+elasticsearch::snapshot_repositories: {}
 elasticsearch::status: enabled
 elasticsearch::system_key: ~
 elasticsearch::systemd_service_path: /lib/systemd/system

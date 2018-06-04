@@ -1,7 +1,6 @@
 require 'spec_helper_rspec'
 
 describe Puppet::Type.type(:elasticsearch_service_file) do
-
   let(:resource_name) { '/usr/lib/systemd/system/elasticsearch-es-01.service' }
 
   describe 'attribute validation' do

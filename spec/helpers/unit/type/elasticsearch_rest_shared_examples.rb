@@ -1,6 +1,5 @@
 require 'spec_helper_rspec'
 
-# rubocop:disable Metrics/BlockLength
 shared_examples 'REST API types' do |resource_type, meta_property|
   let(:default_params) do
     { meta_property => {} }

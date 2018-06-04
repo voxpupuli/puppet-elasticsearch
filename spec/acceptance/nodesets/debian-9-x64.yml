@@ -8,7 +8,7 @@ HOSTS:
     docker_cmd: ["/bin/systemd"]
     docker_preserve_image: true
     docker_image_commands:
-      - apt-get install -yq wget net-tools gpg ruby-augeas
+      - apt-get install -yq apt-transport-https openjdk-8-jre-headless wget net-tools gpg ruby-augeas
 CONFIG:
   log_level: warn
 

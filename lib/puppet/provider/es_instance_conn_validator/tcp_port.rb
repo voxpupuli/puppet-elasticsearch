@@ -1,4 +1,4 @@
-$LOAD_PATH.unshift(File.join(File.dirname(__FILE__),"..","..",".."))
+$LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', '..', '..'))
 require 'puppet/util/es_instance_validator'
 
 # This file contains a provider for the resource type `es_instance_conn_validator`,
@@ -7,7 +7,7 @@ require 'puppet/util/es_instance_validator'
 Puppet::Type.type(:es_instance_conn_validator).provide(:tcp_port) do
   desc "A provider for the resource type `es_instance_conn_validator`,
         which validates the  connection by attempting an https
-        connection to the Elasticsearch instance." 
+        connection to the Elasticsearch instance."
 
   def exists?
     start_time = Time.now
@@ -20,7 +20,7 @@ Puppet::Type.type(:es_instance_conn_validator).provide(:tcp_port) do
       # especially on the first install.  Therefore, our first connection attempt
       # may fail.  Here we have somewhat arbitrarily chosen to retry every 2
       # seconds until the configurable timeout has expired.
-      Puppet.debug("Failed to connect to the Elasticsearch instance; sleeping 2 seconds before retry")
+      Puppet.debug('Failed to connect to the Elasticsearch instance; sleeping 2 seconds before retry')
       sleep 2
       success = validator.attempt_connection
     end
@@ -47,5 +47,4 @@ Puppet::Type.type(:es_instance_conn_validator).provide(:tcp_port) do
   def validator
     @validator ||= Puppet::Util::EsInstanceValidator.new(resource[:server], resource[:port])
   end
-
 end

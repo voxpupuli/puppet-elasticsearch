@@ -9,7 +9,7 @@ Puppet::Type.newtype(:elasticsearch_user_roles) do
 
   newproperty(:roles, :array_matching => :all) do
     desc 'Array of roles that the user should belong to.'
-    def insync? is
+    def insync?(is)
       is.sort == should.sort
     end
   end

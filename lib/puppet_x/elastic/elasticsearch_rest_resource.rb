@@ -2,9 +2,7 @@ require 'puppet/parameter/boolean'
 
 # Provides common properties and parameters for REST-based Elasticsearch types
 module ElasticsearchRESTResource
-  # rubocop:disable Metrics/AbcSize
   # rubocop:disable Metrics/CyclomaticComplexity
-  # rubocop:disable Metrics/MethodLength
   # rubocop:disable Metrics/PerceivedComplexity
   def self.extended(extender)
     extender.newparam(:ca_file) do
