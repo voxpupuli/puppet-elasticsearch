@@ -319,9 +319,9 @@ define elasticsearch::instance (
 
     file { $logdir:
       ensure  => 'directory',
+      group   => $elasticsearch::elasticsearch_group,
       owner   => $elasticsearch::elasticsearch_user,
-      group   => undef,
-      mode    => '0755',
+      mode    => '0750',
       require => Class['elasticsearch::package'],
       before  => Elasticsearch::Service[$name],
     }
@@ -416,11 +416,11 @@ define elasticsearch::instance (
     if $security_plugin != undef {
       file { "${configdir}/${security_plugin}":
         ensure  => 'directory',
-        mode    => '0755',
+        mode    => '0750',
         source  => "${elasticsearch::configdir}/${security_plugin}",
         recurse => 'remote',
         owner   => 'root',
-        group   => '0',
+        group   => $elasticsearch::elasticsearch_group,
         before  => Elasticsearch::Service[$name],
         notify  => $notify_service,
       }
