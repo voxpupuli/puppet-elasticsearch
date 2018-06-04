@@ -33,7 +33,10 @@ describe "elasticsearch v#{v[:elasticsearch_full_version]} class" do
   let(:manifest) do
     package = if not v[:is_snapshot]
                 <<-MANIFEST
-                  repo_version => '#{v[:elasticsearch_major_version]}.x',
+                  class { 'elastic_stack::repo':
+                    version => #{v[:elasticsearch_major_version]},
+                  }
+
                   # Hard version set here due to plugin incompatibilities.
                   version => '#{v[:elasticsearch_full_version]}',
                 MANIFEST
