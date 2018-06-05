@@ -618,8 +618,8 @@ describe 'elasticsearch::instance', :type => 'define' do
         it { should contain_file('/var/log/elasticsearch/es-instance')
           .with(
             :owner => owner,
-            :group => nil,
-            :mode  => '0755'
+            :group => group,
+            :mode  => '0750'
           ) }
       end
 
@@ -731,11 +731,11 @@ describe 'elasticsearch::instance', :type => 'define' do
                     "/etc/elasticsearch/es-instance/#{plugin}"
                   ).with(
                     :ensure  => 'directory',
-                    :mode    => '0755',
+                    :mode    => '0750',
                     :source  => "/etc/elasticsearch/#{plugin}",
                     :recurse => 'remote',
                     :owner   => 'root',
-                    :group   => '0',
+                    :group   => 'elasticsearch',
                     :before  => 'Elasticsearch::Service[es-instance]'
                   )
                 )
@@ -758,11 +758,11 @@ describe 'elasticsearch::instance', :type => 'define' do
                     "/etc/elasticsearch/es-instance/#{plugin}"
                   ).with(
                     :ensure  => 'directory',
-                    :mode    => '0755',
+                    :mode    => '0750',
                     :source  => "/etc/elasticsearch/#{plugin}",
                     :recurse => 'remote',
                     :owner   => 'root',
-                    :group   => '0',
+                    :group   => 'elasticsearch',
                     :before  => 'Elasticsearch::Service[es-instance]',
                     :notify  => 'Elasticsearch::Service[es-instance]'
                   )
