@@ -266,8 +266,6 @@ RSpec.configure do |c|
   end
 end
 
-require_relative 'spec_acceptance_common'
-
 # Java 8 is only easy to manage on recent distros
 def v5x_capable?
   (f['os']['family'] == 'RedHat' and \
