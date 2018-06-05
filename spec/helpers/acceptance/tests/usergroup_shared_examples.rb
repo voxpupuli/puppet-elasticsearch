@@ -39,7 +39,6 @@ shared_examples 'user/group acceptance tests' do
         /etc/elasticsearch/es-01/elasticsearch.yml
         /usr/share/elasticsearch
         /var/log/elasticsearch
-        /etc/elasticsearch
       ].each do |path|
         describe file(path) do
           it { should be_owned_by 'esuser' }
