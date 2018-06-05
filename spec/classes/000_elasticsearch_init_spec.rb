@@ -379,7 +379,7 @@ describe 'elasticsearch', :type => 'class' do
         end
 
         it { should contain_file('/etc/elasticsearch')
-          .with(:owner => 'myesuser', :group => 'myesgroup') }
+          .with(:owner => 'root', :group => 'myesgroup') }
         it { should contain_file('/var/log/elasticsearch')
           .with(:owner => 'myesuser') }
         it { should contain_file('/usr/share/elasticsearch')
