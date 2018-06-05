@@ -8,16 +8,11 @@ require 'vault'
 require_relative 'spec_helper_tls'
 require_relative 'spec_utilities'
 
-def test_settings
-  RSpec.configuration.test_settings
-end
-
 def f
   RSpec.configuration.fact
 end
 
 RSpec.configure do |c|
-  c.add_setting :test_settings, :default => {}
   # General-purpose spec-global variables
   c.add_setting :v, :default => {}
 
@@ -127,7 +122,6 @@ RSpec.configure do |c|
 end
 
 files_dir = ENV['files_dir'] || './spec/fixtures/artifacts'
-RSpec.configuration.test_settings['files_dir'] = files_dir
 
 # General bootstrapping steps for each host
 hosts.each do |host|
@@ -218,7 +212,7 @@ RSpec.configure do |c|
     ] + Beaker::DSL::InstallUtils::ModuleUtils::PUPPET_MODULE_INSTALL_IGNORE
 
     hosts.each do |host|
-      modules = %w[archive datacat java java_ks stdlib]
+      modules = %w[archive datacat java java_ks stdlib elastic_stack]
 
       dist_module = {
         'Debian' => ['apt'],
@@ -271,8 +265,6 @@ RSpec.configure do |c|
     end
   end
 end
-
-require_relative 'spec_acceptance_common'
 
 # Java 8 is only easy to manage on recent distros
 def v5x_capable?
