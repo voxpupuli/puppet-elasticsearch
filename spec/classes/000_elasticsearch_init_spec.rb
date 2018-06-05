@@ -217,65 +217,11 @@ describe 'elasticsearch', :type => 'class' do
       context 'When managing the repository' do
         let(:params) do
           default_params.merge(
-            :manage_repo => true,
-            :repo_version => '1.0'
+            :manage_repo => true
           )
         end
 
-        case facts[:os]['family']
-        when 'Debian'
-          it { should contain_class('elasticsearch::repo') }
-          it { should contain_class('apt') }
-          it { should contain_apt__source('elasticsearch')
-            .with(
-              :release => 'stable',
-              :repos => 'main',
-              :location => 'http://packages.elastic.co/elasticsearch/1.0/debian'
-            ) }
-        when 'RedHat'
-          it { should contain_class('elasticsearch::repo') }
-          it { should contain_yumrepo('elasticsearch')
-            .with(
-              :baseurl => 'http://packages.elastic.co/elasticsearch/1.0/centos',
-              :gpgkey  => 'https://artifacts.elastic.co/GPG-KEY-elasticsearch',
-              :enabled => 1
-            ) }
-          it { should contain_exec('elasticsearch_yumrepo_yum_clean') }
-        when 'SuSE'
-          it { should contain_class('elasticsearch::repo') }
-          it { should contain_exec('elasticsearch_suse_import_gpg') }
-          it { should contain_zypprepo(
-              'elasticsearch'
-          ).with(:baseurl => 'http://packages.elastic.co/elasticsearch/1.0/centos')}
-          it { should contain_exec(
-            'elasticsearch_zypper_refresh_elasticsearch'
-          ) }
-        end
-      end
-
-      context 'repository priority pinning' do
-        let(:params) do
-          default_params.merge(
-            :manage_repo => true,
-            :repo_priority => 10,
-            :repo_version => '2.x'
-          )
-        end
-
-        case facts[:os]['family']
-        when 'Debian'
-          context 'is supported' do
-            it { should contain_apt__source('elasticsearch').with(
-              :pin => 10
-            ) }
-          end
-        when 'RedHat'
-          context 'is supported' do
-            it { should contain_yumrepo('elasticsearch').with(
-              :priority => 10
-            ) }
-          end
-        end
+        it { should contain_class('elastic_stack::repo') }
       end
     end
   end
@@ -356,18 +302,6 @@ describe 'elasticsearch', :type => 'class' do
           it { should contain_package('elasticsearch')
             .with(:ensure => 'latest') }
         end
-      end
-
-      context 'when not supplying a repo_version' do
-        let(:params) do
-          default_params.merge(
-            :manage_repo => true
-          )
-        end
-
-        it { expect { should raise_error(
-          Puppet::Error, 'Please fill in a repository version at $repo_version'
-        ) } }
       end
 
       context 'running a a different user' do

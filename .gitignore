@@ -3,6 +3,7 @@
 *.rpm
 *.sha1
 *.tar.gz
+*.zip
 .bundle
 .ruby-version
 .swp

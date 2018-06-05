@@ -11,7 +11,19 @@ shared_examples 'manifest application' do |instances, idempotency_check = true|
         MANIFEST
       end.join("\n")
 
+      repo = if elastic_repo
+               <<-MANIFEST
+                 class { 'elastic_stack::repo':
+                   version => #{v[:elasticsearch_major_version]},
+                 }
+               MANIFEST
+             else
+               ''
+             end
+
       <<-MANIFEST
+        #{repo}
+
         class { 'elasticsearch' :
           #{manifest}
           #{defined?(manifest_class_parameters) && manifest_class_parameters}

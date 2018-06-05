@@ -11,8 +11,8 @@
   "data_provider": "hiera",
   "dependencies": [
     {
-      "name": "puppetlabs/apt",
-      "version_requirement": ">= 2.0.0 < 5.0.0"
+      "name": "elastic/elastic_stack",
+      "version_requirement": ">=6.0.2 <7.0.0"
     },
     {
       "name": "richardc/datacat",
