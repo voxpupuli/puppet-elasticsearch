@@ -24,6 +24,6 @@ fixtures:
     java_ks: puppetlabs/java_ks
     elastic_stack:
       repo: elastic/elastic_stack
-      ref: 6.0.2
+      ref: 6.1.0
   symlinks:
     elasticsearch: "#{source_dir}"
