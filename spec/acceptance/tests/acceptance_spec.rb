@@ -65,6 +65,7 @@ describe "elasticsearch v#{v[:elasticsearch_full_version]} class" do
         'cluster.name' => '#{v[:cluster_name]}',
         'network.host' => '0.0.0.0',
       },
+      oss => #{v[:oss]},
       #{package}
       #{heap}
     MANIFEST
@@ -113,5 +114,5 @@ describe "elasticsearch v#{v[:elasticsearch_full_version]} class" do
   include_examples 'user/group acceptance tests'
 
   # Security-related tests (shield/x-pack)
-  include_examples 'security acceptance tests', instances
+  include_examples 'security acceptance tests', instances unless v[:oss]
 end

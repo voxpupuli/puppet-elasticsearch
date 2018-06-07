@@ -14,6 +14,7 @@ require 'json'
 require_relative 'spec/spec_utilities'
 
 ENV['VAULT_APPROLE_ROLE_ID'] = '48adc137-3270-fc4a-ae65-1306919d4bb0'
+oss_package = ENV['OSS_PACKAGE'] and ENV['OSS_PACKAGE'] == 'true'
 
 # Workaround for certain rspec/beaker versions
 module TempFixForRakeLastComment
@@ -162,7 +163,7 @@ namespace :artifact do
     ENV['snapshot_version'] = catalog['version']
 
     downloads = catalog['projects']['elasticsearch']['packages'].select do |pkg, _|
-      pkg =~ /(?:deb|rpm)/ and pkg !~ /oss/
+      pkg =~ /(?:deb|rpm)/ and (oss_package ? pkg =~ /oss/ : pkg !~ /oss/)
     end.map do |package, urls|
       [package.split('.').last, urls]
     end.to_h
