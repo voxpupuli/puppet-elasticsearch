@@ -22,5 +22,8 @@ fixtures:
       repo: darin/zypprepo
       ref: 1.0.2
     java_ks: puppetlabs/java_ks
+    elastic_stack:
+      repo: elastic/elastic_stack
+      ref: 6.1.0
   symlinks:
     elasticsearch: "#{source_dir}"

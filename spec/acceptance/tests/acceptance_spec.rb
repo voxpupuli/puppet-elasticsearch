@@ -30,10 +30,10 @@ describe "elasticsearch v#{v[:elasticsearch_full_version]} class" do
   }
   instances = es_01.merge es_02
 
+  let(:elastic_repo) { not v[:is_snapshot] }
   let(:manifest) do
     package = if not v[:is_snapshot]
                 <<-MANIFEST
-                  repo_version => '#{v[:elasticsearch_major_version]}.x',
                   # Hard version set here due to plugin incompatibilities.
                   version => '#{v[:elasticsearch_full_version]}',
                 MANIFEST
