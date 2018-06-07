@@ -464,9 +464,9 @@ There are two different ways of installing Elasticsearch:
 #### Repository
 
 
-##### Choosing a Elasticsearch major version
+##### Choosing an Elasticsearch major version
 
-This module uses the related "elastic/elastic_stack" module to manage package repositories. Since there is a separate repository for each major version of the Elastic stack, if you don't want the default version (6), it's necessary to select which version to configure, like this:
+This module uses the `elastic/elastic_stack` module to manage package repositories. Because there is a separate repository for each major version of the Elastic stack, selecting which version to configure is necessary to change the default repository value, like this:
 
 
 ```puppet
