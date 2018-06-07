@@ -4,7 +4,7 @@ require 'helpers/acceptance/tests/manifest_shared_examples'
 shared_examples 'basic acceptance tests' do |instances|
   include_examples 'manifest application', instances
 
-  describe package('elasticsearch') do
+  describe package("elasticsearch#{v[:oss] ? '-oss' : ''}") do
     it { should be_installed }
   end
 

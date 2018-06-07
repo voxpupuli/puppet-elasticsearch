@@ -3,6 +3,7 @@
 #### Features
 * Added support for managing Elasticsearch licenses.
 * This module now uses the elastic-stack module to manage package repositories.
+* Supports OSS packaging distribution.
 
 #### Fixes
 * Ensure that the stock Elasticsearch service is not running.

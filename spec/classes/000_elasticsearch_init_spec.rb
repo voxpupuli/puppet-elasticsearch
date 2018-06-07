@@ -286,10 +286,10 @@ describe 'elasticsearch', :type => 'class' do
             )
           end
 
-          it { should contain_package('my-elasticsearch')
-            .with(:ensure => 'present') }
+          it { should contain_package('elasticsearch')
+            .with(:ensure => 'present', :name => 'my-elasticsearch') }
           it { should_not contain_package('elasticsearch')
-            .with(:ensure => 'present') }
+            .with(:ensure => 'present', :name => 'elasticsearch') }
         end
 
         context 'with auto upgrade enabled' do
@@ -363,6 +363,18 @@ describe 'elasticsearch', :type => 'class' do
               "contain_elasticsearch__#{singular(deftype)}", params.keys.first
             ) }
           end
+        end
+      end
+
+      describe 'oss' do
+        let(:params) do
+          default_params.merge(:oss => true)
+        end
+
+        it do
+          should contain_package('elasticsearch').with(
+            :name => 'elasticsearch-oss'
+          )
         end
       end
     end

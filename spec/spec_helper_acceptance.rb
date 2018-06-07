@@ -46,6 +46,7 @@ RSpec.configure do |c|
     end.to_h
   end
 
+  v[:oss] = ENV['OSS_PACKAGE'] and ENV['OSS_PACKAGE'] == 'true'
   v[:cluster_name] = SecureRandom.hex(10)
 
   # rspec-retry

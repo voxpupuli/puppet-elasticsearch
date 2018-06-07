@@ -170,7 +170,7 @@ define elasticsearch::service::systemd (
       memlock           => $memlock,
       nofile            => $nofile,
       nproc             => $nproc,
-      package_name      => $elasticsearch::package_name,
+      package_name      => 'elasticsearch',
       pid_dir           => $elasticsearch::pid_dir,
       user              => $elasticsearch::elasticsearch_user,
       notify            => $notify_service,

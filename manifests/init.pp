@@ -137,6 +137,9 @@
 # @param manage_repo
 #   Enable repo management by enabling official Elastic repositories.
 #
+# @param oss
+#   Whether to use the purely open source Elasticsearch package distribution.
+#
 # @param package_dir
 #   Directory where packages are downloaded to.
 #
@@ -320,6 +323,7 @@ class elasticsearch (
   Optional[String]                                $logging_file,
   Optional[String]                                $logging_template,
   Boolean                                         $manage_repo,
+  Boolean                                         $oss,
   Stdlib::Absolutepath                            $package_dir,
   Integer                                         $package_dl_timeout,
   String                                          $package_name,
@@ -384,6 +388,13 @@ class elasticsearch (
     'Linux'   => '/var/lib/elasticsearch',
     'OpenBSD' => '/var/elasticsearch/data',
     default   => undef,
+  }
+
+  # The OSS package distribution's package appends `-oss` to the end of the
+  # canonical package name.
+  $_package_name = $oss ? {
+    true    => "${package_name}-oss",
+    default => $package_name,
   }
 
   #### Manage actions

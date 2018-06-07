@@ -14,6 +14,7 @@ shared_examples 'manifest application' do |instances, idempotency_check = true|
       repo = if elastic_repo
                <<-MANIFEST
                  class { 'elastic_stack::repo':
+                   oss => #{v[:oss]},
                    version => #{v[:elasticsearch_major_version]},
                  }
                MANIFEST

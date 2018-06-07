@@ -479,6 +479,18 @@ class { 'elasticsearch':
 }
 ```
 
+This module defaults to the upstream package repositories, which as of Elasticsearch 6.3, includes X-Pack. In order to use the purely OSS (open source) package and repository, the appropriate `oss` flag must be set on the `elastic_stack::repo` and `elasticsearch` classes:
+
+```puppet
+class { 'elastic_stack::repo':
+  oss => true,
+}
+
+class { 'elasticsearch':
+  oss => true,
+}
+```
+
 ##### Manual repository management
 
 You may want to manage repositories manually. You can disable automatic repository management like this:

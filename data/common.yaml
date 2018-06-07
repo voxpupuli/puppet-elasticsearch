@@ -30,6 +30,7 @@ elasticsearch::logging_config: {}
 elasticsearch::logging_file: ~
 elasticsearch::logging_template: ~
 elasticsearch::manage_repo: true
+elasticsearch::oss: false
 elasticsearch::package_dl_timeout: 600
 elasticsearch::package_name: elasticsearch
 elasticsearch::package_provider: package
