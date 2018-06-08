@@ -105,7 +105,7 @@ shared_examples 'security acceptance tests' do |default_instances|
           elasticsearch::plugin { 'elasticsearch/license/latest' :  }
           elasticsearch::plugin { 'elasticsearch/shield/latest' : }
         MANIFEST
-      elsif semver(v[:elasticsearch_full_version]) < semver('6.3.0')
+      elsif semver(v[:elasticsearch_full_version].split('-').first) < semver('6.3.0')
         <<-MANIFEST
           elasticsearch::plugin { 'x-pack' :  }
         MANIFEST

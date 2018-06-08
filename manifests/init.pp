@@ -539,6 +539,11 @@ class elasticsearch (
   Elasticsearch::User <| |>
   -> Elasticsearch::Snapshot_repository <| |>
 
+  # Ensure that any command-line based user changes are performed before the
+  # file is modified
+  Elasticsearch_user <| |>
+  -> Elasticsearch_user_file <| |>
+
   # Manage users/roles before instances (req'd to keep dir in sync)
   Elasticsearch::Role <| |>
   -> Elasticsearch::Instance <| |>
