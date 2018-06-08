@@ -192,6 +192,7 @@ namespace :artifact do
         filename = artifact urls['url']
         checksum = artifact urls['sha_url']
         link = artifact "elasticsearch-snapshot.#{extension}"
+        FileUtils.rm link if File.exist? link
 
         task extension => link
         file link => filename do
