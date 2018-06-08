@@ -1,12 +1,12 @@
 require 'puppet/provider/elastic_parsedfile'
 
-Puppet::Type.type(:elasticsearch_user).provide(
-  :xpack,
+Puppet::Type.type(:elasticsearch_user_file).provide(
+  :oss_xpack,
   :parent => Puppet::Provider::ElasticParsedFile
 ) do
-  desc 'Provider for X-Pack esusers using plain files.'
+  desc 'Provider for OSS X-Pack users using plain files.'
 
-  xpack_config 'users'
+  oss_xpack_config 'users'
   confine :exists => default_target
 
   has_feature :manages_encrypted_passwords
@@ -14,7 +14,7 @@ Puppet::Type.type(:elasticsearch_user).provide(
   text_line :comment,
             :match => /^\s*#/
 
-  record_line :xpack,
+  record_line :oss_xpack,
               :fields => %w[name hashed_password],
               :separator => ':',
               :joiner => ':'
