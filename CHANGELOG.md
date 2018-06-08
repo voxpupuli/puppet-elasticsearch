@@ -4,6 +4,7 @@
 * Added support for managing Elasticsearch licenses.
 * This module now uses the elastic-stack module to manage package repositories.
 * Supports OSS packaging distribution.
+* X-Pack bundled with 6.3 support.
 
 #### Fixes
 * Ensure that the stock Elasticsearch service is not running.
