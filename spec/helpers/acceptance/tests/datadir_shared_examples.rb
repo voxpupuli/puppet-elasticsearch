@@ -44,6 +44,8 @@ end
 
 shared_examples 'datadir acceptance tests' do
   describe 'elasticsearch::datadir' do
+    let(:manifest_class_parameters) { 'restart_on_change => true' }
+
     instances =
       {
         'es-01' => {
@@ -54,7 +56,12 @@ shared_examples 'datadir acceptance tests' do
       }
 
     context 'single path from class', :with_cleanup do
-      let(:manifest_class_parameters) { "datadir => '/var/lib/elasticsearch-data'" }
+      let(:manifest_class_parameters) do
+        <<-MANIFEST
+          datadir => '/var/lib/elasticsearch-data',
+          restart_on_change => true,
+        MANIFEST
+      end
       include_examples 'datadir directory validation', instances, ['/var/lib/elasticsearch-data/es-01']
     end
 
@@ -69,7 +76,8 @@ shared_examples 'datadir acceptance tests' do
           datadir => [
             '/var/lib/elasticsearch-01',
             '/var/lib/elasticsearch-02'
-          ]
+          ],
+          restart_on_change => true,
         MANIFEST
       end
       include_examples 'datadir directory validation',
