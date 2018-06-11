@@ -113,7 +113,7 @@ shared_examples 'hiera acceptance tests' do |plugins|
       write_hiera_config([])
 
       apply_manifest <<-EOS
-        class { 'elasticsearch': ensure => 'absent' }
+        class { 'elasticsearch': ensure => 'absent', oss => #{v[:oss]} }
         Elasticsearch::Instance { ensure => 'absent' }
         elasticsearch::instance { 'es-hiera-single': }
         elasticsearch::instance { 'es-hiera-multiple-1': }

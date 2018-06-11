@@ -67,6 +67,7 @@ RSpec.configure do |c|
       class { 'elasticsearch':
         ensure      => 'absent',
         manage_repo => true,
+        oss         => #{v[:oss]},
       }
       elasticsearch::instance { 'es-01': ensure => 'absent' }
 
