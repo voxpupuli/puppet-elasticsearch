@@ -1,5 +1,16 @@
 ## x.x.x (Month Day, Year)
 
+### Migration Guide
+
+Elasticsearch 6.3 includes several big changes that are reflected in this module.
+When upgrading from module versions prior to 6.3, there are a number of upgrade considerations to take into account:
+
+* This module defaults to the upstream package repositories, which now include X-Pack bundled by default. To preserve previous behavior which does _not_ include X-Pack, follow the `README` instructions to configure `oss`-only repositories/packages.
+* Use of the `elastic_stack::repo` class for managing package repositories brings a couple changes:
+  * All repository-level parameters and settings have been removed from the `::elasticsearch` class. These parameters can now be set on the `elastic_stack::repo` class.
+  * This may mean that leftover yum/apt/etc. repositories named `elasticsearch` may persist after upgrade.
+* Some changes have been made to align this module's file-level permissions with upstream defaults on some configuration, data, and logging directories. Though these have been tested, operators should be aware that some permissions may change on-disk after upgrading to version >= 6.3.x of this module.
+
 #### Features
 * Added support for managing Elasticsearch licenses.
 * This module now uses the elastic-stack module to manage package repositories.
