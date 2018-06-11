@@ -54,7 +54,7 @@ shared_examples 'basic acceptance tests' do |instances|
               expect(response.status).to eq(200)
             end
 
-            it 'uses the default data path' do
+            it 'uses the default data path', :with_retries do
               json = JSON.parse(response.body)['nodes'].values.first
               expected = "/var/lib/elasticsearch/#{instance}"
               expected = [expected] if v[:elasticsearch_major_version] > 2
