@@ -6,6 +6,7 @@ Elasticsearch 6.3 includes several big changes that are reflected in this module
 When upgrading from module versions prior to 6.3, there are a number of upgrade considerations to take into account:
 
 * This module defaults to the upstream package repositories, which now include X-Pack bundled by default. To preserve previous behavior which does _not_ include X-Pack, follow the `README` instructions to configure `oss`-only repositories/packages.
+  * Note that if your system was previously using the `elasticsearch` package and you instead choose to move to the `oss` distribution, the `elasticsearch` and `elasticsearch-oss` packages may conflict. If that occurs, consider ensuring that the `elasticsearch` package is absent before the `::elasticsearch` class runs. This module does not explicitly remove the conflicting package to avoid unexpected package removal.
 * Use of the `elastic_stack::repo` class for managing package repositories brings a couple changes:
   * All repository-level parameters and settings have been removed from the `::elasticsearch` class. These parameters can now be set on the `elastic_stack::repo` class.
   * This may mean that leftover yum/apt/etc. repositories named `elasticsearch` may persist after upgrade.
