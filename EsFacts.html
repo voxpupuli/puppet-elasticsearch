@@ -6,7 +6,7 @@
 <title>
   Module: EsFacts
   
-    &mdash; Documentation by YARD 0.9.12
+    &mdash; Documentation by YARD 0.9.14
   
 </title>
 
@@ -238,15 +238,15 @@
       <pre class="lines">
 
 
+8
 9
 10
 11
 12
-13
-14</pre>
+13</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/facter/es_facts.rb', line 9</span>
+      <pre class="code"><span class="info file"># File 'lib/facter/es_facts.rb', line 8</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_add_fact'>add_fact</span><span class='lparen'>(</span><span class='id identifier rubyid_prefix'>prefix</span><span class='comma'>,</span> <span class='id identifier rubyid_key'>key</span><span class='comma'>,</span> <span class='id identifier rubyid_value'>value</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_key'>key</span> <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_prefix'>prefix</span><span class='embexpr_end'>}</span><span class='tstring_content'>_</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_key'>key</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span><span class='period'>.</span><span class='id identifier rubyid_to_sym'>to_sym</span>
@@ -285,6 +285,7 @@
       <pre class="lines">
 
 
+26
 27
 28
 29
@@ -295,11 +296,10 @@
 34
 35
 36
-37
-38</pre>
+37</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/facter/es_facts.rb', line 27</span>
+      <pre class="code"><span class="info file"># File 'lib/facter/es_facts.rb', line 26</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_get_port'>get_port</span><span class='lparen'>(</span><span class='id identifier rubyid_config'>config</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_enabled'>enabled</span> <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>http.enabled</span><span class='tstring_end'>&#39;</span></span>
@@ -332,6 +332,10 @@
     
 <p>Entrypoint for custom fact populator</p>
 
+<p>This is a super old function but works; disable a bunch of checks.
+rubocop:disable Lint/HandleExceptions rubocop:disable
+Metrics/CyclomaticComplexity rubocop:disable Metrics/PerceivedComplexity</p>
+
 
   </div>
 </div>
@@ -344,10 +348,6 @@
       <pre class="lines">
 
 
-41
-42
-43
-44
 45
 46
 47
@@ -416,10 +416,14 @@
 110
 111
 112
-113</pre>
+113
+114
+115
+116
+117</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/facter/es_facts.rb', line 41</span>
+      <pre class="code"><span class="info file"># File 'lib/facter/es_facts.rb', line 45</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_run'>run</span>
   <span class='id identifier rubyid_dir_prefix'>dir_prefix</span> <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>/etc/elasticsearch</span><span class='tstring_end'>&#39;</span></span>
@@ -536,6 +540,7 @@
       <pre class="lines">
 
 
+15
 16
 17
 18
@@ -543,11 +548,10 @@
 20
 21
 22
-23
-24</pre>
+23</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/facter/es_facts.rb', line 16</span>
+      <pre class="code"><span class="info file"># File 'lib/facter/es_facts.rb', line 15</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_ssl?'>ssl?</span><span class='lparen'>(</span><span class='id identifier rubyid_config'>config</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_tls_keys'>tls_keys</span> <span class='op'>=</span> <span class='lbracket'>[</span>

@@ -6,7 +6,7 @@
 <title>
   Defined Type: elasticsearch::instance
   
-    &mdash; Documentation by YARD 0.9.12
+    &mdash; Documentation by YARD 0.9.14
   
 </title>
 
@@ -1113,7 +1113,29 @@ href="mailto:tyler.langlois@elastic.co">tyler.langlois@elastic.co</a></p>
 508
 509
 510
-511</pre>
+511
+512
+513
+514
+515
+516
+517
+518
+519
+520
+521
+522
+523
+524
+525
+526
+527
+528
+529
+530
+531
+532
+533</pre>
       </td>
       <td>
         <pre class="code"><span class="info file"># File 'manifests/instance.pp', line 127</span>
@@ -1313,9 +1335,9 @@ define elasticsearch::instance (
 
     file { $logdir:
       ensure  =&gt; &#39;directory&#39;,
+      group   =&gt; $elasticsearch::elasticsearch_group,
       owner   =&gt; $elasticsearch::elasticsearch_user,
-      group   =&gt; undef,
-      mode    =&gt; &#39;0755&#39;,
+      mode    =&gt; &#39;0750&#39;,
       require =&gt; Class[&#39;elasticsearch::package&#39;],
       before  =&gt; Elasticsearch::Service[$name],
     }
@@ -1343,14 +1365,41 @@ define elasticsearch::instance (
       require =&gt; Class[&#39;elasticsearch::package&#39;],
       before  =&gt; Elasticsearch::Service[$name],
     }
+    -&gt; file { $configdir:
+      ensure       =&gt; &#39;directory&#39;,
+      # Copy files from the stock configuration directory _into_ the instance
+      # configuration directory. This lets us pull in miscellaneous files that
+      # utilities may create (like X-Pack user/role files) into instance
+      # directories without explicitly naming them, since we can&#39;t predict all the
+      # files that plugins may create/manage.
+      #
+      # Special care is needed to avoid copying in _some_ directories/files to
+      # avoid overwriting instance-specific configuration files or other instance
+      # directories.
+      ignore       =&gt; [
+        &quot;${elasticsearch::configdir}/elasticsearch.yml&quot;,
+        &quot;${elasticsearch::configdir}/jvm.options&quot;,
+        &quot;${elasticsearch::configdir}/logging.yml&quot;,
+        &quot;${elasticsearch::configdir}/log4j2.properties&quot;,
+      ],
+      recurse      =&gt; &#39;remote&#39;,
+      recurselimit =&gt; 1,
+      source       =&gt; $elasticsearch::configdir,
+      purge        =&gt; $elasticsearch::purge_configdir,
+      force        =&gt; $elasticsearch::purge_configdir,
+      tag          =&gt; [
+        &#39;elasticsearch_instance_configdir&#39;,
+      ],
+      require      =&gt; Class[&#39;elasticsearch::package&#39;],
+      before       =&gt; Elasticsearch::Service[$name],
+      notify       =&gt; $notify_service,
+    }
 
-    file { $configdir:
-      ensure  =&gt; &#39;directory&#39;,
-      mode    =&gt; &#39;0755&#39;,
-      purge   =&gt; $elasticsearch::purge_configdir,
-      force   =&gt; $elasticsearch::purge_configdir,
-      require =&gt; [ Exec[&quot;mkdir_configdir_elasticsearch_${name}&quot;], Class[&#39;elasticsearch::package&#39;] ],
-      before  =&gt; Elasticsearch::Service[$name],
+    # Do _not_ copy in instance directories. This avoids a) recursing
+    # indefinitely by copying our own instance directory and b) copying in any
+    # other potential instance directories.
+    File &lt;| tag == &#39;elasticsearch_instance_configdir&#39; |&gt; {
+      ignore +&gt; $name
     }
 
     file { &quot;${configdir}/jvm.options&quot;:
@@ -1380,19 +1429,14 @@ define elasticsearch::instance (
         before  =&gt; Elasticsearch::Service[$name];
     }
 
-    file { &quot;${configdir}/scripts&quot;:
-      ensure =&gt; &#39;link&#39;,
-      target =&gt; &quot;${elasticsearch::homedir}/scripts&quot;,
-    }
-
     if $security_plugin != undef {
       file { &quot;${configdir}/${security_plugin}&quot;:
         ensure  =&gt; &#39;directory&#39;,
-        mode    =&gt; &#39;0755&#39;,
+        mode    =&gt; &#39;0750&#39;,
         source  =&gt; &quot;${elasticsearch::configdir}/${security_plugin}&quot;,
         recurse =&gt; &#39;remote&#39;,
         owner   =&gt; &#39;root&#39;,
-        group   =&gt; &#39;0&#39;,
+        group   =&gt; $elasticsearch::elasticsearch_group,
         before  =&gt; Elasticsearch::Service[$name],
         notify  =&gt; $notify_service,
       }

@@ -6,7 +6,7 @@
 <title>
   Defined Type: elasticsearch::service::openrc
   
-    &mdash; Documentation by YARD 0.9.12
+    &mdash; Documentation by YARD 0.9.14
   
 </title>
 
@@ -357,12 +357,7 @@ href="mailto:tyler.langlois@elastic.co">tyler.langlois@elastic.co</a></p>
 163
 164
 165
-166
-167
-168
-169
-170
-171</pre>
+166</pre>
       </td>
       <td>
         <pre class="code"><span class="info file"># File 'manifests/service/openrc.pp', line 39</span>
@@ -454,33 +449,7 @@ define elasticsearch::service::openrc (
       }
     }
 
-    # init file from template
-    if ($init_template != undef) {
-
-      elasticsearch_service_file { &quot;/etc/init.d/elasticsearch.${name}&quot;:
-        ensure       =&gt; $ensure,
-        content      =&gt; file($init_template),
-        instance     =&gt; $name,
-        notify       =&gt; $notify_service,
-        package_name =&gt; $elasticsearch::package_name,
-      }
-      -&gt; file { &quot;/etc/init.d/elasticsearch.${name}&quot;:
-        ensure =&gt; $ensure,
-        owner  =&gt; &#39;root&#39;,
-        group  =&gt; &#39;0&#39;,
-        mode   =&gt; &#39;0755&#39;,
-        before =&gt; Service[&quot;elasticsearch-instance-${name}&quot;],
-        notify =&gt; $notify_service,
-      }
-
-    }
-
   } elsif ($status != &#39;unmanaged&#39;) {
-
-    file { &quot;/etc/init.d/elasticsearch.${name}&quot;:
-      ensure    =&gt; &#39;absent&#39;,
-      subscribe =&gt; Service[&quot;elasticsearch-instance-${name}&quot;],
-    }
 
     file { &quot;${elasticsearch::defaults_location}/elasticsearch.${name}&quot;:
       ensure    =&gt; &#39;absent&#39;,
@@ -490,7 +459,28 @@ define elasticsearch::service::openrc (
   }
 
 
-  if ( $status != &#39;unmanaged&#39;) {
+  if ($status != &#39;unmanaged&#39;) {
+    # Note that service files are persisted even in the case of absent instances.
+    # This is to ensure that manifest can remain idempotent and have the service
+    # file available in order to permit Puppet to introspect system state.
+    # init file from template
+    if ($init_template != undef) {
+      elasticsearch_service_file { &quot;/etc/init.d/elasticsearch.${name}&quot;:
+        ensure       =&gt; &#39;present&#39;,
+        content      =&gt; file($init_template),
+        instance     =&gt; $name,
+        notify       =&gt; $notify_service,
+        package_name =&gt; &#39;elasticsearch&#39;,
+      }
+      -&gt; file { &quot;/etc/init.d/elasticsearch.${name}&quot;:
+        ensure =&gt; &#39;file&#39;,
+        owner  =&gt; &#39;root&#39;,
+        group  =&gt; &#39;0&#39;,
+        mode   =&gt; &#39;0755&#39;,
+        before =&gt; Service[&quot;elasticsearch-instance-${name}&quot;],
+        notify =&gt; $notify_service,
+      }
+    }
 
     # action
     service { &quot;elasticsearch-instance-${name}&quot;:

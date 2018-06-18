@@ -6,7 +6,7 @@
 <title>
   Defined Type: elasticsearch::plugin
   
-    &mdash; Documentation by YARD 0.9.12
+    &mdash; Documentation by YARD 0.9.14
   
 </title>
 
@@ -564,7 +564,7 @@ define elasticsearch::plugin (
   elasticsearch_plugin { $name:
     ensure                     =&gt; $ensure,
     configdir                  =&gt; $configdir,
-    elasticsearch_package_name =&gt; $elasticsearch::package_name,
+    elasticsearch_package_name =&gt; &#39;elasticsearch&#39;,
     java_opts                  =&gt; $java_opts,
     java_home                  =&gt; $java_home,
     source                     =&gt; $file_source,

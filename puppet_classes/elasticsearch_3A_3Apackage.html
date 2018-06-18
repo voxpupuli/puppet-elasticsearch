@@ -6,7 +6,7 @@
 <title>
   Puppet Class: elasticsearch::package
   
-    &mdash; Documentation by YARD 0.9.12
+    &mdash; Documentation by YARD 0.9.14
   
 </title>
 
@@ -304,7 +304,12 @@ href="mailto:tyler.langlois@elastic.co">tyler.langlois@elastic.co</a></p>
 179
 180
 181
-182</pre>
+182
+183
+184
+185
+186
+187</pre>
       </td>
       <td>
         <pre class="code"><span class="info file"># File 'manifests/package.pp', line 13</span>
@@ -321,9 +326,9 @@ class elasticsearch::package {
   if $elasticsearch::ensure == &#39;present&#39; {
 
     if $elasticsearch::restart_package_change {
-      Package[$elasticsearch::package_name] ~&gt; Elasticsearch::Service &lt;| |&gt;
+      Package[&#39;elasticsearch&#39;] ~&gt; Elasticsearch::Service &lt;| |&gt;
     }
-    Package[$elasticsearch::package_name] ~&gt; Exec[&#39;remove_plugin_dir&#39;]
+    Package[&#39;elasticsearch&#39;] ~&gt; Exec[&#39;remove_plugin_dir&#39;]
 
     # Create directory to place the package file
     $package_dir = $elasticsearch::package_dir
@@ -361,7 +366,7 @@ class elasticsearch::package {
     if ($elasticsearch::package_url != undef) {
 
       case $elasticsearch::package_provider {
-        &#39;package&#39;: { $before = Package[$elasticsearch::package_name]  }
+        &#39;package&#39;: { $before = Package[&#39;elasticsearch&#39;]  }
         default:   { fail(&quot;software provider \&quot;${elasticsearch::package_provider}\&quot;.&quot;) }
       }
 
@@ -446,6 +451,10 @@ class elasticsearch::package {
 
       }
 
+    } else {
+      if ($facts[&#39;os&#39;][&#39;family&#39;] == &#39;Debian&#39;) {
+        Class[&#39;apt::update&#39;] -&gt; Package[&#39;elasticsearch&#39;]
+      }
     }
 
   # Package removal
@@ -464,8 +473,9 @@ class elasticsearch::package {
 
   if ($elasticsearch::package_provider == &#39;package&#39;) {
 
-    package { $elasticsearch::package_name:
+    package { &#39;elasticsearch&#39;:
       ensure =&gt; $package_ensure,
+      name   =&gt; $elasticsearch::_package_name,
     }
 
     exec { &#39;remove_plugin_dir&#39;:

@@ -6,7 +6,7 @@
 <title>
   Module: Puppet_X::Elastic::SortedHash
   
-    &mdash; Documentation by YARD 0.9.12
+    &mdash; Documentation by YARD 0.9.14
   
 </title>
 
@@ -191,8 +191,8 @@ Puppet/Ruby&#39;s yaml implementation.</p>
     
 <p>Upon extension, modify the hash appropriately to render sorted yaml
 dependent upon whichever way is supported for this version of
-Puppet/Ruby&#39;s yaml implementation. rubocop:disable Metrics/AbcSize
-rubocop:disable Metrics/PerceivedComplexity</p>
+Puppet/Ruby&#39;s yaml implementation. rubocop:disable
+Metrics/CyclomaticComplexity rubocop:disable Metrics/PerceivedComplexity</p>
 
 
   </div>
@@ -345,14 +345,14 @@ rubocop:disable Metrics/PerceivedComplexity</p>
       <pre class="lines">
 
 
-64
-65
 66
 67
-68</pre>
+68
+69
+70</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/puppet_x/elastic/hash.rb', line 64</span>
+      <pre class="code"><span class="info file"># File 'lib/puppet_x/elastic/hash.rb', line 66</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_each_pair'>each_pair</span>
   <span class='id identifier rubyid_keys'>keys</span><span class='period'>.</span><span class='id identifier rubyid_sort'>sort</span><span class='period'>.</span><span class='id identifier rubyid_each'>each</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_key'>key</span><span class='op'>|</span>

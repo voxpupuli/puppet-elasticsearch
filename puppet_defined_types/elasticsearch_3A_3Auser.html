@@ -6,7 +6,7 @@
 <title>
   Defined Type: elasticsearch::user
   
-    &mdash; Documentation by YARD 0.9.12
+    &mdash; Documentation by YARD 0.9.14
   
 </title>
 
@@ -206,12 +206,7 @@ href="mailto:tyler.langlois@elastic.co">tyler.langlois@elastic.co</a></p>
 48
 49
 50
-51
-52
-53
-54
-55
-56</pre>
+51</pre>
       </td>
       <td>
         <pre class="code"><span class="info file"># File 'manifests/user.pp', line 24</span>
@@ -226,21 +221,16 @@ define elasticsearch::user (
   }
 
   if $password =~ /^\$2a\$/ {
-    elasticsearch_user { $name:
+    elasticsearch_user_file { $name:
       ensure          =&gt; $ensure,
       configdir       =&gt; $elasticsearch::configdir,
       hashed_password =&gt; $password,
     }
   } else {
-    $_provider = $elasticsearch::security_plugin ? {
-      &#39;shield&#39; =&gt; &#39;esusers&#39;,
-      &#39;x-pack&#39; =&gt; &#39;users&#39;,
-    }
     elasticsearch_user { $name:
       ensure    =&gt; $ensure,
       configdir =&gt; $elasticsearch::configdir,
       password  =&gt; $password,
-      provider  =&gt; $_provider,
     }
   }
 

@@ -6,7 +6,7 @@
 <title>
   Class: Puppet_X::Elastic::EsVersioning
   
-    &mdash; Documentation by YARD 0.9.12
+    &mdash; Documentation by YARD 0.9.14
   
 </title>
 
@@ -113,11 +113,16 @@ to lazily fetch the package version from various arcane Puppet mechanisms.</p>
   
 
 </div>
-  <h2>Constant Summary</h2>
-  <dl class="constants">
-    
-      <dt id="DEFAULT_OPTS-constant" class="">DEFAULT_OPTS =
-        <div class="docstring">
+  
+    <h2>
+      Constant Summary
+      <small><a href="#" class="constants_summary_toggle">collapse</a></small>
+    </h2>
+
+    <dl class="constants">
+      
+        <dt id="DEFAULT_OPTS-constant" class="">DEFAULT_OPTS =
+          <div class="docstring">
   <div class="discussion">
     
 <p>All of the default options we&#39;ll set for Elasticsearch&#39;s command
@@ -130,16 +135,17 @@ invocation.</p>
   
 
 </div>
-      </dt>
-      <dd><pre class="code"><span class='lbrace'>{</span>
+        </dt>
+        <dd><pre class="code"><span class='lbrace'>{</span>
   <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>home</span><span class='tstring_end'>&#39;</span></span> <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>ES_HOME</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
   <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>logs</span><span class='tstring_end'>&#39;</span></span> <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>LOG_DIR</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
   <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>data</span><span class='tstring_end'>&#39;</span></span> <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>DATA_DIR</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
   <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>work</span><span class='tstring_end'>&#39;</span></span> <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>WORK_DIR</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
   <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>conf</span><span class='tstring_end'>&#39;</span></span> <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>CONF_DIR</span><span class='tstring_end'>&#39;</span></span>
-<span class='rbrace'>}</span></pre></dd>
-    
-  </dl>
+<span class='rbrace'>}</span><span class='period'>.</span><span class='id identifier rubyid_freeze'>freeze</span></pre></dd>
+      
+    </dl>
+  
 
 
 
@@ -207,7 +213,7 @@ version 5.</p>
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#opt_flags-class_method" title="opt_flags (class method)">.<strong>opt_flags</strong>(package_name, catalog, opts = DEFAULT_OPTS)  &#x21d2; Object </a>
+      <a href="#opt_flags-class_method" title="opt_flags (class method)">.<strong>opt_flags</strong>(package_name, catalog, opts = DEFAULT_OPTS.dup)  &#x21d2; Object </a>
     
 
     
@@ -352,7 +358,7 @@ version 5.</p>
       <div class="method_details ">
   <h3 class="signature " id="opt_flags-class_method">
   
-    .<strong>opt_flags</strong>(package_name, catalog, opts = DEFAULT_OPTS)  &#x21d2; <tt>Object</tt> 
+    .<strong>opt_flags</strong>(package_name, catalog, opts = DEFAULT_OPTS.dup)  &#x21d2; <tt>Object</tt> 
   
 
   
@@ -398,7 +404,7 @@ version 5.</p>
     <td>
       <pre class="code"><span class="info file"># File 'lib/puppet_x/elastic/es_versioning.rb', line 19</span>
 
-<span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_opt_flags'>opt_flags</span><span class='lparen'>(</span><span class='id identifier rubyid_package_name'>package_name</span><span class='comma'>,</span> <span class='id identifier rubyid_catalog'>catalog</span><span class='comma'>,</span> <span class='id identifier rubyid_opts'>opts</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="#DEFAULT_OPTS-constant" title="Puppet_X::Elastic::EsVersioning::DEFAULT_OPTS (constant)">DEFAULT_OPTS</a></span></span><span class='rparen'>)</span>
+<span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_opt_flags'>opt_flags</span><span class='lparen'>(</span><span class='id identifier rubyid_package_name'>package_name</span><span class='comma'>,</span> <span class='id identifier rubyid_catalog'>catalog</span><span class='comma'>,</span> <span class='id identifier rubyid_opts'>opts</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="#DEFAULT_OPTS-constant" title="Puppet_X::Elastic::EsVersioning::DEFAULT_OPTS (constant)">DEFAULT_OPTS</a></span></span><span class='period'>.</span><span class='id identifier rubyid_dup'>dup</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_opt_flag'>opt_flag</span> <span class='op'>=</span> <span class='id identifier rubyid_opt_flag'>opt_flag</span><span class='lparen'>(</span><span class='id identifier rubyid_min_version'>min_version</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>5.0.0</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='id identifier rubyid_package_name'>package_name</span><span class='comma'>,</span> <span class='id identifier rubyid_catalog'>catalog</span><span class='rparen'>)</span><span class='rparen'>)</span>
 
   <span class='id identifier rubyid_opts'>opts</span><span class='period'>.</span><span class='id identifier rubyid_delete'>delete</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>work</span><span class='tstring_end'>&#39;</span></span> <span class='kw'>if</span> <span class='id identifier rubyid_min_version'>min_version</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>5.0.0</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='id identifier rubyid_package_name'>package_name</span><span class='comma'>,</span> <span class='id identifier rubyid_catalog'>catalog</span>

@@ -6,7 +6,7 @@
 <title>
   Resource Type: elasticsearch_user
   
-    &mdash; Documentation by YARD 0.9.12
+    &mdash; Documentation by YARD 0.9.14
   
 </title>
 
@@ -74,11 +74,9 @@
       
         <span class='object_link'><a href="../puppet_providers_elasticsearch_user/users.html" title="puppet_providers_elasticsearch_user::users (puppet_provider)">users</a></span><br/>
       
-        <span class='object_link'><a href="../puppet_providers_elasticsearch_user/xpack.html" title="puppet_providers_elasticsearch_user::xpack (puppet_provider)">xpack</a></span><br/>
-      
-        <span class='object_link'><a href="../puppet_providers_elasticsearch_user/shield.html" title="puppet_providers_elasticsearch_user::shield (puppet_provider)">shield</a></span><br/>
-      
         <span class='object_link'><a href="../puppet_providers_elasticsearch_user/esusers.html" title="puppet_providers_elasticsearch_user::esusers (puppet_provider)">esusers</a></span><br/>
+      
+        <span class='object_link'><a href="../puppet_providers_elasticsearch_user/elasticsearch_users.html" title="puppet_providers_elasticsearch_user::elasticsearch_users (puppet_provider)">elasticsearch_users</a></span><br/>
       
     </dd>
   </dl>
@@ -128,33 +126,6 @@
           <li>
             
             absent
-          </li>
-          
-        </ul>
-      </div>
-      
-    </li>
-    
-    <li>
-      <span class="name">hashed_password</span>
-      
-      
-      <div class="docstring">
-        <div class="discussion">
-          
-<p>Hashed password for user.</p>
-
-        </div>
-      </div>
-      
-      
-      <div>
-        Supported values:
-        <ul>
-          
-          <li>
-            
-            /^[$]2a[$].{56}$/
           </li>
           
         </ul>
@@ -222,14 +193,6 @@
 <div class="tags">
   <p class="tag_title">Features</p>
   <ul>
-    
-    <li>
-      <span class="name">manages_encrypted_passwords</span>
-       &mdash; <div class='inline'>
-<p>The provider can control the password hash without a need to explicitly
-refresh.</p>
-</div>
-    </li>
     
     <li>
       <span class="name">manages_plaintext_passwords</span>

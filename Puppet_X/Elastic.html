@@ -6,7 +6,7 @@
 <title>
   Module: Puppet_X::Elastic
   
-    &mdash; Documentation by YARD 0.9.12
+    &mdash; Documentation by YARD 0.9.14
   
 </title>
 
@@ -79,7 +79,7 @@
   <dl>
     <dt>Defined in:</dt>
     <dd>lib/puppet_x/elastic/hash.rb<span class="defines">,<br />
-  lib/puppet_x/elastic/deep_to_i.rb,<br /> lib/puppet_x/elastic/deep_implode.rb,<br /> lib/puppet_x/elastic/es_versioning.rb,<br /> lib/puppet_x/elastic/plugin_parsing.rb</span>
+  lib/puppet_x/elastic/deep_to_i.rb,<br /> lib/puppet_x/elastic/deep_implode.rb,<br /> lib/puppet_x/elastic/es_versioning.rb,<br /> lib/puppet_x/elastic/plugin_parsing.rb,<br /> lib/puppet_x/elastic/asymmetric_compare.rb</span>
 </dd>
   </dl>
   
@@ -88,7 +88,7 @@
 <h2>Overview</h2><div class="docstring">
   <div class="discussion">
     
-<p>Elastic helpers</p>
+<p>Custom Elastic functions</p>
 
 
   </div>
@@ -122,6 +122,31 @@
     </h2>
 
     <ul class="summary">
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#asymmetric_compare-class_method" title="asymmetric_compare (class method)">.<strong>asymmetric_compare</strong>(should_val, is_val)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'>
+<p>Certain Elasticsearch APIs return fields that are present in responses but
+not present when sending API requests such as creation time, and so on.</p>
+</div></span>
+  
+</li>
+
       
         <li class="public ">
   <span class="summary_signature">
@@ -225,7 +250,7 @@ dot-delimited keyed Hash.</p>
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#plugin_split-class_method" title="plugin_split (class method)">.<strong>plugin_split</strong>(original_string, position)  &#x21d2; Object </a>
+      <a href="#plugin_split-class_method" title="plugin_split (class method)">.<strong>plugin_split</strong>(original_string, position, soft_fail = true)  &#x21d2; Object </a>
     
 
     
@@ -246,6 +271,28 @@ dot-delimited keyed Hash.</p>
 </li>
 
       
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#plugin_version-class_method" title="plugin_version (class method)">.<strong>plugin_version</strong>(raw_name)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
     </ul>
   
 
@@ -256,7 +303,73 @@ dot-delimited keyed Hash.</p>
 
     
       <div class="method_details first">
-  <h3 class="signature first" id="deep_implode-class_method">
+  <h3 class="signature first" id="asymmetric_compare-class_method">
+  
+    .<strong>asymmetric_compare</strong>(should_val, is_val)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>Certain Elasticsearch APIs return fields that are present in responses but
+not present when sending API requests such as creation time, and so on.
+When comparing desired settings and extant settings, only indicate that a
+value differs from another when user-desired settings differ from existing
+settings - we ignore keys that exist in the response that aren&#39;t being
+explicitly controlled by Puppet.</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/puppet_x/elastic/asymmetric_compare.rb', line 10</span>
+
+<span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_asymmetric_compare'>asymmetric_compare</span><span class='lparen'>(</span><span class='id identifier rubyid_should_val'>should_val</span><span class='comma'>,</span> <span class='id identifier rubyid_is_val'>is_val</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_should_val'>should_val</span><span class='period'>.</span><span class='id identifier rubyid_reduce'>reduce</span><span class='lparen'>(</span><span class='kw'>true</span><span class='rparen'>)</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_is_synced'>is_synced</span><span class='comma'>,</span> <span class='lparen'>(</span><span class='id identifier rubyid_should_key'>should_key</span><span class='comma'>,</span> <span class='id identifier rubyid_should_setting'>should_setting</span><span class='rparen'>)</span><span class='op'>|</span>
+    <span class='kw'>if</span> <span class='id identifier rubyid_is_val'>is_val</span><span class='period'>.</span><span class='id identifier rubyid_key?'>key?</span> <span class='id identifier rubyid_should_key'>should_key</span>
+      <span class='kw'>if</span> <span class='id identifier rubyid_is_val'>is_val</span><span class='lbracket'>[</span><span class='id identifier rubyid_should_key'>should_key</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span> <span class='const'>Hash</span>
+        <span class='id identifier rubyid_asymmetric_compare'>asymmetric_compare</span><span class='lparen'>(</span><span class='id identifier rubyid_should_setting'>should_setting</span><span class='comma'>,</span> <span class='id identifier rubyid_is_val'>is_val</span><span class='lbracket'>[</span><span class='id identifier rubyid_should_key'>should_key</span><span class='rbracket'>]</span><span class='rparen'>)</span>
+      <span class='kw'>else</span>
+        <span class='id identifier rubyid_is_synced'>is_synced</span> <span class='op'>&amp;&amp;</span> <span class='id identifier rubyid_is_val'>is_val</span><span class='lbracket'>[</span><span class='id identifier rubyid_should_key'>should_key</span><span class='rbracket'>]</span> <span class='op'>==</span> <span class='id identifier rubyid_should_setting'>should_setting</span>
+      <span class='kw'>end</span>
+    <span class='kw'>else</span>
+      <span class='id identifier rubyid_is_synced'>is_synced</span> <span class='op'>&amp;&amp;</span> <span class='kw'>true</span>
+    <span class='kw'>end</span>
+  <span class='kw'>end</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="deep_implode-class_method">
   
     .<strong>deep_implode</strong>(hash)  &#x21d2; <tt>Object</tt> 
   
@@ -282,17 +395,17 @@ keys/values.</p>
       <pre class="lines">
 
 
-5
 6
 7
 8
-9</pre>
+9
+10</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/puppet_x/elastic/deep_implode.rb', line 5</span>
+      <pre class="code"><span class="info file"># File 'lib/puppet_x/elastic/deep_implode.rb', line 6</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_deep_implode'>deep_implode</span><span class='lparen'>(</span><span class='id identifier rubyid_hash'>hash</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_ret'>ret</span> <span class='op'>=</span> <span class='const'>Hash</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span>
+  <span class='id identifier rubyid_ret'>ret</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span>
   <span class='id identifier rubyid_implode'>implode</span> <span class='id identifier rubyid_ret'>ret</span><span class='comma'>,</span> <span class='id identifier rubyid_hash'>hash</span>
   <span class='id identifier rubyid_ret'>ret</span>
 <span class='kw'>end</span></pre>
@@ -330,7 +443,6 @@ template hash is compared against the puppet hash.</p>
       <pre class="lines">
 
 
-7
 8
 9
 10
@@ -340,18 +452,19 @@ template hash is compared against the puppet hash.</p>
 14
 15
 16
-17</pre>
+17
+18</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/puppet_x/elastic/deep_to_i.rb', line 7</span>
+      <pre class="code"><span class="info file"># File 'lib/puppet_x/elastic/deep_to_i.rb', line 8</span>
 
-<span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_deep_to_i'>deep_to_i</span> <span class='id identifier rubyid_obj'>obj</span>
-  <span class='kw'>if</span> <span class='id identifier rubyid_obj'>obj</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span> <span class='const'>String</span> <span class='kw'>and</span> <span class='id identifier rubyid_obj'>obj</span> <span class='op'>=~</span> <span class='tstring'><span class='regexp_beg'>/</span><span class='tstring_content'>^[0-9]+$</span><span class='regexp_end'>/</span></span>
+<span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_deep_to_i'>deep_to_i</span><span class='lparen'>(</span><span class='id identifier rubyid_obj'>obj</span><span class='rparen'>)</span>
+  <span class='kw'>if</span> <span class='id identifier rubyid_obj'>obj</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span> <span class='const'>String</span> <span class='kw'>and</span> <span class='id identifier rubyid_obj'>obj</span> <span class='op'>=~</span> <span class='tstring'><span class='regexp_beg'>/</span><span class='tstring_content'>^-?[0-9]+$</span><span class='regexp_end'>/</span></span>
     <span class='id identifier rubyid_obj'>obj</span><span class='period'>.</span><span class='id identifier rubyid_to_i'>to_i</span>
   <span class='kw'>elsif</span> <span class='id identifier rubyid_obj'>obj</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span> <span class='const'>Array</span>
     <span class='id identifier rubyid_obj'>obj</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_element'>element</span><span class='op'>|</span> <span class='id identifier rubyid_deep_to_i'>deep_to_i</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span><span class='rparen'>)</span> <span class='rbrace'>}</span>
   <span class='kw'>elsif</span> <span class='id identifier rubyid_obj'>obj</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span> <span class='const'>Hash</span>
-    <span class='id identifier rubyid_obj'>obj</span><span class='period'>.</span><span class='id identifier rubyid_merge'>merge</span><span class='lparen'>(</span><span class='id identifier rubyid_obj'>obj</span><span class='rparen'>)</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_key'>key</span><span class='comma'>,</span> <span class='id identifier rubyid_val'>val</span><span class='op'>|</span> <span class='id identifier rubyid_deep_to_i'>deep_to_i</span><span class='lparen'>(</span><span class='id identifier rubyid_val'>val</span><span class='rparen'>)</span> <span class='rbrace'>}</span>
+    <span class='id identifier rubyid_obj'>obj</span><span class='period'>.</span><span class='id identifier rubyid_merge'>merge</span><span class='lparen'>(</span><span class='id identifier rubyid_obj'>obj</span><span class='rparen'>)</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid__key'>_key</span><span class='comma'>,</span> <span class='id identifier rubyid_val'>val</span><span class='op'>|</span> <span class='id identifier rubyid_deep_to_i'>deep_to_i</span><span class='lparen'>(</span><span class='id identifier rubyid_val'>val</span><span class='rparen'>)</span> <span class='rbrace'>}</span>
   <span class='kw'>else</span>
     <span class='id identifier rubyid_obj'>obj</span>
   <span class='kw'>end</span>
@@ -388,7 +501,6 @@ dot-delimited keyed Hash.</p>
       <pre class="lines">
 
 
-13
 14
 15
 16
@@ -405,13 +517,14 @@ dot-delimited keyed Hash.</p>
 27
 28
 29
-30</pre>
+30
+31</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/puppet_x/elastic/deep_implode.rb', line 13</span>
+      <pre class="code"><span class="info file"># File 'lib/puppet_x/elastic/deep_implode.rb', line 14</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_implode'>implode</span><span class='lparen'>(</span><span class='id identifier rubyid_new_hash'>new_hash</span><span class='comma'>,</span> <span class='id identifier rubyid_hash'>hash</span><span class='comma'>,</span> <span class='id identifier rubyid_path'>path</span> <span class='op'>=</span> <span class='lbracket'>[</span><span class='rbracket'>]</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_hash'>hash</span><span class='period'>.</span><span class='id identifier rubyid_sort_by'>sort_by</span><span class='lbrace'>{</span><span class='op'>|</span><span class='id identifier rubyid_k'>k</span><span class='comma'>,</span><span class='id identifier rubyid_v'>v</span><span class='op'>|</span> <span class='id identifier rubyid_k'>k</span><span class='period'>.</span><span class='id identifier rubyid_length'>length</span><span class='rbrace'>}</span><span class='period'>.</span><span class='id identifier rubyid_reverse'>reverse</span><span class='period'>.</span><span class='id identifier rubyid_each'>each</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_key'>key</span><span class='comma'>,</span> <span class='id identifier rubyid_value'>value</span><span class='op'>|</span>
+  <span class='id identifier rubyid_hash'>hash</span><span class='period'>.</span><span class='id identifier rubyid_sort_by'>sort_by</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_k'>k</span><span class='comma'>,</span> <span class='id identifier rubyid__v'>_v</span><span class='op'>|</span> <span class='id identifier rubyid_k'>k</span><span class='period'>.</span><span class='id identifier rubyid_length'>length</span> <span class='rbrace'>}</span><span class='period'>.</span><span class='id identifier rubyid_reverse'>reverse</span><span class='period'>.</span><span class='id identifier rubyid_each'>each</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_key'>key</span><span class='comma'>,</span> <span class='id identifier rubyid_value'>value</span><span class='op'>|</span>
     <span class='id identifier rubyid_new_path'>new_path</span> <span class='op'>=</span> <span class='id identifier rubyid_path'>path</span> <span class='op'>+</span> <span class='lbracket'>[</span><span class='id identifier rubyid_key'>key</span><span class='rbracket'>]</span>
     <span class='kw'>case</span> <span class='id identifier rubyid_value'>value</span>
     <span class='kw'>when</span> <span class='const'>Hash</span>
@@ -419,9 +532,9 @@ dot-delimited keyed Hash.</p>
     <span class='kw'>else</span>
       <span class='id identifier rubyid_new_key'>new_key</span> <span class='op'>=</span> <span class='id identifier rubyid_new_path'>new_path</span><span class='period'>.</span><span class='id identifier rubyid_join'>join</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>.</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
       <span class='kw'>if</span> <span class='id identifier rubyid_value'>value</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span> <span class='const'>Array</span> \
-          <span class='kw'>and</span> <span class='id identifier rubyid_new_hash'>new_hash</span><span class='period'>.</span><span class='id identifier rubyid_has_key?'>has_key?</span> <span class='id identifier rubyid_new_key'>new_key</span> \
+          <span class='kw'>and</span> <span class='id identifier rubyid_new_hash'>new_hash</span><span class='period'>.</span><span class='id identifier rubyid_key?'>key?</span> <span class='id identifier rubyid_new_key'>new_key</span> \
           <span class='kw'>and</span> <span class='id identifier rubyid_new_hash'>new_hash</span><span class='lbracket'>[</span><span class='id identifier rubyid_new_key'>new_key</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span> <span class='const'>Array</span>
-          <span class='id identifier rubyid_new_hash'>new_hash</span><span class='lbracket'>[</span><span class='id identifier rubyid_new_key'>new_key</span><span class='rbracket'>]</span> <span class='op'>+=</span> <span class='id identifier rubyid_value'>value</span>
+        <span class='id identifier rubyid_new_hash'>new_hash</span><span class='lbracket'>[</span><span class='id identifier rubyid_new_key'>new_key</span><span class='rbracket'>]</span> <span class='op'>+=</span> <span class='id identifier rubyid_value'>value</span>
       <span class='kw'>else</span>
         <span class='id identifier rubyid_new_hash'>new_hash</span><span class='lbracket'>[</span><span class='id identifier rubyid_new_key'>new_key</span><span class='rbracket'>]</span> <span class='op'>||=</span> <span class='id identifier rubyid_value'>value</span>
       <span class='kw'>end</span>
@@ -448,12 +561,12 @@ dot-delimited keyed Hash.</p>
       <pre class="lines">
 
 
-3
-4
-5</pre>
+6
+7
+8</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/puppet_x/elastic/plugin_parsing.rb', line 3</span>
+      <pre class="code"><span class="info file"># File 'lib/puppet_x/elastic/plugin_parsing.rb', line 6</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_plugin_name'>plugin_name</span><span class='lparen'>(</span><span class='id identifier rubyid_raw_name'>raw_name</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_plugin_split'>plugin_split</span><span class='lparen'>(</span><span class='id identifier rubyid_raw_name'>raw_name</span><span class='comma'>,</span> <span class='int'>1</span><span class='rparen'>)</span>
@@ -466,7 +579,7 @@ dot-delimited keyed Hash.</p>
       <div class="method_details ">
   <h3 class="signature " id="plugin_split-class_method">
   
-    .<strong>plugin_split</strong>(original_string, position)  &#x21d2; <tt>Object</tt> 
+    .<strong>plugin_split</strong>(original_string, position, soft_fail = true)  &#x21d2; <tt>Object</tt> 
   
 
   
@@ -482,6 +595,19 @@ dot-delimited keyed Hash.</p>
 </div>
 <div class="tags">
   
+<p class="tag_title">Raises:</p>
+<ul class="raise">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt><span class='object_link'><a href="../ElasticPluginParseFailure.html" title="ElasticPluginParseFailure (class)">ElasticPluginParseFailure</a></span></tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
 
 </div><table class="source_code">
   <tr>
@@ -489,22 +615,26 @@ dot-delimited keyed Hash.</p>
       <pre class="lines">
 
 
-8
-9
-10
-11
-12
-13
-14
-15
-16
 17
-18</pre>
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/puppet_x/elastic/plugin_parsing.rb', line 8</span>
+      <pre class="code"><span class="info file"># File 'lib/puppet_x/elastic/plugin_parsing.rb', line 17</span>
 
-<span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_plugin_split'>plugin_split</span><span class='lparen'>(</span><span class='id identifier rubyid_original_string'>original_string</span><span class='comma'>,</span> <span class='id identifier rubyid_position'>position</span><span class='rparen'>)</span>
+<span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_plugin_split'>plugin_split</span><span class='lparen'>(</span><span class='id identifier rubyid_original_string'>original_string</span><span class='comma'>,</span> <span class='id identifier rubyid_position'>position</span><span class='comma'>,</span> <span class='id identifier rubyid_soft_fail'>soft_fail</span> <span class='op'>=</span> <span class='kw'>true</span><span class='rparen'>)</span>
   <span class='comment'># Try both colon (maven) and slash-delimited (github/elastic.co) names
 </span>  <span class='qwords_beg'>%w[</span><span class='tstring_content'>/</span><span class='words_sep'> </span><span class='tstring_content'>:</span><span class='words_sep'>]</span><span class='period'>.</span><span class='id identifier rubyid_each'>each</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_delimiter'>delimiter</span><span class='op'>|</span>
     <span class='id identifier rubyid_parts'>parts</span> <span class='op'>=</span> <span class='id identifier rubyid_original_string'>original_string</span><span class='period'>.</span><span class='id identifier rubyid_split'>split</span><span class='lparen'>(</span><span class='id identifier rubyid_delimiter'>delimiter</span><span class='rparen'>)</span>
@@ -512,8 +642,68 @@ dot-delimited keyed Hash.</p>
 </span>    <span class='kw'>return</span> <span class='id identifier rubyid_parts'>parts</span><span class='lbracket'>[</span><span class='id identifier rubyid_position'>position</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_gsub'>gsub</span><span class='lparen'>(</span><span class='tstring'><span class='regexp_beg'>/</span><span class='tstring_content'>(elasticsearch-|es-)</span><span class='regexp_end'>/</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span> <span class='kw'>unless</span> <span class='id identifier rubyid_parts'>parts</span><span class='lbracket'>[</span><span class='id identifier rubyid_position'>position</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span>
   <span class='kw'>end</span>
 
-  <span class='comment'># Fallback to the originally passed plugin name
-</span>  <span class='id identifier rubyid_original_string'>original_string</span>
+  <span class='id identifier rubyid_raise'>raise</span><span class='lparen'>(</span>
+    <span class='const'><span class='object_link'><a href="../ElasticPluginParseFailure.html" title="ElasticPluginParseFailure (class)">ElasticPluginParseFailure</a></span></span><span class='comma'>,</span>
+    <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>could not find element &#39;</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_position'>position</span><span class='embexpr_end'>}</span><span class='tstring_content'>&#39; in </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_original_string'>original_string</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span>
+  <span class='rparen'>)</span> <span class='kw'>unless</span> <span class='id identifier rubyid_soft_fail'>soft_fail</span>
+
+  <span class='id identifier rubyid_original_string'>original_string</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="plugin_version-class_method">
+  
+    .<strong>plugin_version</strong>(raw_name)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    
+
+  </div>
+</div>
+<div class="tags">
+  
+<p class="tag_title">Raises:</p>
+<ul class="raise">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt><span class='object_link'><a href="../ElasticPluginParseFailure.html" title="ElasticPluginParseFailure (class)">ElasticPluginParseFailure</a></span></tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+10
+11
+12
+13
+14</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/puppet_x/elastic/plugin_parsing.rb', line 10</span>
+
+<span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_plugin_version'>plugin_version</span><span class='lparen'>(</span><span class='id identifier rubyid_raw_name'>raw_name</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_v'>v</span> <span class='op'>=</span> <span class='id identifier rubyid_plugin_split'>plugin_split</span><span class='lparen'>(</span><span class='id identifier rubyid_raw_name'>raw_name</span><span class='comma'>,</span> <span class='int'>2</span><span class='comma'>,</span> <span class='kw'>false</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_gsub'>gsub</span><span class='lparen'>(</span><span class='tstring'><span class='regexp_beg'>/</span><span class='tstring_content'>^[^0-9]*</span><span class='regexp_end'>/</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_raise'>raise</span> <span class='const'><span class='object_link'><a href="../ElasticPluginParseFailure.html" title="ElasticPluginParseFailure (class)">ElasticPluginParseFailure</a></span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>could not parse version, got &#39;</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_v'>v</span><span class='embexpr_end'>}</span><span class='tstring_content'>&#39;</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>if</span> <span class='id identifier rubyid_v'>v</span><span class='period'>.</span><span class='id identifier rubyid_empty?'>empty?</span>
+  <span class='id identifier rubyid_v'>v</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>

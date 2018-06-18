@@ -6,7 +6,7 @@
 <title>
   Class: Puppet::Provider::ElasticUserCommand
   
-    &mdash; Documentation by YARD 0.9.12
+    &mdash; Documentation by YARD 0.9.14
   
 </title>
 
@@ -468,13 +468,13 @@ tools.</p>
       <pre class="lines">
 
 
+73
 74
 75
-76
-77</pre>
+76</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/puppet/provider/elastic_user_command.rb', line 74</span>
+      <pre class="code"><span class="info file"># File 'lib/puppet/provider/elastic_user_command.rb', line 73</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_value'>value</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
   <span class='kw'>super</span><span class='lparen'>(</span><span class='id identifier rubyid_value'>value</span><span class='rparen'>)</span>
@@ -518,12 +518,12 @@ tools.</p>
       <pre class="lines">
 
 
+4
 5
-6
-7</pre>
+6</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/puppet/provider/elastic_user_command.rb', line 5</span>
+      <pre class="code"><span class="info file"># File 'lib/puppet/provider/elastic_user_command.rb', line 4</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_homedir'>homedir</span>
   <span class='ivar'>@homedir</span>
@@ -566,6 +566,7 @@ tools.</p>
       <pre class="lines">
 
 
+19
 20
 21
 22
@@ -576,11 +577,10 @@ tools.</p>
 27
 28
 29
-30
-31</pre>
+30</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/puppet/provider/elastic_user_command.rb', line 20</span>
+      <pre class="code"><span class="info file"># File 'lib/puppet/provider/elastic_user_command.rb', line 19</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_command_with_path'>command_with_path</span><span class='lparen'>(</span><span class='id identifier rubyid_args'>args</span><span class='comma'>,</span> <span class='id identifier rubyid_configdir'>configdir</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_options'>options</span> <span class='op'>=</span> <span class='lbrace'>{</span>
@@ -625,6 +625,7 @@ tools.</p>
       <pre class="lines">
 
 
+33
 34
 35
 36
@@ -646,11 +647,10 @@ tools.</p>
 52
 53
 54
-55
-56</pre>
+55</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/puppet/provider/elastic_user_command.rb', line 34</span>
+      <pre class="code"><span class="info file"># File 'lib/puppet/provider/elastic_user_command.rb', line 33</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_fetch_users'>fetch_users</span>
   <span class='kw'>begin</span>
@@ -671,7 +671,7 @@ tools.</p>
     <span class='lbrace'>{</span>
       <span class='symbol'>:name</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_user'>user</span><span class='comma'>,</span>
       <span class='symbol'>:ensure</span> <span class='op'>=&gt;</span> <span class='symbol'>:present</span><span class='comma'>,</span>
-      <span class='symbol'>:provider</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_name'>name</span><span class='comma'>,</span>
+      <span class='symbol'>:provider</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_name'>name</span>
     <span class='rbrace'>}</span>
   <span class='kw'>end</span>
 <span class='kw'>end</span></pre>
@@ -724,17 +724,17 @@ tools.</p>
       <pre class="lines">
 
 
+9
 10
 11
 12
 13
 14
 15
-16
-17</pre>
+16</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/puppet/provider/elastic_user_command.rb', line 10</span>
+      <pre class="code"><span class="info file"># File 'lib/puppet/provider/elastic_user_command.rb', line 9</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_homedir'>homedir</span>
   <span class='ivar'>@homedir</span> <span class='op'>||=</span> <span class='kw'>case</span> <span class='const'>Facter</span><span class='period'>.</span><span class='id identifier rubyid_value'>value</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>osfamily</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
@@ -775,14 +775,14 @@ tools.</p>
       <pre class="lines">
 
 
+58
 59
 60
 61
-62
-63</pre>
+62</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/puppet/provider/elastic_user_command.rb', line 59</span>
+      <pre class="code"><span class="info file"># File 'lib/puppet/provider/elastic_user_command.rb', line 58</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_instances'>instances</span>
   <span class='id identifier rubyid_fetch_users'>fetch_users</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_user'>user</span><span class='op'>|</span>
@@ -820,16 +820,16 @@ tools.</p>
       <pre class="lines">
 
 
+65
 66
 67
 68
 69
 70
-71
-72</pre>
+71</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/puppet/provider/elastic_user_command.rb', line 66</span>
+      <pre class="code"><span class="info file"># File 'lib/puppet/provider/elastic_user_command.rb', line 65</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_prefetch'>prefetch</span><span class='lparen'>(</span><span class='id identifier rubyid_resources'>resources</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_instances'>instances</span><span class='period'>.</span><span class='id identifier rubyid_each'>each</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_prov'>prov</span><span class='op'>|</span>
@@ -876,12 +876,12 @@ tools.</p>
       <pre class="lines">
 
 
+99
 100
-101
-102</pre>
+101</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/puppet/provider/elastic_user_command.rb', line 100</span>
+      <pre class="code"><span class="info file"># File 'lib/puppet/provider/elastic_user_command.rb', line 99</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_create'>create</span>
   <span class='ivar'>@property_flush</span><span class='lbracket'>[</span><span class='symbol'>:ensure</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='symbol'>:present</span>
@@ -918,12 +918,12 @@ tools.</p>
       <pre class="lines">
 
 
+108
 109
-110
-111</pre>
+110</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/puppet/provider/elastic_user_command.rb', line 109</span>
+      <pre class="code"><span class="info file"># File 'lib/puppet/provider/elastic_user_command.rb', line 108</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_destroy'>destroy</span>
   <span class='ivar'>@property_flush</span><span class='lbracket'>[</span><span class='symbol'>:ensure</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='symbol'>:absent</span>
@@ -970,12 +970,12 @@ tools.</p>
       <pre class="lines">
 
 
+103
 104
-105
-106</pre>
+105</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/puppet/provider/elastic_user_command.rb', line 104</span>
+      <pre class="code"><span class="info file"># File 'lib/puppet/provider/elastic_user_command.rb', line 103</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_exists?'>exists?</span>
   <span class='ivar'>@property_hash</span><span class='lbracket'>[</span><span class='symbol'>:ensure</span><span class='rbracket'>]</span> <span class='op'>==</span> <span class='symbol'>:present</span>
@@ -1011,6 +1011,7 @@ tools.</p>
       <pre class="lines">
 
 
+79
 80
 81
 82
@@ -1027,11 +1028,10 @@ tools.</p>
 93
 94
 95
-96
-97</pre>
+96</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/puppet/provider/elastic_user_command.rb', line 80</span>
+      <pre class="code"><span class="info file"># File 'lib/puppet/provider/elastic_user_command.rb', line 79</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_flush'>flush</span>
   <span class='id identifier rubyid_arguments'>arguments</span> <span class='op'>=</span> <span class='lbracket'>[</span><span class='rbracket'>]</span>
@@ -1082,6 +1082,7 @@ tools.</p>
       <pre class="lines">
 
 
+113
 114
 115
 116
@@ -1090,11 +1091,10 @@ tools.</p>
 119
 120
 121
-122
-123</pre>
+122</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/puppet/provider/elastic_user_command.rb', line 114</span>
+      <pre class="code"><span class="info file"># File 'lib/puppet/provider/elastic_user_command.rb', line 113</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_passwd'>passwd</span>
   <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_class'>class</span><span class='period'>.</span><span class='id identifier rubyid_command_with_path'>command_with_path</span><span class='lparen'>(</span>

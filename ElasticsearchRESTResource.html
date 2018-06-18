@@ -6,7 +6,7 @@
 <title>
   Module: ElasticsearchRESTResource
   
-    &mdash; Documentation by YARD 0.9.12
+    &mdash; Documentation by YARD 0.9.14
   
 </title>
 
@@ -128,9 +128,8 @@ types</p>
 
   
     <span class="summary_desc"><div class='inline'>
-<p>rubocop:disable Metrics/AbcSize rubocop:disable
-Metrics/CyclomaticComplexity rubocop:disable Metrics/MethodLength
-rubocop:disable Metrics/PerceivedComplexity.</p>
+<p>rubocop:disable Metrics/CyclomaticComplexity rubocop:disable
+Metrics/PerceivedComplexity.</p>
 </div></span>
   
 </li>
@@ -157,9 +156,8 @@ rubocop:disable Metrics/PerceivedComplexity.</p>
 </h3><div class="docstring">
   <div class="discussion">
     
-<p>rubocop:disable Metrics/AbcSize rubocop:disable
-Metrics/CyclomaticComplexity rubocop:disable Metrics/MethodLength
-rubocop:disable Metrics/PerceivedComplexity</p>
+<p>rubocop:disable Metrics/CyclomaticComplexity rubocop:disable
+Metrics/PerceivedComplexity</p>
 
 
   </div>
@@ -173,6 +171,8 @@ rubocop:disable Metrics/PerceivedComplexity</p>
       <pre class="lines">
 
 
+7
+8
 9
 10
 11
@@ -256,12 +256,10 @@ rubocop:disable Metrics/PerceivedComplexity</p>
 89
 90
 91
-92
-93
-94</pre>
+92</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/puppet_x/elastic/elasticsearch_rest_resource.rb', line 9</span>
+      <pre class="code"><span class="info file"># File 'lib/puppet_x/elastic/elasticsearch_rest_resource.rb', line 7</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_extended'>extended</span><span class='lparen'>(</span><span class='id identifier rubyid_extender'>extender</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_extender'>extender</span><span class='period'>.</span><span class='id identifier rubyid_newparam'>newparam</span><span class='lparen'>(</span><span class='symbol'>:ca_file</span><span class='rparen'>)</span> <span class='kw'>do</span>

@@ -6,7 +6,7 @@
 <title>
   Puppet Class: elasticsearch
   
-    &mdash; Documentation by YARD 0.9.12
+    &mdash; Documentation by YARD 0.9.14
   
 </title>
 
@@ -590,6 +590,22 @@ binding.</p>
   
     <li>
       
+        <span class='name'>license</span>
+      
+      
+        <span class='type'>(<tt>Optional[Variant[String, Hash]]</tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>Optional Elasticsearch license in hash or string form.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
         <span class='name'>logdir</span>
       
       
@@ -666,6 +682,22 @@ the logging.yml file.</p>
         &mdash;
         <div class='inline'>
 <p>Enable repo management by enabling official Elastic repositories.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>oss</span>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>Whether to use the purely open source Elasticsearch package distribution.</p>
 </div>
       
     </li>
@@ -890,89 +922,6 @@ present in the specified secrets hash.</p>
   
     <li>
       
-        <span class='name'>repo_baseurl</span>
-      
-      
-        <span class='type'>(<tt>Optional[String]</tt>)</span>
-      
-      
-      
-        &mdash;
-        <div class='inline'>
-<p>If a custom repository URL is needed (such as for installations behind
-restrictive firewalls), this parameter overrides the upstream repository
-URL. Note that any additional changes to the repository metdata (such as
-signing keys and so on) will need to be handled appropriately.</p>
-</div>
-      
-    </li>
-  
-    <li>
-      
-        <span class='name'>repo_key_id</span>
-      
-      
-        <span class='type'>(<tt>String</tt>)</span>
-      
-      
-      
-        &mdash;
-        <div class='inline'>
-<p>The apt GPG key id.</p>
-</div>
-      
-    </li>
-  
-    <li>
-      
-        <span class='name'>repo_key_source</span>
-      
-      
-        <span class='type'>(<tt>Stdlib::HTTPUrl</tt>)</span>
-      
-      
-      
-        &mdash;
-        <div class='inline'>
-<p>URL of the repository GPG key.</p>
-</div>
-      
-    </li>
-  
-    <li>
-      
-        <span class='name'>repo_priority</span>
-      
-      
-        <span class='type'>(<tt>Optional[Integer]</tt>)</span>
-      
-      
-      
-        &mdash;
-        <div class='inline'>
-<p>Repository priority. yum and apt supported.</p>
-</div>
-      
-    </li>
-  
-    <li>
-      
-        <span class='name'>repo_proxy</span>
-      
-      
-        <span class='type'>(<tt>Optional[String]</tt>)</span>
-      
-      
-      
-        &mdash;
-        <div class='inline'>
-<p>URL for repository proxy.</p>
-</div>
-      
-    </li>
-  
-    <li>
-      
         <span class='name'>repo_stage</span>
       
       
@@ -984,23 +933,6 @@ signing keys and so on) will need to be handled appropriately.</p>
         <div class='inline'>
 <p>Use stdlib stage setup for managing the repo instead of relationship
 ordering.</p>
-</div>
-      
-    </li>
-  
-    <li>
-      
-        <span class='name'>repo_version</span>
-      
-      
-        <span class='type'>(<tt>String</tt>)</span>
-      
-      
-      
-        &mdash;
-        <div class='inline'>
-<p>Elastic repositories are versioned per major version (5.x, 6.x). This
-parameter controls which version to use.</p>
 </div>
       
     </li>
@@ -1426,6 +1358,22 @@ href="mailto:tyler.langlois@elastic.co">tyler.langlois@elastic.co</a></p>
         <pre class="lines">
 
 
+291
+292
+293
+294
+295
+296
+297
+298
+299
+300
+301
+302
+303
+304
+305
+306
 307
 308
 309
@@ -1690,13 +1638,10 @@ href="mailto:tyler.langlois@elastic.co">tyler.langlois@elastic.co</a></p>
 568
 569
 570
-571
-572
-573
-574</pre>
+571</pre>
       </td>
       <td>
-        <pre class="code"><span class="info file"># File 'manifests/init.pp', line 307</span>
+        <pre class="code"><span class="info file"># File 'manifests/init.pp', line 291</span>
 
 class elasticsearch (
   Enum[&#39;absent&#39;, &#39;present&#39;]                       $ensure,
@@ -1727,11 +1672,13 @@ class elasticsearch (
   String                                          $init_template,
   Hash                                            $instances,
   Array[String]                                   $jvm_options,
+  Optional[Variant[String, Hash]]                 $license,
   Stdlib::Absolutepath                            $logdir,
   Hash                                            $logging_config,
   Optional[String]                                $logging_file,
   Optional[String]                                $logging_template,
   Boolean                                         $manage_repo,
+  Boolean                                         $oss,
   Stdlib::Absolutepath                            $package_dir,
   Integer                                         $package_dl_timeout,
   String                                          $package_name,
@@ -1745,13 +1692,7 @@ class elasticsearch (
   Boolean                                         $purge_configdir,
   Boolean                                         $purge_package_dir,
   Boolean                                         $purge_secrets,
-  Optional[String]                                $repo_baseurl,
-  String                                          $repo_key_id,
-  Stdlib::HTTPUrl                                 $repo_key_source,
-  Optional[Integer]                               $repo_priority,
-  Optional[String]                                $repo_proxy,
   Variant[Boolean, String]                        $repo_stage,
-  String                                          $repo_version,
   Boolean                                         $restart_on_change,
   Hash                                            $roles,
   Integer                                         $rolling_file_max_backup_index,
@@ -1804,6 +1745,13 @@ class elasticsearch (
     default   =&gt; undef,
   }
 
+  # The OSS package distribution&#39;s package appends `-oss` to the end of the
+  # canonical package name.
+  $_package_name = $oss ? {
+    true    =&gt; &quot;${package_name}-oss&quot;,
+    default =&gt; $package_name,
+  }
+
   #### Manage actions
 
   contain elasticsearch::package
@@ -1822,9 +1770,9 @@ class elasticsearch (
   if ($manage_repo == true) {
     if ($repo_stage == false) {
       # Use normal relationship ordering
-      contain elasticsearch::repo
+      contain elastic_stack::repo
 
-      Class[&#39;elasticsearch::repo&#39;]
+      Class[&#39;elastic_stack::repo&#39;]
       -&gt; Class[&#39;elasticsearch::package&#39;]
 
     } else {
@@ -1833,10 +1781,15 @@ class elasticsearch (
         stage { $repo_stage:  before =&gt; Stage[&#39;main&#39;] }
       }
 
-      class { &#39;elasticsearch::repo&#39;:
+      include elastic_stack::repo
+      Class&lt;|title == &#39;elastic_stack::repo&#39;|&gt;{
         stage =&gt; $repo_stage,
       }
     }
+  }
+
+  if ($license != undef) {
+    contain elasticsearch::license
   }
 
   #### Manage relationships
@@ -1940,6 +1893,11 @@ class elasticsearch (
   -&gt; Elasticsearch::Snapshot_repository &lt;| |&gt;
   Elasticsearch::User &lt;| |&gt;
   -&gt; Elasticsearch::Snapshot_repository &lt;| |&gt;
+
+  # Ensure that any command-line based user changes are performed before the
+  # file is modified
+  Elasticsearch_user &lt;| |&gt;
+  -&gt; Elasticsearch_user_file &lt;| |&gt;
 
   # Manage users/roles before instances (req&#39;d to keep dir in sync)
   Elasticsearch::Role &lt;| |&gt;

@@ -6,7 +6,7 @@
 <title>
   File: README
   
-    &mdash; Documentation by YARD 0.9.12
+    &mdash; Documentation by YARD 0.9.14
   
 </title>
 
@@ -69,32 +69,32 @@ src="https://img.shields.io/puppetforge/dt/elastic/elasticsearch.svg"></a></p>
 
 <h4 id="label-Table+of+Contents">Table of Contents</h4>
 <ol><li>
-<p><a href="#module-description">Module description - What the module does and
+<p><a href="#label-Module+description">Module description - What the module does and
 why it is useful</a></p>
 </li><li>
-<p><a href="#setup">Setup - The basics of getting started with
+<p><a href="#label-Setup">Setup - The basics of getting started with
 Elasticsearch</a></p>
 </li><li>
-<p><a href="#the-module-manages-the-following">The module manages the
+<p><a href="#label-The+module+manages+the+following">The module manages the
 following</a></p>
 </li><li>
-<p><a href="#requirements">Requirements</a></p>
+<p><a href="#label-Requirements">Requirements</a></p>
 </li><li>
-<p><a href="#usage">Usage - Configuration options and additional
+<p><a href="#label-Usage">Usage - Configuration options and additional
 functionality</a></p>
 </li><li>
-<p><a href="#advanced-features">Advanced features - Extra information on
+<p><a href="#label-Advanced+features">Advanced features - Extra information on
 advanced usage</a></p>
 </li><li>
-<p><a href="#reference">Reference - An under-the-hood peek at what the module
+<p><a href="#label-Reference">Reference - An under-the-hood peek at what the module
 is doing and how</a></p>
 </li><li>
-<p><a href="#limitations">Limitations - OS compatibility, etc.</a></p>
+<p><a href="#label-Limitations">Limitations - OS compatibility, etc.</a></p>
 </li><li>
-<p><a href="#development">Development - Guide for contributing to the
+<p><a href="#label-Development">Development - Guide for contributing to the
 module</a></p>
 </li><li>
-<p><a href="#support">Support - When you need help with this module</a></p>
+<p><a href="#label-Support">Support - When you need help with this module</a></p>
 </li></ol>
 
 <h2 id="label-Module+description">Module description</h2>
@@ -129,6 +129,8 @@ instances with additional resource for plugins, templates, and more.</p>
 </li><li>
 <p>Elasticsearch Shield/X-Pack users, roles, and certificates.</p>
 </li><li>
+<p>Elasticsearch licenses.</p>
+</li><li>
 <p>Elasticsearch keystores.</p>
 </li></ul>
 
@@ -157,8 +159,11 @@ module.</p>
 <p>When using the repository management, the following module dependencies are
 required:</p>
 <ul><li>
+<p>General: <a
+href="https://forge.puppet.com/elastic/elastic_stack">Elastic/elastic_stack</a></p>
+</li><li>
 <p>Debian/Ubuntu: <a
-href="http://forge.puppetlabs.com/puppetlabs/apt">Puppetlabs/apt</a></p>
+href="https://forge.puppetlabs.com/puppetlabs/apt">Puppetlabs/apt</a></p>
 </li><li>
 <p>OpenSuSE/SLES: <a
 href="https://forge.puppetlabs.com/darin/zypprepo">Darin/zypprepo</a></p>
@@ -295,7 +300,7 @@ need to specify at least one instance.</p>
   datadir       =&gt; [ ], # Data directory
 }</code></pre>
 
-<p>See <a href="#advanced-features">Advanced features</a> for more
+<p>See <a href="#label-Advanced+features">Advanced features</a> for more
 information.</p>
 
 <h3 id="label-Plugins">Plugins</h3>
@@ -542,29 +547,42 @@ es_instance_conn_validator { &#39;myinstance&#39; :   server =&gt;
 
 <h4 id="label-Repository">Repository</h4>
 
-<p>This option allows you to use an existing repository for package
-installation. The <code>repo_version</code> corresponds with the
-<code>major.minor</code> version of Elasticsearch for versions before 2.x.</p>
+<h5 id="label-Choosing+an+Elasticsearch+major+version">Choosing an Elasticsearch major version</h5>
 
-<pre class="code ruby"><code class="ruby">class { &#39;elasticsearch&#39;:
-  manage_repo  =&gt; true,
-  repo_version =&gt; &#39;1.4&#39;,
+<p>This module uses the <code>elastic/elastic_stack</code> module to manage
+package repositories. Because there is a separate repository for each major
+version of the Elastic stack, selecting which version to configure is
+necessary to change the default repository value, like this:</p>
+
+<pre class="code ruby"><code class="ruby">class { &#39;elastic_stack::repo&#39;:
+  version =&gt; 5,
+}
+
+class { &#39;elasticsearch&#39;:
+  version =&gt; &#39;5.6.4&#39;,
 }</code></pre>
 
-<p>For 2.x versions of Elasticsearch onward, use the major version of
-Elasticsearch suffixed by an <code>x</code>. For example:</p>
+<p>This module defaults to the upstream package repositories, which as of
+Elasticsearch 6.3, includes X-Pack. In order to use the purely OSS (open
+source) package and repository, the appropriate <code>oss</code> flag must
+be set on the <code>elastic_stack::repo</code> and
+<code>elasticsearch</code> classes:</p>
 
-<pre class="code ruby"><code class="ruby">class { &#39;elasticsearch&#39;:
-  manage_repo  =&gt; true,
-  repo_version =&gt; &#39;6.x&#39;,
+<pre class="code ruby"><code class="ruby">class { &#39;elastic_stack::repo&#39;:
+  oss =&gt; true,
+}
+
+class { &#39;elasticsearch&#39;:
+  oss =&gt; true,
 }</code></pre>
 
-<p>For users who may wish to install via a local repository (for example,
-through a mirror), the <code>repo_baseurl</code> parameter is available:</p>
+<h5 id="label-Manual+repository+management">Manual repository management</h5>
+
+<p>You may want to manage repositories manually. You can disable automatic
+repository management like this:</p>
 
 <pre class="code ruby"><code class="ruby">class { &#39;elasticsearch&#39;:
-  manage_repo =&gt; true,
-  repo_baseurl =&gt; &#39;https://repo.local/yum&#39;
+  manage_repo =&gt; false,
 }</code></pre>
 
 <h4 id="label-Remote+package+source">Remote package source</h4>
@@ -601,7 +619,7 @@ provided proxy server. This parameter is also used by
 
 <p>When configuring Elasticsearch&#39;s memory usage, you can do so by either
 changing init defaults for Elasticsearch 1.x/2.x (see the <a
-href="#hash-representation">following example</a>), or modify it globally
+href="#label-Hash+representation">following example</a>), or modify it globally
 in 5.x using <code>jvm.options</code>:</p>
 
 <pre class="code ruby"><code class="ruby">class { &#39;elasticsearch&#39;:
@@ -677,8 +695,6 @@ deployment. For example, the following manifest will install Elasticseach
 with a single instance running X-Pack:</p>
 
 <pre class="code ruby"><code class="ruby">class { &#39;elasticsearch&#39;:
-  manage_repo     =&gt; true,
-  repo_version    =&gt; &#39;6.x&#39;,
   security_plugin =&gt; &#39;x-pack&#39;,
 }
 
@@ -688,8 +704,6 @@ elasticsearch::plugin { &#39;x-pack&#39;: instances =&gt; &#39;es-01&#39; }</cod
 <p>The following manifest will do the same, but with Shield:</p>
 
 <pre class="code ruby"><code class="ruby">class { &#39;elasticsearch&#39;:
-  manage_repo     =&gt; true,
-  repo_version    =&gt; &#39;2.x&#39;,
   security_plugin =&gt; &#39;shield&#39;,
 }
 
@@ -861,6 +875,40 @@ at the <code>elasticsearch</code> class and inherited across all instances:</p>
 <pre class="code ruby"><code class="ruby">elasticsearch::instance { &#39;es-01&#39;:
   system_key =&gt; &#39;/local/path/to/key&#39;,
 }</code></pre>
+
+<h3 id="label-Licensing">Licensing</h3>
+
+<p>If you use the aforementioned Shield/X-Pack plugins, you may need to
+install a user license to leverage particular features outside of a trial
+license. This module can handle installation of licenses without the need
+to write custom <code>exec</code> or <code>curl</code> code to install
+license data.</p>
+
+<p>You may instruct the module to install a license through the
+<code>elasticsearch::license</code> parameter:</p>
+
+<pre class="code ruby"><code class="ruby">class { &#39;elasticsearch&#39;:
+  license =&gt; $license,
+  security_plugin =&gt; &#39;x-pack&#39;,
+}</code></pre>
+
+<p>The <code>license</code> parameter will accept either a Puppet hash
+representation of the license file json or a plain json string that will be
+parsed into a native Puppet hash. Although dependencies are automatically
+created to ensure that any <code>elasticsearch::instance</code> resources
+are listening and ready before API calls are made, you may need to set the
+appropriate <code>api_*</code> parameters to ensure that the module can
+interact with the Elasticsearch API over the appropriate port, protocol,
+and with sufficient user rights to install the license.</p>
+
+<p>The native provider for licenses will <em>not</em> print license signatures
+as part of Puppet&#39;s changelog to ensure that sensitive values are not
+included in console output or Puppet reports. Any fields present in the
+<code>license</code> parameter that differ from the license installed in a
+cluster will trigger a flush of the resource and new <code>POST</code> to
+the Elasticsearch API with the license content, though the sensitive
+<code>signature</code> field is not compared as it is not returned from the
+Elasticsearch licensing APIs.</p>
 
 <h3 id="label-Data+directories">Data directories</h3>
 

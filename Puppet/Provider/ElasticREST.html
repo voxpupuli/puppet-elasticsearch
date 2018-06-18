@@ -6,7 +6,7 @@
 <title>
   Class: Puppet::Provider::ElasticREST
   
-    &mdash; Documentation by YARD 0.9.12
+    &mdash; Documentation by YARD 0.9.14
   
 </title>
 
@@ -105,7 +105,7 @@
   <div class="discussion">
     
 <p>Parent class encapsulating general-use functions for children REST-based
-providers.</p>
+providers. rubocop:disable Metrics/ClassLength</p>
 
 
   </div>
@@ -277,6 +277,33 @@ providers.</p>
   
     <span class="summary_desc"><div class='inline'>
 <p>Returns the value of attribute metadata_pipeline.</p>
+</div></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#query_string-class_method" title="query_string (class method)">.<strong>query_string</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+    
+    
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'>
+<p>Returns the value of attribute query_string.</p>
 </div></span>
   
 </li>
@@ -648,6 +675,30 @@ update any managed API objects.</p>
 </li>
 
       
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#query_string-instance_method" title="#query_string (instance method)">#<strong>query_string</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'>
+<p>Retrieve the class query_string variable.</p>
+</div></span>
+  
+</li>
+
+      
     </ul>
   
 
@@ -681,13 +732,13 @@ update any managed API objects.</p>
       <pre class="lines">
 
 
-174
-175
-176
-177</pre>
+187
+188
+189
+190</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/puppet/provider/elastic_rest.rb', line 174</span>
+      <pre class="code"><span class="info file"># File 'lib/puppet/provider/elastic_rest.rb', line 187</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_value'>value</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
   <span class='kw'>super</span><span class='lparen'>(</span><span class='id identifier rubyid_value'>value</span><span class='rparen'>)</span>
@@ -731,12 +782,12 @@ update any managed API objects.</p>
       <pre class="lines">
 
 
-9
 10
-11</pre>
+11
+12</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/puppet/provider/elastic_rest.rb', line 9</span>
+      <pre class="code"><span class="info file"># File 'lib/puppet/provider/elastic_rest.rb', line 10</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_api_discovery_uri'>api_discovery_uri</span>
   <span class='ivar'>@api_discovery_uri</span>
@@ -774,12 +825,12 @@ update any managed API objects.</p>
       <pre class="lines">
 
 
-10
 11
-12</pre>
+12
+13</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/puppet/provider/elastic_rest.rb', line 10</span>
+      <pre class="code"><span class="info file"># File 'lib/puppet/provider/elastic_rest.rb', line 11</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_api_resource_style'>api_resource_style</span>
   <span class='ivar'>@api_resource_style</span>
@@ -817,12 +868,12 @@ update any managed API objects.</p>
       <pre class="lines">
 
 
-11
 12
-13</pre>
+13
+14</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/puppet/provider/elastic_rest.rb', line 11</span>
+      <pre class="code"><span class="info file"># File 'lib/puppet/provider/elastic_rest.rb', line 12</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_api_uri'>api_uri</span>
   <span class='ivar'>@api_uri</span>
@@ -860,12 +911,12 @@ update any managed API objects.</p>
       <pre class="lines">
 
 
-12
 13
-14</pre>
+14
+15</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/puppet/provider/elastic_rest.rb', line 12</span>
+      <pre class="code"><span class="info file"># File 'lib/puppet/provider/elastic_rest.rb', line 13</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_discrete_resource_creation'>discrete_resource_creation</span>
   <span class='ivar'>@discrete_resource_creation</span>
@@ -903,12 +954,12 @@ update any managed API objects.</p>
       <pre class="lines">
 
 
-13
 14
-15</pre>
+15
+16</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/puppet/provider/elastic_rest.rb', line 13</span>
+      <pre class="code"><span class="info file"># File 'lib/puppet/provider/elastic_rest.rb', line 14</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_metadata'>metadata</span>
   <span class='ivar'>@metadata</span>
@@ -946,15 +997,58 @@ update any managed API objects.</p>
       <pre class="lines">
 
 
-14
 15
-16</pre>
+16
+17</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/puppet/provider/elastic_rest.rb', line 14</span>
+      <pre class="code"><span class="info file"># File 'lib/puppet/provider/elastic_rest.rb', line 15</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_metadata_pipeline'>metadata_pipeline</span>
   <span class='ivar'>@metadata_pipeline</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      
+      <span id="query_string=-class_method"></span>
+      <div class="method_details ">
+  <h3 class="signature " id="query_string-class_method">
+  
+    .<strong>query_string</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>Returns the value of attribute query_string</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+16
+17
+18</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/puppet/provider/elastic_rest.rb', line 16</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_query_string'>query_string</span>
+  <span class='ivar'>@query_string</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -1014,19 +1108,6 @@ be templates, pipelines, et cetera.</p>
       <pre class="lines">
 
 
-82
-83
-84
-85
-86
-87
-88
-89
-90
-91
-92
-93
-94
 95
 96
 97
@@ -1042,12 +1123,25 @@ be templates, pipelines, et cetera.</p>
 107
 108
 109
-110</pre>
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/puppet/provider/elastic_rest.rb', line 82</span>
+      <pre class="code"><span class="info file"># File 'lib/puppet/provider/elastic_rest.rb', line 95</span>
 
-<span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_api_objects'>api_objects</span> <span class='id identifier rubyid_protocol'>protocol</span> <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>http</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> \
+<span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_api_objects'>api_objects</span><span class='lparen'>(</span><span class='id identifier rubyid_protocol'>protocol</span> <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>http</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> \
                      <span class='id identifier rubyid_validate_tls'>validate_tls</span> <span class='op'>=</span> <span class='kw'>true</span><span class='comma'>,</span> \
                      <span class='id identifier rubyid_host'>host</span> <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>localhost</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> \
                      <span class='id identifier rubyid_port'>port</span> <span class='op'>=</span> <span class='int'>9200</span><span class='comma'>,</span> \
@@ -1055,7 +1149,7 @@ be templates, pipelines, et cetera.</p>
                      <span class='id identifier rubyid_username'>username</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='comma'>,</span> \
                      <span class='id identifier rubyid_password'>password</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='comma'>,</span> \
                      <span class='id identifier rubyid_ca_file'>ca_file</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='comma'>,</span> \
-                     <span class='id identifier rubyid_ca_path'>ca_path</span> <span class='op'>=</span> <span class='kw'>nil</span>
+                     <span class='id identifier rubyid_ca_path'>ca_path</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='rparen'>)</span>
 
   <span class='id identifier rubyid_uri'>uri</span> <span class='op'>=</span> <span class='const'>URI</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_protocol'>protocol</span><span class='embexpr_end'>}</span><span class='tstring_content'>://</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_host'>host</span><span class='embexpr_end'>}</span><span class='tstring_content'>:</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_port'>port</span><span class='embexpr_end'>}</span><span class='tstring_content'>/</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_format_uri'>format_uri</span><span class='lparen'>(</span><span class='id identifier rubyid_api_discovery_uri'>api_discovery_uri</span><span class='rparen'>)</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
   <span class='id identifier rubyid_http'>http</span> <span class='op'>=</span> <span class='const'>Net</span><span class='op'>::</span><span class='const'>HTTP</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span> <span class='id identifier rubyid_uri'>uri</span><span class='period'>.</span><span class='id identifier rubyid_host'>host</span><span class='comma'>,</span> <span class='id identifier rubyid_uri'>uri</span><span class='period'>.</span><span class='id identifier rubyid_port'>port</span>
@@ -1074,7 +1168,7 @@ be templates, pipelines, et cetera.</p>
     <span class='id identifier rubyid_results'>results</span> <span class='op'>=</span> <span class='id identifier rubyid_process_body'>process_body</span><span class='lparen'>(</span><span class='id identifier rubyid_response'>response</span><span class='period'>.</span><span class='id identifier rubyid_body'>body</span><span class='rparen'>)</span>
   <span class='kw'>end</span>
 
-  <span class='kw'>return</span> <span class='id identifier rubyid_results'>results</span>
+  <span class='id identifier rubyid_results'>results</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -1108,25 +1202,25 @@ account path ordering, et cetera.</p>
       <pre class="lines">
 
 
-62
-63
-64
-65
-66
-67
-68
-69
-70
-71
-72
-73
-74</pre>
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/puppet/provider/elastic_rest.rb', line 62</span>
+      <pre class="code"><span class="info file"># File 'lib/puppet/provider/elastic_rest.rb', line 75</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_format_uri'>format_uri</span><span class='lparen'>(</span><span class='id identifier rubyid_resource_path'>resource_path</span><span class='comma'>,</span> <span class='id identifier rubyid_property_flush'>property_flush</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
-  <span class='kw'>return</span> <span class='id identifier rubyid_api_uri'>api_uri</span> <span class='kw'>if</span> <span class='id identifier rubyid_resource_path'>resource_path</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span>
+  <span class='kw'>return</span> <span class='id identifier rubyid_api_uri'>api_uri</span> <span class='kw'>if</span> <span class='id identifier rubyid_resource_path'>resource_path</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span> <span class='kw'>or</span> <span class='id identifier rubyid_api_resource_style'>api_resource_style</span> <span class='op'>==</span> <span class='symbol'>:bare</span>
   <span class='kw'>if</span> <span class='id identifier rubyid_discrete_resource_creation'>discrete_resource_creation</span> <span class='kw'>and</span> <span class='kw'>not</span> <span class='id identifier rubyid_property_flush'>property_flush</span><span class='lbracket'>[</span><span class='symbol'>:ensure</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span>
     <span class='id identifier rubyid_resource_path'>resource_path</span>
   <span class='kw'>else</span>
@@ -1169,12 +1263,12 @@ account path ordering, et cetera.</p>
       <pre class="lines">
 
 
-139
-140
-141</pre>
+152
+153
+154</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/puppet/provider/elastic_rest.rb', line 139</span>
+      <pre class="code"><span class="info file"># File 'lib/puppet/provider/elastic_rest.rb', line 152</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_instances'>instances</span>
   <span class='id identifier rubyid_api_objects'>api_objects</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_resource'>resource</span><span class='op'>|</span> <span class='id identifier rubyid_new'>new</span> <span class='id identifier rubyid_resource'>resource</span> <span class='rbrace'>}</span>
@@ -1213,19 +1307,6 @@ any templates we can before associating resources and providers.</p>
       <pre class="lines">
 
 
-147
-148
-149
-150
-151
-152
-153
-154
-155
-156
-157
-158
-159
 160
 161
 162
@@ -1238,10 +1319,23 @@ any templates we can before associating resources and providers.</p>
 169
 170
 171
-172</pre>
+172
+173
+174
+175
+176
+177
+178
+179
+180
+181
+182
+183
+184
+185</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/puppet/provider/elastic_rest.rb', line 147</span>
+      <pre class="code"><span class="info file"># File 'lib/puppet/provider/elastic_rest.rb', line 160</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_prefetch'>prefetch</span><span class='lparen'>(</span><span class='id identifier rubyid_resources'>resources</span><span class='rparen'>)</span>
   <span class='comment'># Get all relevant API access methods from the resources we know about
@@ -1264,7 +1358,7 @@ any templates we can before associating resources and providers.</p>
     <span class='comment'># Flatten and deduplicate the array, instantiate providers, and do the
 </span>    <span class='comment'># typical association dance
 </span>  <span class='kw'>end</span><span class='period'>.</span><span class='id identifier rubyid_flatten'>flatten</span><span class='period'>.</span><span class='id identifier rubyid_uniq'>uniq</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_resource'>resource</span><span class='op'>|</span> <span class='id identifier rubyid_new'>new</span> <span class='id identifier rubyid_resource'>resource</span> <span class='rbrace'>}</span><span class='period'>.</span><span class='id identifier rubyid_each'>each</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_prov'>prov</span><span class='op'>|</span>
-    <span class='kw'>if</span> <span class='id identifier rubyid_resource'>resource</span> <span class='op'>=</span> <span class='id identifier rubyid_resources'>resources</span><span class='lbracket'>[</span><span class='id identifier rubyid_prov'>prov</span><span class='period'>.</span><span class='id identifier rubyid_name'>name</span><span class='rbracket'>]</span>
+    <span class='kw'>if</span> <span class='lparen'>(</span><span class='id identifier rubyid_resource'>resource</span> <span class='op'>=</span> <span class='id identifier rubyid_resources'>resources</span><span class='lbracket'>[</span><span class='id identifier rubyid_prov'>prov</span><span class='period'>.</span><span class='id identifier rubyid_name'>name</span><span class='rbracket'>]</span><span class='rparen'>)</span>
       <span class='id identifier rubyid_resource'>resource</span><span class='period'>.</span><span class='id identifier rubyid_provider'>provider</span> <span class='op'>=</span> <span class='id identifier rubyid_prov'>prov</span>
     <span class='kw'>end</span>
   <span class='kw'>end</span>
@@ -1300,21 +1394,21 @@ any templates we can before associating resources and providers.</p>
       <pre class="lines">
 
 
-113
-114
-115
-116
-117
-118
-119
-120
-121
-122
-123
-124</pre>
+126
+127
+128
+129
+130
+131
+132
+133
+134
+135
+136
+137</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/puppet/provider/elastic_rest.rb', line 113</span>
+      <pre class="code"><span class="info file"># File 'lib/puppet/provider/elastic_rest.rb', line 126</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_process_body'>process_body</span><span class='lparen'>(</span><span class='id identifier rubyid_body'>body</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_results'>results</span> <span class='op'>=</span> <span class='const'>JSON</span><span class='period'>.</span><span class='id identifier rubyid_parse'>parse</span><span class='lparen'>(</span><span class='id identifier rubyid_body'>body</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_object_name'>object_name</span><span class='comma'>,</span> <span class='id identifier rubyid_api_object'>api_object</span><span class='op'>|</span>
@@ -1326,7 +1420,7 @@ any templates we can before associating resources and providers.</p>
     <span class='rbrace'>}</span>
   <span class='kw'>end</span>
 
-  <span class='kw'>return</span> <span class='id identifier rubyid_results'>results</span>
+  <span class='id identifier rubyid_results'>results</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -1360,18 +1454,18 @@ API responses.</p>
       <pre class="lines">
 
 
-128
-129
-130
-131
-132
-133
-134
-135
-136</pre>
+141
+142
+143
+144
+145
+146
+147
+148
+149</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/puppet/provider/elastic_rest.rb', line 128</span>
+      <pre class="code"><span class="info file"># File 'lib/puppet/provider/elastic_rest.rb', line 141</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_process_metadata'>process_metadata</span><span class='lparen'>(</span><span class='id identifier rubyid_raw_metadata'>raw_metadata</span><span class='rparen'>)</span>
   <span class='kw'>if</span> <span class='id identifier rubyid_metadata_pipeline'>metadata_pipeline</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span> <span class='const'>Array</span> <span class='kw'>and</span> <span class='op'>!</span><span class='id identifier rubyid_metadata_pipeline'>metadata_pipeline</span><span class='period'>.</span><span class='id identifier rubyid_empty?'>empty?</span>
@@ -1400,6 +1494,9 @@ API responses.</p>
   <div class="discussion">
     
 <p>Perform a REST API request against the indicated endpoint.</p>
+
+<p>rubocop:disable Metrics/CyclomaticComplexity rubocop:disable
+Metrics/PerceivedComplexity</p>
 
 
   </div>
@@ -1431,17 +1528,6 @@ API responses.</p>
       <pre class="lines">
 
 
-27
-28
-29
-30
-31
-32
-33
-34
-35
-36
-37
 38
 39
 40
@@ -1462,17 +1548,28 @@ API responses.</p>
 55
 56
 57
-58</pre>
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/puppet/provider/elastic_rest.rb', line 27</span>
+      <pre class="code"><span class="info file"># File 'lib/puppet/provider/elastic_rest.rb', line 38</span>
 
-<span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_rest'>rest</span> <span class='id identifier rubyid_http'>http</span><span class='comma'>,</span> \
+<span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_rest'>rest</span><span class='lparen'>(</span><span class='id identifier rubyid_http'>http</span><span class='comma'>,</span> \
               <span class='id identifier rubyid_req'>req</span><span class='comma'>,</span> \
               <span class='id identifier rubyid_validate_tls'>validate_tls</span> <span class='op'>=</span> <span class='kw'>true</span><span class='comma'>,</span> \
               <span class='id identifier rubyid_timeout'>timeout</span> <span class='op'>=</span> <span class='int'>10</span><span class='comma'>,</span> \
               <span class='id identifier rubyid_username'>username</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='comma'>,</span> \
-              <span class='id identifier rubyid_password'>password</span> <span class='op'>=</span> <span class='kw'>nil</span>
+              <span class='id identifier rubyid_password'>password</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='rparen'>)</span>
 
   <span class='kw'>if</span> <span class='id identifier rubyid_username'>username</span> <span class='kw'>and</span> <span class='id identifier rubyid_password'>password</span>
     <span class='id identifier rubyid_req'>req</span><span class='period'>.</span><span class='id identifier rubyid_basic_auth'>basic_auth</span> <span class='id identifier rubyid_username'>username</span><span class='comma'>,</span> <span class='id identifier rubyid_password'>password</span>
@@ -1493,9 +1590,9 @@ API responses.</p>
   <span class='kw'>rescue</span> <span class='const'>EOFError</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_e'>e</span>
     <span class='comment'># Because the provider attempts a best guess at API access, we
 </span>    <span class='comment'># only fail when HTTP operations fail for mutating methods.
-</span>    <span class='kw'>unless</span> <span class='qwords_beg'>%w(</span><span class='tstring_content'>GET</span><span class='words_sep'> </span><span class='tstring_content'>OPTIONS</span><span class='words_sep'> </span><span class='tstring_content'>HEAD</span><span class='words_sep'>)</span><span class='period'>.</span><span class='id identifier rubyid_include?'>include?</span> <span class='id identifier rubyid_req'>req</span><span class='period'>.</span><span class='id identifier rubyid_method'>method</span>
+</span>    <span class='kw'>unless</span> <span class='qwords_beg'>%w[</span><span class='tstring_content'>GET</span><span class='words_sep'> </span><span class='tstring_content'>OPTIONS</span><span class='words_sep'> </span><span class='tstring_content'>HEAD</span><span class='words_sep'>]</span><span class='period'>.</span><span class='id identifier rubyid_include?'>include?</span> <span class='id identifier rubyid_req'>req</span><span class='period'>.</span><span class='id identifier rubyid_method'>method</span>
       <span class='id identifier rubyid_raise'>raise</span> <span class='const'><span class='object_link'><a href="../../Puppet.html" title="Puppet (module)">Puppet</a></span></span><span class='op'>::</span><span class='const'>Error</span><span class='comma'>,</span>
-        <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Received &#39;</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_e'>e</span><span class='embexpr_end'>}</span><span class='tstring_content'>&#39; from the Elasticsearch API. Are your API settings correct?</span><span class='tstring_end'>&quot;</span></span>
+            <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Received &#39;</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_e'>e</span><span class='embexpr_end'>}</span><span class='tstring_content'>&#39; from the Elasticsearch API. Are your API settings correct?</span><span class='tstring_end'>&quot;</span></span>
     <span class='kw'>end</span>
   <span class='kw'>end</span>
 <span class='kw'>end</span></pre>
@@ -1537,12 +1634,12 @@ API responses.</p>
       <pre class="lines">
 
 
-272
-273
-274</pre>
+291
+292
+293</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/puppet/provider/elastic_rest.rb', line 272</span>
+      <pre class="code"><span class="info file"># File 'lib/puppet/provider/elastic_rest.rb', line 291</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_create'>create</span>
   <span class='ivar'>@property_flush</span><span class='lbracket'>[</span><span class='symbol'>:ensure</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='symbol'>:present</span>
@@ -1579,12 +1676,12 @@ API responses.</p>
       <pre class="lines">
 
 
-281
-282
-283</pre>
+300
+301
+302</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/puppet/provider/elastic_rest.rb', line 281</span>
+      <pre class="code"><span class="info file"># File 'lib/puppet/provider/elastic_rest.rb', line 300</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_destroy'>destroy</span>
   <span class='ivar'>@property_flush</span><span class='lbracket'>[</span><span class='symbol'>:ensure</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='symbol'>:absent</span>
@@ -1631,12 +1728,12 @@ API responses.</p>
       <pre class="lines">
 
 
-276
-277
-278</pre>
+295
+296
+297</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/puppet/provider/elastic_rest.rb', line 276</span>
+      <pre class="code"><span class="info file"># File 'lib/puppet/provider/elastic_rest.rb', line 295</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_exists?'>exists?</span>
   <span class='ivar'>@property_hash</span><span class='lbracket'>[</span><span class='symbol'>:ensure</span><span class='rbracket'>]</span> <span class='op'>==</span> <span class='symbol'>:present</span>
@@ -1659,7 +1756,8 @@ API responses.</p>
   <div class="discussion">
     
 <p>Call Elasticsearch&#39;s REST API to appropriately PUT/DELETE/or otherwise
-update any managed API objects.</p>
+update any managed API objects. rubocop:disable
+Metrics/CyclomaticComplexity rubocop:disable Metrics/PerceivedComplexity</p>
 
 
   </div>
@@ -1673,21 +1771,6 @@ update any managed API objects.</p>
       <pre class="lines">
 
 
-192
-193
-194
-195
-196
-197
-198
-199
-200
-201
-202
-203
-204
-205
-206
 207
 208
 209
@@ -1750,10 +1833,29 @@ update any managed API objects.</p>
 266
 267
 268
-269</pre>
+269
+270
+271
+272
+273
+274
+275
+276
+277
+278
+279
+280
+281
+282
+283
+284
+285
+286
+287
+288</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/puppet/provider/elastic_rest.rb', line 192</span>
+      <pre class="code"><span class="info file"># File 'lib/puppet/provider/elastic_rest.rb', line 207</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_flush'>flush</span>
   <span class='const'><span class='object_link'><a href="../../Puppet.html" title="Puppet (module)">Puppet</a></span></span><span class='period'>.</span><span class='id identifier rubyid_debug'>debug</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Got to flush</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
@@ -1766,6 +1868,8 @@ update any managed API objects.</p>
       <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_class'>class</span><span class='period'>.</span><span class='id identifier rubyid_format_uri'>format_uri</span><span class='lparen'>(</span><span class='id identifier rubyid_resource'>resource</span><span class='lbracket'>[</span><span class='symbol'>:name</span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='ivar'>@property_flush</span><span class='rparen'>)</span>
     <span class='rparen'>)</span>
   <span class='rparen'>)</span>
+  <span class='id identifier rubyid_uri'>uri</span><span class='period'>.</span><span class='id identifier rubyid_query'>query</span> <span class='op'>=</span> <span class='const'>URI</span><span class='period'>.</span><span class='id identifier rubyid_encode_www_form'>encode_www_form</span> <span class='id identifier rubyid_query_string'>query_string</span> <span class='kw'>if</span> <span class='id identifier rubyid_query_string'>query_string</span>
+
   <span class='const'><span class='object_link'><a href="../../Puppet.html" title="Puppet (module)">Puppet</a></span></span><span class='period'>.</span><span class='id identifier rubyid_debug'>debug</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Generated URI = </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_uri'>uri</span><span class='period'>.</span><span class='id identifier rubyid_inspect'>inspect</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
 
   <span class='kw'>case</span> <span class='ivar'>@property_flush</span><span class='lbracket'>[</span><span class='symbol'>:ensure</span><span class='rbracket'>]</span>
@@ -1818,7 +1922,9 @@ update any managed API objects.</p>
 
     <span class='id identifier rubyid_raise'>raise</span> <span class='const'><span class='object_link'><a href="../../Puppet.html" title="Puppet (module)">Puppet</a></span></span><span class='op'>::</span><span class='const'>Error</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Elasticsearch API responded with: </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_err_msg'>err_msg</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span>
   <span class='kw'>end</span>
-
+  <span class='comment'># rubocop:enable Metrics/CyclomaticComplexity
+</span>  <span class='comment'># rubocop:enable Metrics/PerceivedComplexity
+</span>
   <span class='ivar'>@property_hash</span> <span class='op'>=</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_class'>class</span><span class='period'>.</span><span class='id identifier rubyid_api_objects'>api_objects</span><span class='lparen'>(</span>
     <span class='id identifier rubyid_resource'>resource</span><span class='lbracket'>[</span><span class='symbol'>:protocol</span><span class='rbracket'>]</span><span class='comma'>,</span>
     <span class='id identifier rubyid_resource'>resource</span><span class='lbracket'>[</span><span class='symbol'>:validate_tls</span><span class='rbracket'>]</span><span class='comma'>,</span>
@@ -1864,18 +1970,18 @@ update any managed API objects.</p>
       <pre class="lines">
 
 
-180
-181
-182
-183
-184
-185
-186
-187
-188</pre>
+193
+194
+195
+196
+197
+198
+199
+200
+201</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/puppet/provider/elastic_rest.rb', line 180</span>
+      <pre class="code"><span class="info file"># File 'lib/puppet/provider/elastic_rest.rb', line 193</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_generate_body'>generate_body</span>
   <span class='const'>JSON</span><span class='period'>.</span><span class='id identifier rubyid_generate'>generate</span><span class='lparen'>(</span>
@@ -1935,15 +2041,74 @@ update any managed API objects.</p>
       <pre class="lines">
 
 
-20
-21
-22</pre>
+22
+23
+24</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/puppet/provider/elastic_rest.rb', line 20</span>
+      <pre class="code"><span class="info file"># File 'lib/puppet/provider/elastic_rest.rb', line 22</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_metadata'>metadata</span>
   <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_class'>class</span><span class='period'>.</span><span class='id identifier rubyid_metadata'>metadata</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="query_string-instance_method">
+  
+    #<strong>query_string</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>Retrieve the class query_string variable</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'></span>
+      
+      
+      
+        
+        <div class='inline'>
+<p>String</p>
+</div>
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+29
+30
+31</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/puppet/provider/elastic_rest.rb', line 29</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_query_string'>query_string</span>
+  <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_class'>class</span><span class='period'>.</span><span class='id identifier rubyid_query_string'>query_string</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>

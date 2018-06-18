@@ -6,7 +6,7 @@
 <title>
   Puppet Class: elasticsearch::config
   
-    &mdash; Documentation by YARD 0.9.12
+    &mdash; Documentation by YARD 0.9.14
   
 </title>
 
@@ -276,7 +276,28 @@ href="mailto:tyler.langlois@elastic.co">tyler.langlois@elastic.co</a></p>
 151
 152
 153
-154</pre>
+154
+155
+156
+157
+158
+159
+160
+161
+162
+163
+164
+165
+166
+167
+168
+169
+170
+171
+172
+173
+174
+175</pre>
       </td>
       <td>
         <pre class="code"><span class="info file"># File 'manifests/config.pp', line 13</span>
@@ -296,17 +317,17 @@ class elasticsearch::config {
       $elasticsearch::configdir:
         ensure =&gt; &#39;directory&#39;,
         group  =&gt; $elasticsearch::elasticsearch_group,
-        owner  =&gt; $elasticsearch::elasticsearch_user,
-        mode   =&gt; &#39;0755&#39;;
+        owner  =&gt; &#39;root&#39;,
+        mode   =&gt; &#39;2750&#39;;
       $elasticsearch::datadir:
         ensure =&gt; &#39;directory&#39;,
         group  =&gt; $elasticsearch::elasticsearch_group,
         owner  =&gt; $elasticsearch::elasticsearch_user;
       $elasticsearch::logdir:
         ensure  =&gt; &#39;directory&#39;,
-        group   =&gt; undef,
+        group   =&gt; $elasticsearch::elasticsearch_group,
         owner   =&gt; $elasticsearch::elasticsearch_user,
-        mode    =&gt; &#39;0755&#39;,
+        mode    =&gt; &#39;0750&#39;,
         recurse =&gt; true;
       $elasticsearch::plugindir:
         ensure =&gt; &#39;directory&#39;,
@@ -332,6 +353,13 @@ class elasticsearch::config {
         group  =&gt; $elasticsearch::elasticsearch_group,
         owner  =&gt; $elasticsearch::elasticsearch_user,
         mode   =&gt; &#39;0755&#39;;
+      &quot;${elasticsearch::configdir}/scripts&quot;:
+        ensure  =&gt; &#39;directory&#39;,
+        source  =&gt; &quot;${elasticsearch::homedir}/scripts&quot;,
+        mode    =&gt; &#39;0755&#39;,
+        recurse =&gt; &#39;remote&#39;,
+        owner   =&gt; $elasticsearch::elasticsearch_user,
+        group   =&gt; $elasticsearch::elasticsearch_group;
       &#39;/etc/elasticsearch/elasticsearch.yml&#39;:
         ensure =&gt; &#39;absent&#39;;
       &#39;/etc/elasticsearch/jvm.options&#39;:
@@ -339,8 +367,6 @@ class elasticsearch::config {
       &#39;/etc/elasticsearch/logging.yml&#39;:
         ensure =&gt; &#39;absent&#39;;
       &#39;/etc/elasticsearch/log4j2.properties&#39;:
-        ensure =&gt; &#39;absent&#39;;
-      &#39;/etc/init.d/elasticsearch&#39;:
         ensure =&gt; &#39;absent&#39;;
     }
 
@@ -369,7 +395,13 @@ class elasticsearch::config {
     if ($elasticsearch::service_provider == &#39;systemd&#39;) {
       # Mask default unit (from package)
       service { &#39;elasticsearch&#39; :
+        ensure =&gt; false,
         enable =&gt; &#39;mask&#39;,
+      }
+    } else {
+      service { &#39;elasticsearch&#39;:
+        ensure =&gt; false,
+        enable =&gt; false,
       }
     }
 
@@ -383,11 +415,21 @@ class elasticsearch::config {
           &#39;rm ES_PATH_CONF&#39;,
         ],
       }
+
+      file { &quot;${elasticsearch::defaults_location}/elasticsearch&quot;:
+        ensure =&gt; &#39;file&#39;,
+        group  =&gt; $elasticsearch::elasticsearch_group,
+        owner  =&gt; $elasticsearch::elasticsearch_user,
+        mode   =&gt; &#39;0640&#39;;
+      }
     }
 
     if $::elasticsearch::security_plugin != undef and ($::elasticsearch::security_plugin in [&#39;shield&#39;, &#39;x-pack&#39;]) {
-      file { &quot;/etc/elasticsearch/${::elasticsearch::security_plugin}&quot; :
+      file { &quot;${::elasticsearch::configdir}/${::elasticsearch::security_plugin}&quot; :
         ensure =&gt; &#39;directory&#39;,
+        owner  =&gt; &#39;root&#39;,
+        group  =&gt; $elasticsearch::elasticsearch_group,
+        mode   =&gt; &#39;0750&#39;,
       }
     }
 

@@ -6,7 +6,7 @@
 <title>
   Puppet Function: concat_merge (Ruby 3.x API)
   
-    &mdash; Documentation by YARD 0.9.12
+    &mdash; Documentation by YARD 0.9.14
   
 </title>
 
@@ -133,7 +133,6 @@ rightmost hash will “win.”</p>
         <pre class="lines">
 
 
-2
 3
 4
 5
@@ -179,10 +178,11 @@ rightmost hash will “win.”</p>
 45
 46
 47
-48</pre>
+48
+49</pre>
       </td>
       <td>
-        <pre class="code"><span class="info file"># File 'lib/puppet/parser/functions/concat_merge.rb', line 2</span>
+        <pre class="code"><span class="info file"># File 'lib/puppet/parser/functions/concat_merge.rb', line 3</span>
 
 <span class='id identifier rubyid_newfunction'>newfunction</span><span class='lparen'>(</span>
   <span class='symbol'>:concat_merge</span><span class='comma'>,</span>
@@ -206,11 +206,11 @@ rightmost hash will “win.”</p>
 
   @return String
 </span><span class='heredoc_end'>  ENDHEREDOC
-</span>    <span class='id identifier rubyid_raise'>raise</span> <span class='const'><span class='object_link'><a href="../Puppet.html" title="Puppet (module)">Puppet</a></span></span><span class='op'>::</span><span class='const'>ParseError</span><span class='comma'>,</span> <span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>concat_merge(): wrong number of arguments (</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_args'>args</span><span class='period'>.</span><span class='id identifier rubyid_length'>length</span><span class='embexpr_end'>}</span><span class='tstring_content'>; must be at least 2)</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
+</span>    <span class='id identifier rubyid_raise'>raise</span> <span class='const'><span class='object_link'><a href="../Puppet.html" title="Puppet (module)">Puppet</a></span></span><span class='op'>::</span><span class='const'>ParseError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>concat_merge(): wrong number of arguments (</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_args'>args</span><span class='period'>.</span><span class='id identifier rubyid_length'>length</span><span class='embexpr_end'>}</span><span class='tstring_content'>; must be at least 2)</span><span class='tstring_end'>&quot;</span></span>
   <span class='kw'>end</span>
 
-  <span class='id identifier rubyid_concat_merge'>concat_merge</span> <span class='op'>=</span> <span class='const'>Proc</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_hash1'>hash1</span><span class='comma'>,</span><span class='id identifier rubyid_hash2'>hash2</span><span class='op'>|</span>
-    <span class='id identifier rubyid_hash1'>hash1</span><span class='period'>.</span><span class='id identifier rubyid_merge'>merge</span><span class='lparen'>(</span><span class='id identifier rubyid_hash2'>hash2</span><span class='rparen'>)</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_key'>key</span><span class='comma'>,</span><span class='id identifier rubyid_old_value'>old_value</span><span class='comma'>,</span><span class='id identifier rubyid_new_value'>new_value</span><span class='op'>|</span>
+  <span class='id identifier rubyid_concat_merge'>concat_merge</span> <span class='op'>=</span> <span class='id identifier rubyid_proc'>proc</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_hash1'>hash1</span><span class='comma'>,</span> <span class='id identifier rubyid_hash2'>hash2</span><span class='op'>|</span>
+    <span class='id identifier rubyid_hash1'>hash1</span><span class='period'>.</span><span class='id identifier rubyid_merge'>merge</span><span class='lparen'>(</span><span class='id identifier rubyid_hash2'>hash2</span><span class='rparen'>)</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid__key'>_key</span><span class='comma'>,</span> <span class='id identifier rubyid_old_value'>old_value</span><span class='comma'>,</span> <span class='id identifier rubyid_new_value'>new_value</span><span class='op'>|</span>
       <span class='kw'>if</span> <span class='id identifier rubyid_old_value'>old_value</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span><span class='lparen'>(</span><span class='const'>Array</span><span class='rparen'>)</span> <span class='op'>&amp;&amp;</span> <span class='id identifier rubyid_new_value'>new_value</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span><span class='lparen'>(</span><span class='const'>Array</span><span class='rparen'>)</span>
         <span class='id identifier rubyid_old_value'>old_value</span> <span class='op'>+</span> <span class='id identifier rubyid_new_value'>new_value</span>
       <span class='kw'>else</span>
@@ -219,7 +219,7 @@ rightmost hash will “win.”</p>
     <span class='kw'>end</span>
   <span class='kw'>end</span>
 
-  <span class='id identifier rubyid_result'>result</span> <span class='op'>=</span> <span class='const'>Hash</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span>
+  <span class='id identifier rubyid_result'>result</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span>
   <span class='id identifier rubyid_args'>args</span><span class='period'>.</span><span class='id identifier rubyid_each'>each</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_arg'>arg</span><span class='op'>|</span>
     <span class='kw'>next</span> <span class='kw'>if</span> <span class='id identifier rubyid_arg'>arg</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span> <span class='const'>String</span> <span class='kw'>and</span> <span class='id identifier rubyid_arg'>arg</span><span class='period'>.</span><span class='id identifier rubyid_empty?'>empty?</span> <span class='comment'># empty string is synonym for puppet&#39;s undef
 </span>    <span class='comment'># If the argument was not a hash, skip it.
