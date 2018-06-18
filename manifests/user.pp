@@ -31,21 +31,16 @@ define elasticsearch::user (
   }
 
   if $password =~ /^\$2a\$/ {
-    elasticsearch_user { $name:
+    elasticsearch_user_file { $name:
       ensure          => $ensure,
       configdir       => $elasticsearch::configdir,
       hashed_password => $password,
     }
   } else {
-    $_provider = $elasticsearch::security_plugin ? {
-      'shield' => 'esusers',
-      'x-pack' => 'users',
-    }
     elasticsearch_user { $name:
       ensure    => $ensure,
       configdir => $elasticsearch::configdir,
       password  => $password,
-      provider  => $_provider,
     }
   }
 

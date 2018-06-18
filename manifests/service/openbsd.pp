@@ -98,7 +98,7 @@ define elasticsearch::service::openbsd (
         instance     => $name,
         pid_dir      => $pid_dir,
         notify       => $notify_service,
-        package_name => $elasticsearch::package_name,
+        package_name => 'elasticsearch',
       }
       -> file { "/etc/rc.d/elasticsearch_${name}":
         ensure => 'file',

@@ -54,7 +54,8 @@ We recommend managing your Java installation with the [puppetlabs-java](https://
 
 When using the repository management, the following module dependencies are required:
 
-* Debian/Ubuntu: [Puppetlabs/apt](http://forge.puppetlabs.com/puppetlabs/apt)
+* General: [Elastic/elastic_stack](https://forge.puppet.com/elastic/elastic_stack)
+* Debian/Ubuntu: [Puppetlabs/apt](https://forge.puppetlabs.com/puppetlabs/apt)
 * OpenSuSE/SLES: [Darin/zypprepo](https://forge.puppetlabs.com/darin/zypprepo)
 
 ### Beginning with Elasticsearch
@@ -462,32 +463,41 @@ There are two different ways of installing Elasticsearch:
 
 #### Repository
 
-This option allows you to use an existing repository for package installation.
-The `repo_version` corresponds with the `major.minor` version of Elasticsearch for versions before 2.x.
+
+##### Choosing an Elasticsearch major version
+
+This module uses the `elastic/elastic_stack` module to manage package repositories. Because there is a separate repository for each major version of the Elastic stack, selecting which version to configure is necessary to change the default repository value, like this:
+
 
 ```puppet
+class { 'elastic_stack::repo':
+  version => 5,
+}
+
 class { 'elasticsearch':
-  manage_repo  => true,
-  repo_version => '1.4',
+  version => '5.6.4',
 }
 ```
 
-For 2.x versions of Elasticsearch onward, use the major version of Elasticsearch suffixed by an `x`.
-For example:
+This module defaults to the upstream package repositories, which as of Elasticsearch 6.3, includes X-Pack. In order to use the purely OSS (open source) package and repository, the appropriate `oss` flag must be set on the `elastic_stack::repo` and `elasticsearch` classes:
 
 ```puppet
+class { 'elastic_stack::repo':
+  oss => true,
+}
+
 class { 'elasticsearch':
-  manage_repo  => true,
-  repo_version => '6.x',
+  oss => true,
 }
 ```
 
-For users who may wish to install via a local repository (for example, through a mirror), the `repo_baseurl` parameter is available:
+##### Manual repository management
+
+You may want to manage repositories manually. You can disable automatic repository management like this:
 
 ```puppet
 class { 'elasticsearch':
-  manage_repo => true,
-  repo_baseurl => 'https://repo.local/yum'
+  manage_repo => false,
 }
 ```
 
@@ -594,8 +604,6 @@ For example, the following manifest will install Elasticseach with a single inst
 
 ```puppet
 class { 'elasticsearch':
-  manage_repo     => true,
-  repo_version    => '6.x',
   security_plugin => 'x-pack',
 }
 
@@ -607,8 +615,6 @@ The following manifest will do the same, but with Shield:
 
 ```puppet
 class { 'elasticsearch':
-  manage_repo     => true,
-  repo_version    => '2.x',
   security_plugin => 'shield',
 }
 

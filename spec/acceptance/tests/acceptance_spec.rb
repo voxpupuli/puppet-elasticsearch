@@ -30,10 +30,10 @@ describe "elasticsearch v#{v[:elasticsearch_full_version]} class" do
   }
   instances = es_01.merge es_02
 
+  let(:elastic_repo) { not v[:is_snapshot] }
   let(:manifest) do
     package = if not v[:is_snapshot]
                 <<-MANIFEST
-                  repo_version => '#{v[:elasticsearch_major_version]}.x',
                   # Hard version set here due to plugin incompatibilities.
                   version => '#{v[:elasticsearch_full_version]}',
                 MANIFEST
@@ -65,6 +65,7 @@ describe "elasticsearch v#{v[:elasticsearch_full_version]} class" do
         'cluster.name' => '#{v[:cluster_name]}',
         'network.host' => '0.0.0.0',
       },
+      oss => #{v[:oss]},
       #{package}
       #{heap}
     MANIFEST
@@ -112,6 +113,9 @@ describe "elasticsearch v#{v[:elasticsearch_full_version]} class" do
 
   include_examples 'user/group acceptance tests'
 
-  # Security-related tests (shield/x-pack)
-  include_examples 'security acceptance tests', instances
+  # Security-related tests (shield/x-pack).
+  #
+  # Skip OSS-only distributions since they do not bundle x-pack, and skip
+  # snapshots since we they don't recognize prod licenses.
+  include_examples 'security acceptance tests', instances unless v[:oss] or v[:is_snapshot]
 end

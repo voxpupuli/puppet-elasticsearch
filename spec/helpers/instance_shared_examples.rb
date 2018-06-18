@@ -17,7 +17,7 @@ shared_examples 'instance' do |name, init|
     it { should contain_file("#{dir}/#{name}").with(:ensure => 'directory') }
   end
 
-  %w[elasticsearch.yml jvm.options logging.yml log4j2.properties scripts].each do |file|
+  %w[elasticsearch.yml jvm.options logging.yml log4j2.properties].each do |file|
     it { should contain_file("/etc/elasticsearch/#{name}/#{file}") }
   end
 

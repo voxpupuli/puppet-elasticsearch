@@ -144,7 +144,7 @@ define elasticsearch::service::openrc (
         content      => file($init_template),
         instance     => $name,
         notify       => $notify_service,
-        package_name => $elasticsearch::package_name,
+        package_name => 'elasticsearch',
       }
       -> file { "/etc/init.d/elasticsearch.${name}":
         ensure => 'file',

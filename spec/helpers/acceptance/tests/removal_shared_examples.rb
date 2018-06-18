@@ -8,7 +8,7 @@ shared_examples 'module removal' do |instances|
       RESOURCE
 
       <<-MANIFEST
-        class { 'elasticsearch': ensure => 'absent' }
+        class { 'elasticsearch': ensure => 'absent', oss => #{v[:oss]} }
         #{instances.map { |i| instance_resource % i }.join("\n")}
       MANIFEST
     end

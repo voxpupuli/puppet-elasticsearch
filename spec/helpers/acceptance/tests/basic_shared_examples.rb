@@ -4,7 +4,7 @@ require 'helpers/acceptance/tests/manifest_shared_examples'
 shared_examples 'basic acceptance tests' do |instances|
   include_examples 'manifest application', instances
 
-  describe package('elasticsearch') do
+  describe package("elasticsearch#{v[:oss] ? '-oss' : ''}") do
     it { should be_installed }
   end
 
@@ -54,7 +54,7 @@ shared_examples 'basic acceptance tests' do |instances|
               expect(response.status).to eq(200)
             end
 
-            it 'uses the default data path' do
+            it 'uses the default data path', :with_retries do
               json = JSON.parse(response.body)['nodes'].values.first
               expected = "/var/lib/elasticsearch/#{instance}"
               expected = [expected] if v[:elasticsearch_major_version] > 2

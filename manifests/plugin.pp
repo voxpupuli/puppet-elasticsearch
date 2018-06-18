@@ -134,7 +134,7 @@ define elasticsearch::plugin (
   elasticsearch_plugin { $name:
     ensure                     => $ensure,
     configdir                  => $configdir,
-    elasticsearch_package_name => $elasticsearch::package_name,
+    elasticsearch_package_name => 'elasticsearch',
     java_opts                  => $java_opts,
     java_home                  => $java_home,
     source                     => $file_source,
