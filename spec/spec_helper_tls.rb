@@ -20,6 +20,9 @@ def gen_certs(num_certs, path)
   extension_factory.subject_certificate = ca_cert
   extension_factory.issuer_certificate = ca_cert
   ca_cert.add_extension extension_factory.create_extension(
+    'subjectAltName', ['localhost', '127.0.0.1'].map { |d| "DNS: #{d}" }.join(',')
+  )
+  ca_cert.add_extension extension_factory.create_extension(
     'subjectKeyIdentifier', 'hash'
   )
   ca_cert.add_extension extension_factory.create_extension(

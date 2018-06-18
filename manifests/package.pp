@@ -22,9 +22,9 @@ class elasticsearch::package {
   if $elasticsearch::ensure == 'present' {
 
     if $elasticsearch::restart_package_change {
-      Package[$elasticsearch::package_name] ~> Elasticsearch::Service <| |>
+      Package['elasticsearch'] ~> Elasticsearch::Service <| |>
     }
-    Package[$elasticsearch::package_name] ~> Exec['remove_plugin_dir']
+    Package['elasticsearch'] ~> Exec['remove_plugin_dir']
 
     # Create directory to place the package file
     $package_dir = $elasticsearch::package_dir
@@ -62,7 +62,7 @@ class elasticsearch::package {
     if ($elasticsearch::package_url != undef) {
 
       case $elasticsearch::package_provider {
-        'package': { $before = Package[$elasticsearch::package_name]  }
+        'package': { $before = Package['elasticsearch']  }
         default:   { fail("software provider \"${elasticsearch::package_provider}\".") }
       }
 
@@ -147,6 +147,10 @@ class elasticsearch::package {
 
       }
 
+    } else {
+      if ($facts['os']['family'] == 'Debian') {
+        Class['apt::update'] -> Package['elasticsearch']
+      }
     }
 
   # Package removal
@@ -165,8 +169,9 @@ class elasticsearch::package {
 
   if ($elasticsearch::package_provider == 'package') {
 
-    package { $elasticsearch::package_name:
+    package { 'elasticsearch':
       ensure => $package_ensure,
+      name   => $elasticsearch::_package_name,
     }
 
     exec { 'remove_plugin_dir':

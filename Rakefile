@@ -14,6 +14,7 @@ require 'json'
 require_relative 'spec/spec_utilities'
 
 ENV['VAULT_APPROLE_ROLE_ID'] = '48adc137-3270-fc4a-ae65-1306919d4bb0'
+oss_package = ENV['OSS_PACKAGE'] and ENV['OSS_PACKAGE'] == 'true'
 
 # Workaround for certain rspec/beaker versions
 module TempFixForRakeLastComment
@@ -92,7 +93,7 @@ RSpec::Core::RakeTask.new(:spec_unit) do |t|
 end
 task :spec_unit => :spec_prep
 
-task :beaker => [:spec_prep, 'artifact:prep']
+task :beaker => [:spec_prep]
 
 desc 'Run all linting/unit tests.'
 task :intake => [
@@ -124,7 +125,6 @@ beaker_node_sets.each do |node|
   desc "Run the snapshot tests against the #{node} nodeset"
   task "beaker:#{node}:snapshot", [:filter] => %w[
     spec_prep
-    artifact:prep
     artifact:snapshot:deb
     artifact:snapshot:rpm
   ] do |_task, args|
@@ -135,7 +135,7 @@ beaker_node_sets.each do |node|
 
   desc "Run acceptance tests against #{node}"
   RSpec::Core::RakeTask.new(
-    "beaker:#{node}:acceptance", [:version, :filter] => [:spec_prep, 'artifact:prep']
+    "beaker:#{node}:acceptance", [:version, :filter] => [:spec_prep]
   ) do |task, args|
     ENV['BEAKER_set'] = node
     args.with_defaults(:version => '6.2.3', :filter => nil)
@@ -149,19 +149,6 @@ beaker_node_sets.each do |node|
 end
 
 namespace :artifact do
-  desc 'Retrieve artifacts for tests'
-  task :prep do
-    dl_base = 'https://download.elastic.co/elasticsearch/elasticsearch'
-    fetch_archives(
-      'https://github.com/lmenezes/elasticsearch-kopf/archive/v2.1.1.zip' => \
-        'elasticsearch-kopf.zip',
-      "#{dl_base}/elasticsearch-2.3.5.deb" => 'elasticsearch-2.3.5.deb',
-      "#{dl_base}/elasticsearch-2.3.5.rpm" => 'elasticsearch-2.3.5.rpm',
-      'https://download.elastic.co/elasticsearch/release/org/elasticsearch/plugin/analysis-icu/2.4.1/analysis-icu-2.4.1.zip' => \
-        'elasticsearch-plugin-2.x_analysis-icu.zip'
-    )
-  end
-
   desc 'Fetch specific installation artifacts'
   task :fetch, [:version] do |_t, args|
     fetch_archives(
@@ -170,13 +157,19 @@ namespace :artifact do
   end
 
   namespace :snapshot do
-    catalog = JSON.parse(
-      open('https://artifacts-api.elastic.co/v1/branches/6.x').read
-    )['latest']
+    begin
+      retries ||= 0
+      catalog = JSON.parse(
+        open('https://artifacts-api.elastic.co/v1/branches/6.3').read
+      )['latest']
+    rescue
+      retry if (retries += 1) < 3
+    end
+
     ENV['snapshot_version'] = catalog['version']
 
     downloads = catalog['projects']['elasticsearch']['packages'].select do |pkg, _|
-      pkg =~ /(?:deb|rpm)/ and pkg !~ /oss/
+      pkg =~ /(?:deb|rpm)/ and (oss_package ? pkg =~ /oss/ : pkg !~ /oss/)
     end.map do |package, urls|
       [package.split('.').last, urls]
     end.to_h
@@ -199,6 +192,7 @@ namespace :artifact do
         filename = artifact urls['url']
         checksum = artifact urls['sha_url']
         link = artifact "elasticsearch-snapshot.#{extension}"
+        FileUtils.rm link if File.exist? link
 
         task extension => link
         file link => filename do

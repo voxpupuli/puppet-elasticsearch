@@ -1,6 +1,6 @@
 require 'spec_helper_rspec'
 
-[:shield, :xpack].each do |provider|
+[:oss_xpack, :shield, :xpack].each do |provider|
   describe Puppet::Type.type(:elasticsearch_user_roles)
     .provider(provider) do
     describe 'instances' do

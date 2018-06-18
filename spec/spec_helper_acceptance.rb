@@ -8,16 +8,11 @@ require 'vault'
 require_relative 'spec_helper_tls'
 require_relative 'spec_utilities'
 
-def test_settings
-  RSpec.configuration.test_settings
-end
-
 def f
   RSpec.configuration.fact
 end
 
 RSpec.configure do |c|
-  c.add_setting :test_settings, :default => {}
   # General-purpose spec-global variables
   c.add_setting :v, :default => {}
 
@@ -51,6 +46,7 @@ RSpec.configure do |c|
     end.to_h
   end
 
+  v[:oss] = (not ENV['OSS_PACKAGE'].nil?) and ENV['OSS_PACKAGE'] == 'true'
   v[:cluster_name] = SecureRandom.hex(10)
 
   # rspec-retry
@@ -71,6 +67,7 @@ RSpec.configure do |c|
       class { 'elasticsearch':
         ensure      => 'absent',
         manage_repo => true,
+        oss         => #{v[:oss]},
       }
       elasticsearch::instance { 'es-01': ensure => 'absent' }
 
@@ -127,7 +124,6 @@ RSpec.configure do |c|
 end
 
 files_dir = ENV['files_dir'] || './spec/fixtures/artifacts'
-RSpec.configuration.test_settings['files_dir'] = files_dir
 
 # General bootstrapping steps for each host
 hosts.each do |host|
@@ -181,24 +177,6 @@ hosts.each do |host|
               'rpm'
             end
 
-  snapshot_package = {
-    :src => "#{files_dir}/elasticsearch-2.3.5.#{v[:ext]}",
-    :dst => "/tmp/elasticsearch-2.3.5.#{v[:ext]}"
-  }
-
-  scp_to host,
-         snapshot_package[:src],
-         snapshot_package[:dst]
-
-  RSpec.configuration.test_settings['snapshot_package'] = \
-    "file:#{snapshot_package[:dst]}"
-
-  test_settings['integration_package'] = {
-    :src => "#{files_dir}/elasticsearch-snapshot.#{v[:ext]}",
-    :dst => "/tmp/elasticsearch-snapshot.#{v[:ext]}",
-    :file => "file:/tmp/elasticsearch-snapshot.#{v[:ext]}"
-  }
-
   if v[:elasticsearch_package]
     v[:elasticsearch_package].merge!(
       derive_full_package_url(
@@ -236,7 +214,7 @@ RSpec.configure do |c|
     ] + Beaker::DSL::InstallUtils::ModuleUtils::PUPPET_MODULE_INSTALL_IGNORE
 
     hosts.each do |host|
-      modules = %w[archive datacat java java_ks stdlib]
+      modules = %w[archive datacat java java_ks stdlib elastic_stack]
 
       dist_module = {
         'Debian' => ['apt'],
@@ -289,8 +267,6 @@ RSpec.configure do |c|
     end
   end
 end
-
-require_relative 'spec_acceptance_common'
 
 # Java 8 is only easy to manage on recent distros
 def v5x_capable?
