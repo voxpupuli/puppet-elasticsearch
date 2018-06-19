@@ -3,6 +3,7 @@
 #### Features
 
 #### Fixes
+* Removes deprecated data_provider from metadata.json.
 
 ## 6.3.0 (June 18, 2018)
 
