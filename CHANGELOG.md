@@ -3,6 +3,7 @@
 #### Features
 
 #### Fixes
+* Resolve deprecation warnings related to use of the deprecated is_array() function.
 
 ## 6.3.0 (June 18, 2018)
 
