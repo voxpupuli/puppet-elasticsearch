@@ -3,6 +3,7 @@
 #### Features
 
 #### Fixes
+* Convert the hiera.yaml from v4 to v5 format to resolve deprecation warnings.
 
 ## 6.3.0 (June 18, 2018)
 
