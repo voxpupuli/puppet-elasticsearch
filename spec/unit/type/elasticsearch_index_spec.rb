@@ -12,7 +12,7 @@ describe Puppet::Type.type(:elasticsearch_index) do
         :ensure => 'present',
         :settings => {
           'index' => {
-            'number_of_replicas' => 0
+            'number_of_replicas' => '0'
           }
         }
       )
@@ -26,8 +26,8 @@ describe Puppet::Type.type(:elasticsearch_index) do
           {
             'index' => {
               'creation_date' => '1487354196301',
-              'number_of_replicas' => 0,
-              'number_of_shards' => 5,
+              'number_of_replicas' => '0',
+              'number_of_shards' => '5',
               'provided_name' => 'a',
               'uuid' => 'vtjrcgyerviqllrakslrsw',
               'version' => {
@@ -47,8 +47,8 @@ describe Puppet::Type.type(:elasticsearch_index) do
           {
             'index' => {
               'creation_date' => '1487354196301',
-              'number_of_replicas' => 1,
-              'number_of_shards' => 5,
+              'number_of_replicas' => '1',
+              'number_of_shards' => '5',
               'provided_name' => 'a',
               'uuid' => 'vtjrcgyerviqllrakslrsw',
               'version' => {

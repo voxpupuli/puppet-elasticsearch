@@ -63,12 +63,12 @@ shared_examples 'REST API types' do |resource_type, meta_property|
         end.not_to raise_error
       end
 
-      it 'should deeply parse PSON-like values' do
+      it 'should deeply stringify PSON-like values' do
         expect(described_class.new(
           :name => resource_name,
-          meta_property => { 'key' => { 'value' => '0' } }
+          meta_property => { 'key' => { 'value' => 0 } }
         )[meta_property]).to include(
-          'key' => { 'value' => 0 }
+          'key' => { 'value' => '0' }
         )
       end
     end

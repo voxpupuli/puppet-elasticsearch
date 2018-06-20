@@ -1,8 +1,7 @@
 $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', '..'))
 
 require 'puppet_x/elastic/asymmetric_compare'
-require 'puppet_x/elastic/deep_to_i'
-require 'puppet_x/elastic/deep_implode'
+require 'puppet_x/elastic/deep_to_s'
 require 'puppet_x/elastic/elasticsearch_rest_resource'
 
 Puppet::Type.newtype(:elasticsearch_license) do
@@ -46,7 +45,7 @@ Puppet::Type.newtype(:elasticsearch_license) do
     end
 
     munge do |value|
-      Puppet_X::Elastic.deep_to_i(value)
+      Puppet_X::Elastic.deep_to_s(value)
     end
   end
 end # of newtype

@@ -4,7 +4,7 @@ require 'puppet/file_serving/content'
 require 'puppet/file_serving/metadata'
 
 require 'puppet_x/elastic/deep_implode'
-require 'puppet_x/elastic/deep_to_i'
+require 'puppet_x/elastic/deep_to_s'
 require 'puppet_x/elastic/elasticsearch_rest_resource'
 
 Puppet::Type.newtype(:elasticsearch_template) do
@@ -32,15 +32,14 @@ Puppet::Type.newtype(:elasticsearch_template) do
       # `in` and `should` states consistent if the user hasn't
       # provided any.
       #
-      # We use deep_to_i to ensure any numeric values are properly
-      # parsed, whether from user-defined resources or when reading
-      # from the API.
+      # We use deep_to_s to normalize hash values to strings, whether from
+      # user-defined resources or when reading from the API.
       #
       # We also need to fully qualify index settings, since users
       # can define those with the index json key absent, but the API
       # always fully qualifies them.
-      { 'order' => 0, 'aliases' => {}, 'mappings' => {} }.merge(
-        Puppet_X::Elastic.deep_to_i(
+      { 'order' => '0', 'aliases' => {}, 'mappings' => {} }.merge(
+        Puppet_X::Elastic.deep_to_s(
           value.tap do |val|
             if val.key? 'settings'
               val['settings']['index'] = {} unless val['settings'].key? 'index'
