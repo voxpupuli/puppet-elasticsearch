@@ -3,6 +3,7 @@
 #### Features
 
 #### Fixes
+* REST-based resources are now coerced to string values to uniformly compare user defined values and Elasticsearch API responses.
 
 ## 6.3.0 (June 18, 2018)
 
