@@ -203,7 +203,7 @@ define elasticsearch::instance (
     # String or array for data dir(s)
     if ($datadir == undef) {
       if ($datadir_instance_directories) {
-        if (is_array($elasticsearch::datadir)) {
+        if $elasticsearch::datadir =~ Array {
           $instance_datadir = array_suffix($elasticsearch::datadir, "/${name}")
         } else {
           $instance_datadir = "${elasticsearch::datadir}/${name}"
@@ -257,7 +257,7 @@ define elasticsearch::instance (
 
     $instance_datadir_config = { 'path.data' => $instance_datadir }
 
-    if(is_array($instance_datadir)) {
+    if $instance_datadir =~ Array {
       $dirs = join($instance_datadir, ' ')
     } else {
       $dirs = $instance_datadir
