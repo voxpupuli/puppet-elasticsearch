@@ -48,7 +48,7 @@ describe Puppet::Type.type(:elasticsearch_template) do
           :source => '/example.json'
         )[:content]).to include(
           'template' => 'foobar-*',
-          'order' => 1
+          'order' => '1'
         )
       end
 
@@ -60,13 +60,13 @@ describe Puppet::Type.type(:elasticsearch_template) do
             'index' => { 'number_of_shards' => '3' }
           } }
         )[:content]).to eq(
-          'order' => 0,
+          'order' => '0',
           'aliases' => {},
           'mappings' => {},
           'settings' => {
             'index' => {
-              'number_of_replicas' => 2,
-              'number_of_shards' => 3
+              'number_of_replicas' => '2',
+              'number_of_shards' => '3'
             }
           }
         )
@@ -82,17 +82,51 @@ describe Puppet::Type.type(:elasticsearch_template) do
             }
           }
         )[:content]).to eq(
-          'order' => 0,
+          'order' => '0',
           'aliases' => {},
           'mappings' => {},
           'settings' => {
             'index' => {
-              'number_of_replicas' => 2,
-              'number_of_shards' => 3
+              'number_of_replicas' => '2',
+              'number_of_shards' => '3'
             }
           }
         )
       end
     end
   end # of describing when validing values
+
+  describe 'insync?' do
+    # Although users can pass the type a hash structure with any sort of values
+    # - string, integer, or other native datatype - the Elasticsearch API
+    # normalizes all values to strings. In order to verify that the type does
+    # not incorrectly detect changes when values may be in string form, we take
+    # an example template and force all values to strings to mimic what
+    # Elasticsearch does.
+    it 'is idempotent' do
+      def deep_stringify(obj)
+        if obj.is_a? Array
+          obj.map { |element| deep_stringify(element) }
+        elsif obj.is_a? Hash
+          obj.merge(obj) { |_key, val| deep_stringify(val) }
+        else
+          obj.to_s
+        end
+      end
+      json = JSON.parse(File.read('spec/fixtures/templates/post_6.0.json'))
+
+      is_template = described_class.new(
+        :name => resource_name,
+        :ensure => 'present',
+        :content => json
+      ).property(:content)
+      should_template = described_class.new(
+        :name => resource_name,
+        :ensure => 'present',
+        :content => deep_stringify(json)
+      ).property(:content).should
+
+      expect(is_template.insync?(should_template)).to be_truthy
+    end
+  end
 end # of describe Puppet::Type
