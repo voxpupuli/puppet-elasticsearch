@@ -11,7 +11,7 @@ describe Puppet::Type.type(:elasticsearch_template).provider(:ruby) do
         'mappings' => {},
         'settings' => {},
         'template' => 'foobar1-*',
-        'order' => '1'
+        'order' => 1
       }
     }
   end
@@ -38,7 +38,7 @@ describe Puppet::Type.type(:elasticsearch_template).provider(:ruby) do
         'mappings' => {},
         'settings' => {},
         'template' => 'foobar2-*',
-        'order' => '2'
+        'order' => 2
       }
     }
   end
@@ -57,7 +57,7 @@ describe Puppet::Type.type(:elasticsearch_template).provider(:ruby) do
 
   let(:bare_resource) do
     JSON.dump(
-      'order' => '0',
+      'order' => 0,
       'aliases' => {},
       'mappings' => {},
       'template' => 'fooindex-*'

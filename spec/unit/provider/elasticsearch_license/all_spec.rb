@@ -18,13 +18,13 @@ require_relative '../../../helpers/unit/provider/elasticsearch_rest_shared_examp
             'uid' => 'cbff45e7-c553-41f7-ae4f-9205eabd80xx',
             'type' => 'trial',
             'issue_date' => '2018-02-22T23:12:05.550Z',
-            'issue_date_in_millis' => '1519341125550',
+            'issue_date_in_millis' => 1_519_341_125_550,
             'expiry_date' => '2018-03-24T23:12:05.550Z',
-            'expiry_date_in_millis' => '1521933125550',
-            'max_nodes' => '1000',
+            'expiry_date_in_millis' => 1_521_933_125_550,
+            'max_nodes' => 1_000,
             'issued_to' => 'test',
             'issuer' => 'elasticsearch',
-            'start_date_in_millis' => '1513814400000'
+            'start_date_in_millis' => 1_513_814_400_000
           }
         }
       }
@@ -55,7 +55,7 @@ require_relative '../../../helpers/unit/provider/elasticsearch_rest_shared_examp
         :name => name,
         :settings => {
           'index' => {
-            'number_of_replicas' => '0'
+            'number_of_replicas' => 0
           }
         }
       }
