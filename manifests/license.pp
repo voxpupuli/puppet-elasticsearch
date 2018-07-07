@@ -59,7 +59,7 @@ class elasticsearch::license (
   Optional[Enum['shield', 'x-pack']] $security_plugin         = $elasticsearch::security_plugin,
   Boolean                            $validate_tls            = $elasticsearch::validate_tls,
 ) {
-  if $content != undef and is_string($content) {
+  if $content =~ String {
     $_content = parsejson($content)
   } else {
     $_content = $content
