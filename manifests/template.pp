@@ -66,7 +66,7 @@ define elasticsearch::template (
   Optional[String]                $source                  = undef,
   Boolean                         $validate_tls            = $elasticsearch::validate_tls,
 ) {
-  if $content != undef and is_string($content) {
+  if $content =~ String {
     $_content = parsejson($content)
   } else {
     $_content = $content
