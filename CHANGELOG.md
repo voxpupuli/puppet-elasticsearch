@@ -5,6 +5,7 @@
 #### Fixes
 * REST-based resources are now coerced to string values to uniformly compare user defined values and Elasticsearch API responses.
 * Resolve deprecation warnings related to use of the deprecated is_array() function.
+* Fixed an erroneous inclusion of '<' in logging.yml
 * Resolve deprecation warnings related to use of the deprecated is_string() function.
 
 ## 6.3.0 (June 18, 2018)
