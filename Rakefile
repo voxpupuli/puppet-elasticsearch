@@ -6,14 +6,13 @@ require 'net/http'
 require 'uri'
 require 'fileutils'
 require 'rspec/core/rake_task'
-require 'open-uri'
 require 'puppet-strings'
 require 'puppet-strings/tasks'
 require 'yaml'
 require 'json'
 require_relative 'spec/spec_utilities'
 
-ENV['VAULT_APPROLE_ROLE_ID'] = '48adc137-3270-fc4a-ae65-1306919d4bb0'
+ENV['VAULT_APPROLE_ROLE_ID'] ||= '48adc137-3270-fc4a-ae65-1306919d4bb0'
 oss_package = ENV['OSS_PACKAGE'] and ENV['OSS_PACKAGE'] == 'true'
 
 # Workaround for certain rspec/beaker versions
@@ -157,18 +156,13 @@ namespace :artifact do
   end
 
   namespace :snapshot do
-    begin
-      retries ||= 0
-      catalog = JSON.parse(
-        open('https://artifacts-api.elastic.co/v1/branches/6.3').read
-      )['latest']
-    rescue
-      retry if (retries += 1) < 3
-    end
+    snapshot_version = JSON.parse(http_retry('https://artifacts-api.elastic.co/v1/versions'))['versions'].reject do |version|
+      version.include? 'alpha'
+    end.last
 
-    ENV['snapshot_version'] = catalog['version']
+    ENV['snapshot_version'] = snapshot_version
 
-    downloads = catalog['projects']['elasticsearch']['packages'].select do |pkg, _|
+    downloads = JSON.parse(http_retry("https://artifacts-api.elastic.co/v1/search/#{snapshot_version}/elasticsearch"))['packages'].select do |pkg, _|
       pkg =~ /(?:deb|rpm)/ and (oss_package ? pkg =~ /oss/ : pkg !~ /oss/)
     end.map do |package, urls|
       [package.split('.').last, urls]

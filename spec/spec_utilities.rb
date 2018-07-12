@@ -1,4 +1,5 @@
 require 'bcrypt'
+require 'open-uri'
 
 def to_agent_version(puppet_version)
   # REF: https://docs.puppet.com/puppet/latest/reference/about_agent.html
@@ -112,6 +113,13 @@ def vault_available?
   %w[VAULT_ADDR VAULT_APPROLE_ROLE_ID VAULT_APPROLE_SECRET_ID VAULT_PATH].select do |var|
     ENV[var].nil?
   end.empty?
+end
+
+def http_retry(url)
+  retries ||= 0
+  open(url).read
+rescue
+  retry if (retries += 1) < 3
 end
 
 # Helper to store arbitrary testing setting values
