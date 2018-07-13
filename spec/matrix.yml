@@ -1,0 +1,20 @@
+---
+OS:
+  - amazonlinux-1-x64
+  - centos-6-x64
+  - centos-7-x64
+  - debian-8-x64
+  - debian-9-x64
+  - opensuse-42-x64
+  - oracle-6-x64
+  - oracle-7-x64
+  - ubuntu-server-1404-x64
+  - ubuntu-server-1604-x64
+PUPPET_VERSION:
+  - ""
+  - "~> 5.0"
+  - "~> 4.5.0"
+TEST_TYPE:
+  - latest
+  - 5.6.9
+  - snapshot
