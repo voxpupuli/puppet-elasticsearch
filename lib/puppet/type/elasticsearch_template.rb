@@ -4,6 +4,7 @@ require 'puppet/file_serving/content'
 require 'puppet/file_serving/metadata'
 
 require 'puppet_x/elastic/deep_implode'
+require 'puppet_x/elastic/deep_to_i'
 require 'puppet_x/elastic/deep_to_s'
 require 'puppet_x/elastic/elasticsearch_rest_resource'
 
@@ -32,28 +33,31 @@ Puppet::Type.newtype(:elasticsearch_template) do
       # `in` and `should` states consistent if the user hasn't
       # provided any.
       #
-      # We use deep_to_s to normalize hash values to strings, whether from
-      # user-defined resources or when reading from the API.
+      # The value is first stringified, then integers are parse out as
+      # necessary, since the Elasticsearch API enforces some fields to be
+      # integers.
       #
       # We also need to fully qualify index settings, since users
       # can define those with the index json key absent, but the API
       # always fully qualifies them.
-      { 'order' => '0', 'aliases' => {}, 'mappings' => {} }.merge(
-        Puppet_X::Elastic.deep_to_s(
-          value.tap do |val|
-            if val.key? 'settings'
-              val['settings']['index'] = {} unless val['settings'].key? 'index'
-              (val['settings'].keys - ['index']).each do |setting|
-                new_key = if setting.start_with? 'index.'
-                            setting[6..-1]
-                          else
-                            setting
-                          end
-                val['settings']['index'][new_key] = \
-                  val['settings'].delete setting
+      { 'order' => 0, 'aliases' => {}, 'mappings' => {} }.merge(
+        Puppet_X::Elastic.deep_to_i(
+          Puppet_X::Elastic.deep_to_s(
+            value.tap do |val|
+              if val.key? 'settings'
+                val['settings']['index'] = {} unless val['settings'].key? 'index'
+                (val['settings'].keys - ['index']).each do |setting|
+                  new_key = if setting.start_with? 'index.'
+                              setting[6..-1]
+                            else
+                              setting
+                            end
+                  val['settings']['index'][new_key] = \
+                    val['settings'].delete setting
+                end
               end
             end
-          end
+          )
         )
       )
     end

@@ -48,7 +48,7 @@ describe Puppet::Type.type(:elasticsearch_template) do
           :source => '/example.json'
         )[:content]).to include(
           'template' => 'foobar-*',
-          'order' => '1'
+          'order' => 1
         )
       end
 
@@ -60,13 +60,13 @@ describe Puppet::Type.type(:elasticsearch_template) do
             'index' => { 'number_of_shards' => '3' }
           } }
         )[:content]).to eq(
-          'order' => '0',
+          'order' => 0,
           'aliases' => {},
           'mappings' => {},
           'settings' => {
             'index' => {
-              'number_of_replicas' => '2',
-              'number_of_shards' => '3'
+              'number_of_replicas' => 2,
+              'number_of_shards' => 3
             }
           }
         )
@@ -82,13 +82,13 @@ describe Puppet::Type.type(:elasticsearch_template) do
             }
           }
         )[:content]).to eq(
-          'order' => '0',
+          'order' => 0,
           'aliases' => {},
           'mappings' => {},
           'settings' => {
             'index' => {
-              'number_of_replicas' => '2',
-              'number_of_shards' => '3'
+              'number_of_replicas' => 2,
+              'number_of_shards' => 3
             }
           }
         )

@@ -7,6 +7,7 @@ require 'vault'
 
 require_relative 'spec_helper_tls'
 require_relative 'spec_utilities'
+require_relative '../lib/puppet_x/elastic/deep_to_i'
 require_relative '../lib/puppet_x/elastic/deep_to_s'
 
 def f
@@ -31,7 +32,7 @@ RSpec.configure do |c|
                    else
                      JSON.load(File.new('spec/fixtures/templates/post_6.0.json'))
                    end
-    v[:template] = Puppet_X::Elastic.deep_to_s(v[:template])
+    v[:template] = Puppet_X::Elastic.deep_to_i(Puppet_X::Elastic.deep_to_s(v[:template]))
 
     v[:elasticsearch_plugins] = Dir[
       artifact("*#{v[:elasticsearch_full_version]}.zip", ['plugins'])

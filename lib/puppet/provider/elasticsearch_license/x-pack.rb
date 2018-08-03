@@ -8,7 +8,8 @@ Puppet::Type.type(:elasticsearch_license).provide(
   :parent => Puppet::Provider::ElasticREST,
   :metadata => :content,
   :metadata_pipeline => [
-    lambda { |data| Puppet_X::Elastic.deep_to_s data }
+    lambda { |data| Puppet_X::Elastic.deep_to_s data },
+    lambda { |data| Puppet_X::Elastic.deep_to_i data }
   ],
   :api_uri => '_xpack/license',
   :query_string => {
