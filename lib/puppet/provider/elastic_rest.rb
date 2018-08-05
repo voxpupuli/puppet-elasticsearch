@@ -249,7 +249,7 @@ class Puppet::Provider::ElasticREST < Puppet::Provider
     )
 
     # Attempt to return useful error output
-    unless response.code.to_i == 200
+    unless response.code.to_i == 200 or response.code.to_i == 201
       Puppet.debug("Non-OK reponse: Body = #{response.body.inspect}")
       json = JSON.parse(response.body)
 
