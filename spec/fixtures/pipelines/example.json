@@ -1,0 +1,47 @@
+{
+  "description": "An example pipeline.",
+  "on_failure": [
+    {
+      "set": {
+        "field": "error",
+        "value": "{{ _ingest.on_failure_message }}"
+      }
+    }
+  ],
+  "processors": [
+    {
+      "grok": {
+        "field": "message",
+        "ignore_missing": true,
+        "patterns": [
+          "%{COMBINEDAPACHELOG}"
+        ]
+      }
+    },
+    {
+      "remove": {
+        "field": "message"
+      }
+    },
+    {
+      "date": {
+        "field": "read_timestamp",
+        "formats": [
+          "dd/MMM/YYYY:H:m:s Z"
+        ],
+        "target_field": "@timestamp"
+      }
+    },
+    {
+      "remove": {
+        "field": "read_timestamp"
+      }
+    },
+    {
+      "script": {
+        "lang": "painless",
+        "source": "ctx._index = 'foo';"
+      }
+    }
+  ]
+}
