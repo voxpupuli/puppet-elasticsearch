@@ -2,6 +2,7 @@ require 'spec_helper_acceptance'
 require 'helpers/acceptance/tests/basic_shared_examples.rb'
 require 'helpers/acceptance/tests/template_shared_examples.rb'
 require 'helpers/acceptance/tests/removal_shared_examples.rb'
+require 'helpers/acceptance/tests/pipeline_shared_examples.rb'
 require 'helpers/acceptance/tests/plugin_shared_examples.rb'
 require 'helpers/acceptance/tests/plugin_upgrade_shared_examples.rb'
 require 'helpers/acceptance/tests/snapshot_repository_shared_examples.rb'
@@ -88,6 +89,8 @@ describe "elasticsearch v#{v[:elasticsearch_full_version]} class" do
   end
 
   include_examples('template operations', es_01, v[:template])
+
+  include_examples('pipeline operations', es_01, v[:pipeline])
 
   include_examples('plugin acceptance tests', v[:elasticsearch_plugins]) unless v[:elasticsearch_plugins].empty?
 

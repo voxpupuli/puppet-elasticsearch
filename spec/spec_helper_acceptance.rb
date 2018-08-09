@@ -33,6 +33,7 @@ RSpec.configure do |c|
                      JSON.load(File.new('spec/fixtures/templates/post_6.0.json'))
                    end
     v[:template] = Puppet_X::Elastic.deep_to_i(Puppet_X::Elastic.deep_to_s(v[:template]))
+    v[:pipeline] = JSON.load(File.new('spec/fixtures/pipelines/example.json'))
 
     v[:elasticsearch_plugins] = Dir[
       artifact("*#{v[:elasticsearch_full_version]}.zip", ['plugins'])

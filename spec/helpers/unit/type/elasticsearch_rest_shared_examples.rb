@@ -68,7 +68,7 @@ shared_examples 'REST API types' do |resource_type, meta_property|
           :name => resource_name,
           meta_property => { 'key' => { 'value' => '0', 'other' => true } }
         )[meta_property]).to include(
-          'key' => { 'value' => 0, 'other' => 'true' }
+          'key' => { 'value' => 0, 'other' => true }
         )
       end
     end
