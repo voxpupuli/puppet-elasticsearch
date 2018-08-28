@@ -109,6 +109,8 @@ describe Puppet::Type.type(:elasticsearch_template) do
           obj.map { |element| deep_stringify(element) }
         elsif obj.is_a? Hash
           obj.merge(obj) { |_key, val| deep_stringify(val) }
+        elsif [true, false].include? obj
+          obj
         else
           obj.to_s
         end
