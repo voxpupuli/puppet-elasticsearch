@@ -10,7 +10,7 @@ module Puppet_X
         obj.map { |element| deep_to_s(element) }
       elsif obj.is_a? Hash
         obj.merge(obj) { |_key, val| deep_to_s(val) }
-      elsif (not obj.is_a? String) and obj.respond_to? :to_s
+      elsif (not obj.is_a? String) and (not [true, false].include?(obj)) and obj.respond_to? :to_s
         obj.to_s
       else
         obj

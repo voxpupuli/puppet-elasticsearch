@@ -1,6 +1,7 @@
 ## x.x.x (Month Day, Year)
 
 #### Fixes
+* Fix an issue with string coercion for certain fields in pipelines.
 
 #### Features
 
