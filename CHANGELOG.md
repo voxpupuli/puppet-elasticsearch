@@ -1,9 +1,7 @@
-## x.x.x (Month Day, Year)
+## 6.3.2 (August 28, 2018)
 
 #### Fixes
 * Fix an issue with string coercion for certain fields in pipelines.
-
-#### Features
 
 ## 6.3.1 (August 6, 2018)
 
