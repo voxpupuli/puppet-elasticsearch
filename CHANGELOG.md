@@ -1,6 +1,7 @@
 ## x.x.x (Month Day, Year)
 
 #### Fixes
+* Update puppetlabs-stdlib dependency to < 6.0.0
 
 #### Features
 
