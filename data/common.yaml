@@ -17,6 +17,8 @@ elasticsearch::datadir_instance_directories: true
 elasticsearch::default_logging_level: 'INFO'
 elasticsearch::defaults_location: ~
 elasticsearch::download_tool: ~
+elasticsearch::download_tool_insecure: ~
+elasticsearch::download_tool_verify_certificates: true
 elasticsearch::file_rolling_type: dailyRollingFile
 elasticsearch::indices: {}
 elasticsearch::init_defaults: {}

@@ -84,6 +84,14 @@
 # @param download_tool
 #   Command-line invocation with which to retrieve an optional package_url.
 #
+# @param download_tool_insecure
+#   Command-line invocation with which to retrieve an optional package_url when
+#   certificate verification should be ignored.
+#
+# @param download_tool_verify_certificates
+#   Whether or not to verify SSL/TLS certificates when retrieving package files
+#   using a download tool instead of a package management provider.
+#
 # @param elasticsearch_group
 #   The group Elasticsearch should run as. This also sets file group
 #   permissions.
@@ -307,6 +315,8 @@ class elasticsearch (
   String                                          $default_logging_level,
   Optional[Stdlib::Absolutepath]                  $defaults_location,
   Optional[String]                                $download_tool,
+  Optional[String]                                $download_tool_insecure,
+  Boolean                                         $download_tool_verify_certificates,
   String                                          $elasticsearch_group,
   String                                          $elasticsearch_user,
   Enum['dailyRollingFile', 'rollingFile', 'file'] $file_rolling_type,
