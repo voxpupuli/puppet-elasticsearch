@@ -170,9 +170,9 @@ describe 'elasticsearch', :type => 'class' do
                     flag = (not verify_certificates) ? ' --no-check-certificate' : ''
 
                     it { should contain_exec('download_package_elasticsearch')
-                        .with(
-                          :command => "wget#{flag} -O /opt/elasticsearch/swdl/pkg.#{pkg_ext} #{schema}domain-or-path/pkg.#{pkg_ext} 2> /dev/null",
-                          :require => 'File[/opt/elasticsearch/swdl]'
+                      .with(
+                        :command => "wget#{flag} -O /opt/elasticsearch/swdl/pkg.#{pkg_ext} #{schema}domain-or-path/pkg.#{pkg_ext} 2> /dev/null",
+                        :require => 'File[/opt/elasticsearch/swdl]'
                       ) }
                   end
                 end
