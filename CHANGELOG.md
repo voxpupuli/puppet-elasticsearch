@@ -1,10 +1,11 @@
-## x.x.x (Month Day, Year)
+## 6.3.3 (September 7, 2018)
+
+Note that this release includes changes to a default value that may affect users that rely on `curl` or `wget` to retrieve Elasticsearch package files, as now all certificates are validated by default.
+To preserve existing behavior, set `$elasticsearch::download_tool_verify_certificates` to `false`.
 
 #### Fixes
 * Update puppetlabs-stdlib dependency to < 6.0.0
-* By default, package files downloaded with tools like wget or curl (i.e., the `$elasticsearch::download_tool parameter`) now verify certificates by default and a new boolean parameter has been added to indicate whether to ignore certificates (`$elasticsearch::download_tool_verify_certificates`).
-
-#### Features
+* By default, package files downloaded with tools like wget or curl (i.e., the `$elasticsearch::download_tool` parameter) now verify certificates by default and a new boolean parameter has been added to indicate whether to ignore certificates (`$elasticsearch::download_tool_verify_certificates`).
 
 ## 6.3.2 (August 28, 2018)
 
