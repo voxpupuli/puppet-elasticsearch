@@ -1,3 +1,9 @@
+## x.x.x (Month Day, Year)
+
+#### Fixes
+
+#### Features
+
 ## 6.3.3 (September 7, 2018)
 
 Note that this release includes changes to a default value that may affect users that rely on `curl` or `wget` to retrieve Elasticsearch package files, as now all certificates are validated by default.
