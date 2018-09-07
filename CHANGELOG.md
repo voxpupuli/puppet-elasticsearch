@@ -2,6 +2,7 @@
 
 #### Fixes
 * Update puppetlabs-stdlib dependency to < 6.0.0
+* By default, package files downloaded with tools like wget or curl (i.e., the `$elasticsearch::download_tool parameter`) now verify certificates by default and a new boolean parameter has been added to indicate whether to ignore certificates (`$elasticsearch::download_tool_verify_certificates`).
 
 #### Features
 
