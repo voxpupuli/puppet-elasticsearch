@@ -1,6 +1,7 @@
 ## x.x.x (Month Day, Year)
 
 #### Fixes
+* Update of the roles, roles mappings and users will not trigger service restart (if enabled).
 
 #### Features
 
