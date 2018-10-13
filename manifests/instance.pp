@@ -365,6 +365,10 @@ define elasticsearch::instance (
         "${elasticsearch::configdir}/jvm.options",
         "${elasticsearch::configdir}/logging.yml",
         "${elasticsearch::configdir}/log4j2.properties",
+        "${elasticsearch::configdir}/users",
+        "${elasticsearch::configdir}/users_roles",
+        "${elasticsearch::configdir}/roles.yml",
+        "${elasticsearch::configdir}/role_mapping.yml",
       ],
       recurse      => 'remote',
       recurselimit => 1,
@@ -378,6 +382,39 @@ define elasticsearch::instance (
       before       => Elasticsearch::Service[$name],
       notify       => $notify_service,
     }
+    file { "${configdir}/users_roles":
+      ensure       => 'file',
+      source       => "${elasticsearch::configdir}/users_roles",
+      purge        => $elasticsearch::purge_configdir,
+      force        => $elasticsearch::purge_configdir,
+      require      => File[$configdir],
+      before       => Elasticsearch::Service[$name],
+    }
+    file { "${configdir}/roles.yml":
+      ensure       => 'file',
+      source       => "${elasticsearch::configdir}/roles.yml",
+      purge        => $elasticsearch::purge_configdir,
+      force        => $elasticsearch::purge_configdir,
+      require      => File[$configdir],
+      before       => Elasticsearch::Service[$name],
+    }
+    file { "${configdir}/role_mapping.yml":
+      ensure       => 'file',
+      source       => "${elasticsearch::configdir}/role_mapping.yml",
+      purge        => $elasticsearch::purge_configdir,
+      force        => $elasticsearch::purge_configdir,
+      require      => File[$configdir],
+      before       => Elasticsearch::Service[$name],
+    }
+    file { "${configdir}/users":
+      ensure       => 'file',
+      source       => "${elasticsearch::configdir}/users",
+      purge        => $elasticsearch::purge_configdir,
+      force        => $elasticsearch::purge_configdir,
+      require      => File[$configdir],
+      before       => Elasticsearch::Service[$name],
+    }
+
 
     # Do _not_ copy in instance directories. This avoids a) recursing
     # indefinitely by copying our own instance directory and b) copying in any
