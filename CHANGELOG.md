@@ -1,6 +1,7 @@
 ## x.x.x (Month Day, Year)
 
 #### Fixes
+* The Elasticsearch log directory is no longer recursively managed to avoid stomping on the user/mode settings that Elasticsearch prefers.
 
 #### Features
 
