@@ -32,11 +32,10 @@ class elasticsearch::config {
         group  => $elasticsearch::elasticsearch_group,
         owner  => $elasticsearch::elasticsearch_user;
       $elasticsearch::logdir:
-        ensure  => 'directory',
-        group   => $elasticsearch::elasticsearch_group,
-        owner   => $elasticsearch::elasticsearch_user,
-        mode    => '0750',
-        recurse => true;
+        ensure => 'directory',
+        group  => $elasticsearch::elasticsearch_group,
+        owner  => $elasticsearch::elasticsearch_user,
+        mode   => '0750';
       $elasticsearch::plugindir:
         ensure => 'directory',
         group  => $elasticsearch::elasticsearch_group,
