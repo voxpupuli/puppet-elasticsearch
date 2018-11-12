@@ -271,7 +271,6 @@ define elasticsearch::instance (
       if ($keystore_path == undef) {
         $_keystore_path = "${configdir}/${security_plugin}/${name}.ks"
       } else {
-        validate_absolute_path($keystore_path)
         $_keystore_path = $keystore_path
       }
 
