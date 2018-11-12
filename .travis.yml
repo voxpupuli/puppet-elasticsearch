@@ -23,6 +23,9 @@ jobs:
     - TASK=beaker:debian-8-x64:snapshot
   - env:
     - TASK=beaker:debian-9-x64:snapshot
+  - env:
+    - OSS_PACKAGE=true
+    - TASK=beaker:debian-9-x64:snapshot
   include:
   - stage: intake
     env:
