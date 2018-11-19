@@ -2,6 +2,7 @@
 
 #### Fixes
 * The Elasticsearch log directory is no longer recursively managed to avoid stomping on the user/mode settings that Elasticsearch prefers.
+* Package management on apt-based systems no longer encounters dependency errors when `manage_repo => false`.
 
 #### Features
 
