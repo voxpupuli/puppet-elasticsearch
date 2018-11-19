@@ -154,7 +154,7 @@ class elasticsearch::package {
       }
 
     } else {
-      if ($facts['os']['family'] == 'Debian') {
+      if ($elasticsearch::manage_repo and $facts['os']['family'] == 'Debian') {
         Class['apt::update'] -> Package['elasticsearch']
       }
     }

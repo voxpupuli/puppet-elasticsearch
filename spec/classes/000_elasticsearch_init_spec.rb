@@ -236,6 +236,16 @@ describe 'elasticsearch', :type => 'class' do
 
         it { should contain_class('elastic_stack::repo') }
       end
+
+      context 'When not managing the repository' do
+        let(:params) do
+          default_params.merge(
+            :manage_repo => false
+          )
+        end
+
+        it { should compile.with_all_deps }
+      end
     end
   end
 
