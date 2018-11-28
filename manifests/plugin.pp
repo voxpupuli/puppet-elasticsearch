@@ -90,12 +90,6 @@ define elasticsearch::plugin (
     default: { }
   }
 
-  if ! empty($instances) and $elasticsearch::restart_plugin_change {
-    Elasticsearch_plugin[$name] {
-      notify +> Elasticsearch::Instance[$instances],
-    }
-  }
-
   # set proxy by override or parse and use proxy_url from
   # elasticsearch::proxy_url or use no proxy at all
 
@@ -148,5 +142,11 @@ define elasticsearch::plugin (
     mode    => 'o+Xr',
     recurse => true,
     before  => $_file_before,
+  }
+
+  if ! empty($instances) and $elasticsearch::restart_plugin_change {
+    Elasticsearch_plugin[$name] {
+      notify +> Elasticsearch::Instance[$instances],
+    }
   }
 }
