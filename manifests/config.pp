@@ -104,6 +104,7 @@ class elasticsearch::config {
       service { 'elasticsearch' :
         ensure => false,
         enable => 'mask',
+        provider => $elasticsearch::service_provider,
       }
     } else {
       service { 'elasticsearch':
