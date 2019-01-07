@@ -102,8 +102,8 @@ class elasticsearch::config {
     if ($elasticsearch::service_provider == 'systemd') {
       # Mask default unit (from package)
       service { 'elasticsearch' :
-        ensure => false,
-        enable => 'mask',
+        ensure   => false,
+        enable   => 'mask',
         provider => $elasticsearch::service_provider,
       }
     } else {
