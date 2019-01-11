@@ -13,7 +13,7 @@ OS:
 PUPPET_VERSION:
   - ""
   - "~> 5.0"
-  - "~> 4.5.0"
+  - "~> 4.10.0"
 TEST_TYPE:
   - latest
   - 5.6.9

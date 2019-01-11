@@ -8,7 +8,6 @@
   "description": "Module for managing and configuring Elasticsearch nodes",
   "project_page": "https://github.com/elastic/puppet-elasticsearch",
   "issues_url": "https://github.com/elastic/puppet-elasticsearch/issues",
-  "data_provider": "hiera",
   "dependencies": [
     {
       "name": "elastic/elastic_stack",
@@ -87,7 +86,7 @@
   "requirements": [
     {
       "name": "puppet",
-      "version_requirement": ">= 4.5.0 < 6.0.0"
+      "version_requirement": ">= 4.10.0 < 6.0.0"
     }
   ]
 }
