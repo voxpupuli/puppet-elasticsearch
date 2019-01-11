@@ -1,27 +1,25 @@
 ---
-version: 4
-datadir: data
+version: 5
+
+defaults:
+  datadir: data
+  data_hash: 'yaml_data'
+
 hierarchy:
-  - name: "Distribution major version"
-    backend: yaml
-    path: "distro/%{facts.os.name}/%{facts.os.release.major}"
+  - name: 'Distribution major version'
+    path: 'distro/%{facts.os.name}/%{facts.os.release.major}.yaml'
 
-  - name: "Operating system family major version"
-    backend: yaml
-    path: "os/%{facts.os.family}/%{facts.os.release.major}"
+  - name: 'Operating system family major version'
+    path: 'os/%{facts.os.family}/%{facts.os.release.major}.yaml'
 
-  - name: "Distribution name"
-    backend: yaml
-    path: "distro/%{facts.os.name}"
+  - name: 'Distribution name'
+    path: 'distro/%{facts.os.name}.yaml'
 
-  - name: "Operating system family"
-    backend: yaml
-    path: "os/%{facts.os.family}"
+  - name: 'Operating system family'
+    path: 'os/%{facts.os.family}.yaml'
 
-  - name: "System kernel"
-    backend: yaml
-    path: "kernel/%{facts.kernel}"
+  - name: 'System kernel'
+    path: 'kernel/%{facts.kernel}.yaml'
 
-  - name: "Default values"
-    backend: yaml
-    path: "common"
+  - name: 'Default values'
+    path: 'common.yaml'
