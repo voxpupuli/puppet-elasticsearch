@@ -30,7 +30,7 @@ jobs:
   - stage: intake
     env:
     - TASK=intake
-    - PUPPET_VERSION='~> 4.5.0'
+    - PUPPET_VERSION='~> 4.10.0'
   - env:
     - TASK=intake
   - env:
