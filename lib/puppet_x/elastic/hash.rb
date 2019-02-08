@@ -64,9 +64,11 @@ module Puppet_X
       # Override each_pair with a method that yields key/values in
       # sorted order.
       def each_pair
+        return to_enum(:each_pair) unless block_given?
         keys.sort.each do |key|
           yield key, self[key]
         end
+        self
       end
     end
   end
