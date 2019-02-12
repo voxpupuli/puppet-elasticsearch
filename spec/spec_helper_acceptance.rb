@@ -260,13 +260,10 @@ RSpec.configure do |c|
     end
   end
 
-  c.after :suite do
-    if ENV['ES_VERSION']
+  c.after :suite do |suite|
+    unless suite.reporter.failed_examples.empty?
       hosts.each do |host|
-        timestamp = Time.now
-        log_dir = File.join('./spec/logs', timestamp.strftime('%F_%H_%M_%S'))
-        FileUtils.mkdir_p(log_dir) unless File.directory?(log_dir)
-        scp_from(host, '/var/log/elasticsearch', log_dir)
+        on host, 'find /var/log/elasticsearch | xargs cat || true'
       end
     end
   end
