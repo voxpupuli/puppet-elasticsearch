@@ -263,7 +263,9 @@ RSpec.configure do |c|
   c.after :suite do |suite|
     unless suite.reporter.failed_examples.empty?
       hosts.each do |host|
-        on host, 'find /var/log/elasticsearch | xargs cat || true'
+        on host, 'find /var/log/elasticsearch | xargs cat || true' do |result|
+          puts result.formatted_output
+        end
       end
     end
   end
