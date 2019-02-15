@@ -125,6 +125,17 @@ RSpec.configure do |c|
   c.before :context, :first_purge do
     shell 'rm -rf {/usr/share,/etc,/var/lib}/elasticsearch*'
   end
+
+  # Provide a hook filter to spit out some ES logs if the example fails.
+  c.after(:example, :logs_on_failure) do |example|
+    if example.exception
+      hosts.each do |host|
+        on host, "find / -name '#{v[:cluster_name]}.log' | xargs cat || true" do |result|
+          puts result.formatted_output
+        end
+      end
+    end
+  end
 end
 
 files_dir = ENV['files_dir'] || './spec/fixtures/artifacts'
@@ -257,16 +268,6 @@ RSpec.configure do |c|
           #{java}
         }
       MANIFEST
-    end
-  end
-
-  c.after :suite do |suite|
-    unless suite.reporter.failed_examples.empty?
-      hosts.each do |host|
-        on host, 'find /var/log/elasticsearch | xargs cat || true' do |result|
-          puts result.formatted_output
-        end
-      end
     end
   end
 end
