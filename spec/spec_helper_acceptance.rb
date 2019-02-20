@@ -29,6 +29,8 @@ RSpec.configure do |c|
     v[:elasticsearch_package] = {}
     v[:template] = if v[:elasticsearch_major_version] < 6
                      JSON.load(File.new('spec/fixtures/templates/pre_6.0.json'))
+                   elsif v[:elasticsearch_major_version] >= 8
+                     JSON.load(File.new('spec/fixtures/templates/post_8.0.json'))
                    else
                      JSON.load(File.new('spec/fixtures/templates/post_6.0.json'))
                    end
