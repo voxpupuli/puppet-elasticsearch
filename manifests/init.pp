@@ -578,4 +578,8 @@ class elasticsearch (
   -> Elasticsearch::Instance <| ensure == 'absent' |>
   Elasticsearch::Snapshot_repository <| |>
   -> Elasticsearch::Instance <| ensure == 'absent' |>
+
+  # Ensure scripts are installed before copying them to configuration directory
+  Elasticsearch::Script <| |>
+  -> File["${configdir}/scripts"]
 }
