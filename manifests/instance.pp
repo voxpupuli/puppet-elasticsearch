@@ -366,7 +366,7 @@ define elasticsearch::instance (
         "${elasticsearch::configdir}/log4j2.properties",
       ],
       recurse      => 'remote',
-      recurselimit => 1,
+      recurselimit => 2,
       source       => $elasticsearch::configdir,
       purge        => $elasticsearch::purge_configdir,
       force        => $elasticsearch::purge_configdir,
