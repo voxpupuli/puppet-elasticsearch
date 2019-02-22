@@ -29,6 +29,8 @@ RSpec.configure do |c|
     v[:elasticsearch_package] = {}
     v[:template] = if v[:elasticsearch_major_version] < 6
                      JSON.load(File.new('spec/fixtures/templates/pre_6.0.json'))
+                   elsif v[:elasticsearch_major_version] >= 8
+                     JSON.load(File.new('spec/fixtures/templates/post_8.0.json'))
                    else
                      JSON.load(File.new('spec/fixtures/templates/post_6.0.json'))
                    end
@@ -124,6 +126,17 @@ RSpec.configure do |c|
 
   c.before :context, :first_purge do
     shell 'rm -rf {/usr/share,/etc,/var/lib}/elasticsearch*'
+  end
+
+  # Provide a hook filter to spit out some ES logs if the example fails.
+  c.after(:example, :logs_on_failure) do |example|
+    if example.exception
+      hosts.each do |host|
+        on host, "find / -name '#{v[:cluster_name]}.log' | xargs cat || true" do |result|
+          puts result.formatted_output
+        end
+      end
+    end
   end
 end
 
@@ -257,17 +270,6 @@ RSpec.configure do |c|
           #{java}
         }
       MANIFEST
-    end
-  end
-
-  c.after :suite do
-    if ENV['ES_VERSION']
-      hosts.each do |host|
-        timestamp = Time.now
-        log_dir = File.join('./spec/logs', timestamp.strftime('%F_%H_%M_%S'))
-        FileUtils.mkdir_p(log_dir) unless File.directory?(log_dir)
-        scp_from(host, '/var/log/elasticsearch', log_dir)
-      end
     end
   end
 end
