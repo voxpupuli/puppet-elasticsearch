@@ -95,14 +95,14 @@ shared_examples 'hiera acceptance tests' do |plugins|
         'es-hiera-multiple-1' => {
           'config' => {
             'node.name' => 'es-hiera-multiple-1',
-            'network.host' => '0.0.0.0',
+            'http.bind_host' => '0.0.0.0',
             'http.port' => 9201
           }
         },
         'es-hiera-multiple-2' => {
           'config' => {
             'node.name' => 'es-hiera-multiple-2',
-            'network.host' => '0.0.0.0',
+            'http.bind_host' => '0.0.0.0',
             'http.port' => 9202
           }
         }
