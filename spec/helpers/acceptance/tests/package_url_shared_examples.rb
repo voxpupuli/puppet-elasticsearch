@@ -17,7 +17,7 @@ shared_examples 'package_url acceptance tests' do
         <<-MANIFEST
           config => {
             'cluster.name' => '#{v[:cluster_name]}',
-            'network.host' => '0.0.0.0',
+            'http.bind_host' => '0.0.0.0',
           },
           manage_repo => false,
           package_url => '#{v[:elasticsearch_package][:url]}'
@@ -38,7 +38,7 @@ shared_examples 'package_url acceptance tests' do
         <<-MANIFEST
           config => {
             'cluster.name' => '#{v[:cluster_name]}',
-            'network.host' => '0.0.0.0',
+            'http.bind_host' => '0.0.0.0',
           },
           manage_repo => false,
           package_url => 'file:/tmp/#{v[:elasticsearch_package][:filename]}'
@@ -61,7 +61,7 @@ shared_examples 'package_url acceptance tests' do
         <<-MANIFEST
           config => {
             'cluster.name' => '#{v[:cluster_name]}',
-            'network.host' => '0.0.0.0',
+            'http.bind_host' => '0.0.0.0',
           },
           manage_repo => false,
           package_url =>
