@@ -17,6 +17,10 @@ shared_examples 'module removal' do |instances|
       apply_manifest manifest, :catch_failures => true
     end
 
+    it 'is idempotent' do
+      apply_manifest manifest, :catch_changes => true
+    end
+
     instances.each do |instance|
       describe file("/etc/elasticsearch/#{instance}") do
         it { should_not be_directory }

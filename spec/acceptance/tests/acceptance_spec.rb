@@ -64,7 +64,7 @@ describe "elasticsearch v#{v[:elasticsearch_full_version]} class" do
       api_timeout => 60,
       config => {
         'cluster.name' => '#{v[:cluster_name]}',
-        'network.host' => '0.0.0.0',
+        'http.bind_host' => '0.0.0.0',
       },
       oss => #{v[:oss]},
       #{package}

@@ -29,6 +29,15 @@ Puppet::Type.newtype(:elasticsearch_service_file) do
 
       template = ERB.new(should, 0, '-')
       is == template.result(binding)
+    rescue ElasticsearchPackageNotFoundError
+      # This behavior is extremely confusing because of the fact that while
+      # someone should be able to indicate that an instance should be absent,
+      # if there is no service file to query via Puppet providers, it can't
+      # determine this fact. If no package exists and thus `absent` has been
+      # instructed, indicate that the template contents are correct, because
+      # we don't really care what's in there anyway - the service file is for
+      # an absent instance of Elasticsearch anyway.
+      return true
     end
 
     # Represent as a checksum, not the whole file
