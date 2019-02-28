@@ -41,7 +41,7 @@ shared_examples 'manifest application' do |instances, idempotency_check = true|
     end
 
     if idempotency_check
-      it 'is idempotent' do
+      it 'is idempotent', :logs_on_failure do
         apply_manifest applied_manifest, :catch_changes => true
       end
     end
