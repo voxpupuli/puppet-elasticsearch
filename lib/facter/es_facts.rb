@@ -3,6 +3,7 @@ require 'json'
 require 'yaml'
 
 # Helper module to encapsulate custom fact injection
+# rubocop:disable Metrics/ModuleLength
 module EsFacts
   # Add a fact to the catalog of host facts
   def self.add_fact(prefix, key, value)
@@ -19,7 +20,7 @@ module EsFacts
       'searchguard.ssl.http.enabled'
     ]
 
-    tls_keys.any? { |key| config.key? key and config[key] == true }
+    tls_keys.any? { |key| (config.key? key) && (config[key] == true) }
   end
 
   # Helper to determine the instance http.port number
@@ -27,9 +28,9 @@ module EsFacts
     enabled = 'http.enabled'
     httpport = 'http.port'
 
-    if not config[enabled].nil? and config[enabled] == 'false'
+    if !config[enabled].nil? && config[enabled] == 'false'
       false
-    elsif not config[httpport].nil?
+    elsif !config[httpport].nil?
       { config[httpport] => ssl?(config) }
     else
       { '9200' => ssl?(config) }
@@ -61,9 +62,7 @@ module EsFacts
       if File.readable?("#{dir_prefix}/#{dir}/elasticsearch.yml")
         config_data = YAML.load_file("#{dir_prefix}/#{dir}/elasticsearch.yml")
         httpport = get_httpport(config_data)
-        if httpport
-          httpports.merge! httpport
-        end
+        httpports.merge! httpport if httpport
       end
     end
 
@@ -118,8 +117,8 @@ module EsFacts
           end
           add_fact(key_prefix, 'plugins', plugin_names.join(','))
 
-          nodes_data['http']['bound_address'].each {|i| http_bound_addresses << i }
-          nodes_data['transport']['bound_address'].each {|i| transport_bound_addresses << i }
+          nodes_data['http']['bound_address'].each { |i| http_bound_addresses << i }
+          nodes_data['transport']['bound_address'].each { |i| transport_bound_addresses << i }
           transport_publish_addresses << nodes_data['transport']['publish_address']
           transportports << nodes_data['settings']['transport']['tcp']['port']
 
@@ -130,7 +129,6 @@ module EsFacts
                    'transport_publish_addresses' => transport_publish_addresses,
                    json_data['name'] => { 'settings' => nodes_data['settings'], 'http' => nodes_data['http'], 'transport' => nodes_data['transport'] } }
           nodes.merge! node
-
         end
       end
     rescue
@@ -144,7 +142,6 @@ module EsFacts
   end
   # rubocop:enable Metrics/CyclomaticComplexity
   # rubocop:enable Metrics/PerceivedComplexity
-
 end
 
 EsFacts.run
