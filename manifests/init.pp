@@ -65,6 +65,10 @@
 #   Directory containing the elasticsearch configuration.
 #   Use this setting if your packages deviate from the norm (`/etc/elasticsearch`)
 #
+# @param configdir_recurselimit
+#   Dictates how deeply the file copy recursion logic should descend when
+#   copying files from the `configdir` to instance `configdir`s.
+#
 # @param daily_rolling_date_pattern
 #   File pattern for the file appender log when file_rolling_type is 'dailyRollingFile'.
 #
@@ -309,6 +313,7 @@ class elasticsearch (
   Boolean                                         $autoupgrade,
   Hash                                            $config,
   Stdlib::Absolutepath                            $configdir,
+  Integer                                         $configdir_recurselimit,
   String                                          $daily_rolling_date_pattern,
   Elasticsearch::Multipath                        $datadir,
   Boolean                                         $datadir_instance_directories,
@@ -578,4 +583,8 @@ class elasticsearch (
   -> Elasticsearch::Instance <| ensure == 'absent' |>
   Elasticsearch::Snapshot_repository <| |>
   -> Elasticsearch::Instance <| ensure == 'absent' |>
+
+  # Ensure scripts are installed before copying them to configuration directory
+  Elasticsearch::Script <| |>
+  -> File["${configdir}/scripts"]
 }

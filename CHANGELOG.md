@@ -9,6 +9,7 @@ Puppet 4.10.0 is the new minimum required version of Puppet.
 #### Fixes
 * The Elasticsearch log directory is no longer recursively managed to avoid stomping on the user/mode settings that Elasticsearch prefers.
 * Package management on apt-based systems no longer encounters dependency errors when `manage_repo => false`.
+* Plugin configuration files are now more well-supported by respecting subdirectory copy recursion. See `elasticsearch::configdir_recurselimit` for more information.
 * An error related to elasticsearch_roles and `yield` errors has been fixed
 * Correctly permit instances to be set to `absent` without errors.
 
