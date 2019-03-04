@@ -119,8 +119,8 @@ module EsFacts
 
           nodes_data['http']['bound_address'].each { |i| http_bound_addresses << i }
           nodes_data['transport']['bound_address'].each { |i| transport_bound_addresses << i }
-          transport_publish_addresses << nodes_data['transport']['publish_address']
-          transportports << nodes_data['settings']['transport']['tcp']['port']
+          transport_publish_addresses << nodes_data['transport']['publish_address'] unless nodes_data['transport']['publish_address'].nil?
+          transportports << nodes_data['settings']['transport']['tcp']['port'] unless nodes_data['settings']['transport']['tcp'].nil? or nodes_data['settings']['transport']['tcp']['port'].nil?
 
           node = { 'http_ports' => httpports.keys,
                    'transport_ports' => transportports,
