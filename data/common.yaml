@@ -39,7 +39,7 @@ elasticsearch::package_provider: package
 elasticsearch::package_url: ~
 elasticsearch::pid_dir: /var/run/elasticsearch
 elasticsearch::pipelines: {}
-elasticsearch::plugindir: "%{hiera('elasticsearch::homedir')}/plugins"
+elasticsearch::plugindir: ~
 elasticsearch::plugins: {}
 elasticsearch::proxy_url: ~
 elasticsearch::purge_configdir: false

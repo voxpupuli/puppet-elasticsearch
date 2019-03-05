@@ -11,6 +11,7 @@ Puppet 4.10.0 is the new minimum required version of Puppet.
 * Package management on apt-based systems no longer encounters dependency errors when `manage_repo => false`.
 * An error related to elasticsearch_roles and `yield` errors has been fixed
 * Correctly permit instances to be set to `absent` without errors.
+* Resolved an issue arising from the use of `hiera()` in Hiera yaml data files.
 
 #### Features
 
