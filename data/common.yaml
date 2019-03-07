@@ -11,6 +11,7 @@ elasticsearch::api_timeout: 10
 elasticsearch::autoupgrade: false
 elasticsearch::config: {}
 elasticsearch::configdir: /etc/elasticsearch
+elasticsearch::configdir_recurselimit: 2
 elasticsearch::daily_rolling_date_pattern: |
   "'.'yyyy-MM-dd"
 elasticsearch::datadir_instance_directories: true

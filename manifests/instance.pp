@@ -23,6 +23,10 @@
 #   Path to directory containing the elasticsearch configuration.
 #   Use this setting if your packages deviate from the norm (/etc/elasticsearch).
 #
+# @param configdir_recurselimit
+#   Dictates how deeply the file copy recursion logic should descend when
+#   copying files from the `elasticsearch::configdir` to instance `configdir`s.
+#
 # @param daily_rolling_date_pattern
 #   File pattern for the file appender log when file_rolling_type is `dailyRollingFile`
 #
@@ -130,6 +134,7 @@ define elasticsearch::instance (
   Optional[Stdlib::Absolutepath]     $certificate                   = undef,
   Optional[Hash]                     $config                        = undef,
   Stdlib::Absolutepath               $configdir                     = "${elasticsearch::configdir}/${name}",
+  Integer                            $configdir_recurselimit        = $elasticsearch::configdir_recurselimit,
   String                             $daily_rolling_date_pattern    = $elasticsearch::daily_rolling_date_pattern,
   Optional[Elasticsearch::Multipath] $datadir                       = undef,
   Boolean                            $datadir_instance_directories  = $elasticsearch::datadir_instance_directories,
@@ -366,7 +371,7 @@ define elasticsearch::instance (
         "${elasticsearch::configdir}/log4j2.properties",
       ],
       recurse      => 'remote',
-      recurselimit => 1,
+      recurselimit => $configdir_recurselimit,
       source       => $elasticsearch::configdir,
       purge        => $elasticsearch::purge_configdir,
       force        => $elasticsearch::purge_configdir,
