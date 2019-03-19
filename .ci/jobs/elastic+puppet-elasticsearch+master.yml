@@ -1,0 +1,22 @@
+---
+- job:
+    name: elastic+puppet-elasticsearch+master
+    display-name: elastic / puppet-elasticsearch - master
+    description: Master branch testing
+    project-type: multijob
+    scm:
+    - git:
+        wipe-workspace: 'False'
+    triggers:
+    - timed: H H(02-04) * * *
+    builders:
+    - multijob:
+        name: intake phase
+        projects:
+        - name: elastic+puppet-elasticsearch+master+intake
+          predefined-parameters: branch_specifier=master
+    - multijob:
+        name: acceptance phase
+        projects:
+        - name: elastic+puppet-elasticsearch+master+acceptance
+          predefined-parameters: branch_specifier=master
