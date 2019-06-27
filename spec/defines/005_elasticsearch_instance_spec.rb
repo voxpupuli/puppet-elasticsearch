@@ -85,6 +85,7 @@ describe 'elasticsearch::instance', :type => 'define' do
           "elasticsearch/etc/init.d/elasticsearch.#{initscript}.erb",
         :init_defaults => {
           'CONF_DIR'       => '/etc/elasticsearch/es-instance',
+          'ES_PATH_DIR'    => '/etc/elasticsearch/es-instance',
           'ES_PATH_CONF'   => '/etc/elasticsearch/es-instance',
           'DATA_DIR'       => '/var/lib/elasticsearch',
           'ES_JVM_OPTIONS' => '/etc/elasticsearch/es-instance/jvm.options',
@@ -799,21 +800,21 @@ describe 'elasticsearch::instance', :type => 'define' do
                 -Dlog4j2.disable.jmx=true.
                 -XX:\+AlwaysPreTouch.
                 -XX:\+HeapDumpOnOutOfMemoryError.
-                -XX:\+PrintGCDateStamps.
-                -XX:\+PrintGCDetails.
-                -XX:\+PrintTenuringDistribution.
                 -XX:\+UseCMSInitiatingOccupancyOnly.
                 -XX:\+UseConcMarkSweepGC.
-                -XX:\+UseGCLogFileRotation.
                 -XX:-OmitStackTraceInFastThrow.
                 -XX:CMSInitiatingOccupancyFraction=75.
-                -XX:GCLogFileSize=64m.
-                -XX:NumberOfGCLogFiles=32.
-                -Xloggc:\/var\/log\/elasticsearch\/es-instance\/gc.log.
                 -Xms4g.
                 -Xmx4g.
                 -Xss1m.
                 -server.
+                8:-XX:\+PrintGCDateStamps.
+                8:-XX:\+PrintGCDetails.
+                8:-XX:\+PrintTenuringDistribution.
+                8:-XX:\+UseGCLogFileRotation.
+                8:-XX:GCLogFileSize=64m.
+                8:-XX:NumberOfGCLogFiles=32.
+                8:-Xloggc:\/var\/log\/elasticsearch\/es-instance\/gc.log.
               }xm)
           end
         end
@@ -841,21 +842,21 @@ describe 'elasticsearch::instance', :type => 'define' do
                 -Dlog4j2.disable.jmx=true.
                 -XX:\+AlwaysPreTouch.
                 -XX:\+HeapDumpOnOutOfMemoryError.
-                -XX:\+PrintGCDateStamps.
-                -XX:\+PrintGCDetails.
-                -XX:\+PrintTenuringDistribution.
                 -XX:\+UseCMSInitiatingOccupancyOnly.
                 -XX:\+UseConcMarkSweepGC.
-                -XX:\+UseGCLogFileRotation.
                 -XX:-OmitStackTraceInFastThrow.
                 -XX:CMSInitiatingOccupancyFraction=75.
-                -XX:GCLogFileSize=64m.
-                -XX:NumberOfGCLogFiles=32.
-                -Xloggc:\/var\/log\/elasticsearch\/es-instance\/gc.log.
                 -Xms8g.
                 -Xmx8g.
                 -Xss1m.
                 -server.
+                8:-XX:\+PrintGCDateStamps.
+                8:-XX:\+PrintGCDetails.
+                8:-XX:\+PrintTenuringDistribution.
+                8:-XX:\+UseGCLogFileRotation.
+                8:-XX:GCLogFileSize=64m.
+                8:-XX:NumberOfGCLogFiles=32.
+                8:-Xloggc:\/var\/log\/elasticsearch\/es-instance\/gc.log.
               }xm)
           end
         end

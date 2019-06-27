@@ -190,6 +190,12 @@ define elasticsearch::instance (
     false => undef,
   }
 
+  # Private var used by jvm.options.erb and log4j.properties.erb
+  $_is_7_min = ( $::elasticsearch::version =~ String
+                and versioncmp($::elasticsearch::version, '7.0.0') >= 0
+                ) or ( defined('$::elastic_stack::repo::version')
+                and versioncmp(String($::elastic_stack::repo::version), '7') >= 0 )
+
   if ($ensure == 'present') {
 
     # Configuration hash
@@ -461,6 +467,7 @@ define elasticsearch::instance (
       $elasticsearch::init_defaults,
       {
         'CONF_DIR'       => $configdir,
+        'ES_PATH_DIR'    => $configdir,
         'ES_HOME'        => $elasticsearch::homedir,
         'ES_JVM_OPTIONS' => "${configdir}/jvm.options",
         'ES_PATH_CONF'   => $configdir,

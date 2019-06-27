@@ -25,14 +25,27 @@ defaults = {
   '-Dlog4j.shutdownHookEnabled' => '-Dlog4j.shutdownHookEnabled=false',
   '-Dlog4j2.disable.jmx' => '-Dlog4j2.disable.jmx=true',
   'HeapDumpOnOutOfMemoryError' => '-XX:+HeapDumpOnOutOfMemoryError',
-  'PrintGCDetails' => '-XX:+PrintGCDetails',
-  'PrintGCDateStamps' => '-XX:+PrintGCDateStamps',
-  'PrintTenuringDistribution' => '-XX:+PrintTenuringDistribution',
-  'Xloggc' => "-Xloggc:#{@logdir}/gc.log",
-  'UseGCLogFileRotation' => '-XX:+UseGCLogFileRotation',
-  'NumberOfGCLogFiles' => '-XX:NumberOfGCLogFiles=32',
-  'GCLogFileSize' => '-XX:GCLogFileSize=64m',
+  'PrintGCDetails' => '8:-XX:+PrintGCDetails',
+  'PrintGCDateStamps' => '8:-XX:+PrintGCDateStamps',
+  'PrintTenuringDistribution' => '8:-XX:+PrintTenuringDistribution',
+  'Xloggc' => "8:-Xloggc:#{@logdir}/gc.log",
+  'UseGCLogFileRotation' => '8:-XX:+UseGCLogFileRotation',
+  'NumberOfGCLogFiles' => '8:-XX:NumberOfGCLogFiles=32',
+  'GCLogFileSize' => '8:-XX:GCLogFileSize=64m',
 }
+defaults_7x = {
+  '-Des.networkaddress.cache.ttl'          => '-Des.networkaddress.cache.ttl=60',
+  '-Des.networkaddress.cache.negative.ttl' => '-Des.networkaddress.cache.negative.ttl=10',
+  '-Djava.io.tmpdir'                       => '-Djava.io.tmpdir=${ES_TMPDIR}',
+  'HeapDumpPath'                           => '-XX:HeapDumpPath=/var/lib/elasticsearch',
+  'ErrorFile'                              => "-XX:ErrorFile=#{@logdir}/hs_err_pid%p.log",
+  'PrintGCApplicationStoppedTime'          => '8:-XX:+PrintGCApplicationStoppedTime',
+  'Xlog'                                   => "9-:-Xlog:gc*,gc+age=trace,safepoint:file=#{@logdir}/gc.log:utctime,pid,tags:filecount=32,filesize=64m",
+  '-Djava.locale.providers'                => '9-:-Djava.locale.providers=COMPAT',
+}
+
+if @_is_7_min then defaults.merge!( defaults_7x ) end
+
 defaults.each {|k,v| set_default(@jvm_options, k, v)}
 
 -%>
