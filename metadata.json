@@ -70,12 +70,6 @@
       ]
     },
     {
-      "operatingsystem": "OpenSuSE",
-      "operatingsystemrelease": [
-        "42.2"
-      ]
-    },
-    {
       "operatingsystem": "SLES",
       "operatingsystemrelease": [
         "12.1",
