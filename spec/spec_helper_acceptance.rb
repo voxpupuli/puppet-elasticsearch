@@ -236,7 +236,7 @@ RSpec.configure do |c|
       dist_module = {
         'Debian' => ['apt'],
         'Suse'   => ['zypprepo'],
-        'RedHat' => %w[concat yumrepo]
+        'RedHat' => %w[concat yumrepo_core]
       }[f['os']['family']]
 
       modules += dist_module unless dist_module.nil?
