@@ -36,6 +36,9 @@ jobs:
   - env:
     - TASK=intake
     - PUPPET_VERSION='~> 5.0'
+  - env:
+    - TASK=intake
+    - PUPPET_VERSION='~> 6.0'
   - stage: acceptance
     env:
     - TASK=beaker:centos-6-x64:acceptance
