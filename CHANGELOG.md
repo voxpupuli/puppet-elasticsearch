@@ -1,3 +1,9 @@
+## x.x.x (Month Day, Year)
+
+#### Features
+
+#### Fixes
+
 ## 6.3.4 (August 7, 2019)
 
 #### Puppet < 4.10 No Longer Supported
