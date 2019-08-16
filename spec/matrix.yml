@@ -11,6 +11,7 @@ OS:
   - ubuntu-server-1604-x64
 PUPPET_VERSION:
   - ""
+  - "~> 6.0"
   - "~> 5.0"
   - "~> 4.10.0"
 TEST_TYPE:
