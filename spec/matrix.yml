@@ -16,4 +16,4 @@ PUPPET_VERSION:
 TEST_TYPE:
   - latest
   - 5.6.9
-  - snapshot
+#  - snapshot
