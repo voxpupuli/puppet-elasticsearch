@@ -4,6 +4,7 @@
 * Support for Puppet 6
 
 #### Fixes
+* Fix "Could not autoload" errors in some custom types/providers.
 
 ## 6.3.4 (August 7, 2019)
 
