@@ -3,6 +3,9 @@ fixtures:
     archive:
       repo: puppet/archive
       ref: 0.5.1
+    augeas_core:
+      repo: puppetlabs/augeas_core
+      ref: 1.0.4
     stdlib:
       repo: puppetlabs/stdlib
       ref: 4.13.1
@@ -19,8 +22,11 @@ fixtures:
       repo: puppetlabs/apt
       ref: 2.2.2
     zypprepo:
-      repo: darin/zypprepo
-      ref: 1.0.2
+      repo: puppet/zypprepo
+      ref: 2.2.2
+    yumrepo_core:
+      repo: puppetlabs/yumrepo_core
+      ref: 1.0.3
     java_ks: puppetlabs/java_ks
     elastic_stack:
       repo: elastic/elastic_stack
