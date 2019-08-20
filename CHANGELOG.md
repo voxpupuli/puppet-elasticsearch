@@ -1,6 +1,11 @@
 ## x.x.x (Month Day, Year)
 
-### Migration Guide
+#### Features
+* Support for Puppet 6
+
+#### Fixes
+
+## 6.3.4 (August 7, 2019)
 
 #### Puppet < 4.10 No Longer Supported
 
@@ -13,8 +18,6 @@ Puppet 4.10.0 is the new minimum required version of Puppet.
 * An error related to elasticsearch_roles and `yield` errors has been fixed
 * Correctly permit instances to be set to `absent` without errors.
 * Resolved an issue arising from the use of `hiera()` in Hiera yaml data files.
-
-#### Features
 
 ## 6.3.3 (September 7, 2018)
 

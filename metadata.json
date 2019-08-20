@@ -1,6 +1,6 @@
 {
   "name": "elastic-elasticsearch",
-  "version": "6.3.3",
+  "version": "6.3.4",
   "source": "https://github.com/elastic/puppet-elasticsearch",
   "author": "elastic",
   "license": "Apache-2.0",
@@ -19,7 +19,7 @@
     },
     {
       "name": "puppetlabs/stdlib",
-      "version_requirement": ">= 4.13.0 < 6.0.0"
+      "version_requirement": ">= 4.13.0 < 7.0.0"
     }
   ],
   "operatingsystem_support": [
@@ -70,12 +70,6 @@
       ]
     },
     {
-      "operatingsystem": "OpenSuSE",
-      "operatingsystemrelease": [
-        "42.2"
-      ]
-    },
-    {
       "operatingsystem": "SLES",
       "operatingsystemrelease": [
         "12.1",
@@ -86,7 +80,7 @@
   "requirements": [
     {
       "name": "puppet",
-      "version_requirement": ">= 4.10.0 < 6.0.0"
+      "version_requirement": ">= 4.10.0 < 7.0.0"
     }
   ]
 }

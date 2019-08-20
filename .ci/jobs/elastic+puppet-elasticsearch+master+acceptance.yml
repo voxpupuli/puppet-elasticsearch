@@ -1,0 +1,46 @@
+---
+- job:
+    name: elastic+puppet-elasticsearch+master+acceptance
+    display-name: elastic / puppet-elasticsearch - master - acceptance
+    description: Master - acceptance
+    axes:
+    - axis:
+        type: slave
+        name: label
+        values:
+        - linux
+    - axis:
+        name: OS
+        filename: spec/matrix.yml
+        type: yaml
+    - axis:
+        name: TEST_TYPE
+        filename: spec/matrix.yml
+        type: yaml
+    builders:
+    - shell: |-
+        #!/usr/local/bin/runbld
+        set -euo pipefail
+
+        export RBENV_VERSION='2.3.0'
+        export PATH="$HOME/.rbenv/bin:$PATH"
+        eval "$(rbenv init -)"
+        rbenv local $RBENV_VERSION
+
+        # We need to not use [VERSION] in the matrix name since having
+        # square brackets in the directories breaks some of the puppet tests
+        case "$TEST_TYPE" in
+        latest)
+        test=acceptance
+        ;;
+        snapshot)
+        test=snapshot
+        ;;
+        *)
+        test="acceptance[$TEST_TYPE]"
+        ;;
+        esac
+
+        echo '--color' >> ~/.rspec
+        bundle install
+        bundle exec rake "beaker:$OS:$test"
