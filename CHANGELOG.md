@@ -1,6 +1,7 @@
 ## x.x.x (Month Day, Year)
 
 #### Features
+* Support for Puppet 6
 
 #### Fixes
 
