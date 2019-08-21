@@ -36,7 +36,7 @@ class elasticsearch::config {
         group  => $elasticsearch::elasticsearch_group,
         owner  => $elasticsearch::elasticsearch_user,
         mode   => '0750';
-      $elasticsearch::plugindir:
+      $elasticsearch::_plugindir:
         ensure => 'directory',
         group  => $elasticsearch::elasticsearch_group,
         owner  => $elasticsearch::elasticsearch_user,
@@ -160,7 +160,7 @@ class elasticsearch::config {
 
   } elsif ( $elasticsearch::ensure == 'absent' ) {
 
-    file { $elasticsearch::plugindir:
+    file { $elasticsearch::_plugindir:
       ensure => 'absent',
       force  => true,
       backup => false,

@@ -5,6 +5,7 @@
 
 #### Fixes
 * Fix "Could not autoload" errors in some custom types/providers.
+* Resolved an issue arising from the use of `hiera()` in Hiera yaml data files.
 
 ## 6.3.4 (August 7, 2019)
 
