@@ -1,4 +1,4 @@
-## x.x.x (Month Day, Year)
+## 6.4.0 (August 28, 2019)
 
 #### Features
 * Support for Puppet 6
