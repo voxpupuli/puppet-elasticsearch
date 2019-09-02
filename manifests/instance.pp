@@ -426,8 +426,10 @@ define elasticsearch::instance (
     }
 
     file { "${instance_configdir}/scripts":
-      ensure => 'link',
-      target => "${elasticsearch::params::homedir}/scripts",
+      ensure => 'directory',
+      owner  => $elasticsearch::elasticsearch_group,
+      group  => $elasticsearch::elasticsearch_user,
+      mode   => '0644',
     }
 
     if $security_plugin != undef {
