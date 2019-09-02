@@ -1,3 +1,8 @@
+## 5.5.1 (September 2, 2019)
+
+#### Fixes
+* Drop symlink of scripts in favor of a plain directory
+
 ## 5.5.0 (November 13, 2017)
 
 #### Features
