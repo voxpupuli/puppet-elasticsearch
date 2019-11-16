@@ -323,6 +323,9 @@
 # @param version
 #   To set the specific version you want to install.
 #
+# @param xpack
+#   Enable x-pack security. Requires ca_certificate, certificate and private key.
+#
 # @author Richard Pijnenburg <richard.pijnenburg@elasticsearch.com>
 # @author Tyler Langlois <tyler.langlois@elastic.co>
 # @author Gavin Williams <gavin.williams@elastic.co>

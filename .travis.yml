@@ -1,5 +1,9 @@
 sudo: required
+<<<<<<< HEAD
 # group: deprecated-2017Q4
+=======
+group: deprecated-2017q4
+>>>>>>> elastic 7.x support
 services:
 - docker
 cache:
@@ -11,11 +15,6 @@ language: ruby
 script: travis_retry bundle exec rake $TASK
 jobs:
   allow_failures:
-  - env:
-    - TASK=beaker:ubuntu-server-1404-x64:snapshot
-  - env:
-    - OSS_PACKAGE=true
-    - TASK=beaker:ubuntu-server-1404-x64:snapshot
   - env:
     - TASK=beaker:ubuntu-server-1604-x64:snapshot
   - env:
@@ -134,11 +133,6 @@ jobs:
   #   - BEAKER_PUPPET_COLLECTION=puppet6
   #   - TASK=beaker:ubuntu-server-2004-x64:acceptance[7.8.0]
   - stage: snapshots
-    env:
-    - TASK=beaker:ubuntu-server-1404-x64:snapshot
-    env:
-    - OSS_PACKAGE=true
-    - TASK=beaker:ubuntu-server-1404-x64:snapshot
   - env:
     - TASK=beaker:ubuntu-server-1604-x64:snapshot
   - env:

@@ -1,0 +1,47 @@
+# This file is managed by Puppet -- <%= @name %>
+#
+# Set the 'jvm_options' parameter on the elasticsearch class to change this file.
+<%
+def set_default(options, match_string, default)
+  options.detect {|o| o.include?(match_string)} || options.push(default)
+end
+
+defaults = {
+  '-Xms' => '-Xms2g',
+  '-Xmx' => '-Xmx2g',
+  'UseConcMarkSweepGC' => '8:-XX:+UseConcMarkSweepGC',
+  'CMSInitiatingOccupancyFraction=' => '-XX:CMSInitiatingOccupancyFraction=75',
+  'UseCMSInitiatingOccupancyOnly' => '-XX:+UseCMSInitiatingOccupancyOnly',
+  'AlwaysPreTouch' => '-XX:+AlwaysPreTouch',
+  'server' => '-server',
+  '-Xss' => '-Xss1m',
+  '-Djava.awt.headless=' => '-Djava.awt.headless=true',
+  '-Dfile.encoding=' => '-Dfile.encoding=UTF-8',
+  '-Djna.nosys=' => '-Djna.nosys=true',
+  'OmitStackTraceInFastThrow' => '-XX:-OmitStackTraceInFastThrow',
+  '-Dio.netty.noUnsafe' => '-Dio.netty.noUnsafe=true',
+  '-Dio.netty.noKeySetOptimization' => '-Dio.netty.noKeySetOptimization=true',
+  '-Dio.netty.recycler.maxCapacityPerThread' => '-Dio.netty.recycler.maxCapacityPerThread=0',
+  '-Dio.netty.allocator.numDirectArenas' => '-Dio.netty.allocator.numDirectArenas=0',
+  '-Dlog4j.shutdownHookEnabled' => '-Dlog4j.shutdownHookEnabled=false',
+  '-Dlog4j2.disable.jmx' => '-Dlog4j2.disable.jmx=true',
+  '-Djava.io.tmpdir' => '-Djava.io.tmpdir=${ES_TMPDIR}',
+  'HeapDumpOnOutOfMemoryError' => '-XX:+HeapDumpOnOutOfMemoryError',
+  'PrintGCDetails' => '8:-XX:+PrintGCDetails',
+  'PrintGCDateStamps' => '8:-XX:+PrintGCDateStamps',
+  'PrintTenuringDistribution' => '8:-XX:+PrintTenuringDistribution',
+  'PrintGCApplicationStoppedTime' => '8:-XX:+PrintGCApplicationStoppedTime',
+  'Xloggc' => "8:-Xloggc:#{@logdir}/gc.log",
+  'UseGCLogFileRotation' => '8:-XX:+UseGCLogFileRotation',
+  'NumberOfGCLogFiles' => '8:-XX:NumberOfGCLogFiles=5',
+  'GCLogFileSize' => '8:-XX:GCLogFileSize=64m',
+  'Xlog:gc' => "9-:-Xlog:gc*,gc+age=trace,safepoint:file=#{@logdir}/gc.log:utctime,pid,tags:filecount=5,filesize=64m",
+  'Djava.locale.providers' => '9-:-Djava.locale.providers=COMPAT',
+}
+defaults.each {|k,v| set_default(@jvm_options, k, v)}
+
+-%>
+
+<% @jvm_options.sort.each do |line| -%>
+<%= line %>
+<% end -%>
