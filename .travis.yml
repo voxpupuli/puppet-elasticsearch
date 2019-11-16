@@ -1,5 +1,5 @@
 sudo: required
-group: deprecated-2017Q4
+group: deprecated-2017q4
 services:
 - docker
 cache:
@@ -11,11 +11,6 @@ language: ruby
 script: travis_retry bundle exec rake $TASK
 jobs:
   allow_failures:
-  - env:
-    - TASK=beaker:ubuntu-server-1404-x64:snapshot
-  - env:
-    - OSS_PACKAGE=true
-    - TASK=beaker:ubuntu-server-1404-x64:snapshot
   - env:
     - TASK=beaker:ubuntu-server-1604-x64:snapshot
   - env:
@@ -98,23 +93,12 @@ jobs:
   - env:
     - TASK=beaker:debian-9-x64:acceptance[2.4.6]
   - env:
-    - TASK=beaker:ubuntu-server-1404-x64:acceptance
-  - env:
-    - TASK=beaker:ubuntu-server-1404-x64:acceptance[5.6.9]
-  - env:
-    - TASK=beaker:ubuntu-server-1404-x64:acceptance[2.4.6]
-  - env:
     - TASK=beaker:ubuntu-server-1604-x64:acceptance
   - env:
     - TASK=beaker:ubuntu-server-1604-x64:acceptance[5.6.9]
   - env:
     - TASK=beaker:ubuntu-server-1604-x64:acceptance[2.4.6]
   - stage: snapshots
-    env:
-    - TASK=beaker:ubuntu-server-1404-x64:snapshot
-    env:
-    - OSS_PACKAGE=true
-    - TASK=beaker:ubuntu-server-1404-x64:snapshot
   - env:
     - TASK=beaker:ubuntu-server-1604-x64:snapshot
   - env:

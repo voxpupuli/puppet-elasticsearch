@@ -790,30 +790,35 @@ describe 'elasticsearch::instance', :type => 'define' do
             should contain_file('/etc/elasticsearch/es-instance/jvm.options')
               .with_content(%r{
                 -Dfile.encoding=UTF-8.
+                -Dio.netty.allocator.numDirectArenas=0.
                 -Dio.netty.noKeySetOptimization=true.
                 -Dio.netty.noUnsafe=true.
                 -Dio.netty.recycler.maxCapacityPerThread=0.
                 -Djava.awt.headless=true.
+                -Djava.io.tmpdir=\${ES_TMPDIR}.
                 -Djna.nosys=true.
                 -Dlog4j.shutdownHookEnabled=false.
                 -Dlog4j2.disable.jmx=true.
                 -XX:\+AlwaysPreTouch.
                 -XX:\+HeapDumpOnOutOfMemoryError.
-                -XX:\+PrintGCDateStamps.
-                -XX:\+PrintGCDetails.
-                -XX:\+PrintTenuringDistribution.
                 -XX:\+UseCMSInitiatingOccupancyOnly.
                 -XX:\+UseConcMarkSweepGC.
-                -XX:\+UseGCLogFileRotation.
                 -XX:-OmitStackTraceInFastThrow.
                 -XX:CMSInitiatingOccupancyFraction=75.
-                -XX:GCLogFileSize=64m.
-                -XX:NumberOfGCLogFiles=32.
-                -Xloggc:\/var\/log\/elasticsearch\/es-instance\/gc.log.
                 -Xms4g.
                 -Xmx4g.
                 -Xss1m.
                 -server.
+                8:-XX:\+PrintGCApplicationStoppedTime.
+                8:-XX:\+PrintGCDateStamps.
+                8:-XX:\+PrintGCDetails.
+                8:-XX:\+PrintTenuringDistribution.
+                8:-XX:\+UseGCLogFileRotation.
+                8:-XX:GCLogFileSize=64m.
+                8:-XX:NumberOfGCLogFiles=5.
+                8:-Xloggc:/var/log/elasticsearch/es-instance/gc.log.
+                9-:-Djava.locale.providers=COMPAT.
+                9-:-Xlog:gc\*,gc\+age=trace,safepoint:file=/var/log/elasticsearch/es-instance/gc.log:utctime,pid,tags:filecount=5,filesize=64m.
               }xm)
           end
         end
@@ -832,30 +837,35 @@ describe 'elasticsearch::instance', :type => 'define' do
             should contain_file('/etc/elasticsearch/es-instance/jvm.options')
               .with_content(%r{
                 -Dfile.encoding=UTF-8.
+                -Dio.netty.allocator.numDirectArenas=0.
                 -Dio.netty.noKeySetOptimization=true.
                 -Dio.netty.noUnsafe=true.
                 -Dio.netty.recycler.maxCapacityPerThread=0.
                 -Djava.awt.headless=true.
+                -Djava.io.tmpdir=\${ES_TMPDIR}.
                 -Djna.nosys=true.
                 -Dlog4j.shutdownHookEnabled=false.
                 -Dlog4j2.disable.jmx=true.
                 -XX:\+AlwaysPreTouch.
                 -XX:\+HeapDumpOnOutOfMemoryError.
-                -XX:\+PrintGCDateStamps.
-                -XX:\+PrintGCDetails.
-                -XX:\+PrintTenuringDistribution.
                 -XX:\+UseCMSInitiatingOccupancyOnly.
                 -XX:\+UseConcMarkSweepGC.
-                -XX:\+UseGCLogFileRotation.
                 -XX:-OmitStackTraceInFastThrow.
                 -XX:CMSInitiatingOccupancyFraction=75.
-                -XX:GCLogFileSize=64m.
-                -XX:NumberOfGCLogFiles=32.
-                -Xloggc:\/var\/log\/elasticsearch\/es-instance\/gc.log.
                 -Xms8g.
                 -Xmx8g.
                 -Xss1m.
                 -server.
+                8:-XX:\+PrintGCApplicationStoppedTime.
+                8:-XX:\+PrintGCDateStamps.
+                8:-XX:\+PrintGCDetails.
+                8:-XX:\+PrintTenuringDistribution.
+                8:-XX:\+UseGCLogFileRotation.
+                8:-XX:GCLogFileSize=64m.
+                8:-XX:NumberOfGCLogFiles=5.
+                8:-Xloggc:/var/log/elasticsearch/es-instance/gc.log.
+                9-:-Djava.locale.providers=COMPAT.
+                9-:-Xlog:gc\*,gc\+age=trace,safepoint:file=/var/log/elasticsearch/es-instance/gc.log:utctime,pid,tags:filecount=5,filesize=64m.
               }xm)
           end
         end
