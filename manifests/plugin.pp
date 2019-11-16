@@ -137,7 +137,7 @@ define elasticsearch::plugin (
     plugin_dir                 => $::elasticsearch::_plugindir,
     plugin_path                => $module_dir,
   }
-  -> file { "${elasticsearch::_plugindir}/${_module_dir}":
+  -> file { "${::elasticsearch::_plugindir}/${_module_dir}":
     ensure  => $_file_ensure,
     mode    => 'o+Xr',
     recurse => true,

@@ -59,6 +59,6 @@ Puppet::Type.newtype(:elasticsearch_keystore) do
   end
 
   autorequire(:augeas) do
-    "defaults_#{self[:name]}"
+    "ks_defaults_#{self[:name]}"
   end
 end

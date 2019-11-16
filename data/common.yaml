@@ -65,3 +65,4 @@ elasticsearch::templates: {}
 elasticsearch::users: {}
 elasticsearch::validate_tls: true
 elasticsearch::version: false
+elasticsearch::xpack: false

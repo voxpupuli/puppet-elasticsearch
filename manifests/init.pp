@@ -297,6 +297,9 @@
 # @param version
 #   To set the specific version you want to install.
 #
+# @param xpack
+#   Enable x-pack security. Requires ca_certificate, certificate and private key.
+#
 # @author Richard Pijnenburg <richard.pijnenburg@elasticsearch.com>
 # @author Tyler Langlois <tyler.langlois@elastic.co>
 #
@@ -371,6 +374,7 @@ class elasticsearch (
   Hash                                            $users,
   Boolean                                         $validate_tls,
   Variant[String, Boolean]                        $version,
+  Boolean                                         $xpack,
   Boolean $restart_config_change  = $restart_on_change,
   Boolean $restart_package_change = $restart_on_change,
   Boolean $restart_plugin_change  = $restart_on_change,

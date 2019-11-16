@@ -125,6 +125,9 @@
 #   Source for the Shield system key. Valid values are any that are
 #   supported for the file resource `source` parameter.
 #
+# @param xpack
+#   Enable xpack security features. Requires ca_certificate, certificate and private_key.
+#
 # @author Richard Pijnenburg <richard.pijnenburg@elasticsearch.com>
 # @author Tyler Langlois <tyler.langlois@elastic.co>
 #
@@ -162,6 +165,7 @@ define elasticsearch::instance (
   Boolean                            $ssl                           = false,
   Elasticsearch::Status              $status                        = $elasticsearch::status,
   Optional[String]                   $system_key                    = $elasticsearch::system_key,
+  Boolean                            $xpack                         = $elasticsearch::xpack,
 ) {
 
   File {
@@ -273,6 +277,10 @@ define elasticsearch::instance (
         fail('keystore_password required')
       }
 
+      if (($ca_certificate == undef) or ($certificate == undef) or ($private_key == undef)) {
+        fail('ca_certificate, certificate and private_key required')
+      }
+
       if ($keystore_path == undef) {
         $_keystore_path = "${configdir}/${security_plugin}/${name}.ks"
       } else {
@@ -287,11 +295,23 @@ define elasticsearch::instance (
           'shield.ssl.keystore.password' => $keystore_password,
         }
       } elsif $security_plugin == 'x-pack' {
-        $tls_config = {
-          'xpack.security.transport.ssl.enabled' => true,
-          'xpack.security.http.ssl.enabled'      => true,
-          'xpack.ssl.keystore.path'              => $_keystore_path,
-          'xpack.ssl.keystore.password'          => $keystore_password,
+        if $elasticsearch::version.split(/\./)[0] == '7' {
+          $tls_config = {
+            'xpack.security.transport.ssl.enabled'           => true,
+            'xpack.security.transport.ssl.keystore.path'     => $_keystore_path,
+            'xpack.security.transport.ssl.keystore.password' => $keystore_password,
+            'xpack.security.http.ssl.enabled'                => true,
+            'xpack.security.http.ssl.keystore.path'          => $_keystore_path,
+            'xpack.security.http.ssl.keystore.password'      => $keystore_password,
+          }
+        }
+        else {
+          $tls_config = {
+            'xpack.security.transport.ssl.enabled' => true,
+            'xpack.security.http.ssl.enabled'      => true,
+            'xpack.ssl.keystore.path'              => $_keystore_path,
+            'xpack.ssl.keystore.password'          => $keystore_password,
+          }
         }
       }
 
@@ -440,6 +460,43 @@ define elasticsearch::instance (
       }
     }
 
+    if $xpack {
+      if (($ca_certificate == undef) or ($certificate == undef) or ($private_key == undef)) {
+        fail('ca_certificate, certificate and private_key required')
+      }
+
+      file { "${configdir}/ca_certificate.pem":
+        ensure => 'file',
+        source => "file://${ca_certificate}",
+        owner  => $elasticsearch::elasticsearch_user,
+        group  => undef,
+        mode   => '0640',
+      }
+      file { "${configdir}/certificate.pem":
+        ensure => 'file',
+        source => "file://${certificate}",
+        owner  => $elasticsearch::elasticsearch_user,
+        group  => undef,
+        mode   => '0640',
+      }
+      file { "${configdir}/private_key.key":
+        ensure => 'file',
+        source => "file://${private_key}",
+        owner  => $elasticsearch::elasticsearch_user,
+        group  => undef,
+        mode   => '0600',
+      }
+
+      $xpack_config = {
+        'xpack.security.enabled'                               => true,
+        'xpack.security.transport.ssl.enabled'                 => true,
+        'xpack.security.transport.ssl.verification_mode'       => 'certificate',
+        'xpack.security.transport.ssl.key'                     => "${configdir}/private_key.key",
+        'xpack.security.transport.ssl.certificate'             => "${configdir}/certificate.pem",
+        'xpack.security.transport.ssl.certificate_authorities' => "${configdir}/ca_certificate.pem",
+      }
+    } else { $xpack_config = {} }
+
     # build up new config
     $instance_conf = merge(
       $main_config,
@@ -447,6 +504,7 @@ define elasticsearch::instance (
       $instance_datadir_config,
       { 'path.logs' => $logdir },
       $tls_config,
+      $xpack_config,
       $instance_config
     )
 
