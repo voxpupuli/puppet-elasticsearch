@@ -1,4 +1,4 @@
-require 'puppet/provider/elastic_plugin'
+require File.join(File.dirname(__FILE__), '..', '..', '..', 'puppet/provider/elastic_plugin')
 
 Puppet::Type.type(:elasticsearch_plugin).provide(
   :plugin,

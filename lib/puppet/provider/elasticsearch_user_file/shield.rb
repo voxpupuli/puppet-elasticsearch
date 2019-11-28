@@ -1,4 +1,4 @@
-require 'puppet/provider/elastic_parsedfile'
+require File.join(File.dirname(__FILE__), '..', '..', '..', 'puppet/provider/elastic_parsedfile')
 
 Puppet::Type.type(:elasticsearch_user_file).provide(
   :shield,
