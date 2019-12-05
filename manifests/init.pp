@@ -305,7 +305,7 @@
 #
 class elasticsearch (
   Enum['absent', 'present']                       $ensure,
-  Optional[String]                                $api_basic_auth_password,
+  Optional[Variant[String, Sensitive]]            $api_basic_auth_password,
   Optional[String]                                $api_basic_auth_username,
   Optional[String]                                $api_ca_file,
   Optional[String]                                $api_ca_path,

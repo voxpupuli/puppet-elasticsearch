@@ -715,7 +715,7 @@ elasticsearch::user { 'myuser':
 }
 ```
 
-The `password` parameter will also accept password hashes generated from the `esusers`/`users` utility and ensure the password is kept in-sync with the Shield `users` file for all Elasticsearch instances.
+The `password` parameter does not accept hashes. Use parameter password_hash instead, generated from the `esusers`/`users` utility and ensure the password is kept in-sync with the Shield `users` file for all Elasticsearch instances.
 
 ```puppet
 elasticsearch::user { 'myuser':
