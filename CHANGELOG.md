@@ -1,3 +1,18 @@
+## x.x.x (Month Day, Year)
+
+#### Features
+
+#### Fixes
+
+## 6.4.0 (August 28, 2019)
+
+#### Features
+* Support for Puppet 6
+
+#### Fixes
+* Fix "Could not autoload" errors in some custom types/providers.
+* Resolved an issue arising from the use of `hiera()` in Hiera yaml data files.
+
 ## 6.3.4 (August 7, 2019)
 
 #### Puppet < 4.10 No Longer Supported

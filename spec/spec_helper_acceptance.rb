@@ -231,12 +231,12 @@ RSpec.configure do |c|
     ] + Beaker::DSL::InstallUtils::ModuleUtils::PUPPET_MODULE_INSTALL_IGNORE
 
     hosts.each do |host|
-      modules = %w[archive datacat java java_ks stdlib elastic_stack]
+      modules = %w[archive augeas_core datacat java java_ks stdlib elastic_stack]
 
       dist_module = {
         'Debian' => ['apt'],
         'Suse'   => ['zypprepo'],
-        'RedHat' => ['concat']
+        'RedHat' => %w[concat yumrepo_core]
       }[f['os']['family']]
 
       modules += dist_module unless dist_module.nil?

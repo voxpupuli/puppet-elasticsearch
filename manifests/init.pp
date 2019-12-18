@@ -346,7 +346,7 @@ class elasticsearch (
   Optional[String]                                $package_url,
   Optional[Stdlib::Absolutepath]                  $pid_dir,
   Hash                                            $pipelines,
-  Stdlib::Absolutepath                            $plugindir,
+  Optional[Stdlib::Absolutepath]                  $plugindir,
   Hash                                            $plugins,
   Optional[Stdlib::HTTPUrl]                       $proxy_url,
   Boolean                                         $purge_configdir,
@@ -410,6 +410,13 @@ class elasticsearch (
   $_package_name = $oss ? {
     true    => "${package_name}-oss",
     default => $package_name,
+  }
+
+  # Set the plugin path variable for use later in the module.
+  if $plugindir == undef {
+    $_plugindir = "${homedir}/plugins"
+  } else {
+    $_plugindir = $plugindir
   }
 
   #### Manage actions
