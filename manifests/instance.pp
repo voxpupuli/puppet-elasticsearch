@@ -162,6 +162,7 @@ define elasticsearch::instance (
   Boolean                            $ssl                           = false,
   Elasticsearch::Status              $status                        = $elasticsearch::status,
   Optional[String]                   $system_key                    = $elasticsearch::system_key,
+  Variant[String, Boolean]           $version                       = $elasticsearch::version,
 ) {
 
   File {
@@ -390,12 +391,22 @@ define elasticsearch::instance (
       ignore +> $name
     }
 
-    file { "${configdir}/jvm.options":
-      before  => Elasticsearch::Service[$name],
-      content => template("${module_name}/etc/elasticsearch/jvm.options.erb"),
-      group   => $elasticsearch::elasticsearch_group,
-      notify  => $notify_service,
-      owner   => $elasticsearch::elasticsearch_user,
+    if versioncmp($version, '7.0.0') >= 0 {
+      file { "${configdir}/jvm.options":
+        before  => Elasticsearch::Service[$name],
+        content => template("${module_name}/etc/elasticsearch/jvm.options.7.erb"),
+        group   => $elasticsearch::elasticsearch_group,
+        notify  => $notify_service,
+        owner   => $elasticsearch::elasticsearch_user,
+      }
+    } else {
+      file { "${configdir}/jvm.options":
+        before  => Elasticsearch::Service[$name],
+        content => template("${module_name}/etc/elasticsearch/jvm.options.erb"),
+        group   => $elasticsearch::elasticsearch_group,
+        notify  => $notify_service,
+        owner   => $elasticsearch::elasticsearch_user,
+      }
     }
 
     file {
