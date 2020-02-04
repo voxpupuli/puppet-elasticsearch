@@ -1,0 +1,31 @@
+---
+- job:
+    name: elastic+puppet-elasticsearch+pull-request
+    display-name: elastic / puppet-elasticsearch - pull-request
+    description: Pull request testing
+    project-type: multijob
+    scm:
+    - git:
+        branches:
+        - $ghprbActualCommit
+        refspec: +refs/pull/*:refs/remotes/origin/pr/*
+        wipe-workspace: 'False'
+    triggers:
+    - github-pull-request:
+        github-hooks: true
+        org-list:
+        - elastic
+        allow-whitelist-orgs-as-admins: true
+        cancel-builds-on-update: false
+        status-context: devops-ci
+    builders:
+    - multijob:
+        name: intake phase
+        projects:
+        - name: elastic+puppet-elasticsearch+pull-request+intake
+          predefined-parameters: branch_specifier=${ghprbActualCommit}
+    - multijob:
+        name: acceptance phase
+        projects:
+        - name: elastic+puppet-elasticsearch+pull-request+acceptance
+          predefined-parameters: branch_specifier=${ghprbActualCommit}

@@ -65,6 +65,10 @@
 #   Directory containing the elasticsearch configuration.
 #   Use this setting if your packages deviate from the norm (`/etc/elasticsearch`)
 #
+# @param configdir_recurselimit
+#   Dictates how deeply the file copy recursion logic should descend when
+#   copying files from the `configdir` to instance `configdir`s.
+#
 # @param daily_rolling_date_pattern
 #   File pattern for the file appender log when file_rolling_type is 'dailyRollingFile'.
 #
@@ -309,6 +313,7 @@ class elasticsearch (
   Boolean                                         $autoupgrade,
   Hash                                            $config,
   Stdlib::Absolutepath                            $configdir,
+  Integer                                         $configdir_recurselimit,
   String                                          $daily_rolling_date_pattern,
   Elasticsearch::Multipath                        $datadir,
   Boolean                                         $datadir_instance_directories,
@@ -341,7 +346,7 @@ class elasticsearch (
   Optional[String]                                $package_url,
   Optional[Stdlib::Absolutepath]                  $pid_dir,
   Hash                                            $pipelines,
-  Stdlib::Absolutepath                            $plugindir,
+  Optional[Stdlib::Absolutepath]                  $plugindir,
   Hash                                            $plugins,
   Optional[Stdlib::HTTPUrl]                       $proxy_url,
   Boolean                                         $purge_configdir,
@@ -405,6 +410,13 @@ class elasticsearch (
   $_package_name = $oss ? {
     true    => "${package_name}-oss",
     default => $package_name,
+  }
+
+  # Set the plugin path variable for use later in the module.
+  if $plugindir == undef {
+    $_plugindir = "${homedir}/plugins"
+  } else {
+    $_plugindir = $plugindir
   }
 
   #### Manage actions
@@ -578,4 +590,8 @@ class elasticsearch (
   -> Elasticsearch::Instance <| ensure == 'absent' |>
   Elasticsearch::Snapshot_repository <| |>
   -> Elasticsearch::Instance <| ensure == 'absent' |>
+
+  # Ensure scripts are installed before copying them to configuration directory
+  Elasticsearch::Script <| |>
+  -> File["${configdir}/scripts"]
 }

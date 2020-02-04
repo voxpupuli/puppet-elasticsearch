@@ -1,6 +1,19 @@
 ## x.x.x (Month Day, Year)
 
-### Migration Guide
+#### Features
+
+#### Fixes
+
+## 6.4.0 (August 28, 2019)
+
+#### Features
+* Support for Puppet 6
+
+#### Fixes
+* Fix "Could not autoload" errors in some custom types/providers.
+* Resolved an issue arising from the use of `hiera()` in Hiera yaml data files.
+
+## 6.3.4 (August 7, 2019)
 
 #### Puppet < 4.10 No Longer Supported
 
@@ -9,10 +22,9 @@ Puppet 4.10.0 is the new minimum required version of Puppet.
 #### Fixes
 * The Elasticsearch log directory is no longer recursively managed to avoid stomping on the user/mode settings that Elasticsearch prefers.
 * Package management on apt-based systems no longer encounters dependency errors when `manage_repo => false`.
+* Plugin configuration files are now more well-supported by respecting subdirectory copy recursion. See `elasticsearch::configdir_recurselimit` for more information.
 * An error related to elasticsearch_roles and `yield` errors has been fixed
 * Correctly permit instances to be set to `absent` without errors.
-
-#### Features
 
 ## 6.3.3 (September 7, 2018)
 

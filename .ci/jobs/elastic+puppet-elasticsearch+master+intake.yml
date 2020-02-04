@@ -1,0 +1,28 @@
+---
+- job:
+    name: elastic+puppet-elasticsearch+master+intake
+    display-name: elastic / puppet-elasticsearch - master - intake
+    description: Master - intake
+    axes:
+    - axis:
+        type: slave
+        name: label
+        values:
+        - linux
+    - axis:
+        name: PUPPET_VERSION
+        filename: spec/matrix.yml
+        type: yaml
+    builders:
+    - shell: |-
+        #!/usr/local/bin/runbld
+        set -euo pipefail
+
+        export RBENV_VERSION='2.3.0'
+        export PATH="$HOME/.rbenv/bin:$PATH"
+        eval "$(rbenv init -)"
+        rbenv local $RBENV_VERSION
+
+        echo '--color' >> ~/.rspec
+        bundle install
+        bundle exec rake intake
