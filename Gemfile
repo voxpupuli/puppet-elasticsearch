@@ -1,7 +1,7 @@
 source ENV['GEM_SOURCE'] || 'https://rubygems.org'
 
 group :test do
-  gem 'puppet', (ENV['PUPPET_VERSION'] || '~> 4.10'), :require => false
+  gem 'puppet', (ENV['PUPPET_VERSION'] || '~> 6.0'), :require => false
 
   gem 'metadata-json-lint'
   gem 'specinfra', '~> 2.60'

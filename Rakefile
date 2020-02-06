@@ -137,7 +137,7 @@ beaker_node_sets.each do |node|
     "beaker:#{node}:acceptance", [:version, :filter] => [:spec_prep]
   ) do |task, args|
     ENV['BEAKER_set'] = node
-    args.with_defaults(:version => '6.2.3', :filter => nil)
+    args.with_defaults(:version => '6.8.6', :filter => nil)
     task.pattern = 'spec/acceptance/tests/acceptance_spec.rb'
     task.rspec_opts = []
     task.rspec_opts << '--format documentation' if ENV['CI'].nil?
