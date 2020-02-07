@@ -80,6 +80,7 @@ jobs:
     - env:
       - TASK=intake
       - PUPPET_VERSION='~> 5.0'
+    - stage: acceptance
     - stage: snapshots
       env:
       - TASK=beaker:ubuntu-server-1404-x64:snapshot
