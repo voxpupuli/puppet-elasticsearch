@@ -17,7 +17,7 @@ def f
   RSpec.configuration.fact
 end
 
-run_puppet_install_helper unless ENV['BEAKER_provision'] == 'no'
+run_puppet_install_helper('agent') unless ENV['BEAKER_provision'] == 'no'
 
 RSpec.configure do |c|
   # General-purpose spec-global variables
