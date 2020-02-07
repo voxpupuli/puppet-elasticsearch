@@ -46,8 +46,11 @@ end
 
 group :system_tests do
   gem 'bcrypt'
-  gem 'beaker', '~> 3.7'
-  gem 'beaker-rspec', '~> 6.0'
+  gem 'beaker', '>= 4.2.0', :require => false
+  gem 'beaker-rspec', '~> 6.0', :require => false
+  gem 'beaker-docker', :require => false
+  gem 'beaker-puppet', :require => false
+  gem 'beaker-puppet_install_helper', :require => false
   gem 'docker-api', '~> 1.0'
   gem 'infrataster'
   gem 'vault'
