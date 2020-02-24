@@ -1,5 +1,8 @@
-require 'beaker-puppet'
-require 'beaker-rspec'
+require 'beaker-hiera'
+# require 'beaker-puppet'
+# require 'beaker-rspec'
+require 'beaker-rspec/spec_helper'
+require 'beaker-rspec/helpers/serverspec'
 require 'beaker/puppet_install_helper'
 # require 'beaker/module_install_helper'
 require 'securerandom'
@@ -13,15 +16,17 @@ require_relative 'spec_utilities'
 require_relative '../lib/puppet_x/elastic/deep_to_i'
 require_relative '../lib/puppet_x/elastic/deep_to_s'
 
-def f
-  RSpec.configuration.fact
-end
+# def f
+#   RSpec.configuration.fact
+# end
 
-run_puppet_install_helper('agent') unless ENV['BEAKER_provision'] == 'no'
+run_puppet_install_helper(type='agent') unless ENV['BEAKER_provision'] == 'no'
 
 RSpec.configure do |c|
   # General-purpose spec-global variables
   c.add_setting :v, :default => {}
+
+  c.formatter = :documentation
 
   unless ENV['snapshot_version'].nil?
     v[:snapshot_version] = ENV['snapshot_version']
