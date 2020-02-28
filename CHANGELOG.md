@@ -672,7 +672,7 @@ This releases adds several important features and fixes an important plugin inst
 ####Testing changes
 * Added unit testing for package pinning feature
 * Added integration testing with Elasticsearch to find issues earlier
-* Fix OpenSuse 13 testing
+* Fix openSUSE 13 testing
 
 ####Known bugs
 * Possible package conflicts when using ruby/python defines with main package name
@@ -816,7 +816,7 @@ Our planning is to provide LTS releases with the puppet module
 
 ####Features
 * Support for using hiera to define instances and plugins.
-* Support for OpenSuSE 13.x
+* Support for openSUSE 13.x
 * Custom facts about the installed Elasticsearch instance(s)
 * Proxy host/port support for the plugin installation
 * Ability to supply a custom logging.yml template
@@ -881,7 +881,7 @@ This release introduces instances to facilitate the option to have more then a s
 
 ##0.3.0 ( April 2, 2014 )
 *  Fix minor issue with yumrepo in repo class ( PR #92 )
-*  Implement OpenSuse support
+*  Implement openSUSE support
 *  Implement Junit reporting for tests
 *  Adding more system tests and convert to Docker images
 *  Use Augeas for managing the defaults file
