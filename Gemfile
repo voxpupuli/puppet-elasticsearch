@@ -55,5 +55,6 @@ group :system_tests do
   gem 'beaker-puppet_install_helper'
   gem 'docker-api', '~> 1.0'
   gem 'infrataster'
+  gem 'simp-beaker-helpers'
   gem 'vault'
 end

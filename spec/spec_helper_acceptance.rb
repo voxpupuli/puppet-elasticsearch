@@ -1,3 +1,6 @@
+require 'simp/beaker_helpers'
+include Simp::BeakerHelpers
+
 require 'beaker-hiera'
 # require 'beaker-puppet'
 # require 'beaker-rspec'
