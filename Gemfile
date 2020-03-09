@@ -42,16 +42,17 @@ end
 
 group :development do
   gem 'puppet-blacksmith'
+  gem 'irb'
 end
 
 group :system_tests do
   gem 'bcrypt'
-  gem 'beaker', '>= 4.2.0', :require => false
-  gem 'beaker-rspec', '~> 6.0', :require => false
-  gem 'beaker-docker', :require => false
-  gem 'beaker-hiera', :require => false
-  gem 'beaker-puppet', :require => false
-  gem 'beaker-puppet_install_helper', :require => false
+  gem 'beaker', '>= 4.2.0'
+  gem 'beaker-rspec', '~> 6.0'
+  gem 'beaker-docker'
+  gem 'beaker-hiera'
+  gem 'beaker-puppet'
+  gem 'beaker-puppet_install_helper'
   gem 'docker-api', '~> 1.0'
   gem 'infrataster'
   gem 'vault'
