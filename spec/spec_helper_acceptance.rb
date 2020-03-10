@@ -57,7 +57,7 @@ RSpec.configure do |c|
 
   # rspec-retry
   c.display_try_failure_messages = true
-  c.default_sleep_interval = 5
+  c.default_sleep_interval = 10
   # General-case retry keyword for unstable tests
   c.around :each, :with_retries do |example|
     example.run_with_retry retry: 4
