@@ -4,8 +4,7 @@ require 'helpers/acceptance/tests/plugin_shared_examples'
 
 agents = only_host_with_role(hosts, 'agent')
 
-shared_examples 'hiera tests with' do |yamlname, instances, additional_yaml = {}|
-
+shared_examples 'hiera tests with' do |instances, additional_yaml = {}|
   hieradata = {
     'elasticsearch::instances' => instances
   }.merge(additional_yaml).to_yaml
@@ -28,7 +27,6 @@ shared_examples 'hiera acceptance tests' do |plugins|
     describe 'with one instance' do
       include_examples(
         'hiera tests with',
-        'singleinstance',
         'es-hiera-single' => {
           'config' => {
             'node.name' => 'es-hiera-single',
@@ -42,7 +40,6 @@ shared_examples 'hiera acceptance tests' do |plugins|
       describe "with plugin #{plugin}" do
         include_examples(
           'hiera tests with',
-          'singleplugin',
           {
             'es-hiera-single' => {
               'config' => {
@@ -80,7 +77,6 @@ shared_examples 'hiera acceptance tests' do |plugins|
     describe 'with two instances' do
       include_examples(
         'hiera tests with',
-        'multipleinstances',
         'es-hiera-multiple-1' => {
           'config' => {
             'node.name' => 'es-hiera-multiple-1',
