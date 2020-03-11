@@ -1,6 +1,7 @@
 HOSTS:
   ubuntu-14-04:
     roles:
+      - agent
       - master
       - database
       - dashboard

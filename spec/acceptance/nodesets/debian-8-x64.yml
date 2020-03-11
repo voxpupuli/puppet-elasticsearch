@@ -1,6 +1,7 @@
 HOSTS:
   debian-8:
     roles:
+      - agent
       - master
       - database
       - dashboard

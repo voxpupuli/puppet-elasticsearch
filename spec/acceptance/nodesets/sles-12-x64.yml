@@ -1,6 +1,7 @@
 HOSTS:
   sles-12-x64:
     roles:
+      - agent
       - master
       - database
       - dashboard
