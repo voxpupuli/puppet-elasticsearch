@@ -8,7 +8,10 @@ HOSTS:
     docker_cmd: ["/bin/systemd"]
     docker_preserve_image: true
     docker_image_commands:
-      - apt-get install -yq apt-transport-https openjdk-8-jre-headless wget net-tools gpg ruby-augeas
+      - apt-get install -yq apt-transport-https wget net-tools gpg ruby-augeas software-properties-common
+      - wget -qO - https://adoptopenjdk.jfrog.io/adoptopenjdk/api/gpg/key/public | apt-key add -
+      - add-apt-repository --yes https://adoptopenjdk.jfrog.io/adoptopenjdk/deb/
+      - apt update && apt-get install -yq adoptopenjdk-8-hotspot
 CONFIG:
   log_level: warn
 
