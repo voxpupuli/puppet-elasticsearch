@@ -87,6 +87,12 @@ jobs:
     - TASK=beaker:oracle-7-x64:acceptance[5.6.16]
   - env:
     - BEAKER_PUPPET_COLLECTION=puppet6
+    - TASK=beaker:oracle-8-x64:acceptance
+  - env:
+    - BEAKER_PUPPET_COLLECTION=puppet6
+    - TASK=beaker:oracle-8-x64:acceptance[5.6.16]
+  - env:
+    - BEAKER_PUPPET_COLLECTION=puppet6
     - TASK=beaker:debian-8-x64:acceptance
   - env:
     - BEAKER_PUPPET_COLLECTION=puppet6
