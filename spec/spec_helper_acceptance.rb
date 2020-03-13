@@ -1,18 +1,24 @@
 require 'beaker-rspec'
+require 'beaker/puppet_install_helper'
 require 'securerandom'
 require 'thread'
 require 'infrataster/rspec'
 require 'rspec/retry'
 require 'vault'
 
+require 'simp/beaker_helpers'
+include Simp::BeakerHelpers
+
 require_relative 'spec_helper_tls'
 require_relative 'spec_utilities'
 require_relative '../lib/puppet_x/elastic/deep_to_i'
 require_relative '../lib/puppet_x/elastic/deep_to_s'
 
-def f
-  RSpec.configuration.fact
-end
+# def f
+#   RSpec.configuration.fact
+# end
+
+run_puppet_install_helper('agent') unless ENV['BEAKER_provision'] == 'no'
 
 RSpec.configure do |c|
   # General-purpose spec-global variables
@@ -144,50 +150,18 @@ files_dir = ENV['files_dir'] || './spec/fixtures/artifacts'
 
 # General bootstrapping steps for each host
 hosts.each do |host|
-  # Set the host to 'aio' in order to adopt the puppet-agent style of
-  # installation, and configure paths/etc.
-  host[:type] = 'aio'
-  configure_defaults_on host, 'aio'
+  # # Set the host to 'aio' in order to adopt the puppet-agent style of
+  # # installation, and configure paths/etc.
+  # host[:type] = 'aio'
+  # configure_defaults_on host, 'aio'
 
-  # Install Puppet
-  #
-  # We spawn a thread to print dots periodically while installing puppet to
-  # avoid inactivity timeouts in Travis. Don't judge me.
-  progress = Thread.new do
-    print 'Installing puppet..'
-    print '.' while sleep 5
-  end
-
-  case host.name
-  when /debian-9/
-    # A few special cases need to be installed from gems (if the distro is
-    # very new and has no puppet repo package or has no upstream packages).
-    install_puppet_from_gem(
-      host,
-      version: Gem.loaded_specs['puppet'].version
-    )
-  else
-    # Otherwise, just use the all-in-one agent package.
-    install_puppet_agent_on(
-      host,
-      puppet_agent_version: to_agent_version(Gem.loaded_specs['puppet'].version)
-    )
-  end
-  # Quit the print thread and include some debugging.
-  progress.exit
-  puts "done. Installed version #{shell('puppet --version').output}"
-
-  RSpec.configure do |c|
-    c.add_setting :fact, :default => JSON.parse(fact('', '-j'))
-  end
-
-  if f['os']['family'] == 'Suse'
+  if fact('os.family') == 'Suse'
     install_package host,
                     '--force-resolution augeas-devel libxml2-devel ruby-devel'
     on host, 'gem install ruby-augeas --no-ri --no-rdoc'
   end
 
-  v[:ext] = case f['os']['family']
+  v[:ext] = case fact('os.family')
             when 'Debian'
               'deb'
             else
@@ -237,7 +211,7 @@ RSpec.configure do |c|
         'Debian' => ['apt'],
         'Suse'   => ['zypprepo'],
         'RedHat' => %w[concat yumrepo_core]
-      }[f['os']['family']]
+      }[fact('os.family')]
 
       modules += dist_module unless dist_module.nil?
 
@@ -252,12 +226,12 @@ RSpec.configure do |c|
       on(host, 'mkdir -p etc/puppet/modules/another/files/')
 
       # Apt doesn't update package caches sometimes, ensure we're caught up.
-      shell 'apt-get update' if f['os']['family'] == 'Debian'
+      shell 'apt-get update' if fact('os.family') == 'Debian'
     end
 
     # Use the Java class once before the suite of tests
     unless shell('command -v java', :accept_all_exit_codes => true).exit_code.zero?
-      java = case f['os']['name']
+      java = case fact('os.name')
              when 'OpenSuSE'
                'package => "java-1_8_0-openjdk-headless",'
              else
@@ -274,10 +248,10 @@ RSpec.configure do |c|
   end
 end
 
-# Java 8 is only easy to manage on recent distros
-def v5x_capable?
-  (f['os']['family'] == 'RedHat' and \
-    not (f['os']['name'] == 'OracleLinux' and \
-    f['os']['release']['major'] == '6')) or \
-    f.dig 'os', 'distro', 'codename' == 'xenial'
-end
+# # Java 8 is only easy to manage on recent distros
+# def v5x_capable?
+#   (fact('os.family') == 'RedHat' and \
+#     not (fact('os.name') == 'OracleLinux' and \
+#     f['os']['release']['major'] == '6')) or \
+#     f.dig 'os', 'distro', 'codename' == 'xenial'
+# end

@@ -1,6 +1,7 @@
 HOSTS:
   amazonlinux-2-x64:
     roles:
+      - agent
       - master
     platform: el-7-x86_64
     image: amazonlinux:2

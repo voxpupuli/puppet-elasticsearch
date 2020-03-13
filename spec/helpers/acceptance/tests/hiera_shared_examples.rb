@@ -2,23 +2,15 @@ require 'tempfile'
 require 'helpers/acceptance/tests/basic_shared_examples'
 require 'helpers/acceptance/tests/plugin_shared_examples'
 
-shared_examples 'hiera tests with' do |yamlname, instances, additional_yaml = {}|
-  before :all do
-    Tempfile.create([yamlname, '.yaml']) do |temp|
-      temp << {
-        'elasticsearch::instances' => instances
-      }.merge(additional_yaml).to_yaml
-      temp.flush
+agents = only_host_with_role(hosts, 'agent')
 
-      File.basename(temp.path).tap do |config|
-        scp_to(
-          default,
-          temp.path,
-          File.join(hiera_datadir(default), config)
-        )
-        write_hiera_config([config])
-      end
-    end
+shared_examples 'hiera tests with' do |instances, additional_yaml = {}|
+  hieradata = {
+    'elasticsearch::instances' => instances
+  }.merge(additional_yaml).to_yaml
+
+  before :all do
+    write_hieradata_to(agents, hieradata)
   end
 
   include_examples(
@@ -29,17 +21,12 @@ end
 
 shared_examples 'hiera acceptance tests' do |plugins|
   describe 'hiera', :then_purge do
-    before :all do
-      shell "mkdir -p #{hiera_datadir(default)}"
-    end
-
     let(:skip_instance_manifests) { true }
     let(:manifest_class_parameters) { 'restart_on_change => true' }
 
     describe 'with one instance' do
       include_examples(
         'hiera tests with',
-        'singleinstance',
         'es-hiera-single' => {
           'config' => {
             'node.name' => 'es-hiera-single',
@@ -53,7 +40,6 @@ shared_examples 'hiera acceptance tests' do |plugins|
       describe "with plugin #{plugin}" do
         include_examples(
           'hiera tests with',
-          'singleplugin',
           {
             'es-hiera-single' => {
               'config' => {
@@ -91,7 +77,6 @@ shared_examples 'hiera acceptance tests' do |plugins|
     describe 'with two instances' do
       include_examples(
         'hiera tests with',
-        'multipleinstances',
         'es-hiera-multiple-1' => {
           'config' => {
             'node.name' => 'es-hiera-multiple-1',
@@ -110,7 +95,7 @@ shared_examples 'hiera acceptance tests' do |plugins|
     end
 
     after :all do
-      write_hiera_config([])
+      write_hieradata_to(agents, {})
 
       apply_manifest <<-EOS
         class { 'elasticsearch': ensure => 'absent', oss => #{v[:oss]} }
