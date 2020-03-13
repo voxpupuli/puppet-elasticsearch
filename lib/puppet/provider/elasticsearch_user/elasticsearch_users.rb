@@ -5,6 +5,7 @@ Puppet::Type.type(:elasticsearch_user).provide(
   :parent => Puppet::Provider::ElasticUserCommand
 ) do
   desc 'Provider for OSS X-Pack user resources.'
+  confine :exists => "#{homedir}/bin/elasticsearch-users"
 
   has_feature :manages_plaintext_passwords
 
