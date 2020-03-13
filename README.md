@@ -3,8 +3,8 @@
 [![Puppet Forge endorsed](https://img.shields.io/puppetforge/e/elastic/elasticsearch.svg)](https://forge.puppetlabs.com/elastic/elasticsearch)
 [![Puppet Forge Version](https://img.shields.io/puppetforge/v/elastic/elasticsearch.svg)](https://forge.puppetlabs.com/elastic/elasticsearch)
 [![Puppet Forge Downloads](https://img.shields.io/puppetforge/dt/elastic/elasticsearch.svg)](https://forge.puppetlabs.com/elastic/elasticsearch)
-[![Puppet Forge Score](https://img.shields.io/puppetforge/f/elastic/elastic_stack.svg)](https://forge.puppetlabs.com/elastic/elastic_stack)
-[![Build Status](https://travis-ci.org/elastic/elasticsearch.png?branch=master)](https://travis-ci.org/elastic/elasticsearch)
+[![Puppet Forge Score](https://img.shields.io/puppetforge/f/elastic/elasticsearch.svg)](https://forge.puppetlabs.com/elastic/elasticsearch)
+[![Build Status](https://travis-ci.org/elastic/puppet-elasticsearch.png?branch=master)](https://travis-ci.org/elastic/puppet-elasticsearch)
 <!-- [![Code Coverage](https://coveralls.io/repos/github/elastic/elasticsearch/badge.svg?branch=master)](https://coveralls.io/github/elastic/elasticsearch) -->
 
 #### Table of Contents
