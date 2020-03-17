@@ -1,5 +1,5 @@
 sudo: required
-group: deprecated-2017Q4
+# group: deprecated-2017Q4
 services:
 - docker
 cache:
