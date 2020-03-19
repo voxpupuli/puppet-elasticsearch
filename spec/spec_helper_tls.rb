@@ -6,7 +6,7 @@ def gen_certs(num_certs, path)
   ca_key = OpenSSL::PKey::RSA.new 2048
 
   # CA Cert
-  ca_name = OpenSSL::X509::Name.parse 'CN=ca/DC=example'
+  ca_name = OpenSSL::X509::Name.parse 'CN=ca/DC=example/DC=com'
   ca_cert = OpenSSL::X509::Certificate.new
   ca_cert.serial = serial
   serial += 1
@@ -19,16 +19,16 @@ def gen_certs(num_certs, path)
   extension_factory = OpenSSL::X509::ExtensionFactory.new
   extension_factory.subject_certificate = ca_cert
   extension_factory.issuer_certificate = ca_cert
-  ca_cert.add_extension extension_factory.create_extension(
-    'subjectAltName', ['localhost', '127.0.0.1'].map { |d| "DNS: #{d}" }.join(',')
-  )
+  # ca_cert.add_extension extension_factory.create_extension(
+  #   'subjectAltName', ['localhost', '127.0.0.1'].map { |d| "DNS: #{d}" }.join(',')
+  # )
   ca_cert.add_extension extension_factory.create_extension(
     'subjectKeyIdentifier', 'hash'
   )
   ca_cert.add_extension extension_factory.create_extension(
     'basicConstraints', 'CA:TRUE', true
   )
-  ca_cert.sign ca_key, OpenSSL::Digest::SHA1.new
+  ca_cert.sign ca_key, OpenSSL::Digest::SHA256.new
   ret[:ca] = {
     :cert => {
       :pem => ca_cert.to_pem,
@@ -38,7 +38,7 @@ def gen_certs(num_certs, path)
 
   num_certs.times do |i|
     key, cert, serial = gen_cert_pair serial, ca_cert
-    cert.sign ca_key, OpenSSL::Digest::SHA1.new
+    cert.sign ca_key, OpenSSL::Digest::SHA256.new
     ret[:clients] << {
       :key => {
         :pem => key.to_pem,
@@ -58,7 +58,11 @@ def gen_cert_pair(serial, ca_cert)
   serial += 1
   # Node Key
   key = OpenSSL::PKey::RSA.new 2048
-  node_name = OpenSSL::X509::Name.parse 'CN=localhost/DC=example'
+  node_name = OpenSSL::X509::Name.parse 'CN=localhost/DC=example/DC=com'
+
+  # prepare SANS list
+  sans = ['localhost.localdomain', 'localhost', 'localhost.example.com']
+  sans_list = sans.map { |domain| "DNS:#{domain}" }
 
   # Node Cert
   cert = OpenSSL::X509::Certificate.new
@@ -76,12 +80,20 @@ def gen_cert_pair(serial, ca_cert)
   csr_extension_factory.issuer_certificate = ca_cert
 
   cert.add_extension csr_extension_factory.create_extension(
+    'subjectAltName',
+    sans_list.join(',')
+  )
+  cert.add_extension csr_extension_factory.create_extension(
     'basicConstraints',
     'CA:FALSE'
   )
   cert.add_extension csr_extension_factory.create_extension(
     'keyUsage',
     'keyEncipherment,dataEncipherment,digitalSignature'
+  )
+  cert.add_extension csr_extension_factory.create_extension(
+    'extendedKeyUsage',
+    'serverAuth,clientAuth'
   )
   cert.add_extension csr_extension_factory.create_extension(
     'subjectKeyIdentifier', 'hash'
