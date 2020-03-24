@@ -8,7 +8,7 @@ group :test do
   gem 'xmlrpc'
 
   gem 'ci_reporter_rspec'
-  gem 'facter'
+  gem 'facter', "~> 2.4"
   gem 'pry'
   gem 'puppet-lint'
   gem 'puppet-strings'

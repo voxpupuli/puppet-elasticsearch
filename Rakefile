@@ -140,7 +140,7 @@ beaker_node_sets.each do |node|
     args.with_defaults(:version => '6.8.6', :filter => nil)
     task.pattern = 'spec/acceptance/tests/acceptance_spec.rb'
     task.rspec_opts = []
-    task.rspec_opts << '--format documentation' if ENV['CI'].nil?
+    task.rspec_opts << '--format documentation'
     task.rspec_opts << "--example '#{args[:filter]}'" if args[:filter]
     ENV['ELASTICSEARCH_VERSION'] ||= args[:version]
     Rake::Task['artifact:fetch'].invoke(ENV['ELASTICSEARCH_VERSION'])
