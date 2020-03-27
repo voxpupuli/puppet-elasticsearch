@@ -9,6 +9,7 @@
 #
 # @author Richard Pijnenburg <richard.pijnenburg@elasticsearch.com>
 # @author Tyler Langlois <tyler.langlois@elastic.co>
+# @author Gavin Williams <gavin.williams@elastic.co>
 #
 class elasticsearch::config {
 
@@ -22,6 +23,10 @@ class elasticsearch::config {
   if ( $elasticsearch::ensure == 'present' ) {
 
     file {
+      $elasticsearch::homedir:
+        ensure => 'directory',
+        group  => $elasticsearch::elasticsearch_group,
+        owner  => $elasticsearch::elasticsearch_user;
       $elasticsearch::configdir:
         ensure => 'directory',
         group  => $elasticsearch::elasticsearch_group,
@@ -46,35 +51,6 @@ class elasticsearch::config {
         group   => '0',
         owner   => 'root',
         recurse => true;
-      $elasticsearch::homedir:
-        ensure => 'directory',
-        group  => $elasticsearch::elasticsearch_group,
-        owner  => $elasticsearch::elasticsearch_user;
-      "${elasticsearch::homedir}/templates_import":
-        ensure => 'directory',
-        group  => $elasticsearch::elasticsearch_group,
-        owner  => $elasticsearch::elasticsearch_user,
-        mode   => '0755';
-      "${elasticsearch::homedir}/scripts":
-        ensure => 'directory',
-        group  => $elasticsearch::elasticsearch_group,
-        owner  => $elasticsearch::elasticsearch_user,
-        mode   => '0755';
-      "${elasticsearch::configdir}/scripts":
-        ensure  => 'directory',
-        source  => "${elasticsearch::homedir}/scripts",
-        mode    => '0755',
-        recurse => 'remote',
-        owner   => $elasticsearch::elasticsearch_user,
-        group   => $elasticsearch::elasticsearch_group;
-      '/etc/elasticsearch/elasticsearch.yml':
-        ensure => 'absent';
-      '/etc/elasticsearch/jvm.options':
-        ensure => 'absent';
-      '/etc/elasticsearch/logging.yml':
-        ensure => 'absent';
-      '/etc/elasticsearch/log4j2.properties':
-        ensure => 'absent';
     }
 
     if $elasticsearch::pid_dir {
@@ -96,20 +72,6 @@ class elasticsearch::config {
           group   => '0',
           owner   => 'root',
         }
-      }
-    }
-
-    if ($elasticsearch::service_provider == 'systemd') {
-      # Mask default unit (from package)
-      service { 'elasticsearch' :
-        ensure   => false,
-        enable   => 'mask',
-        provider => $elasticsearch::service_provider,
-      }
-    } else {
-      service { 'elasticsearch':
-        ensure => false,
-        enable => false,
       }
     }
 
@@ -155,6 +117,122 @@ class elasticsearch::config {
       file { "/etc/elasticsearch/${::elasticsearch::security_plugin}/${_security_logging_file}" :
         content => $::elasticsearch::security_logging_content,
         source  => $::elasticsearch::security_logging_source,
+      }
+    }
+
+    # Generate config file
+    $_config = deep_implode($elasticsearch::config)
+
+    # Generate SSL config
+    if $elasticsearch::ssl {
+      if ($elasticsearch::keystore_password == undef) {
+        fail('keystore_password required')
+      }
+
+      if ($elasticsearch::keystore_path == undef) {
+        $_keystore_path = "${elasticsearch::configdir}/${elasticsearch::security_plugin}/${name}.ks"
+      } else {
+        $_keystore_path = $elasticsearch::keystore_path
+      }
+
+      if $elasticsearch::security_plugin == 'shield' {
+        $_tls_config = {
+          'shield.transport.ssl'         => true,
+          'shield.http.ssl'              => true,
+          'shield.ssl.keystore.path'     => $_keystore_path,
+          'shield.ssl.keystore.password' => $elasticsearch::keystore_password,
+        }
+      } elsif $elasticsearch::security_plugin == 'x-pack' {
+        $_tls_config = {
+          'xpack.security.transport.ssl.enabled' => true,
+          'xpack.security.http.ssl.enabled'      => true,
+          'xpack.ssl.keystore.path'              => $_keystore_path,
+          'xpack.ssl.keystore.password'          => $elasticsearch::keystore_password,
+        }
+      }
+
+      # Trust CA Certificate
+      java_ks { 'elasticsearch_ca':
+        ensure       => 'latest',
+        certificate  => $elasticsearch::ca_certificate,
+        target       => $_keystore_path,
+        password     => $elasticsearch::keystore_password,
+        trustcacerts => true,
+      }
+
+      # Load node certificate and private key
+      java_ks { 'elasticsearch_node':
+        ensure      => 'latest',
+        certificate => $elasticsearch::certificate,
+        private_key => $elasticsearch::private_key,
+        target      => $_keystore_path,
+        password    => $elasticsearch::keystore_password,
+      }
+    } else {
+      $_tls_config = {}
+    }
+
+    # Logging file or hash
+    if ($::elasticsearch::logging_file != undef) {
+      $_log4j_content = undef
+    } else {
+      if ($::elasticsearch::logging_template != undef ) {
+        $_log4j_content = template($::elasticsearch::logging_template)
+      } else {
+        $_log4j_content = template("${module_name}/etc/elasticsearch/log4j2.properties.erb")
+      }
+      $_logging_source = undef
+    }
+    file {
+      "${::elasticsearch::configdir}/log4j2.properties":
+        ensure  => file,
+        content => $_log4j_content,
+        source  => $_logging_source,
+        mode    => '0644',
+        notify  => $::elasticsearch::_notify_service,
+        require => Class['elasticsearch::package'],
+        before  => Class['elasticsearch::service']
+    }
+
+    # Generate Elasticsearch config
+    $_es_config = merge(
+      $::elasticsearch::config,
+      { 'path.data' => $::elasticsearch::datadir },
+      { 'path.logs' => $::elasticsearch::logdir },
+      $_tls_config
+    )
+
+    datacat_fragment { "main_config_${name}":
+      target => "${::elasticsearch::configdir}/elasticsearch.yml",
+      data   => $_es_config,
+    }
+
+    datacat { "${::elasticsearch::configdir}/elasticsearch.yml":
+      template => "${module_name}/etc/elasticsearch/elasticsearch.yml.erb",
+      notify   => $::elasticsearch::_notify_service,
+      require  => Class['elasticsearch::package'],
+      owner    => $::elasticsearch::elasticsearch_user,
+      group    => $::elasticsearch::elasticsearch_group,
+      mode     => '0440',
+    }
+
+    if $::elasticsearch::system_key != undef {
+      file { "${::elasticsearch::configdir}/${::elasticsearch::security_plugin}/system_key":
+        ensure  => 'file',
+        source  => $::elasticsearch::system_key,
+        mode    => '0400',
+        before  => Elasticsearch::Service[$::elasticsearch::service_name],
+        require => File["${::elasticsearch::configdir}/${::elasticsearch::security_plugin}"],
+      }
+    }
+
+    # Add secrets to keystore
+    if $::elasticsearch::secrets != undef {
+      elasticsearch_keystore { 'elasticsearch_secrets':
+        configdir => $::elasticsearch::configdir,
+        purge     => $::elasticsearch::purge_secrets,
+        settings  => $::elasticsearch::secrets,
+        notify    => $::elaticsearch::_notify_service,
       }
     }
 

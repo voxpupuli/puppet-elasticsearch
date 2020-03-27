@@ -1,15 +1,8 @@
-shared_examples 'module removal' do |instances|
+shared_examples 'module removal' do |es_config|
   describe 'uninstalling' do
     let(:manifest) do
-      instance_resource = <<-RESOURCE
-        elasticsearch::instance { '%s' :
-          ensure => 'absent'
-        }
-      RESOURCE
-
       <<-MANIFEST
         class { 'elasticsearch': ensure => 'absent', oss => #{v[:oss]} }
-        #{instances.map { |i| instance_resource % i }.join("\n")}
       MANIFEST
     end
 
@@ -21,15 +14,18 @@ shared_examples 'module removal' do |instances|
       apply_manifest manifest, :catch_changes => true
     end
 
-    instances.each do |instance|
-      describe file("/etc/elasticsearch/#{instance}") do
-        it { should_not be_directory }
-      end
+    describe service('elasticsearch') do
+      it { should_not be_enabled }
+      it { should_not be_running }
+    end
 
-      describe service(instance) do
-        it { should_not be_enabled }
-        it { should_not be_running }
+    unless es_config.empty?
+      describe port(es_config['http.port']) do
+        it 'closed' do
+          should_not be_listening
+        end
       end
     end
+
   end
 end

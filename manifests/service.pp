@@ -39,55 +39,74 @@
 #
 # @author Richard Pijnenburg <richard.pijnenburg@elasticsearch.com>
 # @author Tyler Langlois <tyler.langlois@elastic.co>
+# @author Gavin Williams <gavin.williams@elastic.co>
 #
-define elasticsearch::service (
-  Enum['absent', 'present'] $ensure             = $elasticsearch::ensure,
-  Hash                      $init_defaults      = {},
-  Optional[String]          $init_defaults_file = undef,
-  Optional[String]          $init_template      = undef,
-  Optional[String]          $service_flags      = undef,
-  Elasticsearch::Status     $status             = $elasticsearch::status,
-) {
+class elasticsearch::service {
 
-  case $elasticsearch::service_provider {
+  #### Service management
 
-    'init': {
-      elasticsearch::service::init { $name:
-        ensure             => $ensure,
-        status             => $status,
-        init_defaults_file => $init_defaults_file,
-        init_defaults      => $init_defaults,
-        init_template      => $init_template,
+  if $::elasticsearch::ensure == 'present' {
+
+    case $::elasticsearch::status {
+      # make sure service is currently running, start it on boot
+      'enabled': {
+        $_service_ensure = 'running'
+        $_service_enable = true
       }
+      # make sure service is currently stopped, do not start it on boot
+      'disabled': {
+        $_service_ensure = 'stopped'
+        $_service_enable = false
+      }
+      # make sure service is currently running, do not start it on boot
+      'running': {
+        $_service_ensure = 'running'
+        $_service_enable = false
+      }
+      # do not start service on boot, do not care whether currently running
+      # or not
+      'unmanaged': {
+        $_service_ensure = undef
+        $_service_enable = false
+      }
+      default: { }
+    }
+  } else {
+    # make sure the service is stopped and disabled (the removal itself will be
+    # done by package.pp)
+    $_service_ensure = 'stopped'
+    $_service_enable = false
+  }
+
+  # TODO: Flesh this out
+  $_service_require = undef
+
+  case $::elasticsearch::service_provider {
+    'init': {
+      include elasticsearch::service::init
+      $_service_provider = undef
     }
     'openbsd': {
-      elasticsearch::service::openbsd { $name:
-        ensure        => $ensure,
-        status        => $status,
-        init_template => $init_template,
-        service_flags => $service_flags,
-      }
-    }
-    'systemd': {
-      elasticsearch::service::systemd { $name:
-        ensure             => $ensure,
-        status             => $status,
-        init_defaults_file => $init_defaults_file,
-        init_defaults      => $init_defaults,
-        init_template      => $init_template,
-      }
+      include elasticsearch::service::openbsd
+      $_service_provider = undef
     }
     'openrc': {
-      elasticsearch::service::openrc { $name:
-        ensure             => $ensure,
-        status             => $status,
-        init_defaults_file => $init_defaults_file,
-        init_defaults      => $init_defaults,
-        init_template      => $init_template,
-      }
+      include elasticsearch::service::openrc
+      $_service_provider = undef
+    }
+    'systemd': {
+      # include elasticsearch::service::systemd
+      $_service_provider = 'systemd'
     }
     default: {
-      fail("Unknown service provider ${elasticsearch::service_provider}")
+      fail("Unknown service provider ${::elasticsearch::service_provider}")
     }
+  }
+
+  service { $::elasticsearch::service_name:
+    ensure   => $_service_ensure,
+    enable   => $_service_enable,
+    provider => $_service_provider,
+    require  => $_service_require,
   }
 }
