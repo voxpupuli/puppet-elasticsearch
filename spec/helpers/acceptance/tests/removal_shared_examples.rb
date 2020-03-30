@@ -26,6 +26,5 @@ shared_examples 'module removal' do |es_config|
         end
       end
     end
-
   end
 end

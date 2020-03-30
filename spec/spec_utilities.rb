@@ -100,12 +100,12 @@ def pid_file
   if fact('operatingsystem') == 'Ubuntu' \
       and Gem::Version.new(fact('operatingsystemrelease')) \
       < Gem::Version.new('15.04')
-    "/var/run/elasticsearch.pid"
+    '/var/run/elasticsearch.pid'
   elsif fact('operatingsystem') == 'Debian' \
       and fact('lsbmajdistrelease').to_i <= 7
-    "/var/run/elasticsearch.pid"
+    '/var/run/elasticsearch.pid'
   else
-    "/var/run/elasticsearch/elasticsearch.pid"
+    '/var/run/elasticsearch/elasticsearch.pid'
   end
 end
 

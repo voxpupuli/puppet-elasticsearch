@@ -25,12 +25,12 @@ shared_examples 'manifest application' do |idempotency_check = true|
     end
 
     it 'applies cleanly' do
-      apply_manifest(applied_manifest, {:catch_failures => true, :debug => v[:puppet_debug]})
+      apply_manifest(applied_manifest, :catch_failures => true, :debug => v[:puppet_debug])
     end
 
     if idempotency_check
       it 'is idempotent', :logs_on_failure do
-        apply_manifest(applied_manifest, {:catch_changes => true, :debug => v[:puppet_debug]})
+        apply_manifest(applied_manifest, :catch_changes => true, :debug => v[:puppet_debug])
       end
     end
   end

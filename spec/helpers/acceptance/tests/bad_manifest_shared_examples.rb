@@ -1,5 +1,5 @@
 shared_examples 'invalid manifest application' do
-  context "bad manifest" do
+  context 'bad manifest' do
     let(:applied_manifest) do
       <<-MANIFEST
         class { 'elasticsearch' :

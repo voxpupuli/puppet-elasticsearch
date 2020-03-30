@@ -1,7 +1,7 @@
 require 'json'
 require 'helpers/acceptance/tests/manifest_shared_examples'
 
-shared_examples 'basic acceptance tests' do | config |
+shared_examples 'basic acceptance tests' do |config|
   include_examples 'manifest application'
 
   describe package("elasticsearch#{v[:oss] ? '-oss' : ''}") do
@@ -18,19 +18,19 @@ shared_examples 'basic acceptance tests' do | config |
     end
   end
 
-  describe "resources for instance " do
-    describe service("elasticsearch") do
+  describe 'resources' do
+    describe service('elasticsearch') do
       it { send(config.empty? ? :should_not : :should, be_enabled) }
       it { send(config.empty? ? :should_not : :should, be_running) }
     end
 
     unless config.empty?
-      describe file(pid_file()) do
+      describe file(pid_file) do
         it { should be_file }
         its(:content) { should match(/[0-9]+/) }
       end
 
-      describe file("/etc/elasticsearch/elasticsearch.yml") do
+      describe file('/etc/elasticsearch/elasticsearch.yml') do
         it { should be_file }
         it { should contain "name: #{config['node.name']}" }
       end
