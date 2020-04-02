@@ -271,6 +271,9 @@
 #   File source for shield/x-pack logging configuration file (will be placed
 #   into logging.yml or log4j2.properties file as appropriate).
 #
+# @param service_name
+#   Elasticsearch serviice name
+#
 # @param security_plugin
 #   Which security plugin will be used to manage users, roles, and
 #   certificates.
