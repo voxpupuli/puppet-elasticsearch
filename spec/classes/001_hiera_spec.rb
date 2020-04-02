@@ -60,45 +60,6 @@ describe 'elasticsearch', :type => 'class' do
           %w[elasticsearch.yml jvm.options log4j2.properties].each do |file|
             it { should contain_file("/etc/elasticsearch/#{file}") }
           end
-
-          # case init
-          # when :sysv
-          #   it { should contain_elasticsearch__service__init(name) }
-          #   it { should contain_elasticsearch_service_file("/etc/init.d/elasticsearch-#{name}") }
-          #   it { should contain_file("/etc/init.d/elasticsearch-#{name}") }
-          # when :systemd
-          #   it { should contain_elasticsearch__service__systemd(name) }
-          #   it { should contain_elasticsearch_service_file("/lib/systemd/system/elasticsearch-#{name}.service") }
-          #   it { should contain_file("/lib/systemd/system/elasticsearch-#{name}.service") }
-          #   it { should contain_exec("systemd_reload_#{name}") }
-          # end
-
-
-          # context 'multiple instances' do
-          #   let(:facts) { facts.merge(:scenario => 'multipleinstances') }
-
-          #   include_examples 'instance', 'es-hiera-multiple-1', :systemd
-          #   include_examples 'instance', 'es-hiera-multiple-2', :systemd
-          # end
-
-          # context 'no instances' do
-          #   let(:facts) { facts.merge(:scenario => '') }
-
-          #   it { should_not contain_elasticsearch__instance('es-hiera-multiple-1') }
-          #   it { should_not contain_elasticsearch__instance('es-hiera-multiple-2') }
-          # end
-
-          # context 'multiple instances using lookup_options' do
-          #   let(:facts) do
-          #     facts.merge(
-          #       :common => 'defaultinstance-merged',
-          #       :scenario => 'singleinstance'
-          #     )
-          #   end
-
-          #   include_examples 'instance', 'default', :systemd
-          #   include_examples 'instance', 'es-hiera-single', :systemd
-          # end
         end # of config
 
         describe 'pipelines' do
