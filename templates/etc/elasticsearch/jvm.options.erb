@@ -33,10 +33,10 @@ defaults = {
   'NumberOfGCLogFiles' => '-XX:NumberOfGCLogFiles=32',
   'GCLogFileSize' => '-XX:GCLogFileSize=64m',
 }
-defaults.each {|k,v| set_default(@jvm_options, k, v)}
+defaults.each {|k,v| set_default(scope['elasticsearch::jvm_options'], k, v)}
 
 -%>
 
-<% @jvm_options.sort.each do |line| -%>
+<% scope['elasticsearch::jvm_options'].sort.each do |line| -%>
 <%= line %>
 <% end -%>

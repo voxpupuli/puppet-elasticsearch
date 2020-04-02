@@ -191,7 +191,7 @@ class elasticsearch::config {
         mode    => '0644',
         notify  => $::elasticsearch::_notify_service,
         require => Class['elasticsearch::package'],
-        before  => Class['elasticsearch::service']
+        before  => Class['elasticsearch::service'],
     }
 
     # Generate Elasticsearch config
@@ -202,7 +202,7 @@ class elasticsearch::config {
       $_tls_config
     )
 
-    datacat_fragment { "main_config_${name}":
+    datacat_fragment { 'main_config':
       target => "${::elasticsearch::configdir}/elasticsearch.yml",
       data   => $_es_config,
     }
@@ -216,12 +216,19 @@ class elasticsearch::config {
       mode     => '0440',
     }
 
+    # Configure JVM options
+    file { "${::elasticsearch::configdir}/jvm.options":
+      content => template("${module_name}/etc/elasticsearch/jvm.options.erb"),
+      group   => $::elasticsearch::elasticsearch_group,
+      notify  => $::elasticsearch::_notify_service,
+      owner   => $::elasticsearch::elasticsearch_user,
+    }
+
     if $::elasticsearch::system_key != undef {
       file { "${::elasticsearch::configdir}/${::elasticsearch::security_plugin}/system_key":
         ensure  => 'file',
         source  => $::elasticsearch::system_key,
         mode    => '0400',
-        before  => Elasticsearch::Service[$::elasticsearch::service_name],
         require => File["${::elasticsearch::configdir}/${::elasticsearch::security_plugin}"],
       }
     }

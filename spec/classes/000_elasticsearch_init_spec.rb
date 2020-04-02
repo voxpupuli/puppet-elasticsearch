@@ -69,7 +69,10 @@ describe 'elasticsearch', :type => 'class' do
 
       # Systemd-specific files
       if test_pid == true
-        it { should contain_service('elasticsearch').with(:ensure => false).with(:enable => 'mask') }
+        it { should contain_service('elasticsearch').with(
+          :ensure => 'running',
+          :enable => true
+        ) }
         it { should contain_file('/usr/lib/tmpfiles.d/elasticsearch.conf') }
       end
 
@@ -271,27 +274,16 @@ describe 'elasticsearch', :type => 'class' do
         it { should contain_class('elasticsearch::package') }
         it { should contain_class('elasticsearch::config')
           .that_requires('Class[elasticsearch::package]') }
+        it { should contain_class('elasticsearch::service')
+          .that_requires('Class[elasticsearch::config]') }
 
         # Base directories
         it { should contain_file('/etc/elasticsearch') }
-        it { should contain_file('/usr/share/elasticsearch/templates_import') }
-        it { should contain_file('/usr/share/elasticsearch/scripts') }
         it { should contain_file('/usr/share/elasticsearch') }
         it { should contain_file('/usr/share/elasticsearch/lib') }
+        it { should contain_file('/var/lib/elasticsearch') }
 
         it { should contain_exec('remove_plugin_dir') }
-
-        # file removal from package
-        it { should contain_file('/etc/elasticsearch/elasticsearch.yml')
-          .with(:ensure => 'absent') }
-        it { should contain_file('/etc/elasticsearch/jvm.options')
-          .with(:ensure => 'absent') }
-        it { should contain_file('/etc/elasticsearch/logging.yml')
-          .with(:ensure => 'absent') }
-        it { should contain_file('/etc/elasticsearch/log4j2.properties')
-          .with(:ensure => 'absent') }
-        it { should contain_file('/etc/elasticsearch/log4j2.properties')
-          .with(:ensure => 'absent') }
       end
 
       context 'package installation' do
@@ -363,7 +355,7 @@ describe 'elasticsearch', :type => 'class' do
 
         {
           'indices' => { 'test-index' => {} },
-          'instances' => { 'es-instance' => {} },
+          # 'instances' => { 'es-instance' => {} },
           'pipelines' => { 'testpipeline' => { 'content' => {} } },
           'plugins' => { 'head' => {} },
           'roles' => { 'elastic_role' => {} },
