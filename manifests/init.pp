@@ -523,10 +523,12 @@ class elasticsearch (
     -> Elasticsearch::Plugin <| ensure == 'present' or ensure == 'installed' |>
     Elasticsearch::Plugin <| ensure == 'absent' |>
     -> Class['elasticsearch::config']
-    Class['elasticsearch::config']
-    -> Elasticsearch::User <| |>
-    Class['elasticsearch::config']
-    -> Elasticsearch::Role <| |>
+    # Class['elasticsearch::config']
+    # -> Elasticsearch::User <| ensure == 'present' |>
+    # Elasticsearch::User <| ensure == 'absent' |>
+    # -> Class['elasticsearch::config']
+    # Class['elasticsearch::config']
+    # -> Elasticsearch::Role <| |>
     Class['elasticsearch::config']
     -> Elasticsearch::Template <| |>
     Class['elasticsearch::config']
@@ -560,7 +562,7 @@ class elasticsearch (
 
   }
 
-  # Install plugins before managing instances or users/roles
+  # Install plugins before managing users/roles
   Elasticsearch::Plugin <| ensure == 'present' or ensure == 'installed' |>
   -> Elasticsearch::User <| |>
   Elasticsearch::Plugin <| ensure == 'present' or ensure == 'installed' |>

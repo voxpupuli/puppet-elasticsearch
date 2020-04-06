@@ -68,18 +68,10 @@ class elasticsearch::license (
   $_security_plugin = regsubst($security_plugin, '-', '')
 
   if $ensure == 'present' {
-    Elasticsearch::Instance <| ensure == 'present' |>
-    -> Class['elasticsearch::license']
-    Class['elasticsearch::license']
-    -> Elasticsearch::Instance <| ensure == 'absent' |>
-
     Elasticsearch::Role <| |>
     -> Class['elasticsearch::license']
     Elasticsearch::User <| |>
     -> Class['elasticsearch::license']
-  } else {
-    Class['elasticsearch::license']
-    -> Elasticsearch::Instance <| |>
   }
 
   es_instance_conn_validator { 'license-conn-validator':

@@ -28,7 +28,7 @@ defaults = {
   'PrintGCDetails' => '-XX:+PrintGCDetails',
   'PrintGCDateStamps' => '-XX:+PrintGCDateStamps',
   'PrintTenuringDistribution' => '-XX:+PrintTenuringDistribution',
-  'Xloggc' => "-Xloggc:#{@logdir}/gc.log",
+  'Xloggc' => "-Xloggc:#{scope['elasticsearch::logdir']}/gc.log",
   'UseGCLogFileRotation' => '-XX:+UseGCLogFileRotation',
   'NumberOfGCLogFiles' => '-XX:NumberOfGCLogFiles=32',
   'GCLogFileSize' => '-XX:GCLogFileSize=64m',

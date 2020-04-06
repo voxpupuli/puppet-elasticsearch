@@ -18,9 +18,6 @@
 #   Path to the elasticsearch configuration directory (ES_PATH_CONF)
 #   to which the plugin should be installed.
 #
-# @param instances
-#   Specify all the instances related
-#
 # @param java_opts
 #   Array of Java options to be passed to `ES_JAVA_OPTS`
 #
@@ -59,8 +56,7 @@
 #
 define elasticsearch::plugin (
   Enum['absent', 'present']      $ensure         = 'present',
-  Stdlib::Absolutepath           $configdir      = $elasticsearch::configdir,
-  Variant[String, Array[String]] $instances      = [],
+  Stdlib::Absolutepath           $configdir      = $::elasticsearch::configdir,
   Array[String]                  $java_opts      = [],
   Optional[Stdlib::Absolutepath] $java_home      = undef,
   Optional[String]               $module_dir     = undef,
@@ -76,10 +72,6 @@ define elasticsearch::plugin (
 
   case $ensure {
     'present': {
-      if empty($instances) and $elasticsearch::restart_plugin_change {
-        fail('no $instances defined, even though `restart_plugin_change` is set!')
-      }
-
       $_file_ensure = 'directory'
       $_file_before = []
     }
@@ -144,9 +136,9 @@ define elasticsearch::plugin (
     before  => $_file_before,
   }
 
-  if ! empty($instances) and $elasticsearch::restart_plugin_change {
+  if $::elasticsearch::restart_plugin_change {
     Elasticsearch_plugin[$name] {
-      notify +> Elasticsearch::Instance[$instances],
+      notify +> Service['elasticsearch'],
     }
   }
 }

@@ -51,8 +51,7 @@ describe 'elasticsearch::user' do
               class { 'elasticsearch':
                 security_plugin => 'shield',
               }
-              elasticsearch::instance { 'es-security-user': }
-              elasticsearch::plugin { 'shield': instances => 'es-security-user' }
+              elasticsearch::plugin { 'shield': }
               elasticsearch::template { 'foo': content => {"foo" => "bar"} }
               elasticsearch::role { 'test_role':
                 privileges => {
@@ -88,9 +87,9 @@ describe 'elasticsearch::user' do
             'Elasticsearch::Role[test_role]'
           ])}
 
-          include_examples 'instance', 'es-security-user', :systemd
+          include_examples 'class', :systemd
           it { should contain_file(
-            '/etc/elasticsearch/es-security-user/shield'
+            '/etc/elasticsearch/shield'
           ) }
         end
 
@@ -100,10 +99,8 @@ describe 'elasticsearch::user' do
               class { 'elasticsearch':
                 security_plugin => 'shield',
               }
-              elasticsearch::instance { 'es-security-user': }
               elasticsearch::plugin { 'shield':
                 ensure => 'absent',
-                instances => 'es-security-user',
               }
               elasticsearch::template { 'foo': content => {"foo" => "bar"} }
               elasticsearch::role { 'test_role':
@@ -140,7 +137,7 @@ describe 'elasticsearch::user' do
             'Elasticsearch::Role[test_role]'
           ])}
 
-          include_examples 'instance', 'es-security-user', :systemd
+          include_examples 'class', :systemd
         end
       end
     end

@@ -22,7 +22,7 @@ class elasticsearch::package {
   if $elasticsearch::ensure == 'present' {
 
     if $elasticsearch::restart_package_change {
-      Package['elasticsearch'] ~> Elasticsearch::Service <| |>
+      Package['elasticsearch'] ~> Class['elasticsearch::service']
     }
     Package['elasticsearch'] ~> Exec['remove_plugin_dir']
 
@@ -65,7 +65,6 @@ class elasticsearch::package {
         'package': { $before = Package['elasticsearch']  }
         default:   { fail("software provider \"${elasticsearch::package_provider}\".") }
       }
-
 
       $filename_array = split($elasticsearch::package_url, '/')
       $basefilename = $filename_array[-1]
