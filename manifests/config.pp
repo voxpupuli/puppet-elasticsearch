@@ -138,7 +138,7 @@ class elasticsearch::config {
         group  => '0',
         mode   => '0644',
         before => Service['elasticsearch'],
-        notify => $::elasticsearch::_notify_service
+        notify => $::elasticsearch::_notify_service,
       }
     } else {
       augeas { 'init_defaults':
@@ -146,7 +146,7 @@ class elasticsearch::config {
         lens    => 'Shellvars.lns',
         changes => template("${module_name}/etc/sysconfig/defaults.erb"),
         before  => Service['elasticsearch'],
-        notify  => $::elasticsearch::_notify_service
+        notify  => $::elasticsearch::_notify_service,
       }
     }
   } else { # absent

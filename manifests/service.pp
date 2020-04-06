@@ -104,9 +104,9 @@ class elasticsearch::service {
   # }
 
   service { $::elasticsearch::service_name:
-    ensure  => $_service_ensure,
-    enable  => $_service_enable,
+    ensure => $_service_ensure,
+    enable => $_service_enable,
     # provider => $_service_provider,
-    require => $_service_require,
+    # require => $_service_require,
   }
 }
