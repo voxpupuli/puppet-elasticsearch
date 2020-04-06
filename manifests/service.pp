@@ -78,35 +78,35 @@ class elasticsearch::service {
     $_service_enable = false
   }
 
-  # TODO: Flesh this out
-  $_service_require = undef
+  # # TODO: Flesh this out
+  # $_service_require = undef
 
-  case $::elasticsearch::service_provider {
-    'init': {
-      include elasticsearch::service::init
-      $_service_provider = undef
-    }
-    'openbsd': {
-      include elasticsearch::service::openbsd
-      $_service_provider = undef
-    }
-    'openrc': {
-      include elasticsearch::service::openrc
-      $_service_provider = undef
-    }
-    'systemd': {
-      # include elasticsearch::service::systemd
-      $_service_provider = 'systemd'
-    }
-    default: {
-      fail("Unknown service provider ${::elasticsearch::service_provider}")
-    }
-  }
+  # case $::elasticsearch::service_provider {
+  #   'init': {
+
+  #     $_service_provider = undef
+  #   }
+  #   'openbsd': {
+  #     # include elasticsearch::service::openbsd
+  #     $_service_provider = undef
+  #   }
+  #   'openrc': {
+  #     # include elasticsearch::service::openrc
+  #     $_service_provider = undef
+  #   }
+  #   'systemd': {
+  #     # include elasticsearch::service::systemd
+  #     $_service_provider = 'systemd'
+  #   }
+  #   default: {
+  #     fail("Unknown service provider ${::elasticsearch::service_provider}")
+  #   }
+  # }
 
   service { $::elasticsearch::service_name:
-    ensure   => $_service_ensure,
-    enable   => $_service_enable,
-    provider => $_service_provider,
-    require  => $_service_require,
+    ensure  => $_service_ensure,
+    enable  => $_service_enable,
+    # provider => $_service_provider,
+    require => $_service_require,
   }
 }

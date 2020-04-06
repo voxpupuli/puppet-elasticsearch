@@ -120,6 +120,42 @@ class elasticsearch::config {
       }
     }
 
+  $init_defaults = merge(
+    {
+      'MAX_OPEN_FILES' => '65535',
+    },
+    $::elasticsearch::init_defaults
+  )
+
+  # Setup init defaults
+  if ($::elasticsearch::ensure == 'present') {
+    # Defaults file, either from file source or from hash to augeas commands
+    if ($::elasticsearch::init_defaults_file != undef) {
+      file { "${::elasticsearch::defaults_location}/elasticsearch":
+        ensure => $::elasticsearch::ensure,
+        source => $::elasticsearch::init_defaults_file,
+        owner  => 'root',
+        group  => '0',
+        mode   => '0644',
+        before => Service['elasticsearch'],
+        notify => $::elasticsearch::_notify_service
+      }
+    } else {
+      augeas { 'init_defaults':
+        incl    => "${::elasticsearch::defaults_location}/elasticsearch",
+        lens    => 'Shellvars.lns',
+        changes => template("${module_name}/etc/sysconfig/defaults.erb"),
+        before  => Service['elasticsearch'],
+        notify  => $::elasticsearch::_notify_service
+      }
+    }
+  } else { # absent
+    file { "${elasticsearch::defaults_location}/elasticsearch":
+      ensure    => 'absent',
+      subscribe => Service['elasticsearch'],
+    }
+  }
+
     # Generate config file
     $_config = deep_implode($elasticsearch::config)
 
