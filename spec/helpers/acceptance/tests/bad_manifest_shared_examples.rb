@@ -12,7 +12,7 @@ shared_examples 'invalid manifest application' do
     end
 
     it 'fails to apply' do
-      apply_manifest applied_manifest, :expect_failures => true
+      apply_manifest(applied_manifest, :expect_failures => true, :debug => v[:puppet_debug])
     end
   end
 end

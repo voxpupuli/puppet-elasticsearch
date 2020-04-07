@@ -80,7 +80,6 @@ RSpec.configure do |c|
         manage_repo => true,
         oss         => #{v[:oss]},
       }
-      elasticsearch::instance { 'es-01': ensure => 'absent' }
 
       file { '/usr/share/elasticsearch/plugin':
         ensure  => 'absent',

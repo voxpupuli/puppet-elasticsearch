@@ -60,7 +60,7 @@ describe "elasticsearch v#{v[:elasticsearch_full_version]} class" do
 
   include_examples('pipeline operations', es_config, v[:pipeline])
 
-  # include_examples('plugin acceptance tests', v[:elasticsearch_plugins]) unless v[:elasticsearch_plugins].empty?
+  include_examples('plugin acceptance tests', es_config, v[:elasticsearch_plugins]) unless v[:elasticsearch_plugins].empty?
 
   # # Only pre-5.x versions supported versions differing from core ES
   # if semver(v[:elasticsearch_full_version]) < semver('5.0.0')
