@@ -7,11 +7,11 @@ shared_examples 'module removal' do |es_config|
     end
 
     it 'should run successfully' do
-      apply_manifest manifest, :catch_failures => true
+      apply_manifest(manifest, :catch_failures => true, :debug => v[:puppet_debug])
     end
 
-    it 'is idempotent' do
-      apply_manifest manifest, :catch_changes => true
+    describe package("elasticsearch#{v[:oss] ? '-oss' : ''}") do
+      it { should_not be_installed }
     end
 
     describe service('elasticsearch') do
