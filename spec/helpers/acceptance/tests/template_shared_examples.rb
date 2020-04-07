@@ -16,7 +16,7 @@ shared_examples 'template application' do |es_config, name, template, param|
 
     include_examples('manifest application')
 
-    include_examples 'template content', es_config, template
+    include_examples('template content', es_config, template)
   end
 
   context 'absent' do

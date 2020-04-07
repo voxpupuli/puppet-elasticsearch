@@ -56,9 +56,9 @@ describe "elasticsearch v#{v[:elasticsearch_full_version]} class" do
     include_examples('module removal', es_config)
   end
 
-  # include_examples('template operations', es_config, v[:template])
+  include_examples('template operations', es_config, v[:template])
 
-  # include_examples('pipeline operations', es_01, v[:pipeline]) if semver(v[:elasticsearch_full_version]) >= semver('5.0.0')
+  include_examples('pipeline operations', es_config, v[:pipeline])
 
   # include_examples('plugin acceptance tests', v[:elasticsearch_plugins]) unless v[:elasticsearch_plugins].empty?
 
