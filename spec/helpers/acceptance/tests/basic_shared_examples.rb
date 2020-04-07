@@ -1,8 +1,8 @@
 require 'json'
 require 'helpers/acceptance/tests/manifest_shared_examples'
 
-shared_examples 'basic acceptance tests' do |config|
-  include_examples 'manifest application'
+shared_examples 'basic acceptance tests' do |es_config|
+  include_examples('manifest application')
 
   describe package("elasticsearch#{v[:oss] ? '-oss' : ''}") do
     it { should be_installed }
@@ -20,11 +20,11 @@ shared_examples 'basic acceptance tests' do |config|
 
   describe 'resources' do
     describe service('elasticsearch') do
-      it { send(config.empty? ? :should_not : :should, be_enabled) }
-      it { send(config.empty? ? :should_not : :should, be_running) }
+      it { send(es_config.empty? ? :should_not : :should, be_enabled) }
+      it { send(es_config.empty? ? :should_not : :should, be_running) }
     end
 
-    unless config.empty?
+    unless es_config.empty?
       describe file(pid_file) do
         it { should be_file }
         its(:content) { should match(/[0-9]+/) }
@@ -32,19 +32,20 @@ shared_examples 'basic acceptance tests' do |config|
 
       describe file('/etc/elasticsearch/elasticsearch.yml') do
         it { should be_file }
-        it { should contain "name: #{config['node.name']}" }
+        it { should contain "name: #{es_config['node.name']}" }
       end
     end
 
-    unless config.empty?
-      describe port(config['http.port']) do
+    unless es_config.empty?
+      es_port = es_config['http.port']
+      describe port(es_port) do
         it 'open', :with_retries do
           should be_listening
         end
       end
 
       describe server :container do
-        describe http("http://localhost:#{config['http.port']}/_nodes/_local") do
+        describe http("http://localhost:#{es_port}/_nodes/_local") do
           it 'serves requests', :with_retries do
             expect(response.status).to eq(200)
           end

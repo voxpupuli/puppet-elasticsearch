@@ -73,7 +73,7 @@ describe "elasticsearch v#{v[:elasticsearch_full_version]} class" do
   #   )
   # end
 
-  # include_examples 'snapshot repository acceptance tests'
+  include_examples('snapshot repository acceptance tests')
 
   # include_examples 'datadir acceptance tests'
 
