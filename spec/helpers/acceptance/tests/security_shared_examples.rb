@@ -2,7 +2,7 @@ require 'json'
 require 'spec_utilities'
 require 'helpers/acceptance/tests/manifest_shared_examples'
 
-shared_examples 'security plugin manifest' do |es_config, credentials|
+shared_examples 'security plugin manifest' do |credentials|
   let(:extra_manifest) do
     users = credentials.map do |username, meta|
       <<-USER
@@ -116,7 +116,7 @@ shared_examples 'security acceptance tests' do |es_config|
         }.merge(admin)
         username_passwords[user_two][:hash] = bcrypt(username_passwords[user_two][:plaintext])
 
-        include_examples('security plugin manifest', es_config, username_passwords)
+        include_examples('security plugin manifest', username_passwords)
         include_examples(
           'secured request', 'denies unauthorized access',
           es_config, '/_cluster/health',
@@ -146,7 +146,7 @@ shared_examples 'security acceptance tests' do |es_config|
           }
         }
 
-        include_examples('security plugin manifest', es_config, username_passwords)
+        include_examples('security plugin manifest', username_passwords)
         include_examples(
           'secured request', 'denies unauthorized access', es_config, '/_cluster/health',
           lambda { |r| r.status }, 401
@@ -175,7 +175,7 @@ shared_examples 'security acceptance tests' do |es_config|
           }
         }
 
-        include_examples('security plugin manifest', es_config, user)
+        include_examples('security plugin manifest', user)
         include_examples(
           'secured request', 'denies unauthorized access',
           es_config, '/_snapshot',
