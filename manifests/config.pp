@@ -171,20 +171,11 @@ class elasticsearch::config {
         $_keystore_path = $elasticsearch::keystore_path
       }
 
-      if $elasticsearch::security_plugin == 'shield' {
-        $_tls_config = {
-          'shield.transport.ssl'         => true,
-          'shield.http.ssl'              => true,
-          'shield.ssl.keystore.path'     => $_keystore_path,
-          'shield.ssl.keystore.password' => $elasticsearch::keystore_password,
-        }
-      } elsif $elasticsearch::security_plugin == 'x-pack' {
-        $_tls_config = {
-          'xpack.security.transport.ssl.enabled' => true,
-          'xpack.security.http.ssl.enabled'      => true,
-          'xpack.ssl.keystore.path'              => $_keystore_path,
-          'xpack.ssl.keystore.password'          => $elasticsearch::keystore_password,
-        }
+      $_tls_config = {
+        'xpack.security.transport.ssl.enabled' => true,
+        'xpack.security.http.ssl.enabled'      => true,
+        'xpack.ssl.keystore.path'              => $_keystore_path,
+        'xpack.ssl.keystore.password'          => $elasticsearch::keystore_password,
       }
 
       # Trust CA Certificate

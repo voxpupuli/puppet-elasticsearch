@@ -1,5 +1,5 @@
 shared_examples 'manifest application' do |idempotency_check = true|
-  context '1-node manifest' do
+  context 'manifest' do
     let(:applied_manifest) do
       repo = if elastic_repo
                <<-MANIFEST
@@ -28,6 +28,7 @@ shared_examples 'manifest application' do |idempotency_check = true|
       apply_manifest(applied_manifest, :catch_failures => true, :debug => v[:puppet_debug])
     end
 
+    # binding.pry
     if idempotency_check
       it 'is idempotent', :logs_on_failure do
         apply_manifest(applied_manifest, :catch_changes => true, :debug => v[:puppet_debug])

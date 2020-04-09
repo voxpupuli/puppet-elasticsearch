@@ -84,9 +84,9 @@ describe "elasticsearch v#{v[:elasticsearch_full_version]} class" do
 
   # include_examples 'user/group acceptance tests'
 
-  # # Security-related tests (shield/x-pack).
-  # #
-  # # Skip OSS-only distributions since they do not bundle x-pack, and skip
-  # # snapshots since we they don't recognize prod licenses.
-  # include_examples 'security acceptance tests', instances unless v[:oss] or v[:is_snapshot]
+  # Security-related tests (shield/x-pack).
+  #
+  # Skip OSS-only distributions since they do not bundle x-pack, and skip
+  # snapshots since we they don't recognize prod licenses.
+  include_examples('security acceptance tests', es_config) unless v[:oss] or v[:is_snapshot]
 end

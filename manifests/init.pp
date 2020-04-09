@@ -140,6 +140,12 @@
 # @param jvm_options
 #   Array of options to set in jvm_options.
 #
+# @param keystore_password
+#   Password to encrypt this node's Java keystore.
+#
+# @param keystore_path
+#   Custom path to the java keystore file. This parameter is optional.
+#
 # @param license
 #   Optional Elasticsearch license in hash or string form.
 #
@@ -196,6 +202,9 @@
 #
 # @param plugins
 #   Define plugins via a hash. This is mainly used with Hiera's auto binding.
+#
+# @param private_key
+#   Path to the key associated with this node's certificate.
 #
 # @param proxy_url
 #   For http and https downloads, you may set a proxy server to use. By default,
@@ -399,6 +408,9 @@ class elasticsearch (
   Optional[Stdlib::Absolutepath]                  $ca_certificate            = undef,
   Optional[Stdlib::Absolutepath]                  $certificate               = undef,
   String                                          $default_logging_level     = $logging_level,
+  Optional[String]                                $keystore_password         = undef,
+  Optional[Stdlib::Absolutepath]                  $keystore_path             = undef,
+  Optional[Stdlib::Absolutepath]                  $private_key               = undef,
   Boolean                                         $restart_config_change     = $restart_on_change,
   Boolean                                         $restart_package_change    = $restart_on_change,
   Boolean                                         $restart_plugin_change     = $restart_on_change,
