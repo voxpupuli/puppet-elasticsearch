@@ -53,6 +53,7 @@
 # @author Matteo Sessa <matteo.sessa@catchoftheday.com.au>
 # @author Dennis Konert <dkonert@gmail.com>
 # @author Tyler Langlois <tyler.langlois@elastic.co>
+# @author Gavin Williams <gavin.williams@elastic.co>
 #
 define elasticsearch::plugin (
   Enum['absent', 'present']      $ensure         = 'present',
