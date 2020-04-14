@@ -110,8 +110,8 @@ shared_examples 'security acceptance tests' do |es_config|
 
       describe 'user authentication' do
         username_passwords = {
-          user_one => { :plaintext => user_one_pw, :roles => [{ superuser_role => [] }] },
-          user_two => { :plaintext => user_two_pw, :roles => [{ superuser_role => [] }] }
+          user_one => { :plaintext => user_one_pw, :roles => [{ 'superuser' => [] }] },
+          user_two => { :plaintext => user_two_pw, :roles => [{ 'superuser' => [] }] }
         }.merge(admin)
         username_passwords[user_two][:hash] = bcrypt(username_passwords[user_two][:plaintext])
 
@@ -141,7 +141,7 @@ shared_examples 'security acceptance tests' do |es_config|
           user_one => {
             :plaintext => new_password,
             :changed   => true,
-            :roles     => [{ superuser_role => [] }]
+            :roles     => [{ 'superuser' => [] }]
           }
         }
 
@@ -229,7 +229,7 @@ shared_examples 'security acceptance tests' do |es_config|
     #     ssl_instances,
     #     username => {
     #       :plaintext => password,
-    #       :roles => [{ superuser_role => [] }]
+    #       :roles => [{ 'superuser' => [] }]
     #     }
     #   )
 
