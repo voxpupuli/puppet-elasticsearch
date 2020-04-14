@@ -68,12 +68,11 @@ end
 
 shared_examples 'security acceptance tests' do |es_config|
   describe 'security plugin operations', :if => vault_available?, :then_purge => true, :with_license => true, :with_certificates => true do
-    superuser_role = v[:elasticsearch_major_version] > 2 ? 'superuser' : 'admin'
     rand_string = lambda { [*('a'..'z')].sample(8).join }
 
     admin_user = rand_string.call
     admin_password = rand_string.call
-    admin = { admin_user => { :plaintext => admin_password, :roles => [{ superuser_role => [] }] } }
+    admin = { admin_user => { :plaintext => admin_password, :roles => [{ 'superuser' => [] }] } }
 
     let(:manifest_class_parameters) do
       <<-MANIFEST
