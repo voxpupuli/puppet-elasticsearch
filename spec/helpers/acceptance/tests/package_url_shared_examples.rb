@@ -3,7 +3,6 @@ require 'helpers/acceptance/tests/basic_shared_examples'
 
 shared_examples 'package_url acceptance tests' do |es_config|
   describe 'elasticsearch::package_url' do
-
     # Override default manifest to remove `package`
     let(:manifest) do
       <<-MANIFEST
