@@ -77,8 +77,8 @@ describe "elasticsearch v#{v[:elasticsearch_full_version]} class" do
 
   include_examples('datadir acceptance tests', es_config)
 
-  # # Skip this for snapshot testing, as we only have package files anyway.
-  # include_examples 'package_url acceptance tests' unless v[:is_snapshot]
+  # Skip this for snapshot testing, as we only have package files anyway.
+  include_examples('package_url acceptance tests', es_config) unless v[:is_snapshot]
 
   # include_examples 'hiera acceptance tests', v[:elasticsearch_plugins]
 
