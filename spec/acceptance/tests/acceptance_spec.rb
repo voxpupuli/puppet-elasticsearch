@@ -62,7 +62,6 @@ describe "elasticsearch v#{v[:elasticsearch_full_version]} class" do
 
   include_examples('plugin acceptance tests', es_config, v[:elasticsearch_plugins]) unless v[:elasticsearch_plugins].empty?
 
-
   include_examples('snapshot repository acceptance tests')
 
   include_examples('datadir acceptance tests', es_config)
