@@ -3,6 +3,7 @@
 #### Features
 
 #### Fixes
+* Fix "Could not autoload" errors in more types/providers.
 
 ## 6.4.0 (August 28, 2019)
 
