@@ -71,8 +71,6 @@ describe "elasticsearch v#{v[:elasticsearch_full_version]} class" do
 
   include_examples('hiera acceptance tests', es_config, v[:elasticsearch_plugins])
 
-  # include_examples 'user/group acceptance tests'
-
   # Security-related tests (shield/x-pack).
   #
   # Skip OSS-only distributions since they do not bundle x-pack, and skip
