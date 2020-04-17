@@ -17,7 +17,7 @@ shared_examples 'hiera tests with' do |es_config, additional_yaml = {}|
 end
 
 shared_examples 'hiera acceptance tests' do |es_config, plugins|
-  describe 'hiera', :with_cleanup, :then_purge do
+  describe 'hiera', :then_purge do
     let(:manifest) do
       package = if not v[:is_snapshot]
                   <<-MANIFEST
@@ -76,6 +76,12 @@ shared_examples 'hiera acceptance tests' do |es_config, plugins|
 
     after :all do
       write_hieradata_to(agents, {})
+
+      # Ensure that elasticsearch is cleaned up before any other tests
+      cleanup_manifest = <<-EOS
+        class { 'elasticsearch': ensure => 'absent', oss => #{v[:oss]} }
+      EOS
+      apply_manifest(cleanup_manifest, :debug => v[:puppet_debug])
     end
   end
 end
