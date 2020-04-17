@@ -12,7 +12,7 @@ Puppet::Type.type(:elasticsearch_snapshot_lifecycle_policy).provide(
   mk_resource_methods
 
   def self.process_body(body)
-    Puppet.info('Got to snapshot_lifecycle_policy.process_body')
+    Puppet.debug('Got to snapshot_lifecycle_policy.process_body')
 
     results = JSON.parse(body).map do |object_name, api_object|
       {
@@ -31,7 +31,6 @@ Puppet::Type.type(:elasticsearch_snapshot_lifecycle_policy).provide(
         :provider                     => name
       }.reject { |_k, v| v.nil? }
     end
-    Puppet.info(results)
     results
   end
 
