@@ -21,6 +21,8 @@ Puppet::Type.type(:elasticsearch_snapshot_repository).provide(
         :type              => api_object['type'],
         :compress          => api_object['settings']['compress'],
         :location          => api_object['settings']['location'],
+        :bucket            => api_object['settings']['bucket'],
+        :region            => api_object['settings']['region'],
         :chunk_size        => api_object['settings']['chunk_size'],
         :max_restore_rate  => api_object['settings']['max_restore_rate'],
         :max_snapshot_rate => api_object['settings']['max_snapshot_rate'],
@@ -36,13 +38,15 @@ Puppet::Type.type(:elasticsearch_snapshot_repository).provide(
     body = {
       'type'     => resource[:type],
       'settings' => {
-        'compress' => resource[:compress],
-        'location' => resource[:location]
+        'compress' => resource[:compress]
       }
     }
 
     # Add optional values
     body['settings']['chunk_size'] = resource[:chunk_size] unless resource[:chunk_size].nil?
+    body['settings']['location'] = resource[:location] unless resource[:location].nil?
+    body['settings']['bucket'] = resource[:bucket] unless resource[:bucket].nil?
+    body['settings']['region'] = resource[:region] unless resource[:region].nil?
     body['settings']['max_restore_rate'] = resource[:max_restore_rate] unless resource[:max_restore_rate].nil?
     body['settings']['max_snapshot_rate'] = resource[:max_snapshot_rate] unless resource[:max_snapshot_rate].nil?
 
