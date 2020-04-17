@@ -42,8 +42,8 @@ Puppet::Type.type(:elasticsearch_snapshot_lifecycle_policy).provide(
       'schedule'    => resource[:schedule_time],
       'repository'  => resource[:repository],
       'name'        => resource[:snapshot_name],
-      'config'      => { },
-      'retention'   => { }
+      'config'      => {},
+      'retention'   => {}
     }
 
     # Add optional values
