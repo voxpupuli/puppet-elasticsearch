@@ -117,7 +117,7 @@ describe 'elasticsearch', :type => 'class' do
           context 'single roles' do
             let(:facts) { facts.merge(:scenario => 'singlerole') }
             let(:params) do
-              default_params.merge(:security_plugin => 'x-pack')
+              default_params
             end
 
             it { should contain_elasticsearch__role('admin')
@@ -193,7 +193,7 @@ describe 'elasticsearch', :type => 'class' do
           context 'single users' do
             let(:facts) { facts.merge(:scenario => 'singleuser') }
             let(:params) do
-              default_params.merge(:security_plugin => 'x-pack')
+              default_params
             end
 
             it { should contain_elasticsearch__user('elastic')

@@ -267,7 +267,7 @@ describe 'elasticsearch', :type => 'class' do
         :common => ''
       ) }
 
-      context 'main class tests' do
+      describe 'main class tests' do
         # init.pp
         it { should compile.with_all_deps }
         it { should contain_class('elasticsearch') }
@@ -287,14 +287,14 @@ describe 'elasticsearch', :type => 'class' do
       end
 
       context 'package installation' do
-        context 'with default package' do
+        describe 'with default package' do
           it { should contain_package('elasticsearch')
             .with(:ensure => 'present') }
           it { should_not contain_package('my-elasticsearch')
             .with(:ensure => 'present') }
         end
 
-        context 'with specified package name' do
+        describe 'with specified package name' do
           let(:params) do
             default_params.merge(
               :package_name => 'my-elasticsearch'
@@ -307,7 +307,7 @@ describe 'elasticsearch', :type => 'class' do
             .with(:ensure => 'present', :name => 'elasticsearch') }
         end
 
-        context 'with auto upgrade enabled' do
+        describe 'with auto upgrade enabled' do
           let(:params) do
             default_params.merge(
               :autoupgrade => true
@@ -319,7 +319,7 @@ describe 'elasticsearch', :type => 'class' do
         end
       end
 
-      context 'running a a different user' do
+      describe 'running a a different user' do
         let(:params) do
           default_params.merge(
             :elasticsearch_user => 'myesuser',
@@ -369,8 +369,7 @@ describe 'elasticsearch', :type => 'class' do
           describe deftype do
             let(:params) do
               default_params.merge(
-                deftype => params,
-                :security_plugin => 'x-pack'
+                deftype => params
               )
             end
             it { should compile }

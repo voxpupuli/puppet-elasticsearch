@@ -1,6 +1,6 @@
 require 'puppet/provider/elastic_yaml'
 
-# Provider to help manage file-based Shield/X-Pack user/role configuration
+# Provider to help manage file-based X-Pack user/role configuration
 # files.
 class Puppet::Provider::ElasticUserRoles < Puppet::Provider::ElasticYaml
   # Override the ancestor `parse` method to process a users/roles file

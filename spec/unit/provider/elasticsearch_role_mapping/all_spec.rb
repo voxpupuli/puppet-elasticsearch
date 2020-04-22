@@ -1,6 +1,6 @@
 require 'spec_helper_rspec'
 
-[:oss_xpack, :shield, :xpack].each do |provider|
+[:oss_xpack, :xpack].each do |provider|
   describe Puppet::Type.type(:elasticsearch_role_mapping).provider(provider) do
     describe 'instances' do
       it 'should have an instance method' do
