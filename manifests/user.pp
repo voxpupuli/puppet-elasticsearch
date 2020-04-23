@@ -1,4 +1,4 @@
-# Manages shield/x-pack users.
+# Manages x-pack users.
 #
 # @example creates and manage a user with membership in the 'logstash' and 'kibana4' roles.
 #   elasticsearch::user { 'bob':
@@ -20,16 +20,13 @@
 #   A list of roles to which the user should belong.
 #
 # @author Tyler Langlois <tyler.langlois@elastic.co>
+# @author Gavin Williams <gavin.williams@elastic.co>
 #
 define elasticsearch::user (
   String                    $password,
   Enum['absent', 'present'] $ensure = 'present',
   Array                     $roles  = [],
 ) {
-  if $elasticsearch::security_plugin == undef {
-    fail("\"${elasticsearch::security_plugin}\" required")
-  }
-
   if $password =~ /^\$2a\$/ {
     elasticsearch_user_file { $name:
       ensure          => $ensure,
