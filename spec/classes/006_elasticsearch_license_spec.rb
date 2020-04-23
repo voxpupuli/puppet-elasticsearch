@@ -50,7 +50,7 @@ describe 'elasticsearch::license', :type => 'class' do
         it do
           should contain_es_instance_conn_validator(
             'license-conn-validator'
-          ).that_comes_before("elasticsearch_license[xpack]")
+          ).that_comes_before('elasticsearch_license[xpack]')
         end
         it do
           should contain_elasticsearch_license('xpack').with(
