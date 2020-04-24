@@ -243,12 +243,14 @@ class elasticsearch::config {
       mode     => '0440',
     }
 
-    # Configure JVM options
-    file { "${::elasticsearch::configdir}/jvm.options":
-      content => template("${module_name}/etc/elasticsearch/jvm.options.erb"),
-      group   => $::elasticsearch::elasticsearch_group,
-      notify  => $::elasticsearch::_notify_service,
-      owner   => $::elasticsearch::elasticsearch_user,
+    # Add any additional JVM options
+    $elasticsearch::jvm_options.each |String $jvm_option| {
+      file_line { "jvm_option_${jvm_option}":
+        ensure => present,
+        path   => "${elasticsearch::configdir}/jvm.options",
+        line   => $jvm_option,
+        notify => $::elasticsearch::_notify_service,
+      }
     }
 
     if $::elasticsearch::system_key != undef {

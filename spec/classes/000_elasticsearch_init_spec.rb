@@ -339,6 +339,52 @@ describe 'elasticsearch', :type => 'class' do
           .with(:owner => 'myesuser') if facts[:os]['family'] == 'RedHat' }
       end
 
+      describe 'setting jvm_options' do
+        jvm_options = [
+          '-Xms16g',
+          '-Xmx16g'
+        ]
+
+        let(:params) do
+          default_params.merge(
+            :jvm_options => jvm_options
+          )
+        end
+
+        jvm_options.each do |jvm_option|
+          it { should contain_file_line("jvm_option_#{jvm_option}")
+            .with(
+              :ensure => 'present',
+              :path   => '/etc/elasticsearch/jvm.options',
+              :line   => jvm_option
+            )}
+        end
+      end
+
+      context 'with restart_on_change => true' do
+        let(:params) do
+          default_params.merge(
+            :restart_on_change => true
+          )
+        end
+
+        describe 'should restart elasticsearch' do
+          it { should contain_file('/etc/elasticsearch/elasticsearch.yml')
+            .that_notifies('Service[elasticsearch]')}
+        end
+
+        describe 'setting jvm_options triggers restart' do
+          let(:params) do
+            super().merge(
+              :jvm_options => ['-Xmx16g']
+            )
+          end
+
+          it { should contain_file_line('jvm_option_-Xmx16g')
+            .that_notifies('Service[elasticsearch]')}
+        end
+      end
+
       # This check helps catch dependency cycles.
       context 'create_resource' do
         # Helper for these tests

@@ -5,7 +5,7 @@ shared_examples 'class' do |init|
   it { should contain_datacat_fragment('main_config') }
   it { should contain_service('elasticsearch') }
 
-  %w[elasticsearch.yml jvm.options log4j2.properties].each do |file|
+  %w[elasticsearch.yml log4j2.properties].each do |file|
     it { should contain_file("/etc/elasticsearch/#{file}") }
   end
 

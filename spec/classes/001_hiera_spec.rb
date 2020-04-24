@@ -58,7 +58,7 @@ describe 'elasticsearch', :type => 'class' do
             :enable => true
           ) }
 
-          %w[elasticsearch.yml jvm.options log4j2.properties].each do |file|
+          %w[elasticsearch.yml log4j2.properties].each do |file|
             it { should contain_file("/etc/elasticsearch/#{file}") }
           end
         end # of config
