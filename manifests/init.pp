@@ -281,11 +281,7 @@
 #   into logging.yml or log4j2.properties file as appropriate).
 #
 # @param service_name
-#   Elasticsearch serviice name
-#
-# @param security_plugin
-#   Which security plugin will be used to manage users, roles, and
-#   certificates.
+#   Elasticsearch service name
 #
 # @param service_provider
 #   The service resource type provider to use when managing elasticsearch instances.
@@ -294,7 +290,7 @@
 #   Define snapshot repositories via a hash. This is mainly used with Hiera's auto binding.
 #
 # @param ssl
-#   Whether to manage TLS certificates for Shield. Requires the ca_certificate,
+#   Whether to manage TLS certificates. Requires the ca_certificate,
 #   certificate, private_key and keystore_password parameters to be set.
 #
 # @param status
@@ -309,7 +305,7 @@
 #   the service plus assuring it is running on the desired node.
 #
 # @param system_key
-#   Source for the Shield/x-pack system key. Valid values are any that are
+#   Source for the x-pack system key. Valid values are any that are
 #   supported for the file resource `source` parameter.
 #
 # @param systemd_service_path
@@ -393,7 +389,6 @@ class elasticsearch (
   Optional[Hash]                                  $secrets,
   Optional[String]                                $security_logging_content,
   Optional[String]                                $security_logging_source,
-  Optional[Enum['shield', 'x-pack']]              $security_plugin,
   String                                          $service_name,
   Enum['init', 'openbsd', 'openrc', 'systemd']    $service_provider,
   Hash                                            $snapshot_repositories,
@@ -457,13 +452,6 @@ class elasticsearch (
     $_plugindir = "${homedir}/plugins"
   } else {
     $_plugindir = $plugindir
-  }
-
-  # Can only enable SSL if security_plugin specified
-  if $ssl or ($system_key != undef) {
-    if $security_plugin == undef or ! ($security_plugin in ['shield', 'x-pack']) {
-      fail("\"${security_plugin}\" is not a valid security_plugin parameter value")
-    }
   }
 
   # Should we restart Elasticsearch on config change?
