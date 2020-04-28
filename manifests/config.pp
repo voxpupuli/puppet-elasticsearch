@@ -20,6 +20,13 @@ class elasticsearch::config {
     cwd  => '/',
   }
 
+  $init_defaults = merge(
+    {
+      'MAX_OPEN_FILES' => '65535',
+    },
+    $elasticsearch::init_defaults
+  )
+
   if ( $elasticsearch::ensure == 'present' ) {
 
     file {
@@ -94,67 +101,26 @@ class elasticsearch::config {
       }
     }
 
-    if $::elasticsearch::security_plugin != undef and ($::elasticsearch::security_plugin in ['shield', 'x-pack']) {
-      file { "${::elasticsearch::configdir}/${::elasticsearch::security_plugin}" :
-        ensure => 'directory',
-        owner  => 'root',
-        group  => $elasticsearch::elasticsearch_group,
-        mode   => '0750',
-      }
-    }
-
-    # Define logging config file for the in-use security plugin
-    if $::elasticsearch::security_logging_content != undef or $::elasticsearch::security_logging_source != undef {
-      if $::elasticsearch::security_plugin == undef or ! ($::elasticsearch::security_plugin in ['shield', 'x-pack']) {
-        fail("\"${::elasticsearch::security_plugin}\" is not a valid security_plugin parameter value")
-      }
-
-      $_security_logging_file = $::elasticsearch::security_plugin ? {
-        'shield' => 'logging.yml',
-        default => 'log4j2.properties'
-      }
-
-      file { "/etc/elasticsearch/${::elasticsearch::security_plugin}/${_security_logging_file}" :
-        content => $::elasticsearch::security_logging_content,
-        source  => $::elasticsearch::security_logging_source,
-      }
-    }
-
-  $init_defaults = merge(
-    {
-      'MAX_OPEN_FILES' => '65535',
-    },
-    $::elasticsearch::init_defaults
-  )
-
-  # Setup init defaults
-  if ($::elasticsearch::ensure == 'present') {
     # Defaults file, either from file source or from hash to augeas commands
-    if ($::elasticsearch::init_defaults_file != undef) {
-      file { "${::elasticsearch::defaults_location}/elasticsearch":
-        ensure => $::elasticsearch::ensure,
-        source => $::elasticsearch::init_defaults_file,
+    if ($elasticsearch::init_defaults_file != undef) {
+      file { "${elasticsearch::defaults_location}/elasticsearch":
+        ensure => $elasticsearch::ensure,
+        source => $elasticsearch::init_defaults_file,
         owner  => 'root',
         group  => '0',
         mode   => '0644',
         before => Service['elasticsearch'],
-        notify => $::elasticsearch::_notify_service,
+        notify => $elasticsearch::_notify_service,
       }
     } else {
       augeas { 'init_defaults':
-        incl    => "${::elasticsearch::defaults_location}/elasticsearch",
+        incl    => "${elasticsearch::defaults_location}/elasticsearch",
         lens    => 'Shellvars.lns',
         changes => template("${module_name}/etc/sysconfig/defaults.erb"),
         before  => Service['elasticsearch'],
-        notify  => $::elasticsearch::_notify_service,
+        notify  => $elasticsearch::_notify_service,
       }
     }
-  } else { # absent
-    file { "${elasticsearch::defaults_location}/elasticsearch":
-      ensure    => 'absent',
-      subscribe => Service['elasticsearch'],
-    }
-  }
 
     # Generate config file
     $_config = deep_implode($elasticsearch::config)
@@ -166,7 +132,7 @@ class elasticsearch::config {
       }
 
       if ($elasticsearch::keystore_path == undef) {
-        $_keystore_path = "${elasticsearch::configdir}/${elasticsearch::security_plugin}/${name}.ks"
+        $_keystore_path = "${elasticsearch::configdir}/elasticsearch.ks"
       } else {
         $_keystore_path = $elasticsearch::keystore_path
       }
@@ -200,46 +166,46 @@ class elasticsearch::config {
     }
 
     # Logging file or hash
-    if ($::elasticsearch::logging_file != undef) {
+    if ($elasticsearch::logging_file != undef) {
       $_log4j_content = undef
     } else {
-      if ($::elasticsearch::logging_template != undef ) {
-        $_log4j_content = template($::elasticsearch::logging_template)
+      if ($elasticsearch::logging_template != undef ) {
+        $_log4j_content = template($elasticsearch::logging_template)
       } else {
         $_log4j_content = template("${module_name}/etc/elasticsearch/log4j2.properties.erb")
       }
       $_logging_source = undef
     }
     file {
-      "${::elasticsearch::configdir}/log4j2.properties":
+      "${elasticsearch::configdir}/log4j2.properties":
         ensure  => file,
         content => $_log4j_content,
         source  => $_logging_source,
         mode    => '0644',
-        notify  => $::elasticsearch::_notify_service,
+        notify  => $elasticsearch::_notify_service,
         require => Class['elasticsearch::package'],
         before  => Class['elasticsearch::service'],
     }
 
     # Generate Elasticsearch config
     $_es_config = merge(
-      $::elasticsearch::config,
-      { 'path.data' => $::elasticsearch::datadir },
-      { 'path.logs' => $::elasticsearch::logdir },
+      $elasticsearch::config,
+      { 'path.data' => $elasticsearch::datadir },
+      { 'path.logs' => $elasticsearch::logdir },
       $_tls_config
     )
 
     datacat_fragment { 'main_config':
-      target => "${::elasticsearch::configdir}/elasticsearch.yml",
+      target => "${elasticsearch::configdir}/elasticsearch.yml",
       data   => $_es_config,
     }
 
-    datacat { "${::elasticsearch::configdir}/elasticsearch.yml":
+    datacat { "${elasticsearch::configdir}/elasticsearch.yml":
       template => "${module_name}/etc/elasticsearch/elasticsearch.yml.erb",
-      notify   => $::elasticsearch::_notify_service,
+      notify   => $elasticsearch::_notify_service,
       require  => Class['elasticsearch::package'],
-      owner    => $::elasticsearch::elasticsearch_user,
-      group    => $::elasticsearch::elasticsearch_group,
+      owner    => $elasticsearch::elasticsearch_user,
+      group    => $elasticsearch::elasticsearch_group,
       mode     => '0440',
     }
 
@@ -249,31 +215,29 @@ class elasticsearch::config {
         ensure => present,
         path   => "${elasticsearch::configdir}/jvm.options",
         line   => $jvm_option,
-        notify => $::elasticsearch::_notify_service,
+        notify => $elasticsearch::_notify_service,
       }
     }
 
-    if $::elasticsearch::system_key != undef {
-      file { "${::elasticsearch::configdir}/${::elasticsearch::security_plugin}/system_key":
-        ensure  => 'file',
-        source  => $::elasticsearch::system_key,
-        mode    => '0400',
-        require => File["${::elasticsearch::configdir}/${::elasticsearch::security_plugin}"],
+    if $elasticsearch::system_key != undef {
+      file { "${elasticsearch::configdir}/system_key":
+        ensure => 'file',
+        source => $elasticsearch::system_key,
+        mode   => '0400',
       }
     }
 
     # Add secrets to keystore
-    if $::elasticsearch::secrets != undef {
+    if $elasticsearch::secrets != undef {
       elasticsearch_keystore { 'elasticsearch_secrets':
-        configdir => $::elasticsearch::configdir,
-        purge     => $::elasticsearch::purge_secrets,
-        settings  => $::elasticsearch::secrets,
+        configdir => $elasticsearch::configdir,
+        purge     => $elasticsearch::purge_secrets,
+        settings  => $elasticsearch::secrets,
         notify    => $::elaticsearch::_notify_service,
       }
     }
 
   } elsif ( $elasticsearch::ensure == 'absent' ) {
-
     file { $elasticsearch::_plugindir:
       ensure => 'absent',
       force  => true,
@@ -284,6 +248,9 @@ class elasticsearch::config {
       ensure => 'absent',
     }
 
+    file { "${elasticsearch::defaults_location}/elasticsearch":
+      ensure    => 'absent',
+      subscribe => Service['elasticsearch'],
+    }
   }
-
 }
