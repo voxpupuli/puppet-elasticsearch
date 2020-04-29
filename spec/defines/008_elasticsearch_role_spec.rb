@@ -5,9 +5,7 @@ describe 'elasticsearch::role' do
 
   let(:pre_condition) do
     <<-EOS
-      class { 'elasticsearch':
-        security_plugin => 'shield',
-      }
+      class { 'elasticsearch': }
     EOS
   end
 
@@ -65,10 +63,7 @@ describe 'elasticsearch::role' do
         describe 'when present' do
           let(:pre_condition) do
             <<-EOS
-              class { 'elasticsearch':
-                security_plugin => 'shield',
-              }
-              elasticsearch::plugin { 'shield': }
+              class { 'elasticsearch': }
               elasticsearch::template { 'foo': content => {"foo" => "bar"} }
               elasticsearch::user { 'elastic':
                 password => 'foobar',
@@ -77,30 +72,19 @@ describe 'elasticsearch::role' do
             EOS
           end
 
-          it { should contain_elasticsearch__plugin('shield') }
           it { should contain_elasticsearch__role('elastic_role')
             .that_comes_before([
             'Elasticsearch::Template[foo]',
             'Elasticsearch::User[elastic]'
-          ]).that_requires([
-            'Elasticsearch::Plugin[shield]'
           ])}
 
           include_examples 'class', :systemd
-          it { should contain_file(
-            '/etc/elasticsearch/shield'
-          ) }
         end
 
         describe 'when absent' do
           let(:pre_condition) do
             <<-EOS
-              class { 'elasticsearch':
-                security_plugin => 'shield',
-              }
-              elasticsearch::plugin { 'shield':
-                ensure => 'absent',
-              }
+              class { 'elasticsearch': }
               elasticsearch::template { 'foo': content => {"foo" => "bar"} }
               elasticsearch::user { 'elastic':
                 password => 'foobar',
@@ -109,7 +93,6 @@ describe 'elasticsearch::role' do
             EOS
           end
 
-          it { should contain_elasticsearch__plugin('shield') }
           include_examples 'class', :systemd
           # TODO: Uncomment once upstream issue is fixed.
           # https://github.com/rodjek/rspec-puppet/issues/418

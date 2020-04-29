@@ -50,17 +50,14 @@ describe 'elasticsearch', :type => 'class' do
           let(:facts) { facts.merge(:scenario => 'singleinstance') }
 
           # TODO: Fix this
-          # it { should contain_augeas('defaults') }
+          it { should contain_augeas('init_defaults') }
+          it { should contain_file('/etc/elasticsearch/elasticsearch.yml') }
           it { should contain_datacat('/etc/elasticsearch/elasticsearch.yml') }
           it { should contain_datacat_fragment('main_config') }
           it { should contain_service('elasticsearch').with(
             :ensure => 'running',
             :enable => true
           ) }
-
-          %w[elasticsearch.yml log4j2.properties].each do |file|
-            it { should contain_file("/etc/elasticsearch/#{file}") }
-          end
         end # of config
 
         describe 'pipelines' do

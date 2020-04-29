@@ -5,7 +5,8 @@ shared_examples 'basic acceptance tests' do |es_config|
   include_examples('manifest application')
 
   describe package("elasticsearch#{v[:oss] ? '-oss' : ''}") do
-    it { should be_installed }
+    it { should be_installed
+      .with_version(v[:elasticsearch_full_version]) }
   end
 
   %w[

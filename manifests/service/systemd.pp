@@ -186,7 +186,7 @@ class elasticsearch::service::systemd (
     # }
   }
 
-  service { $::elasticsearch::service_name:
+  service { $elasticsearch::service_name:
     ensure   => $_service_ensure,
     enable   => $_service_enable,
     provider => 'systemd',

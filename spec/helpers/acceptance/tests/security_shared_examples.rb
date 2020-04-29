@@ -30,8 +30,6 @@ shared_examples 'security plugin manifest' do |credentials|
     end.join("\n")
 
     <<-MANIFEST
-      #{security_plugins}
-
       #{users}
 
       #{roles}
@@ -86,20 +84,9 @@ shared_examples 'security acceptance tests' do |es_config|
         license                 => file('#{v[:elasticsearch_license_path]}'),
         private_key             => '#{@tls[:clients].first[:key][:path]}',
         restart_on_change       => true,
-        security_plugin         => 'x-pack',
         ssl                     => true,
         validate_tls            => true,
       MANIFEST
-    end
-
-    let(:security_plugins) do
-      if semver(v[:elasticsearch_full_version].split('-').first) < semver('6.3.0')
-        <<-MANIFEST
-          elasticsearch::plugin { 'x-pack' :  }
-        MANIFEST
-      else
-        ''
-      end
     end
 
     describe 'over tls' do

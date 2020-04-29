@@ -5,9 +5,7 @@ describe 'elasticsearch::user' do
 
   let(:pre_condition) do
     <<-EOS
-      class { 'elasticsearch':
-        security_plugin => 'shield',
-      }
+      class { 'elasticsearch': }
     EOS
   end
 
@@ -48,10 +46,7 @@ describe 'elasticsearch::user' do
         describe 'when present' do
           let(:pre_condition) do
             <<-EOS
-              class { 'elasticsearch':
-                security_plugin => 'shield',
-              }
-              elasticsearch::plugin { 'shield': }
+              class { 'elasticsearch': }
               elasticsearch::template { 'foo': content => {"foo" => "bar"} }
               elasticsearch::role { 'test_role':
                 privileges => {
@@ -74,34 +69,20 @@ describe 'elasticsearch::user' do
           it { should contain_elasticsearch__role('test_role') }
           it { should contain_elasticsearch_role('test_role') }
           it { should contain_elasticsearch_role_mapping('test_role') }
-          it { should contain_elasticsearch__plugin('shield') }
-          it { should contain_elasticsearch_plugin('shield') }
-          it { should contain_file(
-            '/usr/share/elasticsearch/plugins/shield'
-          ) }
           it { should contain_elasticsearch__user('elastic')
             .that_comes_before([
             'Elasticsearch::Template[foo]'
           ]).that_requires([
-            'Elasticsearch::Plugin[shield]',
             'Elasticsearch::Role[test_role]'
           ])}
 
           include_examples 'class', :systemd
-          it { should contain_file(
-            '/etc/elasticsearch/shield'
-          ) }
         end
 
         describe 'when absent' do
           let(:pre_condition) do
             <<-EOS
-              class { 'elasticsearch':
-                security_plugin => 'shield',
-              }
-              elasticsearch::plugin { 'shield':
-                ensure => 'absent',
-              }
+              class { 'elasticsearch': }
               elasticsearch::template { 'foo': content => {"foo" => "bar"} }
               elasticsearch::role { 'test_role':
                 privileges => {
@@ -124,15 +105,9 @@ describe 'elasticsearch::user' do
           it { should contain_elasticsearch__role('test_role') }
           it { should contain_elasticsearch_role('test_role') }
           it { should contain_elasticsearch_role_mapping('test_role') }
-          it { should contain_elasticsearch__plugin('shield') }
-          it { should contain_elasticsearch_plugin('shield') }
-          it { should contain_file(
-            '/usr/share/elasticsearch/plugins/shield'
-          ) }
           it { should contain_elasticsearch__user('elastic')
             .that_comes_before([
-              'Elasticsearch::Template[foo]',
-              'Elasticsearch::Plugin[shield]'
+              'Elasticsearch::Template[foo]'
           ]).that_requires([
             'Elasticsearch::Role[test_role]'
           ])}

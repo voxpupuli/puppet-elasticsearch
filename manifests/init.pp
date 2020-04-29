@@ -59,7 +59,7 @@
 #   {package, "upgradeable"}[http://j.mp/xbxmNP] in the Puppet documentation).
 #
 # @param ca_certificate
-#   Path to the trusted CA certificate to add to this node's java keystore.
+#   Path to the trusted CA certificate to add to this node's Java keystore.
 #
 # @param certificate
 #   Path to the certificate for this node signed by the CA listed in
@@ -94,7 +94,7 @@
 #
 # @param deprecation_logging
 #   Wheter to enable deprecation logging. If enabled, deprecation logs will be
-#   saved to ${cluster.name}_deprecation.log in the elastic search log folder.
+#   saved to ${cluster.name}_deprecation.log in the Elasticsearch log folder.
 #
 # @param deprecation_logging_level
 #   Default deprecation logging level for Elasticsearch.
@@ -144,7 +144,7 @@
 #   Password to encrypt this node's Java keystore.
 #
 # @param keystore_path
-#   Custom path to the java keystore file. This parameter is optional.
+#   Custom path to the Java keystore file. This parameter is optional.
 #
 # @param license
 #   Optional Elasticsearch license in hash or string form.
@@ -153,11 +153,11 @@
 #   Directory that will be used for Elasticsearch logging.
 #
 # @param logging_config
-#   Representation of information to be included in the logging.yml file.
+#   Representation of information to be included in the log4j.properties file.
 #
 # @param logging_file
 #   Instead of a hash, you may supply a `puppet://` file source for the
-#   logging.yml file.
+#   log4j.properties file.
 #
 # @param logging_level
 #   Default logging level for Elasticsearch.
@@ -273,12 +273,12 @@
 #   Elasticsearch keystore file. If unset, the keystore is left unmanaged.
 #
 # @param security_logging_content
-#   File content for shield/x-pack logging configuration file (will be placed
-#   into logging.yml or log4j2.properties file as appropriate).
+#   File content for x-pack logging configuration file (will be placed
+#   into log4j2.properties file).
 #
 # @param security_logging_source
-#   File source for shield/x-pack logging configuration file (will be placed
-#   into logging.yml or log4j2.properties file as appropriate).
+#   File source for x-pack logging configuration file (will be placed
+#   into log4j2.properties).
 #
 # @param service_name
 #   Elasticsearch service name
@@ -466,14 +466,14 @@ class elasticsearch (
   contain elasticsearch::config
   contain elasticsearch::service
 
-  create_resources('elasticsearch::index', $::elasticsearch::indices)
-  create_resources('elasticsearch::pipeline', $::elasticsearch::pipelines)
-  create_resources('elasticsearch::plugin', $::elasticsearch::plugins)
-  create_resources('elasticsearch::role', $::elasticsearch::roles)
-  create_resources('elasticsearch::script', $::elasticsearch::scripts)
-  create_resources('elasticsearch::snapshot_repository', $::elasticsearch::snapshot_repositories)
-  create_resources('elasticsearch::template', $::elasticsearch::templates)
-  create_resources('elasticsearch::user', $::elasticsearch::users)
+  create_resources('elasticsearch::index', $elasticsearch::indices)
+  create_resources('elasticsearch::pipeline', $elasticsearch::pipelines)
+  create_resources('elasticsearch::plugin', $elasticsearch::plugins)
+  create_resources('elasticsearch::role', $elasticsearch::roles)
+  create_resources('elasticsearch::script', $elasticsearch::scripts)
+  create_resources('elasticsearch::snapshot_repository', $elasticsearch::snapshot_repositories)
+  create_resources('elasticsearch::template', $elasticsearch::templates)
+  create_resources('elasticsearch::user', $elasticsearch::users)
 
   if ($manage_repo == true) {
     if ($repo_stage == false) {

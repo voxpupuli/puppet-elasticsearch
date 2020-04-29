@@ -45,9 +45,9 @@ class elasticsearch::service {
 
   #### Service management
 
-  if $::elasticsearch::ensure == 'present' {
+  if $elasticsearch::ensure == 'present' {
 
-    case $::elasticsearch::status {
+    case $elasticsearch::status {
       # make sure service is currently running, start it on boot
       'enabled': {
         $_service_ensure = 'running'
@@ -78,7 +78,7 @@ class elasticsearch::service {
     $_service_enable = false
   }
 
-  service { $::elasticsearch::service_name:
+  service { $elasticsearch::service_name:
     ensure => $_service_ensure,
     enable => $_service_enable,
   }

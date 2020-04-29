@@ -60,7 +60,11 @@ describe "elasticsearch v#{v[:elasticsearch_full_version]} class" do
 
   include_examples('pipeline operations', es_config, v[:pipeline])
 
-  include_examples('plugin acceptance tests', es_config, v[:elasticsearch_plugins]) unless v[:elasticsearch_plugins].empty?
+  include_examples(
+    'plugin acceptance tests',
+    es_config,
+    v[:elasticsearch_plugins]
+  ) unless v[:elasticsearch_plugins].empty?
 
   include_examples('snapshot repository acceptance tests')
 
