@@ -449,9 +449,9 @@ class elasticsearch (
 
   # Set the plugin path variable for use later in the module.
   if $plugindir == undef {
-    $_plugindir = "${homedir}/plugins"
+    $real_plugindir = "${homedir}/plugins"
   } else {
-    $_plugindir = $plugindir
+    $real_plugindir = $plugindir
   }
 
   # Should we restart Elasticsearch on config change?

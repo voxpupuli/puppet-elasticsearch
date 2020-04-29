@@ -181,7 +181,7 @@ class elasticsearch::package {
 
     exec { 'remove_plugin_dir':
       refreshonly => true,
-      command     => "rm -rf ${elasticsearch::_plugindir}",
+      command     => "rm -rf ${elasticsearch::real_plugindir}",
     }
 
 

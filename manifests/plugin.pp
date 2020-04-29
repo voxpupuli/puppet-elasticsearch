@@ -78,7 +78,7 @@ define elasticsearch::plugin (
     }
     'absent': {
       $_file_ensure = $ensure
-      $_file_before = File[$elasticsearch::_plugindir]
+      $_file_before = File[$elasticsearch::real_plugindir]
     }
     default: { }
   }
@@ -127,10 +127,10 @@ define elasticsearch::plugin (
     source                     => $file_source,
     url                        => $url,
     proxy                      => $_proxy,
-    plugin_dir                 => $elasticsearch::_plugindir,
+    plugin_dir                 => $elasticsearch::real_plugindir,
     plugin_path                => $module_dir,
   }
-  -> file { "${elasticsearch::_plugindir}/${_module_dir}":
+  -> file { "${elasticsearch::real_plugindir}/${_module_dir}":
     ensure  => $_file_ensure,
     mode    => 'o+Xr',
     recurse => true,
