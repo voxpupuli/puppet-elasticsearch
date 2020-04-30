@@ -93,7 +93,7 @@
 #   Absolute path to directory containing init defaults file.
 #
 # @param deprecation_logging
-#   Wheter to enable deprecation logging. If enabled, deprecation logs will be
+#   Whether to enable deprecation logging. If enabled, deprecation logs will be
 #   saved to ${cluster.name}_deprecation.log in the Elasticsearch log folder.
 #
 # @param deprecation_logging_level

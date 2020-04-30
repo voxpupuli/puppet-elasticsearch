@@ -176,56 +176,5 @@ shared_examples 'security acceptance tests' do |es_config|
         )
       end
     end
-
-    # describe 'with two instances' do
-    #   let(:ssl_params) do
-    #     @tls[:clients].each_with_index.map do |cert, i|
-    #       format(%(
-    #         Elasticsearch::Instance['es-%02d'] {
-    #           ca_certificate    => '#{@tls[:ca][:cert][:path]}',
-    #           certificate       => '#{cert[:cert][:path]}',
-    #           private_key       => '#{cert[:key][:path]}',
-    #           keystore_password => '#{@keystore_password}',
-    #         }
-    #         ), i + 1)
-    #     end.join("\n")
-    #   end
-
-    #   ssl_instances = default_instances.map do |instance, meta|
-    #     new_config = if v[:elasticsearch_major_version] > 2
-    #                    { 'xpack.ssl.verification_mode' => 'none' }
-    #                  else
-    #                    { 'shield.ssl.hostname_verification' => false }
-    #                  end
-    #     [
-    #       instance,
-    #       {
-    #         'config' => meta['config'].merge(new_config).merge(
-    #           'discovery.zen.minimum_master_nodes' => default_instances.keys.size
-    #         ),
-    #         'ssl' => true
-    #       }
-    #     ]
-    #   end.to_h
-
-    #   username = rand_string.call
-    #   password = rand_string.call
-
-    #   include_examples(
-    #     'security plugin manifest',
-    #     ssl_instances,
-    #     username => {
-    #       :plaintext => password,
-    #       :roles => [{ 'superuser' => [] }]
-    #     }
-    #   )
-
-    #   include_examples(
-    #     'secured request', 'clusters between two nodes',
-    #     ssl_instances, '/_nodes',
-    #     lambda { |r| JSON.parse(r.body)['nodes'].size }, 2,
-    #     username, password
-    #   )
-    # end
   end
 end

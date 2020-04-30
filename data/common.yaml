@@ -58,7 +58,6 @@ elasticsearch::scripts: {}
 elasticsearch::secrets: ~
 elasticsearch::security_logging_content: ~
 elasticsearch::security_logging_source: ~
-elasticsearch::security_plugin: ~
 elasticsearch::service_name: elasticsearch
 elasticsearch::service_provider: systemd
 elasticsearch::snapshot_repositories: {}
