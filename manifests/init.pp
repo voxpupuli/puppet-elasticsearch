@@ -523,8 +523,8 @@ class elasticsearch (
     -> Elasticsearch::Plugin <| ensure == 'present' or ensure == 'installed' |>
     Elasticsearch::Plugin <| ensure == 'absent' |>
     -> Class['elasticsearch::config']
-    # Class['elasticsearch::config']
-    # -> Elasticsearch::User <| ensure == 'present' |>
+    Class['elasticsearch::config']
+    -> Elasticsearch::User <| ensure == 'present' |>
     # Elasticsearch::User <| ensure == 'absent' |>
     # -> Class['elasticsearch::config']
     # Class['elasticsearch::config']

@@ -32,12 +32,14 @@ define elasticsearch::user (
       ensure          => $ensure,
       configdir       => $elasticsearch::configdir,
       hashed_password => $password,
+      before          => Elasticsearch_user_roles[$name],
     }
   } else {
     elasticsearch_user { $name:
       ensure    => $ensure,
       configdir => $elasticsearch::configdir,
       password  => $password,
+      before    => Elasticsearch_user_roles[$name],
     }
   }
 
