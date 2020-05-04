@@ -12,7 +12,7 @@ Puppet::Type.type(:es_instance_conn_validator).provide(:tcp_port) do
   def exists?
     start_time = Time.now
     timeout = resource[:timeout]
-    sleep_interval = resource[:sleep]
+    sleep_interval = resource[:sleep_interval]
 
     success = validator.attempt_connection
 
