@@ -19,6 +19,13 @@ class elasticsearch::config {
     cwd  => '/',
   }
 
+  # Reset potentially inherited defaults (since the mode is not always specified in below items, for example "${elasticsearch::homedir}/lib" )
+  File {
+      owner       => undef,
+      group       => undef,
+      mode        => undef,
+  }
+
   if ( $elasticsearch::ensure == 'present' ) {
 
     file {
