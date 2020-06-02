@@ -37,7 +37,22 @@
 #   Snapshot repository type.
 #
 # @param location
-#   Location of snapshots. Mandatory
+#   Location of snapshots.
+#
+# @param container
+#   Azure Container name.
+#
+# @param client
+#   Azure named client to use.
+#
+# @param base_path
+#   Azure path within container to repository data.
+#
+# @param readonly
+#   Makes Azure repository read-only.
+#
+# @param location_mode
+#   Azure location_mode.
 #
 # @param compress
 #   Compress the snapshot metadata files?
@@ -60,8 +75,13 @@
 # @author Tyler Langlois <tyler.langlois@elastic.co>
 #
 define elasticsearch::snapshot_repository (
-  String                          $location,
+  Optional[String]                $location                = undef,
   Enum['absent', 'present']       $ensure                  = 'present',
+  Optional[String]                $client                = undef,
+  Optional[String]                $container                = undef,
+  Optional[String]                $base_path                = undef,
+  Optional[Boolean]               $readonly                = false,
+  Optional[String]                $location_mode                = undef,
   Optional[String]                $api_basic_auth_password = $elasticsearch::api_basic_auth_password,
   Optional[String]                $api_basic_auth_username = $elasticsearch::api_basic_auth_username,
   Optional[Stdlib::Absolutepath]  $api_ca_file             = $elasticsearch::api_ca_file,
@@ -87,6 +107,7 @@ define elasticsearch::snapshot_repository (
     ensure            => $ensure,
     chunk_size        => $chunk_size,
     compress          => $compress,
+    location          => $location,
     location          => $location,
     max_restore_rate  => $max_restore_rate,
     max_snapshot_rate => $max_snapshot_rate,
