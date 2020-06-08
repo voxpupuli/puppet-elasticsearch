@@ -32,7 +32,7 @@ Puppet::Type.newtype(:elasticsearch_snapshot_repository) do
   newproperty(:location) do
     desc 'Repository location'
   end
-  
+
   newproperty(:client) do
     defaultto 'default'
     desc 'Azure client'
