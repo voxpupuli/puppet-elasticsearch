@@ -36,10 +36,10 @@
 # @param repository_type
 #   Snapshot repository type.
 #
-# @param location
+# @param location. Mandatory for type => "fs"
 #   Location of snapshots.
 #
-# @param container
+# @param container. Mandatory for type => "azure"
 #   Azure Container name.
 #
 # @param client
