@@ -39,7 +39,6 @@ Puppet::Type.newtype(:elasticsearch_snapshot_repository) do
   end
 
   newproperty(:container) do
-    defaultto 'elasticsearch-snapshots'
     desc 'Azure storage container'
   end
 
