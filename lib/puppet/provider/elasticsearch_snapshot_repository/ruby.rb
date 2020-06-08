@@ -41,12 +41,17 @@ Puppet::Type.type(:elasticsearch_snapshot_repository).provide(
     body = {
       'type'     => resource[:type],
       'settings' => {
-        'compress' => resource[:compress],
-        'location' => resource[:location]
+        'compress' => resource[:compress]
       }
     }
 
     # Add optional values
+    body['settings']['location'] = resource[:location] unless resource[:location].nil?   
+    body['settings']['container'] = resource[:container] unless resource[:container].nil?   
+    body['settings']['base_path'] = resource[:base_path] unless resource[:base_path].nil?   
+    body['settings']['client'] = resource[:client] unless resource[:client].nil?   
+    body['settings']['readonly'] = resource[:readonly] unless resource[:readonly].nil?   
+    body['settings']['location_mode'] = resource[:location_mode] unless resource[:location_mode].nil?   
     body['settings']['chunk_size'] = resource[:chunk_size] unless resource[:chunk_size].nil?
     body['settings']['max_restore_rate'] = resource[:max_restore_rate] unless resource[:max_restore_rate].nil?
     body['settings']['max_snapshot_rate'] = resource[:max_snapshot_rate] unless resource[:max_snapshot_rate].nil?
