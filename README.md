@@ -432,6 +432,22 @@ elasticsearch::snapshot_repository { 'backups':
 }
 ```
 
+```elasticsearch::snapshot_repository { azure_backups:
+      type                    => 'azure',
+      container               => 'elasticsearch_backups,
+      api_protocol            => 'https',
+      api_host                => $::ipaddress,
+      api_port                => 9201,
+      api_timeout             => 60,
+      api_basic_auth_username => 'admin',
+      api_basic_auth_password => 'adminpassword',
+      api_ca_file             => '/etc/ssl/certs',
+      api_ca_path             => '/etc/pki/certs',
+      validate_tls            => false,
+
+    }
+```
+
 #### Delete a snapshot repository
 
 ```puppet
