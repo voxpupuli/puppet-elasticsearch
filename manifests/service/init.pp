@@ -35,8 +35,9 @@
 #
 # @author Richard Pijnenburg <richard.pijnenburg@elasticsearch.com>
 # @author Tyler Langlois <tyler.langlois@elastic.co>
+# @author Gavin Williams <gavin.williams@elastic.co>
 #
-define elasticsearch::service::init (
+class elasticsearch::service::init (
   Enum['absent', 'present'] $ensure             = $elasticsearch::ensure,
   Hash                      $init_defaults      = {},
   Optional[String]          $init_defaults_file = undef,

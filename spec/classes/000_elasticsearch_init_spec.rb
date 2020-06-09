@@ -69,7 +69,10 @@ describe 'elasticsearch', :type => 'class' do
 
       # Systemd-specific files
       if test_pid == true
-        it { should contain_service('elasticsearch').with(:ensure => false).with(:enable => 'mask') }
+        it { should contain_service('elasticsearch').with(
+          :ensure => 'running',
+          :enable => true
+        ) }
         it { should contain_file('/usr/lib/tmpfiles.d/elasticsearch.conf') }
       end
 
@@ -264,45 +267,34 @@ describe 'elasticsearch', :type => 'class' do
         :common => ''
       ) }
 
-      context 'main class tests' do
+      describe 'main class tests' do
         # init.pp
         it { should compile.with_all_deps }
         it { should contain_class('elasticsearch') }
         it { should contain_class('elasticsearch::package') }
         it { should contain_class('elasticsearch::config')
           .that_requires('Class[elasticsearch::package]') }
+        it { should contain_class('elasticsearch::service')
+          .that_requires('Class[elasticsearch::config]') }
 
         # Base directories
         it { should contain_file('/etc/elasticsearch') }
-        it { should contain_file('/usr/share/elasticsearch/templates_import') }
-        it { should contain_file('/usr/share/elasticsearch/scripts') }
         it { should contain_file('/usr/share/elasticsearch') }
         it { should contain_file('/usr/share/elasticsearch/lib') }
+        it { should contain_file('/var/lib/elasticsearch') }
 
         it { should contain_exec('remove_plugin_dir') }
-
-        # file removal from package
-        it { should contain_file('/etc/elasticsearch/elasticsearch.yml')
-          .with(:ensure => 'absent') }
-        it { should contain_file('/etc/elasticsearch/jvm.options')
-          .with(:ensure => 'absent') }
-        it { should contain_file('/etc/elasticsearch/logging.yml')
-          .with(:ensure => 'absent') }
-        it { should contain_file('/etc/elasticsearch/log4j2.properties')
-          .with(:ensure => 'absent') }
-        it { should contain_file('/etc/elasticsearch/log4j2.properties')
-          .with(:ensure => 'absent') }
       end
 
       context 'package installation' do
-        context 'with default package' do
+        describe 'with default package' do
           it { should contain_package('elasticsearch')
             .with(:ensure => 'present') }
           it { should_not contain_package('my-elasticsearch')
             .with(:ensure => 'present') }
         end
 
-        context 'with specified package name' do
+        describe 'with specified package name' do
           let(:params) do
             default_params.merge(
               :package_name => 'my-elasticsearch'
@@ -315,7 +307,7 @@ describe 'elasticsearch', :type => 'class' do
             .with(:ensure => 'present', :name => 'elasticsearch') }
         end
 
-        context 'with auto upgrade enabled' do
+        describe 'with auto upgrade enabled' do
           let(:params) do
             default_params.merge(
               :autoupgrade => true
@@ -327,7 +319,7 @@ describe 'elasticsearch', :type => 'class' do
         end
       end
 
-      context 'running a a different user' do
+      describe 'running a a different user' do
         let(:params) do
           default_params.merge(
             :elasticsearch_user => 'myesuser',
@@ -347,6 +339,52 @@ describe 'elasticsearch', :type => 'class' do
           .with(:owner => 'myesuser') if facts[:os]['family'] == 'RedHat' }
       end
 
+      describe 'setting jvm_options' do
+        jvm_options = [
+          '-Xms16g',
+          '-Xmx16g'
+        ]
+
+        let(:params) do
+          default_params.merge(
+            :jvm_options => jvm_options
+          )
+        end
+
+        jvm_options.each do |jvm_option|
+          it { should contain_file_line("jvm_option_#{jvm_option}")
+            .with(
+              :ensure => 'present',
+              :path   => '/etc/elasticsearch/jvm.options',
+              :line   => jvm_option
+            )}
+        end
+      end
+
+      context 'with restart_on_change => true' do
+        let(:params) do
+          default_params.merge(
+            :restart_on_change => true
+          )
+        end
+
+        describe 'should restart elasticsearch' do
+          it { should contain_file('/etc/elasticsearch/elasticsearch.yml')
+            .that_notifies('Service[elasticsearch]')}
+        end
+
+        describe 'setting jvm_options triggers restart' do
+          let(:params) do
+            super().merge(
+              :jvm_options => ['-Xmx16g']
+            )
+          end
+
+          it { should contain_file_line('jvm_option_-Xmx16g')
+            .that_notifies('Service[elasticsearch]')}
+        end
+      end
+
       # This check helps catch dependency cycles.
       context 'create_resource' do
         # Helper for these tests
@@ -363,7 +401,7 @@ describe 'elasticsearch', :type => 'class' do
 
         {
           'indices' => { 'test-index' => {} },
-          'instances' => { 'es-instance' => {} },
+          # 'instances' => { 'es-instance' => {} },
           'pipelines' => { 'testpipeline' => { 'content' => {} } },
           'plugins' => { 'head' => {} },
           'roles' => { 'elastic_role' => {} },
@@ -377,8 +415,7 @@ describe 'elasticsearch', :type => 'class' do
           describe deftype do
             let(:params) do
               default_params.merge(
-                deftype => params,
-                :security_plugin => 'x-pack'
+                deftype => params
               )
             end
             it { should compile }

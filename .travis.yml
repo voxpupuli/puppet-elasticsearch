@@ -51,6 +51,12 @@ jobs:
   - stage: acceptance
     env:
     - BEAKER_PUPPET_COLLECTION=puppet6
+    - TASK=beaker:amazonlinux-1-x64:acceptance
+  - env:
+    - BEAKER_PUPPET_COLLECTION=puppet6
+    - TASK=beaker:amazonlinux-2-x64:acceptance
+  - env:
+    - BEAKER_PUPPET_COLLECTION=puppet6
     - TASK=beaker:centos-6-x64:acceptance
   - env:
     - BEAKER_PUPPET_COLLECTION=puppet6
@@ -58,9 +64,6 @@ jobs:
   - env:
     - BEAKER_PUPPET_COLLECTION=puppet6
     - TASK=beaker:centos-8-x64:acceptance
-  - env:
-    - BEAKER_PUPPET_COLLECTION=puppet6
-    - TASK=beaker:amazonlinux-1-x64:acceptance
   - env:
     - BEAKER_PUPPET_COLLECTION=puppet6
     - TASK=beaker:oracle-6-x64:acceptance

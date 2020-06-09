@@ -24,6 +24,9 @@ RSpec.configure do |c|
   # General-purpose spec-global variables
   c.add_setting :v, :default => {}
 
+  # Puppet debug logging
+  v[:puppet_debug] = ENV['BEAKER_debug'] ? true : false
+
   unless ENV['snapshot_version'].nil?
     v[:snapshot_version] = ENV['snapshot_version']
     v[:is_snapshot] = ENV['SNAPSHOT_TEST'] == 'true'
@@ -66,10 +69,6 @@ RSpec.configure do |c|
   c.default_sleep_interval = 10
   # General-case retry keyword for unstable tests
   c.around :each, :with_retries do |example|
-    example.run_with_retry retry: 4
-  end
-  # More forgiving retry config for really flaky tests
-  c.around :each, :with_generous_retries do |example|
     example.run_with_retry retry: 10
   end
 
@@ -81,7 +80,6 @@ RSpec.configure do |c|
         manage_repo => true,
         oss         => #{v[:oss]},
       }
-      elasticsearch::instance { 'es-01': ensure => 'absent' }
 
       file { '/usr/share/elasticsearch/plugin':
         ensure  => 'absent',

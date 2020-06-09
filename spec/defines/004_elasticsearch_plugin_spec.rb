@@ -31,9 +31,8 @@ describe 'elasticsearch::plugin', :type => 'define' do
     context 'default values' do
       context 'present' do
         let(:params) do {
-          :ensure => 'present',
-          :configdir => '/etc/elasticsearch',
-          :instances => 'es-plugin'
+          :ensure    => 'present',
+          :configdir => '/etc/elasticsearch'
         } end
 
         it { is_expected.to compile }
@@ -41,18 +40,13 @@ describe 'elasticsearch::plugin', :type => 'define' do
 
       context 'absent' do
         let(:params) do {
-          :ensure => 'absent',
-          :instances => 'es-plugin'
+          :ensure => 'absent'
         } end
 
         it { is_expected.to compile }
       end
 
       context 'configdir' do
-        let(:params) do {
-          :instances => 'es-plugin'
-        } end
-
         it { should contain_elasticsearch__plugin(
           'mobz/elasticsearch-head/1.0.0'
         ).with_configdir('/etc/elasticsearch') }
@@ -67,8 +61,7 @@ describe 'elasticsearch::plugin', :type => 'define' do
       context 'add a plugin' do
         let(:params) do {
           :ensure     => 'present',
-          :module_dir => 'head',
-          :instances  => 'es-plugin'
+          :module_dir => 'head'
         } end
 
         it { should contain_elasticsearch__plugin(
@@ -87,8 +80,7 @@ describe 'elasticsearch::plugin', :type => 'define' do
       context 'remove a plugin' do
         let(:params) do {
           :ensure     => 'absent',
-          :module_dir => 'head',
-          :instances  => 'es-plugin'
+          :module_dir => 'head'
         } end
 
         it { should contain_elasticsearch__plugin(
@@ -110,9 +102,8 @@ describe 'elasticsearch::plugin', :type => 'define' do
     context 'with url' do
       context 'add a plugin with full name' do
         let(:params) do {
-          :ensure     => 'present',
-          :instances  => 'es-plugin',
-          :url        => 'https://github.com/mobz/elasticsearch-head/archive/master.zip'
+          :ensure => 'present',
+          :url    => 'https://github.com/mobz/elasticsearch-head/archive/master.zip'
         } end
 
         it { should contain_elasticsearch__plugin('mobz/elasticsearch-head/1.0.0') }
@@ -123,9 +114,8 @@ describe 'elasticsearch::plugin', :type => 'define' do
     context 'offline plugin install' do
       let(:title) { 'head' }
       let(:params) do {
-        :ensure    => 'present',
-        :instances => 'es-plugin',
-        :source    => 'puppet:///path/to/my/plugin.zip'
+        :ensure => 'present',
+        :source => 'puppet:///path/to/my/plugin.zip'
       } end
 
       it { should contain_elasticsearch__plugin('head') }
@@ -137,7 +127,6 @@ describe 'elasticsearch::plugin', :type => 'define' do
       let(:title) { 'head' }
       let(:params) do {
         :ensure     => 'present',
-        :instances  => 'es-plugin',
         :module_dir => 'head'
       } end
 
@@ -145,18 +134,16 @@ describe 'elasticsearch::plugin', :type => 'define' do
         let(:pre_condition) do
           <<-EOS
             class { "elasticsearch": }
-
-            elasticsearch::instance { 'es-plugin': }
           EOS
         end
 
         it { should_not contain_elasticsearch_plugin(
           'head'
         ).that_notifies(
-          'Elasticsearch::Service[es-plugin]'
+          'Service[elasticsearch]'
         )}
 
-        include_examples 'instance', 'es-plugin', :sysv
+        include_examples 'class', :sysv
       end
 
       context 'restart_on_change set to true' do
@@ -165,18 +152,16 @@ describe 'elasticsearch::plugin', :type => 'define' do
             class { "elasticsearch":
               restart_on_change => true,
             }
-
-            elasticsearch::instance { 'es-plugin': }
           EOS
         end
 
         it { should contain_elasticsearch_plugin(
           'head'
         ).that_notifies(
-          'Elasticsearch::Service[es-plugin]'
+          'Service[elasticsearch]'
         )}
 
-        include_examples 'instance', 'es-plugin', :sysv
+        include_examples 'class', 'es-plugin', :sysv
       end
 
       context 'restart_plugin_change set to false (default)' do
@@ -185,18 +170,16 @@ describe 'elasticsearch::plugin', :type => 'define' do
             class { "elasticsearch":
               restart_plugin_change => false,
             }
-
-            elasticsearch::instance { 'es-plugin': }
           EOS
         end
 
         it { should_not contain_elasticsearch_plugin(
           'head'
         ).that_notifies(
-          'Elasticsearch::Service[es-plugin]'
+          'Service[elasticsearch]'
         )}
 
-        include_examples 'instance', 'es-plugin', :sysv
+        include_examples 'class', 'es-plugin', :sysv
       end
 
       context 'restart_plugin_change set to true' do
@@ -205,18 +188,16 @@ describe 'elasticsearch::plugin', :type => 'define' do
             class { "elasticsearch":
               restart_plugin_change => true,
             }
-
-            elasticsearch::instance { 'es-plugin': }
           EOS
         end
 
         it { should contain_elasticsearch_plugin(
           'head'
         ).that_notifies(
-          'Elasticsearch::Service[es-plugin]'
+          'Service[elasticsearch]'
         )}
 
-        include_examples 'instance', 'es-plugin', :sysv
+        include_examples 'class', 'es-plugin', :sysv
       end
     end
 
@@ -226,10 +207,9 @@ describe 'elasticsearch::plugin', :type => 'define' do
       context 'unauthenticated' do
         context 'on define' do
           let(:params) do {
-            :ensure         => 'present',
-            :instances      => 'es-plugin',
-            :proxy_host     => 'es.local',
-            :proxy_port     => 8080
+            :ensure     => 'present',
+            :proxy_host => 'es.local',
+            :proxy_port => 8080
           } end
 
           it { should contain_elasticsearch_plugin(
@@ -241,8 +221,7 @@ describe 'elasticsearch::plugin', :type => 'define' do
 
         context 'on main class' do
           let(:params) do {
-            :ensure    => 'present',
-            :instances => 'es-plugin'
+            :ensure => 'present'
           } end
 
           let(:pre_condition) do
@@ -265,7 +244,6 @@ describe 'elasticsearch::plugin', :type => 'define' do
         context 'on define' do
           let(:params) do {
             :ensure         => 'present',
-            :instances      => 'es-plugin',
             :proxy_host     => 'es.local',
             :proxy_port     => 8080,
             :proxy_username => 'elastic',
@@ -281,8 +259,7 @@ describe 'elasticsearch::plugin', :type => 'define' do
 
         context 'on main class' do
           let(:params) do {
-            :ensure    => 'present',
-            :instances => 'es-plugin'
+            :ensure => 'present'
           } end
 
           let(:pre_condition) do
@@ -308,21 +285,16 @@ describe 'elasticsearch::plugin', :type => 'define' do
         let(:pre_condition) do
           <<-EOS
             class { 'elasticsearch': }
-            elasticsearch::instance { 'es-plugin': }
           EOS
         end
 
-        let(:params) do {
-          :instances => 'es-plugin'
-        } end
-
         it { should contain_elasticsearch__plugin(
           'head'
-        ).that_comes_before(
-          'Elasticsearch::Instance[es-plugin]'
+        ).that_requires(
+          'Class[elasticsearch::config]'
         )}
 
-        include_examples 'instance', 'es-plugin', :sysv
+        include_examples 'class', :sysv
       end
     end
   end

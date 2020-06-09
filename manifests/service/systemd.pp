@@ -35,8 +35,9 @@
 #
 # @author Richard Pijnenburg <richard.pijnenburg@elasticsearch.com>
 # @author Tyler Langlois <tyler.langlois@elastic.co>
+# @author Gavin Williams <gavin.williams@elastic.co>
 #
-define elasticsearch::service::systemd (
+class elasticsearch::service::systemd (
   Enum['absent', 'present'] $ensure             = $elasticsearch::ensure,
   Hash                      $init_defaults      = {},
   Optional[String]          $init_defaults_file = undef,
@@ -51,32 +52,32 @@ define elasticsearch::service::systemd (
     case $status {
       # make sure service is currently running, start it on boot
       'enabled': {
-        $service_ensure = 'running'
-        $service_enable = true
+        $_service_ensure = 'running'
+        $_service_enable = true
       }
       # make sure service is currently stopped, do not start it on boot
       'disabled': {
-        $service_ensure = 'stopped'
-        $service_enable = false
+        $_service_ensure = 'stopped'
+        $_service_enable = false
       }
       # make sure service is currently running, do not start it on boot
       'running': {
-        $service_ensure = 'running'
-        $service_enable = false
+        $_service_ensure = 'running'
+        $_service_enable = false
       }
       # do not start service on boot, do not care whether currently running
       # or not
       'unmanaged': {
-        $service_ensure = undef
-        $service_enable = false
+        $_service_ensure = undef
+        $_service_enable = false
       }
       default: { }
     }
   } else {
     # make sure the service is stopped and disabled (the removal itself will be
     # done by package.pp)
-    $service_ensure = 'stopped'
-    $service_enable = false
+    $_service_ensure = 'stopped'
+    $_service_enable = false
   }
 
   if(has_key($init_defaults, 'ES_USER') and $init_defaults['ES_USER'] != $elasticsearch::elasticsearch_user) {
@@ -93,7 +94,7 @@ define elasticsearch::service::systemd (
     $init_defaults
   )
 
-  $notify_service = $elasticsearch::restart_config_change ? {
+  $_notify_service = $elasticsearch::restart_config_change ? {
     true  => [ Exec["systemd_reload_${name}"], Service["elasticsearch-instance-${name}"] ],
     false => Exec["systemd_reload_${name}"]
   }
@@ -109,7 +110,7 @@ define elasticsearch::service::systemd (
         group  => '0',
         mode   => '0644',
         before => Service["elasticsearch-instance-${name}"],
-        notify => $notify_service,
+        notify => $_notify_service,
       }
     } else {
       augeas { "defaults_${name}":
@@ -117,11 +118,11 @@ define elasticsearch::service::systemd (
         lens    => 'Shellvars.lns',
         changes => template("${module_name}/etc/sysconfig/defaults.erb"),
         before  => Service["elasticsearch-instance-${name}"],
-        notify  => $notify_service,
+        notify  => $_notify_service,
       }
     }
 
-    $service_require = Exec["systemd_reload_${name}"]
+    $_service_require = Exec["systemd_reload_${name}"]
 
   } else { # absent
 
@@ -131,7 +132,7 @@ define elasticsearch::service::systemd (
       notify    => Exec["systemd_reload_${name}"],
     }
 
-    $service_require = undef
+    $_service_require = undef
   }
 
   exec { "systemd_reload_${name}":
@@ -160,36 +161,35 @@ define elasticsearch::service::systemd (
       $nproc = '4096'
     }
 
-    elasticsearch_service_file { "${elasticsearch::systemd_service_path}/elasticsearch-${name}.service":
-      ensure            => 'present',
-      content           => file($init_template),
-      defaults_location => $elasticsearch::defaults_location,
-      group             => $elasticsearch::elasticsearch_group,
-      homedir           => $elasticsearch::homedir,
-      instance          => $name,
-      memlock           => $memlock,
-      nofile            => $nofile,
-      nproc             => $nproc,
-      package_name      => 'elasticsearch',
-      pid_dir           => $elasticsearch::pid_dir,
-      user              => $elasticsearch::elasticsearch_user,
-      notify            => $notify_service,
-    }
-    -> file { "${elasticsearch::systemd_service_path}/elasticsearch-${name}.service":
-      ensure => 'file',
-      owner  => 'root',
-      group  => 'root',
-      mode   => '0644',
-      before => Service["elasticsearch-instance-${name}"],
-      notify => $notify_service,
-    }
+    # elasticsearch_service_file { "${elasticsearch::systemd_service_path}/elasticsearch-${name}.service":
+    #   ensure            => 'present',
+    #   content           => file($init_template),
+    #   defaults_location => $elasticsearch::defaults_location,
+    #   group             => $elasticsearch::elasticsearch_group,
+    #   homedir           => $elasticsearch::homedir,
+    #   instance          => $name,
+    #   memlock           => $memlock,
+    #   nofile            => $nofile,
+    #   nproc             => $nproc,
+    #   package_name      => 'elasticsearch',
+    #   pid_dir           => $elasticsearch::pid_dir,
+    #   user              => $elasticsearch::elasticsearch_user,
+    #   notify            => $_notify_service,
+    # }
+    # -> file { "${elasticsearch::systemd_service_path}/elasticsearch-${name}.service":
+    #   ensure => 'file',
+    #   owner  => 'root',
+    #   group  => 'root',
+    #   mode   => '0644',
+    #   before => Service["elasticsearch-instance-${name}"],
+    #   notify => $_notify_service,
+    # }
   }
 
-  service { "elasticsearch-instance-${name}":
-    ensure   => $service_ensure,
-    enable   => $service_enable,
-    name     => "elasticsearch-${name}.service",
+  service { $elasticsearch::service_name:
+    ensure   => $_service_ensure,
+    enable   => $_service_enable,
     provider => 'systemd',
-    require  => $service_require,
+    require  => $_service_require,
   }
 }

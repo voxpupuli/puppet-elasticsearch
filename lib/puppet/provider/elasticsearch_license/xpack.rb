@@ -1,7 +1,7 @@
 require 'puppet/provider/elastic_rest'
 
 Puppet::Type.type(:elasticsearch_license).provide(
-  :shield,
+  :xpack,
   :api_resource_style => :bare,
   :parent => Puppet::Provider::ElasticREST,
   :metadata => :content,
@@ -9,12 +9,12 @@ Puppet::Type.type(:elasticsearch_license).provide(
     lambda { |data| Puppet_X::Elastic.deep_to_s data },
     lambda { |data| Puppet_X::Elastic.deep_to_i data }
   ],
-  :api_uri => '_license',
+  :api_uri => '_xpack/license',
   :query_string => {
     'acknowledge' => 'true'
   }
 ) do
-  desc 'A REST API based provider to manage Elasticsearch Shield licenses.'
+  desc 'A REST API based provider to manage Elasticsearch X-Pack licenses.'
 
   mk_resource_methods
 

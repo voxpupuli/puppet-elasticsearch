@@ -35,8 +35,9 @@
 #
 # @author Richard Pijnenburg <richard.pijnenburg@elasticsearch.com>
 # @author Tyler Langlois <tyler.langlois@elastic.co>
+# @author Gavin Williams <gavin.williams@elastic.co>
 #
-define elasticsearch::service::openbsd (
+class elasticsearch::service::openbsd (
   Enum['absent', 'present'] $ensure        = $elasticsearch::ensure,
   Optional[String]          $init_template = $elasticsearch::init_template,
   Optional[String]          $pid_dir       = $elasticsearch::pid_dir,

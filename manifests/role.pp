@@ -1,4 +1,4 @@
-# Manage shield/x-pack roles.
+# Manage x-pack roles.
 #
 # @param ensure
 #   Whether the role should be present or not.
@@ -9,7 +9,7 @@
 #
 # @param privileges
 #   A hash of permissions defined for the role. Valid privilege settings can
-#   be found in the Shield/x-pack documentation.
+#   be found in the x-pack documentation.
 #
 # @example create and manage the role 'power_user' mapped to an LDAP group.
 #   elasticsearch::role { 'power_user':
@@ -25,6 +25,7 @@
 #   }
 #
 # @author Tyler Langlois <tyler.langlois@elastic.co>
+# @author Gavin Williams <gavin.williams@elastic.co>
 #
 define elasticsearch::role (
   Enum['absent', 'present'] $ensure     = 'present',
@@ -32,9 +33,6 @@ define elasticsearch::role (
   Hash                      $privileges = {},
 ) {
   validate_slength($name, 30, 1)
-  if $elasticsearch::security_plugin == undef {
-    fail("\"${elasticsearch::security_plugin}\" required")
-  }
 
   if empty($privileges) or $ensure == 'absent' {
     $_role_ensure = 'absent'
