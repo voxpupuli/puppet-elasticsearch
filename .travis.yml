@@ -127,6 +127,12 @@ jobs:
   - env:
     - BEAKER_PUPPET_COLLECTION=puppet6
     - TASK=beaker:ubuntu-server-1804-x64:acceptance[7.7.1]
+  - env:
+    - BEAKER_PUPPET_COLLECTION=puppet6
+    - TASK=beaker:ubuntu-server-2004-x64:acceptance
+  - env:
+    - BEAKER_PUPPET_COLLECTION=puppet6
+    - TASK=beaker:ubuntu-server-2004-x64:acceptance[7.7.1]
   - stage: snapshots
     env:
     - TASK=beaker:ubuntu-server-1404-x64:snapshot
