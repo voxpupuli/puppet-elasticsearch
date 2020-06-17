@@ -41,12 +41,10 @@ def derive_full_package_url(full_version, extensions = %w[deb rpm])
   extensions.map do |ext|
     url = if full_version.start_with? '6'
             "https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-#{full_version}.#{ext}"
+          elsif ext == 'deb'
+            "https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-#{full_version}-amd64.#{ext}"
           else
-            if ext == 'deb'
-              "https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-#{full_version}-amd64.#{ext}"
-            else
-              "https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-#{full_version}-x86_64.#{ext}"
-            end
+            "https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-#{full_version}-x86_64.#{ext}"
           end
     [url, File.basename(url)]
   end.to_h
