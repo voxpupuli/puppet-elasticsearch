@@ -42,12 +42,13 @@ class elasticsearch::config {
       $elasticsearch::datadir:
         ensure => 'directory',
         group  => $elasticsearch::elasticsearch_group,
-        owner  => $elasticsearch::elasticsearch_user;
+        owner  => $elasticsearch::elasticsearch_user,
+        mode   => '2750';
       $elasticsearch::logdir:
         ensure => 'directory',
         group  => $elasticsearch::elasticsearch_group,
         owner  => $elasticsearch::elasticsearch_user,
-        mode   => '0750';
+        mode   => '2750';
       $elasticsearch::real_plugindir:
         ensure => 'directory',
         group  => $elasticsearch::elasticsearch_group,
@@ -60,60 +61,19 @@ class elasticsearch::config {
         recurse => true;
     }
 
-    if $elasticsearch::pid_dir {
-      file { $elasticsearch::pid_dir:
-        ensure  => 'directory',
-        group   => undef,
-        owner   => $elasticsearch::elasticsearch_user,
-        recurse => true,
-      }
-
-      if ($elasticsearch::service_provider == 'systemd') {
-        $group = $elasticsearch::elasticsearch_group
-        $user = $elasticsearch::elasticsearch_user
-        $pid_dir = $elasticsearch::pid_dir
-
-        file { '/usr/lib/tmpfiles.d/elasticsearch.conf':
-          ensure  => 'file',
-          content => template("${module_name}/usr/lib/tmpfiles.d/elasticsearch.conf.erb"),
-          group   => '0',
-          owner   => 'root',
-        }
-      }
-    }
-
-    if $elasticsearch::defaults_location {
-      augeas { "${elasticsearch::defaults_location}/elasticsearch":
-        incl    => "${elasticsearch::defaults_location}/elasticsearch",
-        lens    => 'Shellvars.lns',
-        changes => [
-          'rm CONF_FILE',
-          'rm CONF_DIR',
-          'rm ES_PATH_CONF',
-        ],
-      }
-
-      file { "${elasticsearch::defaults_location}/elasticsearch":
-        ensure => 'file',
-        group  => $elasticsearch::elasticsearch_group,
-        owner  => $elasticsearch::elasticsearch_user,
-        mode   => '0640';
-      }
-    }
-
     # Defaults file, either from file source or from hash to augeas commands
     if ($elasticsearch::init_defaults_file != undef) {
       file { "${elasticsearch::defaults_location}/elasticsearch":
         ensure => $elasticsearch::ensure,
         source => $elasticsearch::init_defaults_file,
         owner  => 'root',
-        group  => '0',
-        mode   => '0644',
+        group  => $elasticsearch::elasticsearch_group,
+        mode   => '0660',
         before => Service['elasticsearch'],
         notify => $elasticsearch::_notify_service,
       }
     } else {
-      augeas { 'init_defaults':
+      augeas { "${elasticsearch::defaults_location}/elasticsearch":
         incl    => "${elasticsearch::defaults_location}/elasticsearch",
         lens    => 'Shellvars.lns',
         changes => template("${module_name}/etc/sysconfig/defaults.erb"),

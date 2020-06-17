@@ -58,14 +58,6 @@ describe 'elasticsearch', :type => 'class' do
 
       # Varies depending on distro
       it { should contain_augeas("#{defaults_path}/elasticsearch") }
-      it do
-        should contain_file("#{defaults_path}/elasticsearch").with(
-          :ensure => 'file',
-          :group  => 'elasticsearch',
-          :owner  => 'elasticsearch',
-          :mode   => '0640'
-        )
-      end
 
       # Systemd-specific files
       if test_pid == true
@@ -73,7 +65,6 @@ describe 'elasticsearch', :type => 'class' do
           :ensure => 'running',
           :enable => true
         ) }
-        it { should contain_file('/usr/lib/tmpfiles.d/elasticsearch.conf') }
       end
 
       context 'java installation' do
@@ -226,7 +217,14 @@ describe 'elasticsearch', :type => 'class' do
             .with(:ensure => 'purged') }
         end
 
+        it { should contain_service('elasticsearch')
+          .with(
+            :ensure => 'stopped',
+            :enable => 'false'
+          ) }
         it { should contain_file('/usr/share/elasticsearch/plugins')
+          .with(:ensure => 'absent') }
+        it { should contain_file("#{defaults_path}/elasticsearch")
           .with(:ensure => 'absent') }
       end
 
@@ -335,8 +333,6 @@ describe 'elasticsearch', :type => 'class' do
           .with(:owner => 'myesuser', :group => 'myesgroup') }
         it { should contain_file('/var/lib/elasticsearch')
           .with(:owner => 'myesuser', :group => 'myesgroup') }
-        it { should contain_file('/var/run/elasticsearch')
-          .with(:owner => 'myesuser') if facts[:os]['family'] == 'RedHat' }
       end
 
       describe 'setting jvm_options' do

@@ -49,7 +49,7 @@ describe 'elasticsearch', :type => 'class' do
         context 'config' do
           let(:facts) { facts.merge(:scenario => 'singleinstance') }
 
-          it { should contain_augeas('init_defaults') }
+          it { should contain_augeas('/etc/sysconfig/elasticsearch') }
           it { should contain_file('/etc/elasticsearch/elasticsearch.yml') }
           it { should contain_datacat('/etc/elasticsearch/elasticsearch.yml') }
           it { should contain_datacat_fragment('main_config') }

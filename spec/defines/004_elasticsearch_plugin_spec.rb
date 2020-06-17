@@ -161,7 +161,7 @@ describe 'elasticsearch::plugin', :type => 'define' do
           'Service[elasticsearch]'
         )}
 
-        include_examples 'class', 'es-plugin', :sysv
+        include_examples('class')
       end
 
       context 'restart_plugin_change set to false (default)' do
@@ -179,7 +179,7 @@ describe 'elasticsearch::plugin', :type => 'define' do
           'Service[elasticsearch]'
         )}
 
-        include_examples 'class', 'es-plugin', :sysv
+        include_examples('class')
       end
 
       context 'restart_plugin_change set to true' do
@@ -197,7 +197,7 @@ describe 'elasticsearch::plugin', :type => 'define' do
           'Service[elasticsearch]'
         )}
 
-        include_examples 'class', 'es-plugin', :sysv
+        include_examples('class')
       end
     end
 
@@ -294,7 +294,7 @@ describe 'elasticsearch::plugin', :type => 'define' do
           'Class[elasticsearch::config]'
         )}
 
-        include_examples 'class', :sysv
+        include_examples('class')
       end
     end
   end
