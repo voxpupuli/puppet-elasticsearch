@@ -1,5 +1,6 @@
 {
-  "template": "logstash-*",
+  "index_patterns": [ "logstash-*" ],
+  "version": 123,
   "settings": {
     "index": {
       "refresh_interval": "5s",
@@ -14,10 +15,7 @@
     }
   },
   "mappings": {
-    "_default_": {
-      "_all": {
-        "enabled": true
-      },
+    "_doc": {
       "dynamic_templates": [
         {
           "string_fields": {
@@ -27,12 +25,12 @@
               "type": "multi_field",
               "fields": {
                 "{name}": {
-                  "type": "string",
+                  "type": "text",
                   "index": "analyzed",
                   "omit_norms": true
                 },
                 "raw": {
-                  "type ": "string",
+                  "type ": "text",
                   "index": "not_analyzed",
                   "ignore_above": 256
                 }
@@ -43,8 +41,8 @@
       ],
       "properties": {
         "@version": {
-          "type": "string",
-          "index": "not_analyzed"
+          "type": "text",
+          "index": false
         },
         "geoip": {
           "type": "object",

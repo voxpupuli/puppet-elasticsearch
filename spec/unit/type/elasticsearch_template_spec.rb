@@ -115,7 +115,7 @@ describe Puppet::Type.type(:elasticsearch_template) do
           obj.to_s
         end
       end
-      json = JSON.parse(File.read('spec/fixtures/templates/post_6.0.json'))
+      json = JSON.parse(File.read('spec/fixtures/templates/6.x.json'))
 
       is_template = described_class.new(
         :name => resource_name,

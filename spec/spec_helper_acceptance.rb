@@ -36,12 +36,12 @@ RSpec.configure do |c|
     v[:elasticsearch_full_version] = ENV['ELASTICSEARCH_VERSION'] || v[:snapshot_version]
     v[:elasticsearch_major_version] = v[:elasticsearch_full_version].split('.').first.to_i
     v[:elasticsearch_package] = {}
-    v[:template] = if v[:elasticsearch_major_version] < 6
-                     JSON.load(File.new('spec/fixtures/templates/pre_6.0.json'))
+    v[:template] = if v[:elasticsearch_major_version] == 6
+                     JSON.load(File.new('spec/fixtures/templates/6.x.json'))
                    elsif v[:elasticsearch_major_version] >= 8
                      JSON.load(File.new('spec/fixtures/templates/post_8.0.json'))
                    else
-                     JSON.load(File.new('spec/fixtures/templates/post_6.0.json'))
+                     JSON.load(File.new('spec/fixtures/templates/7.x.json'))
                    end
     v[:template] = Puppet_X::Elastic.deep_to_i(Puppet_X::Elastic.deep_to_s(v[:template]))
     v[:pipeline] = JSON.load(File.new('spec/fixtures/pipelines/example.json'))
