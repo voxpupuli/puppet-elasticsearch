@@ -97,11 +97,24 @@ class elasticsearch::config {
         $_keystore_path = $elasticsearch::keystore_path
       }
 
-      $_tls_config = {
-        'xpack.security.transport.ssl.enabled' => true,
-        'xpack.security.http.ssl.enabled'      => true,
-        'xpack.ssl.keystore.path'              => $_keystore_path,
-        'xpack.ssl.keystore.password'          => $elasticsearch::keystore_password,
+      # Set the correct xpack. settings based on ES version
+      if (versioncmp($elasticsearch::version, '7') >= 0) {
+        $_tls_config = {
+          'xpack.security.http.ssl.enabled'                => true,
+          'xpack.security.http.ssl.keystore.path'          => $_keystore_path,
+          'xpack.security.http.ssl.keystore.password'      => $elasticsearch::keystore_password,
+          'xpack.security.transport.ssl.enabled'           => true,
+          'xpack.security.transport.ssl.keystore.path'     => $_keystore_path,
+          'xpack.security.transport.ssl.keystore.password' => $elasticsearch::keystore_password,
+        }
+      }
+      else {
+        $_tls_config = {
+          'xpack.security.transport.ssl.enabled' => true,
+          'xpack.security.http.ssl.enabled'      => true,
+          'xpack.ssl.keystore.path'              => $_keystore_path,
+          'xpack.ssl.keystore.password'          => $elasticsearch::keystore_password,
+        }
       }
 
       # Trust CA Certificate
