@@ -119,10 +119,10 @@ RSpec.configure do |c|
     raise 'No license found!' unless licenses
 
     license = case v[:elasticsearch_major_version]
-              when 2
-                licenses[:v2]
-              else
+              when 6
                 licenses[:v5]
+              else
+                licenses[:v7]
               end
     create_remote_file hosts, '/tmp/license.json', license
     v[:elasticsearch_license_path] = '/tmp/license.json'
