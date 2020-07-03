@@ -107,7 +107,11 @@ RSpec.configure do |c|
 
   c.before :context, :with_license do
     Vault.address = ENV['VAULT_ADDR']
-    Vault.auth.approle ENV['VAULT_APPROLE_ROLE_ID'], ENV['VAULT_APPROLE_SECRET_ID']
+    if ENV['CI']
+      Vault.auth.approle(ENV['VAULT_APPROLE_ROLE_ID'], ENV['VAULT_APPROLE_SECRET_ID'])
+    else
+      Vault.auth.token(ENV['VAULT_TOKEN'])
+    end
     licenses = Vault.with_retries(Vault::HTTPConnectionError) do
       Vault.logical.read(ENV['VAULT_PATH'])
     end.data

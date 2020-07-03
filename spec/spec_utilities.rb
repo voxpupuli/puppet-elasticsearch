@@ -104,9 +104,13 @@ def pid_file
 end
 
 def vault_available?
-  %w[VAULT_ADDR VAULT_APPROLE_ROLE_ID VAULT_APPROLE_SECRET_ID VAULT_PATH].select do |var|
-    ENV[var].nil?
-  end.empty?
+  if ENV['CI']
+    %w[VAULT_ADDR VAULT_APPROLE_ROLE_ID VAULT_APPROLE_SECRET_ID VAULT_PATH].select do |var|
+      ENV[var].nil?
+    end.empty?
+  else
+    true
+  end
 end
 
 def http_retry(url)
