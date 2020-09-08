@@ -323,6 +323,12 @@
 # @param version
 #   To set the specific version you want to install.
 #
+# @param xms
+#   JVM minimum memory (should match xmx, or max).
+#
+# @param xmx
+#   JVM maximum memory (should match xms).
+#
 # @author Richard Pijnenburg <richard.pijnenburg@elasticsearch.com>
 # @author Tyler Langlois <tyler.langlois@elastic.co>
 # @author Gavin Williams <gavin.williams@elastic.co>
@@ -400,6 +406,8 @@ class elasticsearch (
   Hash                                            $users,
   Boolean                                         $validate_tls,
   Variant[String, Boolean]                        $version,
+  String                                          $xms,
+  String                                          $xmx,
   Optional[Stdlib::Absolutepath]                  $ca_certificate            = undef,
   Optional[Stdlib::Absolutepath]                  $certificate               = undef,
   String                                          $default_logging_level     = $logging_level,

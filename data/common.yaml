@@ -28,7 +28,22 @@ elasticsearch::init_defaults: {}
 elasticsearch::init_defaults_file: ~
 elasticsearch::init_template: "%{module_name}/etc/init.d/elasticsearch.systemd.erb"
 elasticsearch::instances: {}
-elasticsearch::jvm_options: []
+elasticsearch::jvm_options:
+  - '-Dfile.encoding=UTF-8'
+  - '-Dio.netty.noUnsafe=true'
+  - '-Dio.netty.noKeySetOptimization=true'
+  - '-Dio.netty.recycler.maxCapacityPerThread=0'
+  - '-Djava.awt.headless=true'
+  - '-Djna.nosys=true'
+  - '-Dlog4j2.disable.jmx=true'
+  - '-Dlog4j.shutdownHookEnabled=false'
+  - '-server'
+  - '-Xss1m'
+  - '-XX:+AlwaysPreTouch'
+  - '-XX:CMSInitiatingOccupancyFraction=75'
+  - '-XX:+HeapDumpOnOutOfMemoryError'
+  - '-XX:-OmitStackTraceInFastThrow'
+  - '-XX:+UseCMSInitiatingOccupancyOnly'
 elasticsearch::license: ~
 elasticsearch::logdir: /var/log/elasticsearch
 elasticsearch::logging_config: {}
@@ -69,3 +84,5 @@ elasticsearch::templates: {}
 elasticsearch::users: {}
 elasticsearch::validate_tls: true
 elasticsearch::version: false
+elasticsearch::xms: '2g'
+elasticsearch::xmx: '2g'
