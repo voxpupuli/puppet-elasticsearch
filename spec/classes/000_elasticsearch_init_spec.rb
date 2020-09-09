@@ -337,8 +337,8 @@ describe 'elasticsearch', :type => 'class' do
 
       describe 'setting jvm_options' do
         jvm_options = [
-          '-Xms16g',
-          '-Xmx16g'
+          '-Xms2g',
+          '-Xmx2g'
         ]
 
         let(:params) do
@@ -372,11 +372,11 @@ describe 'elasticsearch', :type => 'class' do
         describe 'setting jvm_options triggers restart' do
           let(:params) do
             super().merge(
-              :jvm_options => ['-Xmx16g']
+              :jvm_options => ['-Xmx2g']
             )
           end
 
-          it { should contain_file_line('jvm_option_-Xmx16g')
+          it { should contain_file_line('jvm_option_-Xmx2g')
             .that_notifies('Service[elasticsearch]')}
         end
       end
