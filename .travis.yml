@@ -1,5 +1,4 @@
 sudo: required
-# group: deprecated-2017Q4
 services:
 - docker
 cache:
@@ -12,29 +11,16 @@ script: travis_retry bundle exec rake $TASK
 jobs:
   allow_failures:
   - env:
-    - TASK=beaker:ubuntu-server-1404-x64:snapshot
-  - env:
-    - OSS_PACKAGE=true
-    - TASK=beaker:ubuntu-server-1404-x64:snapshot
-  - env:
     - TASK=beaker:ubuntu-server-1604-x64:snapshot
   - env:
     - OSS_PACKAGE=true
     - TASK=beaker:ubuntu-server-1604-x64:snapshot
-  - env:
-    - TASK=beaker:centos-6-x64:snapshot
-  - env:
-    - OSS_PACKAGE=true
-    - TASK=beaker:centos-6-x64:snapshot
   - env:
     - TASK=beaker:centos-7-x64:snapshot
   - env:
     - OSS_PACKAGE=true
     - TASK=beaker:centos-7-x64:snapshot
   - env:
-    - TASK=beaker:debian-8-x64:snapshot
-  - env:
-    - OSS_PACKAGE=true
     - TASK=beaker:debian-8-x64:snapshot
   - env:
     - TASK=beaker:debian-9-x64:snapshot
@@ -47,7 +33,7 @@ jobs:
     - TASK=intake
   - env:
     - TASK=intake
-    - PUPPET_VERSION='~> 5.0'
+    - PUPPET_VERSION='~> 6.0'
   - stage: acceptance
     env:
     - BEAKER_PUPPET_COLLECTION=puppet6
@@ -63,12 +49,6 @@ jobs:
     - TASK=beaker:amazonlinux-2-x64:acceptance[7.8.0]
   - env:
     - BEAKER_PUPPET_COLLECTION=puppet6
-    - TASK=beaker:centos-6-x64:acceptance
-  - env:
-    - BEAKER_PUPPET_COLLECTION=puppet6
-    - TASK=beaker:centos-6-x64:acceptance[7.8.0]
-  - env:
-    - BEAKER_PUPPET_COLLECTION=puppet6
     - TASK=beaker:centos-7-x64:acceptance
   - env:
     - BEAKER_PUPPET_COLLECTION=puppet6
@@ -81,22 +61,10 @@ jobs:
     - TASK=beaker:centos-8-x64:acceptance[7.8.0]
   - env:
     - BEAKER_PUPPET_COLLECTION=puppet6
-    - TASK=beaker:oracle-6-x64:acceptance
-  - env:
-    - BEAKER_PUPPET_COLLECTION=puppet6
-    - TASK=beaker:oracle-6-x64:acceptance[7.8.0]
-  - env:
-    - BEAKER_PUPPET_COLLECTION=puppet6
     - TASK=beaker:oracle-7-x64:acceptance
   - env:
     - BEAKER_PUPPET_COLLECTION=puppet6
     - TASK=beaker:oracle-7-x64:acceptance[7.8.0]
-  - env:
-    - BEAKER_PUPPET_COLLECTION=puppet6
-    - TASK=beaker:debian-8-x64:acceptance
-  - env:
-    - BEAKER_PUPPET_COLLECTION=puppet6
-    - TASK=beaker:debian-8-x64:acceptance[7.8.0]
   - env:
     - BEAKER_PUPPET_COLLECTION=puppet6
     - TASK=beaker:debian-9-x64:acceptance
@@ -109,12 +77,6 @@ jobs:
   - env:
     - BEAKER_PUPPET_COLLECTION=puppet6
     - TASK=beaker:debian-10-x64:acceptance[7.8.0]
-  - env:
-    - BEAKER_PUPPET_COLLECTION=puppet6
-    - TASK=beaker:ubuntu-server-1404-x64:acceptance
-  - env:
-    - BEAKER_PUPPET_COLLECTION=puppet6
-    - TASK=beaker:ubuntu-server-1404-x64:acceptance[7.8.0]
   - env:
     - BEAKER_PUPPET_COLLECTION=puppet6
     - TASK=beaker:ubuntu-server-1604-x64:acceptance
@@ -133,32 +95,16 @@ jobs:
   # - env:
   #   - BEAKER_PUPPET_COLLECTION=puppet6
   #   - TASK=beaker:ubuntu-server-2004-x64:acceptance[7.8.0]
-  - stage: snapshots
-    env:
-    - TASK=beaker:ubuntu-server-1404-x64:snapshot
-    env:
-    - OSS_PACKAGE=true
-    - TASK=beaker:ubuntu-server-1404-x64:snapshot
   - env:
     - TASK=beaker:ubuntu-server-1604-x64:snapshot
   - env:
     - OSS_PACKAGE=true
     - TASK=beaker:ubuntu-server-1604-x64:snapshot
   - env:
-    - TASK=beaker:centos-6-x64:snapshot
-  - env:
-    - OSS_PACKAGE=true
-    - TASK=beaker:centos-6-x64:snapshot
-  - env:
     - TASK=beaker:centos-7-x64:snapshot
   - env:
     - OSS_PACKAGE=true
     - TASK=beaker:centos-7-x64:snapshot
-  - env:
-    - TASK=beaker:debian-8-x64:snapshot
-  - env:
-    - OSS_PACKAGE=true
-    - TASK=beaker:debian-8-x64:snapshot
   - env:
     - TASK=beaker:debian-9-x64:snapshot
   - env:

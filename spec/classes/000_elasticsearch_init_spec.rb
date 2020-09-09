@@ -15,9 +15,9 @@ describe 'elasticsearch', :type => 'class' do
         let(:pkg_prov) { 'dpkg' }
         let(:version_add) { '' }
         if (facts[:os]['name'] == 'Debian' and \
-           facts[:os]['release']['major'].to_i >= 8) or \
+           facts[:os]['release']['major'].to_i >= 9) or \
            (facts[:os]['name'] == 'Ubuntu' and \
-           facts[:os]['release']['major'].to_i >= 15)
+           facts[:os]['release']['major'].to_i >= 16)
           let(:systemd_service_path) { '/lib/systemd/system' }
           test_pid = true
         else
@@ -41,7 +41,7 @@ describe 'elasticsearch', :type => 'class' do
         let(:pkg_prov) { 'rpm' }
         let(:version_add) { '-1' }
         if facts[:os]['name'] == 'OpenSuSE' and
-           facts[:os]['release']['major'].to_i <= 12
+           facts[:os]['release']['major'].to_i >= 12
           let(:systemd_service_path) { '/lib/systemd/system' }
         else
           let(:systemd_service_path) { '/usr/lib/systemd/system' }
@@ -335,28 +335,6 @@ describe 'elasticsearch', :type => 'class' do
           .with(:owner => 'myesuser', :group => 'myesgroup') }
       end
 
-      describe 'setting jvm_options' do
-        jvm_options = [
-          '-Xms16g',
-          '-Xmx16g'
-        ]
-
-        let(:params) do
-          default_params.merge(
-            :jvm_options => jvm_options
-          )
-        end
-
-        jvm_options.each do |jvm_option|
-          it { should contain_file_line("jvm_option_#{jvm_option}")
-            .with(
-              :ensure => 'present',
-              :path   => '/etc/elasticsearch/jvm.options',
-              :line   => jvm_option
-            )}
-        end
-      end
-
       context 'with restart_on_change => true' do
         let(:params) do
           default_params.merge(
@@ -366,17 +344,6 @@ describe 'elasticsearch', :type => 'class' do
 
         describe 'should restart elasticsearch' do
           it { should contain_file('/etc/elasticsearch/elasticsearch.yml')
-            .that_notifies('Service[elasticsearch]')}
-        end
-
-        describe 'setting jvm_options triggers restart' do
-          let(:params) do
-            super().merge(
-              :jvm_options => ['-Xmx16g']
-            )
-          end
-
-          it { should contain_file_line('jvm_option_-Xmx16g')
             .that_notifies('Service[elasticsearch]')}
         end
       end

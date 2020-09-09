@@ -11,7 +11,7 @@
 # @author Tyler Langlois <tyler.langlois@elastic.co>
 # @author Gavin Williams <gavin.williams@elastic.co>
 #
-class elasticsearch::config {
+class elasticsearch::config inherits elasticsearch {
 
   #### Configuration
 
@@ -182,14 +182,23 @@ class elasticsearch::config {
       mode     => '0440',
     }
 
-    # Add any additional JVM options
-    $elasticsearch::jvm_options.each |String $jvm_option| {
-      file_line { "jvm_option_${jvm_option}":
-        ensure => present,
-        path   => "${elasticsearch::configdir}/jvm.options",
-        line   => $jvm_option,
-        notify => $elasticsearch::_notify_service,
-      }
+    # JVM options
+    $jvm_options_template = @(EOF)
+    # FILE MANAGED BY PUPPET - DO NOT MODIFY
+
+    <% @jvm_options.flatten.each do|jvm_option| -%>
+    <%= jvm_option %>
+    <% end -%>
+    -Xms<%= @xms %>
+    -Xmx<%= @xmx %>
+    | EOF
+
+    file { "${elasticsearch::configdir}/jvm.options":
+      ensure  => file,
+      content => inline_template($jvm_options_template),
+      group   => $elasticsearch::elasticsearch_group,
+      notify  => $elasticsearch::_notify_service,
+      owner   => $elasticsearch::elasticsearch_user,
     }
 
     if $elasticsearch::system_key != undef {
