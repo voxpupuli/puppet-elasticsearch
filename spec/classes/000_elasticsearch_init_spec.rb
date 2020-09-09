@@ -346,7 +346,6 @@ describe 'elasticsearch', :type => 'class' do
           it { should contain_file('/etc/elasticsearch/elasticsearch.yml')
             .that_notifies('Service[elasticsearch]')}
         end
-
       end
 
       # This check helps catch dependency cycles.
