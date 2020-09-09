@@ -335,28 +335,6 @@ describe 'elasticsearch', :type => 'class' do
           .with(:owner => 'myesuser', :group => 'myesgroup') }
       end
 
-      describe 'setting jvm_options' do
-        jvm_options = [
-          '-Xms2g',
-          '-Xmx2g'
-        ]
-
-        let(:params) do
-          default_params.merge(
-            :jvm_options => jvm_options
-          )
-        end
-
-        jvm_options.each do |jvm_option|
-          it { should contain_file_line("jvm_option_#{jvm_option}")
-            .with(
-              :ensure => 'present',
-              :path   => '/etc/elasticsearch/jvm.options',
-              :line   => jvm_option
-            )}
-        end
-      end
-
       context 'with restart_on_change => true' do
         let(:params) do
           default_params.merge(
@@ -369,16 +347,6 @@ describe 'elasticsearch', :type => 'class' do
             .that_notifies('Service[elasticsearch]')}
         end
 
-        describe 'setting jvm_options triggers restart' do
-          let(:params) do
-            super().merge(
-              :jvm_options => ['-Xmx2g']
-            )
-          end
-
-          it { should contain_file_line('jvm_option_-Xmx2g')
-            .that_notifies('Service[elasticsearch]')}
-        end
       end
 
       # This check helps catch dependency cycles.
