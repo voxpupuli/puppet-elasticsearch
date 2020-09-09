@@ -15,9 +15,9 @@ describe 'elasticsearch', :type => 'class' do
         let(:pkg_prov) { 'dpkg' }
         let(:version_add) { '' }
         if (facts[:os]['name'] == 'Debian' and \
-           facts[:os]['release']['major'].to_i >= 8) or \
+           facts[:os]['release']['major'].to_i >= 9) or \
            (facts[:os]['name'] == 'Ubuntu' and \
-           facts[:os]['release']['major'].to_i >= 15)
+           facts[:os]['release']['major'].to_i >= 16)
           let(:systemd_service_path) { '/lib/systemd/system' }
           test_pid = true
         else
@@ -41,7 +41,7 @@ describe 'elasticsearch', :type => 'class' do
         let(:pkg_prov) { 'rpm' }
         let(:version_add) { '-1' }
         if facts[:os]['name'] == 'OpenSuSE' and
-           facts[:os]['release']['major'].to_i <= 12
+           facts[:os]['release']['major'].to_i >= 12
           let(:systemd_service_path) { '/lib/systemd/system' }
         else
           let(:systemd_service_path) { '/usr/lib/systemd/system' }

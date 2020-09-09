@@ -17,7 +17,7 @@ describe 'elasticsearch::script', :type => 'define' do
     :supported_os => [
       {
         'operatingsystem' => 'CentOS',
-        'operatingsystemrelease' => ['6']
+        'operatingsystemrelease' => ['7']
       }
     ]
   ).each do |os, facts|
