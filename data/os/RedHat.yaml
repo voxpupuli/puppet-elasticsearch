@@ -1,4 +1,2 @@
 ---
 elasticsearch::defaults_location: /etc/sysconfig
-elasticsearch::xms: '2g'
-elasticsearch::xmx: '2g'
