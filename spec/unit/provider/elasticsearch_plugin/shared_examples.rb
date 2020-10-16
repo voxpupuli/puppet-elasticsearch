@@ -54,52 +54,25 @@ shared_examples 'plugin provider' do |version|
       describe 'proxying' do
         it 'installs behind a proxy' do
           resource[:proxy] = 'http://localhost:3128'
-          if version.start_with? '2'
-            expect(provider)
-              .to receive(:plugin)
-              .with([
-                '-Dhttp.proxyHost=localhost',
-                '-Dhttp.proxyPort=3128',
-                '-Dhttps.proxyHost=localhost',
-                '-Dhttps.proxyPort=3128',
-                'install',
-                resource_name
-              ])
-            provider.create
-          else
-            expect(provider.with_environment do
-              ENV['ES_JAVA_OPTS']
-            end).to eq([
+          expect(provider)
+            .to receive(:plugin)
+            .with([
               '-Dhttp.proxyHost=localhost',
               '-Dhttp.proxyPort=3128',
               '-Dhttps.proxyHost=localhost',
-              '-Dhttps.proxyPort=3128'
-            ].join(' '))
-          end
+              '-Dhttps.proxyPort=3128',
+              'install',
+              '--batch',
+              resource_name
+            ])
+          provider.create
         end
 
         it 'uses authentication credentials' do
           resource[:proxy] = 'http://elastic:password@es.local:8080'
-          if version.start_with? '2'
-            expect(provider)
-              .to receive(:plugin)
-              .with([
-                '-Dhttp.proxyHost=es.local',
-                '-Dhttp.proxyPort=8080',
-                '-Dhttp.proxyUser=elastic',
-                '-Dhttp.proxyPassword=password',
-                '-Dhttps.proxyHost=es.local',
-                '-Dhttps.proxyPort=8080',
-                '-Dhttps.proxyUser=elastic',
-                '-Dhttps.proxyPassword=password',
-                'install',
-                resource_name
-              ])
-            provider.create
-          else
-            expect(provider.with_environment do
-              ENV['ES_JAVA_OPTS']
-            end).to eq([
+          expect(provider)
+            .to receive(:plugin)
+            .with([
               '-Dhttp.proxyHost=es.local',
               '-Dhttp.proxyPort=8080',
               '-Dhttp.proxyUser=elastic',
@@ -107,9 +80,12 @@ shared_examples 'plugin provider' do |version|
               '-Dhttps.proxyHost=es.local',
               '-Dhttps.proxyPort=8080',
               '-Dhttps.proxyUser=elastic',
-              '-Dhttps.proxyPassword=password'
-            ].join(' '))
-          end
+              '-Dhttps.proxyPassword=password',
+              'install',
+              '--batch',
+              resource_name
+            ])
+          provider.create
         end
       end
 
