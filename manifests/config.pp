@@ -37,7 +37,7 @@ class elasticsearch::config {
       $elasticsearch::configdir:
         ensure => 'directory',
         group  => $elasticsearch::elasticsearch_group,
-        owner  => 'root',
+        owner  => $elasticsearch::elasticsearch_user,
         mode   => '2750';
       $elasticsearch::datadir:
         ensure => 'directory',
