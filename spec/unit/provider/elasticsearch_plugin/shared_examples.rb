@@ -118,12 +118,12 @@ shared_examples 'plugin provider' do |version|
     end
 
     describe 'java_home unset' do
-      existing_java_home = ENV['JAVA_HOME']
-      it 'does not change JAVA_HOME env var' do
+      elasticsearch_java_home = '/usr/share/elasticsearch/jdk'
+      it 'defaults to the elasticsearch bundled JDK' do
         resource[:java_home] = ''
         expect(provider.with_environment do
           ENV['JAVA_HOME']
-        end).to eq(existing_java_home)
+        end).to eq(elasticsearch_java_home)
       end
     end
 
