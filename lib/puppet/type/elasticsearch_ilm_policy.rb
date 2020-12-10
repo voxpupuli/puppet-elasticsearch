@@ -102,48 +102,4 @@ Puppet::Type.newtype(:elasticsearch_ilm_policy) do
   newparam(:elasticsearch_package_name) do
     desc 'Name of the system Elasticsearch package.'
   end
-
-  newparam(:source) do
-    desc 'Puppet source to file containing policy contents.'
-
-    validate do |value|
-      raise Puppet::Error, 'string expected' unless value.is_a? String
-    end
-  end
-
-  # rubocop:disable Style/SignalException
-  validate do
-    # Ensure that at least one source of policy content has been provided
-    if self[:ensure] == :present
-      fail Puppet::ParseError, '"content" or "source" required' \
-        if self[:content].nil? and self[:source].nil?
-      if !self[:content].nil? and !self[:source].nil?
-        fail(
-          Puppet::ParseError,
-          "'content' and 'source' cannot be simultaneously defined"
-        )
-      end
-    end
-
-    # If a source was passed, retrieve the source content from Puppet's
-    # FileServing indirection and set the content property
-    unless self[:source].nil?
-      unless Puppet::FileServing::Metadata.indirection.find(self[:source])
-        fail(format('Could not retrieve source %s', self[:source]))
-      end
-
-      if !self.catalog.nil? \
-          and self.catalog.respond_to?(:environment_instance)
-        tmp = Puppet::FileServing::Content.indirection.find(
-          self[:source],
-          :environment => self.catalog.environment_instance
-        )
-      else
-        tmp = Puppet::FileServing::Content.indirection.find(self[:source])
-      end
-
-      fail(format('Could not find any content at %s', self[:source])) unless tmp
-      self[:content] = PSON.load(tmp.content)
-    end
-  end
 end # of newtype

@@ -38,12 +38,7 @@
 #   Timeout period (in seconds) for the Elasticsearch API.
 #
 # @param content
-#   Contents of the policy. Can be either a puppet hash or a string
-#   containing JSON.
-#
-# @param source
-#   Source path for the template file. Can be any value similar to `source`
-#   values for `file` resources.
+#   Contents of the policy in hash form.
 #
 # @param validate_tls
 #   Determines whether the validity of SSL/TLS certificates received from the
@@ -61,22 +56,9 @@ define elasticsearch::ilm_policy (
   Integer[0, 65535]               $api_port                = $elasticsearch::api_port,
   Enum['http', 'https']           $api_protocol            = $elasticsearch::api_protocol,
   Integer                         $api_timeout             = $elasticsearch::api_timeout,
-  Optional[Variant[String, Hash]] $content                 = undef,
-  Optional[String]                $source                  = undef,
+  Hash                            $content                 = {},
   Boolean                         $validate_tls            = $elasticsearch::validate_tls,
 ) {
-  if $content != undef and is_string($content) {
-    $_content = parsejson($content)
-  } else {
-    $_content = $content
-  }
-
-  if $ensure == 'present' and $source == undef and $_content == undef {
-    fail('one of "file" or "content" required.')
-  } elsif $source != undef and $_content != undef {
-    fail('"file" and "content" cannot be simultaneously defined.')
-  }
-
   es_instance_conn_validator { "${name}-ilm-policy":
     server  => $api_host,
     port    => $api_port,
@@ -84,7 +66,7 @@ define elasticsearch::ilm_policy (
   }
   -> elasticsearch_ilm_policy { "${name}-ilm-policy":
     ensure                     => $ensure,
-    content                    => $_content,
+    content                    => $content,
     elasticsearch_package_name => $elasticsearch::package_name,
     protocol                   => $api_protocol,
     host                       => $api_host,
