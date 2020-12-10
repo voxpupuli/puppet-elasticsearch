@@ -1,7 +1,6 @@
-#  This define allows you to insert, update or delete Elasticsearch ILM
-#  indicies as a set. #
-#  The name of this resource will be the name of the alias applied to all
-#  ILM managed indicies under this resource.
+#  This define allows you to insert, update or delete Elasticsearch ILM indicies
+#  as a set. The name of this resource will be the name of the alias applied to
+#  all ILM managed indicies under this resource.
 #
 # @param ensure
 #  When `present`, an initial index will be created to bootstrap the ILM managed
