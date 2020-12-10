@@ -59,7 +59,7 @@ define elasticsearch::ilm_policy (
   Hash                            $content                 = {},
   Boolean                         $validate_tls            = $elasticsearch::validate_tls,
 ) {
-  es_instance_conn_validator { "${name}-ilm-policy":
+  es_instance_conn_validator { "${name}-ilm-policy-conn-validator":
     server  => $api_host,
     port    => $api_port,
     timeout => $api_timeout,

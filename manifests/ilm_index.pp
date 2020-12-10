@@ -57,7 +57,7 @@ define elasticsearch::ilm_index (
   String                          $name_pattern            = '{now/d}-000001',
   Boolean                         $validate_tls            = $elasticsearch::validate_tls,
 ) {
-  es_instance_conn_validator { "${name}-ilm-index":
+  es_instance_conn_validator { "${name}-ilm-index-conn-validator":
     server  => $api_host,
     port    => $api_port,
     timeout => $api_timeout,
