@@ -67,9 +67,9 @@ Puppet::Type.newtype(:elasticsearch_ilm_policy) do
         actions.each do |action_name, action|
           case action_name
           when 'allocate'
-            phase[action_name] = { 'include' => {}, 'exclude' => {}, 'require' => {} }.merge(action)
+            actions[action_name] = { 'include' => {}, 'exclude' => {}, 'require' => {} }.merge(action)
           when ->(a) { a == 'delete' && is7x? }
-            phase[action_name] = { 'delete_searchable_snapshot' => true }.merge(action)
+            actions[action_name] = { 'delete_searchable_snapshot' => true }.merge(action)
           end
         end
 
