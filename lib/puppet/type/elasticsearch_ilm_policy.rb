@@ -49,9 +49,6 @@ Puppet::Type.newtype(:elasticsearch_ilm_policy) do
       # ## delete
       # - On ES >= 7, adds default bool field `delete_searchable_snapshot` with value `true`
       #
-      # We use deep_to_i to ensure any numeric values are properly
-      # parsed, whether from user-defined resources or when reading
-      # from the API.
       defshould = should.tap do |val|
         val['policy'] = val['policy'].tap do |policy|
           if policy.key? 'phases'
