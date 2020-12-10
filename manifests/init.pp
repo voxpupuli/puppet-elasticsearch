@@ -547,8 +547,6 @@ class elasticsearch (
     -> Elasticsearch::Ilm_index <| |>
     Class['elasticsearch::config']
     -> Elasticsearch::Ilm_policy <| |>
-    Elasticsearch::Ilm_policy <| |>
-    -> Elasticsearch::Ilm_index <| |>
     Class['elasticsearch::config']
     -> Elasticsearch::Index <| |>
     Class['elasticsearch::config']
