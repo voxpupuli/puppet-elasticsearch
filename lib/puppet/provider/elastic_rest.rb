@@ -143,7 +143,7 @@ class Puppet::Provider::ElasticREST < Puppet::Provider
 
   # Process the JSON response body
   def self.process_body(body)
-    bodyobj = JSON.parse(response.body)
+    bodyobj = JSON.parse(body)
     bodyobj = body_parser.call bodyobj if body_parser
 
     bodyobj.map do |object_name, api_object|
