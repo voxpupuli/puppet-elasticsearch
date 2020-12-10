@@ -24,13 +24,18 @@ Puppet::Type.newtype(:elasticsearch_ilm_policy) do
 
     validate do |value|
       raise Puppet::Error, 'hash expected' unless value.is_a? Hash
+
+      phases = value.dig('policy', 'phases')
+      raise Puppet::Error, 'the policy document seems malformed (expected `policy => phases`)' unless phases
+      raise Puppet::Error, 'policy phases must be a hash' unless phases.is_a? Hash
+      raise Puppet::Error, 'each phase must have an actions hash' unless phases.all? { |_, p| p.key?('actions') && p['actions'].is_a?(Hash) }
     end
 
     munge do |value|
       Puppet_X::Elastic.deep_to_i(value)
     end
 
-    def default_compare(is, should)
+    def default_policy(policy)
       # The Elasticsearch API will return default values for the
       # following properties. So we run through each phase and
       # action to merge these in before compare.
@@ -49,42 +54,32 @@ Puppet::Type.newtype(:elasticsearch_ilm_policy) do
       # ## delete
       # - On ES >= 7, adds default bool field `delete_searchable_snapshot` with value `true`
       #
-      defshould = should.tap do |val|
-        val['policy'] = val['policy'].tap do |policy|
-          if policy.key? 'phases'
-            # Iterate phases and apply defaults
-            policy['phases'] = Hash[policy['phases'].map do |phase_name, phase|
-              # Limit negative min_age to 0ms
-              if phase.key? 'min_age'
-                phase['min_age'] = '0ms' if phase['min_age'].start_with? '-'
-              end
 
-              # Iterate actions and apply defaults
-              if phase.key? 'actions'
-                phase['actions'] = Hash[phase['actions'].map do |action_name, action|
-                  case action_name
-                  when 'allocate'
-                    [action_name, { 'include' => {}, 'exclude' => {}, 'require' => {} }.merge(action)]
-                  when ->(a) { a == 'delete' && is7x? }
-                    [action_name, { 'delete_searchable_snapshot' => true }.merge(action)]
-                  else
-                    [action_name, action]
-                  end
-                end]
-              end
+      # Iterate phases and apply defaults
+      phases = policy['policy']['phases']
+      phases.each do |phase_name, phase|
+        if phase.key? 'min_age'
+          phase['min_age'] = '0ms' if phase['min_age'].start_with? '-'
+        end
 
-              [phase_name, { 'min_age' => '0ms' }.merge(phase)]
-            end]
-          end # if phases
-        end # tap policy
-      end # tap is
+        # Iterate actions and apply defaults
+        actions = phase['actions']
+        actions.each do |action_name, action|
+          case action_name
+          when 'allocate'
+            phase[action_name] = { 'include' => {}, 'exclude' => {}, 'require' => {} }.merge(action)
+          when ->(a) { a == 'delete' && is7x? }
+            phase[action_name] = { 'delete_searchable_snapshot' => true }.merge(action)
+          end
+        end
 
-      Puppet_X::Elastic.deep_implode(is) == \
-        Puppet_X::Elastic.deep_implode(defshould)
+        phases[phase_name] = { 'min_age' => '0ms' }.merge(phase)
+      end
     end
 
     def insync?(is)
-      default_compare(is, should)
+      Puppet_X::Elastic.deep_implode(is) == \
+        Puppet_X::Elastic.deep_implode(default_policy(should))
     end
 
     # Determine the installed version of Elasticsearch on this host.
