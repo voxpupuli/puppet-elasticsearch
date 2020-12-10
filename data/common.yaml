@@ -23,6 +23,8 @@ elasticsearch::download_tool: ~
 elasticsearch::download_tool_insecure: ~
 elasticsearch::download_tool_verify_certificates: true
 elasticsearch::file_rolling_type: dailyRollingFile
+elasticsearch::ilm_indices: {}
+elasticsearch::ilm_policies: {}
 elasticsearch::indices: {}
 elasticsearch::init_defaults: {}
 elasticsearch::init_defaults_file: ~

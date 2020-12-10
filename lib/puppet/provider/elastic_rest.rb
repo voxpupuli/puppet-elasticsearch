@@ -10,10 +10,27 @@ class Puppet::Provider::ElasticREST < Puppet::Provider
     attr_accessor :api_discovery_uri
     attr_accessor :api_resource_style
     attr_accessor :api_uri
+    attr_accessor :body_parser
+    attr_accessor :creation_alias
+    attr_accessor :deletion_alias
     attr_accessor :discrete_resource_creation
     attr_accessor :metadata
     attr_accessor :metadata_pipeline
     attr_accessor :query_string
+  end
+
+  # Fetch creation alias proc for the class from an instance object.
+  #
+  # @return [Proc, nil]
+  def creation_alias
+    self.class.creation_alias
+  end
+
+  # Fetch deletion alias proc for the class from an instance object.
+  #
+  # @return [Proc, nil]
+  def deletion_alias
+    self.class.deletion_alias
   end
 
   # Fetch arbitrary metadata for the class from an instance object.
@@ -106,6 +123,8 @@ class Puppet::Provider::ElasticREST < Puppet::Provider
     http = Net::HTTP.new uri.host, uri.port
     req = Net::HTTP::Get.new uri.request_uri
 
+    Puppet.debug("GET #{uri.inspect}")
+
     http.use_ssl = uri.scheme == 'https'
     [[ca_file, :ca_file=], [ca_path, :ca_path=]].each do |arg, method|
       http.send method, arg if arg and http.respond_to? method
@@ -124,7 +143,10 @@ class Puppet::Provider::ElasticREST < Puppet::Provider
 
   # Process the JSON response body
   def self.process_body(body)
-    results = JSON.parse(body).map do |object_name, api_object|
+    bodyobj = JSON.parse(response.body)
+    bodyobj = body_parser.call bodyobj if body_parser
+
+    bodyobj.map do |object_name, api_object|
       {
         :name     => object_name,
         :ensure   => :present,
@@ -206,23 +228,27 @@ class Puppet::Provider::ElasticREST < Puppet::Provider
   # rubocop:disable Metrics/PerceivedComplexity
   def flush
     Puppet.debug('Got to flush')
+    resname = resource[:name]
+    resname = creation_alias.call resource if creation_alias && @property_flush[:ensure] != :absent
+    resname = deletion_alias.call resource if deletion_alias && @property_flush[:ensure] == :absent
+
     uri = URI(
       format(
         '%s://%s:%d/%s',
         resource[:protocol],
         resource[:host],
         resource[:port],
-        self.class.format_uri(resource[:name], @property_flush)
+        self.class.format_uri(resname, @property_flush)
       )
     )
     uri.query = URI.encode_www_form query_string if query_string
 
-    Puppet.debug("Generated URI = #{uri.inspect}")
-
     case @property_flush[:ensure]
     when :absent
+      Puppet.debug("DELETE #{uri.inspect}")
       req = Net::HTTP::Delete.new uri.request_uri
     else
+      Puppet.debug("PUT #{uri.inspect}")
       req = Net::HTTP::Put.new uri.request_uri
       req.body = generate_body
       Puppet.debug("Generated body looks like: #{req.body.inspect}")

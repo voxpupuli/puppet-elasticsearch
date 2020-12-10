@@ -125,6 +125,12 @@
 # @param homedir
 #   Directory where the elasticsearch installation's files are kept (plugins, etc.)
 #
+# @param ilm_indices
+#   Define ILM index sets via a hash. This is mainly used with Hiera's auto binding.
+#
+# @param ilm_policies
+#   Define ILM policies via a hash. This is mainly used with Hiera's auto binding.
+#
 # @param indices
 #   Define indices via a hash. This is mainly used with Hiera's auto binding.
 #
@@ -354,6 +360,8 @@ class elasticsearch (
   String                                          $elasticsearch_user,
   Enum['dailyRollingFile', 'rollingFile', 'file'] $file_rolling_type,
   Stdlib::Absolutepath                            $homedir,
+  Hash                                            $ilm_indices,
+  Hash                                            $ilm_policies,
   Hash                                            $indices,
   Hash                                            $init_defaults,
   Optional[String]                                $init_defaults_file,
@@ -466,6 +474,8 @@ class elasticsearch (
   contain elasticsearch::config
   contain elasticsearch::service
 
+  create_resources('elasticsearch::ilm_index', $elasticsearch::ilm_indices)
+  create_resources('elasticsearch::ilm_policy', $elasticsearch::ilm_policies)
   create_resources('elasticsearch::index', $elasticsearch::indices)
   create_resources('elasticsearch::pipeline', $elasticsearch::pipelines)
   create_resources('elasticsearch::plugin', $elasticsearch::plugins)
@@ -534,6 +544,12 @@ class elasticsearch (
     Class['elasticsearch::config']
     -> Elasticsearch::Pipeline <| |>
     Class['elasticsearch::config']
+    -> Elasticsearch::Ilm_index <| |>
+    Class['elasticsearch::config']
+    -> Elasticsearch::Ilm_policy <| |>
+    Elasticsearch::Ilm_policy <| |>
+    -> Elasticsearch::Ilm_index <| |>
+    Class['elasticsearch::config']
     -> Elasticsearch::Index <| |>
     Class['elasticsearch::config']
     -> Elasticsearch::Snapshot_repository <| |>
@@ -554,6 +570,10 @@ class elasticsearch (
     Elasticsearch::Template <| |>
     -> Class['elasticsearch::config']
     Elasticsearch::Pipeline <| |>
+    -> Class['elasticsearch::config']
+    Elasticsearch::Ilm_index <| |>
+    -> Class['elasticsearch::config']
+    Elasticsearch::Ilm_policy <| |>
     -> Class['elasticsearch::config']
     Elasticsearch::Index <| |>
     -> Class['elasticsearch::config']
@@ -581,6 +601,13 @@ class elasticsearch (
   Elasticsearch::User <| ensure == 'absent' |>
   -> Elasticsearch::Role <| |>
 
+  # Ensure ILM policies are defined before defining ILM indices
+  Elasticsearch::Ilm_policy <| ensure == 'present' |>
+  -> Elasticsearch::Ilm_index <| ensure == 'present' |>
+  # Ensure ILM indices are removed before removing ILM policies
+  Elasticsearch::Ilm_index <| ensure == 'absent' |>
+  -> Elasticsearch::Ilm_policy <| ensure == 'absent' |>
+
   # Ensure users and roles are managed before calling out to REST resources
   Elasticsearch::Role <| |>
   -> Elasticsearch::Template <| |>
@@ -590,6 +617,14 @@ class elasticsearch (
   -> Elasticsearch::Pipeline <| |>
   Elasticsearch::User <| |>
   -> Elasticsearch::Pipeline <| |>
+  Elasticsearch::Role <| |>
+  -> Elasticsearch::Ilm_index <| |>
+  Elasticsearch::User <| |>
+  -> Elasticsearch::Ilm_index <| |>
+  Elasticsearch::Role <| |>
+  -> Elasticsearch::Ilm_policy <| |>
+  Elasticsearch::User <| |>
+  -> Elasticsearch::Ilm_policy <| |>
   Elasticsearch::Role <| |>
   -> Elasticsearch::Index <| |>
   Elasticsearch::User <| |>
