@@ -82,10 +82,6 @@
 # @param datadir
 #   Allows you to set the data directory of Elasticsearch.
 #
-# @param datadir_instance_directories
-#   Control whether individual directories for instances will be created within
-#   each instance's data directory.
-#
 # @param default_logging_level
 #   Default logging level for Elasticsearch.
 #
@@ -343,7 +339,6 @@ class elasticsearch (
   Integer                                         $configdir_recurselimit,
   String                                          $daily_rolling_date_pattern,
   Elasticsearch::Multipath                        $datadir,
-  Boolean                                         $datadir_instance_directories,
   Optional[Stdlib::Absolutepath]                  $defaults_location,
   Boolean                                         $deprecation_logging,
   String                                          $deprecation_logging_level,

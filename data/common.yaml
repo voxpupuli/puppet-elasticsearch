@@ -14,7 +14,6 @@ elasticsearch::configdir: /etc/elasticsearch
 elasticsearch::configdir_recurselimit: 2
 elasticsearch::daily_rolling_date_pattern: |
   "'.'yyyy-MM-dd"
-elasticsearch::datadir_instance_directories: true
 elasticsearch::default_logging_level: 'INFO'
 elasticsearch::defaults_location: ~
 elasticsearch::deprecation_logging: false
