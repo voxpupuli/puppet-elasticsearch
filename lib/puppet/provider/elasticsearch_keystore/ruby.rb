@@ -28,11 +28,12 @@ Puppet::Type.type(:elasticsearch_keystore).provide(
   def self.run_keystore(args, instance, configdir = '/etc/elasticsearch', stdin = nil)
     options = {
       :custom_environment => {
-        'ES_INCLUDE' => File.join(defaults_dir, "elasticsearch-#{instance}"),
+        'ES_INCLUDE'   => File.join(defaults_dir, "elasticsearch-#{instance}"),
         'ES_PATH_CONF' => "#{configdir}/#{instance}"
       },
-      :uid => 'elasticsearch',
-      :gid => 'elasticsearch'
+      :uid        => 'elasticsearch',
+      :gid        => 'elasticsearch',
+      :failonfail => true
     }
 
     unless stdin.nil?

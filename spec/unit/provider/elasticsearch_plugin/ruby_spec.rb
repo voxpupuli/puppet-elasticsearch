@@ -19,5 +19,5 @@ describe provider_class do
   let(:shortname) { provider.plugin_name(resource_name) }
   let(:klass) { provider_class }
 
-  include_examples 'plugin provider', '5.0.1'
+  include_examples 'plugin provider', '7.0.0'
 end

@@ -68,35 +68,11 @@ class Puppet::Provider::ElasticPlugin < Puppet::Provider
     @resource[:plugin_path] || Puppet_X::Elastic.plugin_name(@resource[:name])
   end
 
-  # Intelligently returns the correct installation arguments for version 1
-  # version of Elasticsearch.
+  # Intelligently returns the correct installation arguments for Elasticsearch.
   #
   # @return [Array<String>]
   #   arguments to pass to the plugin installation utility
-  def install1x
-    if !@resource[:url].nil?
-      [
-        Puppet_X::Elastic.plugin_name(@resource[:name]),
-        '--url',
-        @resource[:url]
-      ]
-    elsif !@resource[:source].nil?
-      [
-        Puppet_X::Elastic.plugin_name(@resource[:name]),
-        '--url',
-        "file://#{@resource[:source]}"
-      ]
-    else
-      [@resource[:name]]
-    end
-  end
-
-  # Intelligently returns the correct installation arguments for version 2
-  # version of Elasticsearch.
-  #
-  # @return [Array<String>]
-  #   arguments to pass to the plugin installation utility
-  def install2x
+  def install_args
     if !@resource[:url].nil?
       [@resource[:url]]
     elsif !@resource[:source].nil?
@@ -122,13 +98,12 @@ class Puppet::Provider::ElasticPlugin < Puppet::Provider
   end
 
   # Install this plugin on the host.
-  # rubocop:disable Metrics/CyclomaticComplexity
   def create
     commands = []
-    commands += proxy_args(@resource[:proxy]) if is2x? and @resource[:proxy]
+    commands += proxy_args(@resource[:proxy]) if @resource[:proxy]
     commands << 'install'
-    commands << '--batch' if batch_capable?
-    commands += is1x? ? install1x : install2x
+    commands << '--batch'
+    commands += install_args
     debug("Commands: #{commands.inspect}")
 
     retry_count = 3
@@ -145,33 +120,12 @@ class Puppet::Provider::ElasticPlugin < Puppet::Provider
       raise "Failed to install plugin. Received error: #{e.inspect}"
     end
   end
-  # rubocop:enable Metrics/CyclomaticComplexity
 
   # Remove this plugin from the host.
   def destroy
     with_environment do
       plugin(['remove', Puppet_X::Elastic.plugin_name(@resource[:name])])
     end
-  end
-
-  # Determine the installed version of Elasticsearch on this host.
-  def es_version
-    Puppet_X::Elastic::EsVersioning.version(
-      resource[:elasticsearch_package_name], resource.catalog
-    )
-  end
-
-  def is1x?
-    Puppet::Util::Package.versioncmp(es_version, '2.0.0') < 0
-  end
-
-  def is2x?
-    (Puppet::Util::Package.versioncmp(es_version, '2.0.0') >= 0) && \
-      (Puppet::Util::Package.versioncmp(es_version, '3.0.0') < 0)
-  end
-
-  def batch_capable?
-    Puppet::Util::Package.versioncmp(es_version, '2.2.0') >= 0
   end
 
   # Run a command wrapped in necessary env vars
@@ -182,13 +136,12 @@ class Puppet::Provider::ElasticPlugin < Puppet::Provider
     }
     saved_vars = {}
 
-    unless @resource[:java_home].nil? or @resource[:java_home] == ''
-      env_vars['JAVA_HOME'] = @resource[:java_home]
-    end
-
-    if !is2x? and @resource[:proxy]
-      env_vars['ES_JAVA_OPTS'] += proxy_args(@resource[:proxy])
-    end
+    # Use 'java_home' param if supplied, otherwise default to Elasticsearch shipped JDK
+    env_vars['JAVA_HOME'] = if @resource[:java_home].nil? or @resource[:java_home] == ''
+                              "#{homedir}/jdk"
+                            else
+                              @resource[:java_home]
+                            end
 
     env_vars['ES_JAVA_OPTS'] = env_vars['ES_JAVA_OPTS'].join(' ')
 

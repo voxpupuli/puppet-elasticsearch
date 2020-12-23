@@ -118,12 +118,13 @@ RSpec.configure do |c|
 
     raise 'No license found!' unless licenses
 
-    license = case v[:elasticsearch_major_version]
-              when 6
-                licenses[:v5]
-              else
-                licenses[:v7]
-              end
+    # license = case v[:elasticsearch_major_version]
+    #           when 6
+    #             licenses[:v5]
+    #           else
+    #             licenses[:v7]
+    #           end
+    license = licenses[:v7]
     create_remote_file hosts, '/tmp/license.json', license
     v[:elasticsearch_license_path] = '/tmp/license.json'
   end
@@ -242,7 +243,7 @@ RSpec.configure do |c|
 
       apply_manifest <<-MANIFEST
         class { "java" :
-          distribution => "jre",
+          distribution => "jdk",
           #{java}
         }
       MANIFEST

@@ -49,12 +49,14 @@ describe 'elasticsearch', :type => 'class' do
       end
 
       let(:facts) do
-        facts.merge('scenario' => '', 'common' => '')
+        facts.merge('scenario' => '', 'common' => '', 'elasticsearch' => {})
       end
 
       let(:params) do
         default_params.merge({})
       end
+
+      it { should compile.with_all_deps }
 
       # Varies depending on distro
       it { should contain_augeas("#{defaults_path}/elasticsearch") }
@@ -326,7 +328,7 @@ describe 'elasticsearch', :type => 'class' do
         end
 
         it { should contain_file('/etc/elasticsearch')
-          .with(:owner => 'root', :group => 'myesgroup') }
+          .with(:owner => 'myesuser', :group => 'myesgroup') }
         it { should contain_file('/var/log/elasticsearch')
           .with(:owner => 'myesuser') }
         it { should contain_file('/usr/share/elasticsearch')
