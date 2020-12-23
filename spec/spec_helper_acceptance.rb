@@ -243,7 +243,7 @@ RSpec.configure do |c|
 
       apply_manifest <<-MANIFEST
         class { "java" :
-          distribution => "jre",
+          distribution => "jdk",
           #{java}
         }
       MANIFEST
