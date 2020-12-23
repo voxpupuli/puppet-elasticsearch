@@ -9,3 +9,7 @@ junit/
 log/
 logs/
 spec/
+.ci/
+.github/
+.github
+.gitattributes
