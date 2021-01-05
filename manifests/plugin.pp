@@ -129,6 +129,7 @@ define elasticsearch::plugin (
     proxy                      => $_proxy,
     plugin_dir                 => $elasticsearch::real_plugindir,
     plugin_path                => $module_dir,
+    before                     => Service['elasticsearch'],
   }
   -> file { "${elasticsearch::real_plugindir}/${_module_dir}":
     ensure  => $_file_ensure,
