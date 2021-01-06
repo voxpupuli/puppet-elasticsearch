@@ -102,5 +102,5 @@ describe Puppet::Type.type(:elasticsearch_snapshot_lifecycle_policy).provider(:r
     }
   end
 
-  include_examples 'REST API', '_slm/policy', '_slm/policy/policy'
+  include_examples 'REST API', 'slm/policy', '_slm/policy/policy'
 end
