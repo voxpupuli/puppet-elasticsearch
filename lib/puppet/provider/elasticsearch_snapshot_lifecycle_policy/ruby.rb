@@ -34,8 +34,8 @@ Puppet::Type.type(:elasticsearch_snapshot_lifecycle_policy).provide(
     results
   end
 
-  # rubocop:disable Metrics/CyclomaticComplexity
-  # rubocop:disable Metrics/PerceivedComplexity
+# rubocop:disable Metrics/CyclomaticComplexity
+# rubocop:disable Metrics/PerceivedComplexity
   def generate_body
     Puppet.debug('Got to snapshot_lifecycle_policy.generate_body')
     # Build core request body
@@ -59,6 +59,6 @@ Puppet::Type.type(:elasticsearch_snapshot_lifecycle_policy).provide(
     # Convert to JSON and return
     JSON.generate(body)
   end
-  # rubocop:enable Metrics/CyclomaticComplexity
-  # rubocop:enable Metrics/PerceivedComplexity
+# rubocop:enable Metrics/CyclomaticComplexity
+# rubocop:enable Metrics/PerceivedComplexity
 end
