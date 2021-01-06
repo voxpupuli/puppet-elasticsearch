@@ -294,7 +294,13 @@ describe 'elasticsearch::plugin', :type => 'define' do
           'Class[elasticsearch::config]'
         )}
 
-        include_examples('class')
+        it { should contain_elasticsearch_plugin(
+          'head'
+        ).that_comes_before(
+          'Service[elasticsearch]'
+        )}
+
+        include_examples 'class'
       end
     end
   end
