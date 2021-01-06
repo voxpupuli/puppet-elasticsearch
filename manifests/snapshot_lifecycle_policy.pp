@@ -64,8 +64,15 @@
 #   Maximum number of snapshots to retain, even if the snapshots have not yet expired. 
 #   If the number of snapshots in the repository exceeds this limit, the policy retains the most recent snapshots and deletes older snapshots. 
 #
+# @param validate_tls
+#   Determines whether the validity of SSL/TLS certificates received from the
+#   Elasticsearch API should be verified or ignored.
+#
 # @author Thomas Manninger
+# @author Bart Janssens
 define elasticsearch::snapshot_lifecycle_policy (
+  String                          $schedule_time,
+  String                          $repository,
   Enum['absent', 'present']       $ensure                       = 'present',
   Optional[String]                $api_basic_auth_password      = $elasticsearch::api_basic_auth_password,
   Optional[String]                $api_basic_auth_username      = $elasticsearch::api_basic_auth_username,
@@ -76,8 +83,6 @@ define elasticsearch::snapshot_lifecycle_policy (
   Enum['http', 'https']           $api_protocol                 = $elasticsearch::api_protocol,
   Integer                         $api_timeout                  = $elasticsearch::api_timeout,
   Boolean                         $validate_tls                 = $elasticsearch::validate_tls,
-  String                          $schedule_time,
-  String                          $repository,
   String                          $snapshot_name                = "<${name}-{now/d}>",
   Boolean                         $config_include_global_state  = false,
   Boolean                         $config_ignore_unavailable    = false,
@@ -94,25 +99,25 @@ define elasticsearch::snapshot_lifecycle_policy (
     timeout => $api_timeout,
   }
   -> elasticsearch_snapshot_lifecycle_policy { $name:
-    ensure                        => $ensure,
-    schedule_time                 => $schedule_time,
-    repository                    => $repository,
-    snapshot_name                 => $snapshot_name,
-    config_include_global_state   => $config_include_global_state,
-    config_ignore_unavailable     => $config_ignore_unavailable,
-    config_partial                => $config_partial,
-    config_indices                => $config_indices,
-    retention_expire_after        => $retention_expire_after,
-    retention_min_count           => $retention_min_count,
-    retention_max_count           => $retention_max_count,
-    protocol                      => $api_protocol,
-    host                          => $api_host,
-    port                          => $api_port,
-    timeout                       => $api_timeout,
-    username                      => $api_basic_auth_username,
-    password                      => $api_basic_auth_password,
-    ca_file                       => $api_ca_file,
-    ca_path                       => $api_ca_path,
-    validate_tls                  => $validate_tls,
+    ensure                      => $ensure,
+    schedule_time               => $schedule_time,
+    repository                  => $repository,
+    snapshot_name               => $snapshot_name,
+    config_include_global_state => $config_include_global_state,
+    config_ignore_unavailable   => $config_ignore_unavailable,
+    config_partial              => $config_partial,
+    config_indices              => $config_indices,
+    retention_expire_after      => $retention_expire_after,
+    retention_min_count         => $retention_min_count,
+    retention_max_count         => $retention_max_count,
+    protocol                    => $api_protocol,
+    host                        => $api_host,
+    port                        => $api_port,
+    timeout                     => $api_timeout,
+    username                    => $api_basic_auth_username,
+    password                    => $api_basic_auth_password,
+    ca_file                     => $api_ca_file,
+    ca_path                     => $api_ca_path,
+    validate_tls                => $validate_tls,
   }
 }
