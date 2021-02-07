@@ -511,7 +511,7 @@ class elasticsearch (
     # Installation, configuration and service
     Class['elasticsearch::package']
     -> Class['elasticsearch::config']
-    ~> Class['elasticsearch::service']
+    -> Class['elasticsearch::service']
 
     # Top-level ordering bindings for resources.
     Class['elasticsearch::config']
