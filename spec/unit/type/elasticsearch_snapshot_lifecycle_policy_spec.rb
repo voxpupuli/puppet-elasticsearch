@@ -5,7 +5,9 @@ describe Puppet::Type.type(:elasticsearch_snapshot_lifecycle_policy) do
 
   let(:default_params) do
     {
-      :repository => 'my_repository'
+      :repository => 'my_repository',
+      :snapshot_name => '<nightly-snap-{now/d}>',
+      :schedule_time => '0 30 1 * * ?'
     }
   end
 
@@ -20,8 +22,7 @@ describe Puppet::Type.type(:elasticsearch_snapshot_lifecycle_policy) do
       :ca_path,
       :timeout,
       :username,
-      :password,
-      :type
+      :password
     ].each do |param|
       it "should have a #{param} parameter" do
         expect(described_class.attrtype(param)).to eq(:param)
@@ -91,9 +92,11 @@ describe Puppet::Type.type(:elasticsearch_snapshot_lifecycle_policy) do
       it 'should be required' do
         expect do
           described_class.new(
-            :name => resource_name
+            :name => resource_name,
+            :repository => 'my_repository',
+            :snapshot_name => '<nightly-snap-{now/d}>'
           )
-        end.to raise_error(Puppet::Error, /Schedule_time is required./)
+        end.to raise_error(Puppet::Error, /schedule_time is required./)
       end
     end
 
@@ -101,98 +104,39 @@ describe Puppet::Type.type(:elasticsearch_snapshot_lifecycle_policy) do
       it 'should be required' do
         expect do
           described_class.new(
-            :name => resource_name
+            :name => resource_name,
+            :snapshot_name => '<nightly-snap-{now/d}>',
+            :schedule_time => '0 30 1 * * ?'
           )
-        end.to raise_error(Puppet::Error, /Repository is required./)
+        end.to raise_error(Puppet::Error, /repository is required./)
       end
     end
 
-    describe 'config_include_global_state' do
-      [-1, 0, {}, [], 'foo'].each do |value|
-        it "should reject invalid config_include_global_state value #{value}" do
-          expect do
-            described_class.new(
-              default_params.merge(
-                :name                        => resource_name,
-                :config_include_global_state => value
-              )
-            )
-          end.to raise_error(Puppet::Error, /invalid value/i)
-        end
-      end
-
-      [true, false, 'true', 'false', 'yes', 'no'].each do |value|
-        it "should accept config_include_global_state value #{value}" do
-          expect do
-            described_class.new(
-              default_params.merge(
-                :name                        => resource_name,
-                :config_include_global_state => value
-              )
-            )
-          end.not_to raise_error
-        end
-      end
-    end
-
-    describe 'config_ignore_unavailable' do
-      [-1, 0, {}, [], 'foo'].each do |value|
-        it "should reject invalid config_ignore_unavailable value #{value}" do
-          expect do
-            described_class.new(
-              default_params.merge(
-                :name                      => resource_name,
-                :config_ignore_unavailable => value
-              )
-            )
-          end.to raise_error(Puppet::Error, /invalid value/i)
-        end
-      end
-
-      [true, false, 'true', 'false', 'yes', 'no'].each do |value|
-        it "should accept config_ignore_unavailable value #{value}" do
-          expect do
-            described_class.new(
-              default_params.merge(
-                :name                      => resource_name,
-                :config_ignore_unavailable => value
-              )
-            )
-          end.not_to raise_error
-        end
-      end
-    end
-
-    describe 'config_partial' do
-      [-1, 0, {}, [], 'foo'].each do |value|
-        it "should reject invalid config_partial value #{value}" do
-          expect do
-            described_class.new(
-              default_params.merge(
-                :name           => resource_name,
-                :config_partial => value
-              )
-            )
-          end.to raise_error(Puppet::Error, /invalid value/i)
-        end
-      end
-
-      [true, false, 'true', 'false', 'yes', 'no'].each do |value|
-        it "should accept config_partial value #{value}" do
-          expect do
-            described_class.new(
-              default_params.merge(
-                :name           => resource_name,
-                :config_partial => value
-              )
-            )
-          end.not_to raise_error
-        end
+    describe 'snapshot_name' do
+      it 'should be required' do
+        expect do
+          described_class.new(
+            :name => resource_name,
+            :repository => 'my_repository',
+            :schedule_time => '0 30 1 * * ?'
+          )
+        end.to raise_error(Puppet::Error, /snapshot_name is required./)
       end
     end
 
     describe 'retention_min_count' do
-      [-1, 0, 70_000, 'foo'].each do |value|
+      it 'should reject invalid retention_min_count value foo' do
+        expect do
+          described_class.new(
+            default_params.merge(
+              :name                => resource_name,
+              :retention_min_count => 'foo'
+            )
+          )
+        end.to raise_error(Puppet::Error, /invalid retention_min_count/i)
+      end
+
+      [-1, 0].each do |value|
         it "should reject invalid retention_min_count value #{value}" do
           expect do
             described_class.new(
@@ -204,10 +148,32 @@ describe Puppet::Type.type(:elasticsearch_snapshot_lifecycle_policy) do
           end.to raise_error(Puppet::Error, /invalid retention_min_count/i)
         end
       end
+
+      it 'should accept retention_min_count value 70_000' do
+        expect do
+          described_class.new(
+            default_params.merge(
+              :name                => resource_name,
+              :retention_min_count => 70_000
+            )
+          )
+        end.not_to raise_error
+      end
     end
 
     describe 'retention_max_count' do
-      [-1, 0, 70_000, 'foo'].each do |value|
+      it 'should reject invalid retention_max_count value foo' do
+        expect do
+          described_class.new(
+            default_params.merge(
+              :name                => resource_name,
+              :retention_max_count => 'foo'
+            )
+          )
+        end.to raise_error(Puppet::Error, /invalid retention_max_count/i)
+      end
+
+      [-1, 0].each do |value|
         it "should reject invalid retention_max_count value #{value}" do
           expect do
             described_class.new(
@@ -218,6 +184,17 @@ describe Puppet::Type.type(:elasticsearch_snapshot_lifecycle_policy) do
             )
           end.to raise_error(Puppet::Error, /invalid retention_max_count/i)
         end
+      end
+
+      it 'should accept retention_max_count value 70_000' do
+        expect do
+          described_class.new(
+            default_params.merge(
+              :name                => resource_name,
+              :retention_max_count => 70_000
+            )
+          )
+        end.not_to raise_error
       end
     end
 

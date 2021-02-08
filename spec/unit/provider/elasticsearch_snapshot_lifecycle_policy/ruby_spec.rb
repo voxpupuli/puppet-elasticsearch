@@ -9,9 +9,6 @@ describe Puppet::Type.type(:elasticsearch_snapshot_lifecycle_policy).provider(:r
       :schedule_time               => '0 30 1 * * ?',
       :repository                  => 'my_repository',
       :snapshot_name               => '<nightly-snap-{now/d}>',
-      :config_include_global_state => false,
-      :config_ignore_unavailable   => false,
-      :config_partial              => false,
       :config_indices              => ['*'],
       :retention_expire_after      => '30d',
       :retention_min_count         => 5,
@@ -23,16 +20,18 @@ describe Puppet::Type.type(:elasticsearch_snapshot_lifecycle_policy).provider(:r
   let(:json_1) do
     {
       'foobar1' => {
-        'schedule' => '0 30 1 * * ?',
-        'name' => '<nightly-snap-{now/d}>',
-        'repository' => 'my_repository',
-        'config' => {
-          'indices' => ['*']
-        },
-        'retention' => {
-          'expire_after' => '30d',
-          'min_count' => 5,
-          'max_count' => 50
+        'policy' => {
+          'config' => {
+            'indices' => ['*']
+          },
+          'name' => '<nightly-snap-{now/d}>',
+          'repository' => 'my_repository',
+          'retention' => {
+            'expire_after' => '30d',
+            'min_count' => 5,
+            'max_count' => 50
+          },
+          'schedule' => '0 30 1 * * ?'
         }
       }
     }
@@ -56,16 +55,18 @@ describe Puppet::Type.type(:elasticsearch_snapshot_lifecycle_policy).provider(:r
   let(:json_2) do
     {
       'foobar2' => {
-        'schedule' => '0 5 3 1 * ?',
-        'name' => '<messy-snap-{now/d}>',
-        'repository' => 'my_repository_again',
-        'config' => {
-          'indices' => ['product']
-        },
-        'retention' => {
-          'expire_after' => '3d',
-          'min_count' => 1,
-          'max_count' => 5
+        'policy' => {
+          'schedule' => '0 5 3 1 * ?',
+          'name' => '<messy-snap-{now/d}>',
+          'repository' => 'my_repository_again',
+          'config' => {
+            'indices' => ['product']
+          },
+          'retention' => {
+            'expire_after' => '3d',
+            'min_count' => 1,
+            'max_count' => 5
+          }
         }
       }
     }
@@ -73,16 +74,18 @@ describe Puppet::Type.type(:elasticsearch_snapshot_lifecycle_policy).provider(:r
 
   let(:bare_resource) do
     JSON.dump(
-        'schedule' => '0 0 * 1 * ?',
-        'name' => '<another-snap-{now/d}>',
-        'repository' => 'foo_bars',
-        'config' => {
-          'indices' => ['product']
-        },
-        'retention' => {
-          'expire_after' => '5d',
-          'min_count' => 7,
-          'max_count' => 10
+        'policy' => {
+          'schedule' => '0 0 * 1 * ?',
+          'name' => '<another-snap-{now/d}>',
+          'repository' => 'foo_bars',
+          'config' => {
+            'indices' => ['product']
+          },
+          'retention' => {
+            'expire_after' => '5d',
+            'min_count' => 7,
+            'max_count' => 10
+          }
         }
     )
   end

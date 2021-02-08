@@ -53,10 +53,16 @@ Puppet::Type.newtype(:elasticsearch_snapshot_lifecycle_policy) do
 
   newproperty(:retention_min_count) do
     desc 'Minimum snapshots'
+    validate do |value|
+      raise ArgumentError, 'Invalid retention_min_count' unless value.is_a? Integer and value > 0
+    end
   end
 
   newproperty(:retention_max_count) do
     desc 'Maximum snaphots'
+    validate do |value|
+      raise ArgumentError, 'Invalid retention_max_count' unless value.is_a? Integer and value > 0
+    end
   end
 
   validate do
