@@ -74,18 +74,19 @@ describe Puppet::Type.type(:elasticsearch_snapshot_lifecycle_policy).provider(:r
 
   let(:bare_resource) do
     JSON.dump(
-        'policy' => {
-          'schedule' => '0 0 * 1 * ?',
-          'name' => '<another-snap-{now/d}>',
-          'repository' => 'foo_bars',
-          'config' => {
-            'indices' => ['product']
-          },
-          'retention' => {
-            'expire_after' => '5d',
-            'min_count' => 7,
-            'max_count' => 10
-          }
+        'schedule' => '0 0 * 1 * ?',
+        'repository' => 'foo_bars',
+        'name' => '<another-snap-{now/d}>',
+        'config' => {
+          'include_global_state' => 'false',
+          'ignore_unavailable' => 'false',
+          'partial' => 'false',
+          'indices' => 'product'
+        },
+        'retention' => {
+          'expire_after' => '5d',
+          'min_count' => 7,
+          'max_count' => 10
         }
     )
   end
@@ -94,7 +95,7 @@ describe Puppet::Type.type(:elasticsearch_snapshot_lifecycle_policy).provider(:r
   let(:provider) { described_class.new resource }
   let(:props) do
     {
-      :name                   => 'policy',
+      :name                   => 'foobar',
       :schedule_time          => '0 0 * 1 * ?',
       :repository             => 'foo_bars',
       :snapshot_name          => '<another-snap-{now/d}>',
@@ -105,5 +106,5 @@ describe Puppet::Type.type(:elasticsearch_snapshot_lifecycle_policy).provider(:r
     }
   end
 
-  include_examples 'REST API', 'slm/policy', '_slm/policy/policy'
+  include_examples 'REST API', 'slm/policy', '_slm/policy/foobar'
 end
