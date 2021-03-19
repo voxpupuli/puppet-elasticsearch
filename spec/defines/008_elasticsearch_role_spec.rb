@@ -39,7 +39,7 @@ describe 'elasticsearch::role' do
 
       context 'with an invalid role name' do
         context 'too long' do
-          let(:title) { 'A' * 31 }
+          let(:title) { 'A' * 41 }
           it { should raise_error(Puppet::Error, /expected length/i) }
         end
       end
