@@ -6,7 +6,7 @@ Puppet::Type.newtype(:elasticsearch_role_mapping) do
   newparam(:name, :namevar => true) do
     desc 'Role name.'
 
-    newvalues(/^[a-zA-Z_]{1}[-\w@.$]{0,29}$/)
+    newvalues(/^[a-zA-Z_]{1}[-\w@.$]{0,39}$/)
   end
 
   newproperty(:mappings, :array_matching => :all) do
