@@ -838,4 +838,8 @@ Please see the [CONTRIBUTING.md](CONTRIBUTING.md) file for instructions regardin
 
 ## Support
 
-Need help? Join us in [#elasticsearch](https://webchat.freenode.net?channels=%23elasticsearch) on Freenode IRC or on the [discussion forum](https://discuss.elastic.co/).
+The Puppet Elasticsearch module is community supported and not officially supported by Elastic Support.
+
+For questions about the module, open a topic in the [Discuss](http://discuss.elastic.co/) forums or join us in [#elasticsearch](https://webchat.freenode.net/?channels=%23elasticsearch) on Freenode IRC.
+
+For bugs or feature requests, open an issue in [Github](https://github.com/elastic/puppet-elasticsearch/issues).
