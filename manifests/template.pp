@@ -53,19 +53,25 @@
 # @author Tyler Langlois <tyler.langlois@elastic.co>
 #
 define elasticsearch::template (
-  Enum['absent', 'present']       $ensure                  = 'present',
-  Optional[String]                $api_basic_auth_password = $elasticsearch::api_basic_auth_password,
-  Optional[String]                $api_basic_auth_username = $elasticsearch::api_basic_auth_username,
-  Optional[Stdlib::Absolutepath]  $api_ca_file             = $elasticsearch::api_ca_file,
-  Optional[Stdlib::Absolutepath]  $api_ca_path             = $elasticsearch::api_ca_path,
-  String                          $api_host                = $elasticsearch::api_host,
-  Integer[0, 65535]               $api_port                = $elasticsearch::api_port,
-  Enum['http', 'https']           $api_protocol            = $elasticsearch::api_protocol,
-  Integer                         $api_timeout             = $elasticsearch::api_timeout,
-  Optional[Variant[String, Hash]] $content                 = undef,
-  Optional[String]                $source                  = undef,
-  Boolean                         $validate_tls            = $elasticsearch::validate_tls,
+  Enum['absent', 'present']                    $ensure                  = 'present',
+  Optional[Variant[String, Sensitive[String]]] $api_basic_auth_password = $elasticsearch::api_basic_auth_password,
+  Optional[String]                             $api_basic_auth_username = $elasticsearch::api_basic_auth_username,
+  Optional[Stdlib::Absolutepath]               $api_ca_file             = $elasticsearch::api_ca_file,
+  Optional[Stdlib::Absolutepath]               $api_ca_path             = $elasticsearch::api_ca_path,
+  String                                       $api_host                = $elasticsearch::api_host,
+  Integer[0, 65535]                            $api_port                = $elasticsearch::api_port,
+  Enum['http', 'https']                        $api_protocol            = $elasticsearch::api_protocol,
+  Integer                                      $api_timeout             = $elasticsearch::api_timeout,
+  Optional[Variant[String, Hash]]              $content                 = undef,
+  Optional[String]                             $source                  = undef,
+  Boolean                                      $validate_tls            = $elasticsearch::validate_tls,
 ) {
+  $api_basic_auth_password_unsensitive = if $api_basic_auth_password =~ Sensitive {
+    $api_basic_auth_password.unwrap
+  } else {
+    $api_basic_auth_password
+  }
+
   if $content =~ String {
     $_content = parsejson($content)
   } else {
@@ -92,7 +98,7 @@ define elasticsearch::template (
     port         => $api_port,
     timeout      => $api_timeout,
     username     => $api_basic_auth_username,
-    password     => $api_basic_auth_password,
+    password     => $api_basic_auth_password_unsensitive,
     ca_file      => $api_ca_file,
     ca_path      => $api_ca_path,
     validate_tls => $validate_tls,
