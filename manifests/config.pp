@@ -12,23 +12,18 @@
 # @author Gavin Williams <gavin.williams@elastic.co>
 #
 class elasticsearch::config {
-
   #### Configuration
 
   Exec {
-    path => [ '/bin', '/usr/bin', '/usr/local/bin' ],
+    path => ['/bin', '/usr/bin', '/usr/local/bin'],
     cwd  => '/',
   }
 
-  $init_defaults = merge(
-    {
-      'MAX_OPEN_FILES' => '65535',
-    },
-    $elasticsearch::init_defaults
-  )
+  $init_defaults = {
+    'MAX_OPEN_FILES' => '65535',
+  }.merge($elasticsearch::init_defaults)
 
-  if ( $elasticsearch::ensure == 'present' ) {
-
+  if ($elasticsearch::ensure == 'present') {
     file {
       $elasticsearch::homedir:
         ensure => 'directory',
@@ -206,10 +201,9 @@ class elasticsearch::config {
         configdir => $elasticsearch::configdir,
         purge     => $elasticsearch::purge_secrets,
         settings  => $elasticsearch::secrets,
-        notify    => $::elasticsearch::_notify_service,
+        notify    => $elasticsearch::_notify_service,
       }
     }
-
   } elsif ( $elasticsearch::ensure == 'absent' ) {
     file { $elasticsearch::real_plugindir:
       ensure => 'absent',

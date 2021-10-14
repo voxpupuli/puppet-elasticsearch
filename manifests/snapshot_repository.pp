@@ -77,7 +77,6 @@ define elasticsearch::snapshot_repository (
   Optional[String]                $repository_type         = undef,
   Boolean                         $validate_tls            = $elasticsearch::validate_tls,
 ) {
-
   es_instance_conn_validator { "${name}-snapshot":
     server  => $api_host,
     port    => $api_port,

@@ -57,7 +57,6 @@ define elasticsearch::pipeline (
   Hash                           $content                 = {},
   Boolean                        $validate_tls            = $elasticsearch::validate_tls,
 ) {
-
   es_instance_conn_validator { "${name}-ingest-pipeline":
     server  => $api_host,
     port    => $api_port,
