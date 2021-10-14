@@ -31,8 +31,8 @@ This module is actively tested against Elasticsearch 2.x, 5.x, and 6.x.
 In order to simplify the management of Elasticsearch moving forward, and add support for both Elasticsearch 6.x and 7.x, support for
 running multiple instances of Elasticsearch has been removed.
 
-This module also does not currently handle the migration from the instance based configuration to the new single deployment model.  
-Therefore in-place upgrades from version 6.x of this module to 7.x, or migrations from multi-instance to single deployment is not currently supported.  
+This module also does not currently handle the migration from the instance based configuration to the new single deployment model.
+Therefore in-place upgrades from version 6.x of this module to 7.x, or migrations from multi-instance to single deployment is not currently supported.
 We hope to add support for this in a future release.
 
 Therefore please ensure that you test this major release in your environment before using it in production!
@@ -61,8 +61,8 @@ Therefore please ensure that you test this major release in your environment bef
 * [Augeas](http://augeas.net/)
 * [puppetlabs-java_ks](https://forge.puppetlabs.com/puppetlabs/java_ks) for certificate management (optional).
 
-Beginning with Elasticsearch 7.0.0, a Java JDK has been bundled as part of the elasticsearch package.  
-However there still needs to be a version of Java present on the system being managed in order for Puppet to be able to run various utilities.  
+Beginning with Elasticsearch 7.0.0, a Java JDK has been bundled as part of the elasticsearch package.
+However there still needs to be a version of Java present on the system being managed in order for Puppet to be able to run various utilities.
 We recommend managing your Java installation with the [puppetlabs-java](https://forge.puppetlabs.com/puppetlabs/java) module.
 
 #### Repository management
