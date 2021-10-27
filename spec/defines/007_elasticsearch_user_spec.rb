@@ -49,83 +49,42 @@ describe 'elasticsearch::user' do
       end
 
       describe 'collector ordering' do
-        describe 'when present' do
-          let(:pre_condition) do
-            <<-EOS
-              class { 'elasticsearch': }
-              elasticsearch::template { 'foo': content => {"foo" => "bar"} }
-              elasticsearch::role { 'test_role':
-                privileges => {
-                  'cluster' => 'monitor',
-                  'indices' => {
-                    '*' => 'all',
-                  },
+        let(:pre_condition) do
+          <<-EOS
+            class { 'elasticsearch': }
+            elasticsearch::template { 'foo': content => {"foo" => "bar"} }
+            elasticsearch::role { 'test_role':
+              privileges => {
+                'cluster' => 'monitor',
+                'indices' => {
+                  '*' => 'all',
                 },
-              }
-            EOS
-          end
-
-          let(:params) do
-            {
-              password: 'foobar',
-              roles: %w[monitor user]
+              },
             }
-          end
-
-          it { is_expected.to contain_elasticsearch__role('test_role') }
-          it { is_expected.to contain_elasticsearch_role('test_role') }
-          it { is_expected.to contain_elasticsearch_role_mapping('test_role') }
-
-          it {
-            expect(subject).to contain_elasticsearch__user('elastic').
-              that_comes_before([
-                                  'Elasticsearch::Template[foo]'
-                                ]).that_requires([
-                                                   'Elasticsearch::Role[test_role]'
-                                                 ])
-          }
-
-          include_examples 'class', :systemd
+          EOS
         end
 
-        describe 'when absent' do
-          let(:pre_condition) do
-            <<-EOS
-              class { 'elasticsearch': }
-              elasticsearch::template { 'foo': content => {"foo" => "bar"} }
-              elasticsearch::role { 'test_role':
-                privileges => {
-                  'cluster' => 'monitor',
-                  'indices' => {
-                    '*' => 'all',
-                  },
-                },
-              }
-            EOS
-          end
-
-          let(:params) do
-            {
-              password: 'foobar',
-              roles: %w[monitor user]
-            }
-          end
-
-          it { is_expected.to contain_elasticsearch__role('test_role') }
-          it { is_expected.to contain_elasticsearch_role('test_role') }
-          it { is_expected.to contain_elasticsearch_role_mapping('test_role') }
-
-          it {
-            expect(subject).to contain_elasticsearch__user('elastic').
-              that_comes_before([
-                                  'Elasticsearch::Template[foo]'
-                                ]).that_requires([
-                                                   'Elasticsearch::Role[test_role]'
-                                                 ])
+        let(:params) do
+          {
+            password: 'foobar',
+            roles: %w[monitor user]
           }
-
-          include_examples 'class', :systemd
         end
+
+        it { is_expected.to contain_elasticsearch__role('test_role') }
+        it { is_expected.to contain_elasticsearch_role('test_role') }
+        it { is_expected.to contain_elasticsearch_role_mapping('test_role') }
+
+        it {
+          expect(subject).to contain_elasticsearch__user('elastic').
+            that_comes_before([
+                                'Elasticsearch::Template[foo]'
+                              ]).that_requires([
+                                                 'Elasticsearch::Role[test_role]'
+                                               ])
+        }
+
+        include_examples 'class', :systemd
       end
     end
   end
