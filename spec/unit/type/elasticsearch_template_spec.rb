@@ -33,7 +33,7 @@ describe Puppet::Type.type(:elasticsearch_template) do
       end
 
       it 'parses source paths into the content property' do
-        file_stub = 'foo'
+        file_stub = 'foo'.dup
         [
           Puppet::FileServing::Metadata,
           Puppet::FileServing::Content
