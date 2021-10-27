@@ -2,8 +2,8 @@
 
 require_relative '../../../helpers/unit/provider/elasticsearch_rest_shared_examples'
 
-describe Puppet::Type.type(:elasticsearch_template).provider(:ruby) do
-  let(:example_1) do
+describe Puppet::Type.type(:elasticsearch_template).provider(:ruby) do # rubocop:disable RSpec/MultipleMemoizedHelpers
+  let(:example1) do
     {
       name: 'foobar1',
       ensure: :present,
@@ -18,7 +18,7 @@ describe Puppet::Type.type(:elasticsearch_template).provider(:ruby) do
     }
   end
 
-  let(:json_1) do
+  let(:json1) do
     {
       'foobar1' => {
         'aliases' => {},
@@ -30,7 +30,7 @@ describe Puppet::Type.type(:elasticsearch_template).provider(:ruby) do
     }
   end
 
-  let(:example_2) do
+  let(:example2) do
     {
       name: 'foobar2',
       ensure: :present,
@@ -45,7 +45,7 @@ describe Puppet::Type.type(:elasticsearch_template).provider(:ruby) do
     }
   end
 
-  let(:json_2) do
+  let(:json2) do
     {
       'foobar2' => {
         'aliases' => {},

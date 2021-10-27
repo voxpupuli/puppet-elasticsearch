@@ -2,10 +2,10 @@
 
 require_relative '../../../helpers/unit/provider/elasticsearch_rest_shared_examples'
 
-describe Puppet::Type.type(:elasticsearch_index).provider(:ruby) do
+describe Puppet::Type.type(:elasticsearch_index).provider(:ruby) do # rubocop:disable RSpec/MultipleMemoizedHelpers
   let(:name) { 'test-index' }
 
-  let(:example_1) do
+  let(:example1) do
     {
       name: 'index-one',
       ensure: :present,
@@ -35,7 +35,7 @@ describe Puppet::Type.type(:elasticsearch_index).provider(:ruby) do
     }
   end
 
-  let(:json_1) do
+  let(:json1) do
     {
       'index-one' => {
         'settings' => {
@@ -64,7 +64,7 @@ describe Puppet::Type.type(:elasticsearch_index).provider(:ruby) do
     }
   end
 
-  let(:example_2) do
+  let(:example2) do
     {
       name: 'index-two',
       ensure: :present,
@@ -84,7 +84,7 @@ describe Puppet::Type.type(:elasticsearch_index).provider(:ruby) do
     }
   end
 
-  let(:json_2) do
+  let(:json2) do
     {
       'index-two' => {
         'settings' => {

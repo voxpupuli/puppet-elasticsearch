@@ -2,10 +2,10 @@
 
 require_relative '../../../helpers/unit/provider/elasticsearch_rest_shared_examples'
 
-describe Puppet::Type.type(:elasticsearch_license).provider(:xpack) do
+describe Puppet::Type.type(:elasticsearch_license).provider(:xpack) do # rubocop:disable RSpec/MultipleMemoizedHelpers
   let(:name) { 'xpack' }
 
-  let(:example_1) do
+  let(:example1) do
     {
       name: 'xpack',
       ensure: :present,
@@ -28,7 +28,7 @@ describe Puppet::Type.type(:elasticsearch_license).provider(:xpack) do
     }
   end
 
-  let(:json_1) do
+  let(:json1) do
     {
       'license' => {
         'status' => 'active',

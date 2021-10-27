@@ -24,11 +24,11 @@ shared_examples 'REST API' do |resource_type, create_uri, singleton = false|
 
   describe "#{resource_type}s" do
     if singleton
-      let(:json) { json_1 }
-      let(:instance) { [example_1] }
+      let(:json) { json1 }
+      let(:instance) { [example1] }
     else
-      let(:json) { json_1.merge(json_2) }
-      let(:instance) { [example_1, example_2] }
+      let(:json) { json1.merge(json2) }
+      let(:instance) { [example1, example2] }
     end
 
     it "returns #{resource_type}s" do
@@ -54,16 +54,16 @@ shared_examples 'REST API' do |resource_type, create_uri, singleton = false|
         ).
         to_return(
           status: 200,
-          body: JSON.dump(json_1)
+          body: JSON.dump(json1)
         )
 
       expect(described_class.api_objects(
-        'http', true, 'localhost', '9200', 10, 'elastic', 'password'
+        'http', 'localhost', '9200', 10, 'elastic', 'password', validate_tls: true
       ).map do |provider|
         described_class.new(
           provider
         ).instance_variable_get(:@property_hash)
-      end).to contain_exactly(example_1)
+      end).to contain_exactly(example1)
     end
   end
 
@@ -73,16 +73,16 @@ shared_examples 'REST API' do |resource_type, create_uri, singleton = false|
         with(headers: { 'Accept' => 'application/json' }).
         to_return(
           status: 200,
-          body: JSON.dump(json_1)
+          body: JSON.dump(json1)
         )
 
       expect(described_class.api_objects(
-        'https', true, 'localhost', '9200', 10
+        'https', 'localhost', '9200', 10, validate_tls: true
       ).map do |provider|
         described_class.new(
           provider
         ).instance_variable_get(:@property_hash)
-      end).to contain_exactly(example_1)
+      end).to contain_exactly(example1)
     end
   end
 

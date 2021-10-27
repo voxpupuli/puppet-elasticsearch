@@ -7,6 +7,7 @@ describe 'elasticsearch', type: 'class' do
     config: { 'node.name' => 'foo' }
   }
 
+  # rubocop:disable RSpec/MultipleMemoizedHelpers
   on_supported_os.each do |os, facts|
     context "on #{os}" do
       case facts[:os]['family']
@@ -293,6 +294,7 @@ describe 'elasticsearch', type: 'class' do
       end
     end
   end
+  # rubocop:enable RSpec/MultipleMemoizedHelpers
 
   on_supported_os(
     hardwaremodels: ['x86_64'],
@@ -465,14 +467,14 @@ describe 'elasticsearch', type: 'class' do
       # This check helps catch dependency cycles.
       context 'create_resource' do
         # Helper for these tests
-        def singular(s)
-          case s
+        def singular(string)
+          case string
           when 'indices'
             'index'
           when 'snapshot_repositories'
             'snapshot_repository'
           else
-            s[0..-2]
+            string[0..-2]
           end
         end
 

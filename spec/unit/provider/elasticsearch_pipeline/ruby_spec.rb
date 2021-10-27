@@ -2,8 +2,8 @@
 
 require_relative '../../../helpers/unit/provider/elasticsearch_rest_shared_examples'
 
-describe Puppet::Type.type(:elasticsearch_pipeline).provider(:ruby) do
-  let(:example_1) do
+describe Puppet::Type.type(:elasticsearch_pipeline).provider(:ruby) do # rubocop:disable RSpec/MultipleMemoizedHelpers
+  let(:example1) do
     {
       name: 'foo',
       ensure: :present,
@@ -20,7 +20,7 @@ describe Puppet::Type.type(:elasticsearch_pipeline).provider(:ruby) do
     }
   end
 
-  let(:json_1) do
+  let(:json1) do
     {
       'foo' => {
         'description' => 'Sets the foo field to "bar"',
@@ -34,7 +34,7 @@ describe Puppet::Type.type(:elasticsearch_pipeline).provider(:ruby) do
     }
   end
 
-  let(:example_2) do
+  let(:example2) do
     {
       name: 'baz',
       ensure: :present,
@@ -56,7 +56,7 @@ describe Puppet::Type.type(:elasticsearch_pipeline).provider(:ruby) do
     }
   end
 
-  let(:json_2) do
+  let(:json2) do
     {
       'baz' => {
         'description' => 'A pipeline that never gives you up',

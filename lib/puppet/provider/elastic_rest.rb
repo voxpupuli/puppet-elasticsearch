@@ -28,12 +28,12 @@ class Puppet::Provider::ElasticREST < Puppet::Provider
   # Perform a REST API request against the indicated endpoint.
   #
   # @return Net::HTTPResponse
-  def self.rest(http, \
-                req, \
-                validate_tls = true, \
-                timeout = 10, \
-                username = nil, \
-                password = nil)
+  def self.rest(http,
+                req,
+                timeout = 10,
+                username = nil,
+                password = nil,
+                validate_tls: true)
 
     if username && password
       req.basic_auth username, password
@@ -84,15 +84,15 @@ class Puppet::Provider::ElasticREST < Puppet::Provider
   # @return Array
   #   an array of Hashes representing the found API objects, whether they be
   #   templates, pipelines, et cetera.
-  def self.api_objects(protocol = 'http', \
-                       validate_tls = true, \
-                       host = 'localhost', \
-                       port = 9200, \
-                       timeout = 10, \
-                       username = nil, \
-                       password = nil, \
-                       ca_file = nil, \
-                       ca_path = nil)
+  def self.api_objects(protocol = 'http',
+                       host = 'localhost',
+                       port = 9200,
+                       timeout = 10,
+                       username = nil,
+                       password = nil,
+                       ca_file = nil,
+                       ca_path = nil,
+                       validate_tls: true)
 
     uri = URI("#{protocol}://#{host}:#{port}/#{format_uri(api_discovery_uri)}")
     http = Net::HTTP.new uri.host, uri.port
@@ -103,7 +103,7 @@ class Puppet::Provider::ElasticREST < Puppet::Provider
       http.send method, arg if arg && http.respond_to?(method)
     end
 
-    response = rest http, req, validate_tls, timeout, username, password
+    response = rest http, req, timeout, username, password, validate_tls: validate_tls
 
     results = []
 
@@ -151,14 +151,14 @@ class Puppet::Provider::ElasticREST < Puppet::Provider
       p = resource.parameters
       [
         p[:protocol].value,
-        p[:validate_tls].value,
         p[:host].value,
         p[:port].value,
         p[:timeout].value,
         (p.key?(:username) ? p[:username].value : nil),
         (p.key?(:password) ? p[:password].value : nil),
         (p.key?(:ca_file) ? p[:ca_file].value : nil),
-        (p.key?(:ca_path) ? p[:ca_path].value : nil)
+        (p.key?(:ca_path) ? p[:ca_path].value : nil),
+        p[:validate_tls].value,
       ]
       # Deduplicate identical settings, and fetch templates
     end.uniq
@@ -228,10 +228,10 @@ class Puppet::Provider::ElasticREST < Puppet::Provider
     response = self.class.rest(
       http,
       req,
-      resource[:validate_tls],
       resource[:timeout],
       resource[:username],
-      resource[:password]
+      resource[:password],
+      validate_tls: resource[:validate_tls]
     )
 
     # Attempt to return useful error output
@@ -257,14 +257,14 @@ class Puppet::Provider::ElasticREST < Puppet::Provider
     end
     @property_hash = self.class.api_objects(
       resource[:protocol],
-      resource[:validate_tls],
       resource[:host],
       resource[:port],
       resource[:timeout],
       resource[:username],
       resource[:password],
       resource[:ca_file],
-      resource[:ca_path]
+      resource[:ca_path],
+      validate_tls: resource[:validate_tls]
     ).find do |t|
       t[:name] == resource[:name]
     end

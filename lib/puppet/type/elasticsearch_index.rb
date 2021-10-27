@@ -21,8 +21,8 @@ Puppet::Type.newtype(:elasticsearch_index) do
   newproperty(:settings) do
     desc 'Structured settings for the index in hash form.'
 
-    def insync?(is)
-      Puppet_X::Elastic.asymmetric_compare(should, is)
+    def insync?(value)
+      Puppet_X::Elastic.asymmetric_compare(should, value)
     end
 
     munge do |value|

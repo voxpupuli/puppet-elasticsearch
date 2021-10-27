@@ -64,8 +64,8 @@ Puppet::Type.newtype(:elasticsearch_template) do
       )
     end
 
-    def insync?(is)
-      Puppet_X::Elastic.deep_implode(is) == \
+    def insync?(value)
+      Puppet_X::Elastic.deep_implode(value) == \
         Puppet_X::Elastic.deep_implode(should)
     end
   end
@@ -113,4 +113,5 @@ Puppet::Type.newtype(:elasticsearch_template) do
       self[:content] = PSON.load(tmp.content)
     end
   end
+  # rubocop:enable Style/SignalException
 end

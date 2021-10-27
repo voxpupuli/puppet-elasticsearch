@@ -31,11 +31,11 @@ Puppet::Type.newtype(:elasticsearch_keystore) do
     # The keystore utility can only retrieve a list of stored settings,
     # so here we only compare the existing settings (sorted) with the
     # desired settings' keys
-    def insync?(is)
+    def insync?(value)
       if resource[:purge]
-        is.sort == @should.first.keys.sort
+        value.sort == @should.first.keys.sort
       else
-        (@should.first.keys - is).empty?
+        (@should.first.keys - value).empty?
       end
     end
 

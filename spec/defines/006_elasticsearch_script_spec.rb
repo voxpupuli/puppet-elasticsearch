@@ -32,8 +32,6 @@ describe 'elasticsearch::script', type: 'define' do
       end
 
       describe 'missing parent class' do
-        let(:pre_condition) {}
-
         it { is_expected.not_to compile }
       end
 

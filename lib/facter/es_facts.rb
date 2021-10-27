@@ -122,6 +122,7 @@ module EsFacts
         end
       end
     rescue StandardError
+      # ignore
     end
     Facter.add(:elasticsearch) do
       setcode do

@@ -117,7 +117,7 @@ end
 
 def http_retry(url)
   retries ||= 0
-  open(url).read
+  URI.parse(url).open.read
 rescue StandardError
   retry if (retries += 1) < 3
 end

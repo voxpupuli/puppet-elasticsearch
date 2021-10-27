@@ -31,8 +31,6 @@ shared_examples 'plugin provider' do |version|
             args.unshift('kopf', '--url') if version.start_with? '1'
 
             args.unshift '--batch' if Puppet::Util::Package.versioncmp(version, '2.2.0') >= 0
-
-            args
           end
         )
         provider.create
@@ -41,8 +39,6 @@ shared_examples 'plugin provider' do |version|
             args.unshift('kopf', '--url') if version.start_with? '1'
 
             args.unshift '--batch' if Puppet::Util::Package.versioncmp(version, '2.2.0') >= 0
-
-            args
           end
         )
       end
@@ -54,8 +50,6 @@ shared_examples 'plugin provider' do |version|
             args.unshift('kopf', '--url') if version.start_with? '1'
 
             args.unshift '--batch' if Puppet::Util::Package.versioncmp(version, '2.2.0') >= 0
-
-            args
           end
         )
         provider.create
@@ -64,8 +58,6 @@ shared_examples 'plugin provider' do |version|
             args.unshift('kopf', '--url') if version.start_with? '1'
 
             args.unshift '--batch' if Puppet::Util::Package.versioncmp(version, '2.2.0') >= 0
-
-            args
           end
         )
       end

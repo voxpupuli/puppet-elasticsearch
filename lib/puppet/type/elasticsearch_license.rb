@@ -21,10 +21,10 @@ Puppet::Type.newtype(:elasticsearch_license) do
   newproperty(:content) do
     desc 'Structured hash for license content data.'
 
-    def insync?(is)
+    def insync?(value)
       Puppet_X::Elastic.asymmetric_compare(
         should.transform_values { |v| v.is_a?(Hash) ? (v.reject { |s, _| s == 'signature' }) : v },
-        is
+        value
       )
     end
 

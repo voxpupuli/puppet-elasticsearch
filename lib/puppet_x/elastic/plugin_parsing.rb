@@ -17,7 +17,7 @@ module Puppet_X # rubocop:disable Style/ClassAndModuleCamelCase
     end
 
     # Attempt to guess at the plugin's final directory name
-    def self.plugin_split(original_string, position, soft_fail = true)
+    def self.plugin_split(original_string, position, soft_fail: true)
       # Try both colon (maven) and slash-delimited (github/elastic.co) names
       %w[/ :].each do |delimiter|
         parts = original_string.split(delimiter)
