@@ -206,7 +206,7 @@ class elasticsearch::config {
         configdir => $elasticsearch::configdir,
         purge     => $elasticsearch::purge_secrets,
         settings  => $elasticsearch::secrets,
-        notify    => $::elaticsearch::_notify_service,
+        notify    => $::elasticsearch::_notify_service,
       }
     }
 
