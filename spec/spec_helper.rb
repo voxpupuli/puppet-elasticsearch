@@ -1,21 +1,21 @@
-require_relative 'helpers/class_shared_examples'
-require 'rspec-puppet-utils'
-require 'rspec-puppet-facts'
-include RspecPuppetFacts
+# frozen_string_literal: true
 
-def fixture_path
-  File.expand_path(File.join(__FILE__, '..', 'fixtures'))
-end
+# Managed by modulesync - DO NOT EDIT
+# https://voxpupuli.org/docs/updating-files-managed-with-modulesync/
 
-$LOAD_PATH.unshift(File.expand_path(File.dirname(__FILE__) + '/../'))
+# puppetlabs_spec_helper will set up coverage if the env variable is set.
+# We want to do this if lib exists and it hasn't been explicitly set.
+ENV['COVERAGE'] ||= 'yes' if Dir.exist?(File.expand_path('../lib', __dir__))
 
-RSpec.configure do |c|
-  c.mock_with :rspec
-end
-require 'puppetlabs_spec_helper/module_spec_helper'
+require 'voxpupuli/test/spec_helper'
 
 RSpec.configure do |c|
-  c.add_setting :fixture_path, :default => fixture_path
-  # c.mock_with(:rspec)
-  c.hiera_config = File.join(fixture_path, '/hiera/hiera.yaml')
+  c.hiera_config = 'spec/fixtures/hiera/hiera.yaml'
+end
+
+if File.exist?(File.join(__dir__, 'default_module_facts.yml'))
+  facts = YAML.safe_load(File.read(File.join(__dir__, 'default_module_facts.yml')))
+  facts&.each do |name, value|
+    add_custom_fact name.to_sym, value
+  end
 end

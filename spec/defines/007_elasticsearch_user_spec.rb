@@ -1,4 +1,5 @@
 require 'spec_helper'
+require 'helpers/class_shared_examples'
 
 describe 'elasticsearch::user' do
   let(:title) { 'elastic' }

@@ -1,4 +1,5 @@
 require 'spec_helper'
+require 'helpers/class_shared_examples'
 
 describe 'elasticsearch::plugin', :type => 'define' do
   let(:title) { 'mobz/elasticsearch-head/1.0.0' }

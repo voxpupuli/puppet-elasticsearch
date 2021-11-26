@@ -1,5 +1,11 @@
 require 'spec_helper'
+require 'spec_utilities'
+
 require 'webmock/rspec'
+
+def fixture_path
+  File.expand_path(File.join(__dir__, '..', '..', 'fixtures'))
+end
 
 describe 'elasticsearch facts' do
   before(:each) do
@@ -40,7 +46,7 @@ describe 'elasticsearch facts' do
       .with('/etc/elasticsearch/elasticsearch.yml', any_args)
       .and_return({})
 
-    require 'lib/facter/es_facts'
+    require_relative '../../../lib/facter/es_facts'
   end
 
   describe 'elasticsearch_port' do
