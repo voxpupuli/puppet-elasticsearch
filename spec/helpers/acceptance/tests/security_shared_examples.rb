@@ -56,16 +56,11 @@ shared_examples 'secured request' do |test_desc, es_config, path, http_test, exp
     end
   end
 
-  describe server :container do
-    describe http(
-      "https://localhost:#{es_port}#{path}",
-      {
-        ssl: { verify: false }
-      }.merge(user && pass ? { basic_auth: [user, pass] } : {})
-    ) do
-      it test_desc, :with_retries do
-        expect(http_test.call(response)).to eq(expected)
-      end
+  describe "https://localhost:#{es_port}#{path}" do
+    subject { shell("curl -k -u #{user}:#{pass} https://localhost:#{es_port}#{path}") }
+
+    it test_desc, :with_retries do
+      expect(http_test.call(subject.stdout)).to eq(expected)
     end
   end
 end

@@ -27,16 +27,14 @@ shared_examples 'datadir directory validation' do |es_config, datapaths|
     end
   end
 
-  describe server :container do
-    describe http(
-      "http://localhost:#{es_port}/_nodes/_local"
-    ) do
-      it 'uses a custom data path' do
-        json = JSON.parse(response.body)['nodes'].values.first
-        expect(
-          json['settings']['path']['data']
-        ).to(datapaths.one? && v[:elasticsearch_major_version] <= 2 ? eq(datapaths.first) : contain_exactly(*datapaths))
-      end
+  describe "http://localhost:#{es_port}/_nodes/_local" do
+    subject { shell("curl http://localhost:#{es_port}/_nodes/_local") }
+
+    it 'uses a custom data path' do
+      json = JSON.parse(subject.stdout)['nodes'].values.first
+      expect(
+        json['settings']['path']['data']
+      ).to(datapaths.one? && v[:elasticsearch_major_version] <= 2 ? eq(datapaths.first) : contain_exactly(*datapaths))
     end
   end
 end

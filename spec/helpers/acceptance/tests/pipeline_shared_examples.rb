@@ -46,14 +46,12 @@ shared_examples 'pipeline content' do |es_config, pipeline|
     end
   end
 
-  describe server :container do
-    describe http(
-      "http://localhost:#{elasticsearch_port}/_ingest/pipeline"
-    ) do
-      it 'returns the configured pipelines', :with_retries do
-        expect(JSON.parse(response.body).values).
-          to include(include(pipeline))
-      end
+  describe "http://localhost:#{elasticsearch_port}/_ingest/pipeline" do
+    subject { shell("curl http://localhost:#{elasticsearch_port}/_ingest/pipeline") }
+
+    it 'returns the configured pipelines', :with_retries do
+      expect(JSON.parse(subject.stdout).values).
+        to include(include(pipeline))
     end
   end
 end

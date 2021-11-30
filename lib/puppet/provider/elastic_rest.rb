@@ -158,7 +158,7 @@ class Puppet::Provider::ElasticREST < Puppet::Provider
         (p.key?(:password) ? p[:password].value : nil),
         (p.key?(:ca_file) ? p[:ca_file].value : nil),
         (p.key?(:ca_path) ? p[:ca_path].value : nil),
-        p[:validate_tls].value,
+        { validate_tls: p[:validate_tls].value },
       ]
       # Deduplicate identical settings, and fetch templates
     end.uniq

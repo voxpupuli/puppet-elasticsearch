@@ -21,7 +21,7 @@ group :system_tests do
   gem 'voxpupuli-acceptance', '~> 1.0',  :require => false
   gem 'bcrypt',                          :require => false
   gem 'rspec-retry',                     :require => false
-  gem 'infrataster',                     :require => false
+  gem 'simp-beaker-helpers',             :require => false
 end
 
 group :release do

@@ -49,21 +49,21 @@ shared_examples 'basic acceptance tests' do |es_config|
         end
       end
 
-      describe server :container do
-        describe http("http://localhost:#{es_port}/_nodes/_local") do
-          it 'serves requests', :with_retries do
-            expect(response.status).to eq(200)
-          end
+      describe "http://localhost:#{es_port}/_nodes/_local" do
+        subject { shell("curl http://localhost:#{es_port}/_nodes/_local") }
 
-          it 'uses the default data path', :with_retries do
-            json = JSON.parse(response.body)['nodes'].values.first
-            data_dir = ['/var/lib/elasticsearch']
-            expect(
-              json['settings']['path']
-            ).to include(
-              'data' => data_dir
-            )
-          end
+        it 'serves requests', :with_retries do
+          expect(subject.exit_code).to eq(0)
+        end
+
+        it 'uses the default data path', :with_retries do
+          json = JSON.parse(subject.stdout)['nodes'].values.first
+          data_dir = ['/var/lib/elasticsearch']
+          expect(
+            json['settings']['path']
+          ).to include(
+            'data' => data_dir
+          )
         end
       end
     end

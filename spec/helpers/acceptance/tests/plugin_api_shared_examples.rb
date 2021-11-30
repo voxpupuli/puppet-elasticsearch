@@ -9,15 +9,13 @@ shared_examples 'plugin API response' do |es_config, desc, val|
     end
   end
 
-  describe server :container do
-    describe http(
-      "http://localhost:#{es_config['http.port']}/_cluster/stats"
-    ) do
-      it desc, :with_retries do
-        expect(
-          JSON.parse(response.body)['nodes']['plugins']
-        ).to include(include(val))
-      end
+  describe "http://localhost:#{es_config['http.port']}/_cluster/stats" do
+    subject { shell("curl http://localhost:#{es_config['http.port']}/_cluster/stats") }
+
+    it desc, :with_retries do
+      expect(
+        JSON.parse(subject.stdout)['nodes']['plugins']
+      ).to include(include(val))
     end
   end
 end

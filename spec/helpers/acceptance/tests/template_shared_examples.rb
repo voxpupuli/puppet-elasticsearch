@@ -43,15 +43,12 @@ shared_examples 'template content' do |es_config, template|
     end
   end
 
-  describe server :container do
-    describe http(
-      "http://localhost:#{elasticsearch_port}/_template",
-      params: { 'flat_settings' => 'false' }
-    ) do
-      it 'returns the installed template', :with_retries do
-        expect(JSON.parse(response.body).values).
-          to include(include(template))
-      end
+  describe "http://localhost:#{elasticsearch_port}/_template" do
+    subject { shell("curl http://localhost:#{elasticsearch_port}/_template") }
+
+    it 'returns the installed template', :with_retries do
+      expect(JSON.parse(subject.stdout).values).
+        to include(include(template))
     end
   end
 end

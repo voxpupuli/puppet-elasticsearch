@@ -7,7 +7,7 @@ Gemfile:
     ':system_tests':
       - gem: bcrypt
       - gem: rspec-retry
-      - gem: infrataster
+      - gem: simp-beaker-helpers
 spec/spec_helper.rb:
   hiera_config: "'spec/fixtures/hiera/hiera.yaml'"
 spec/spec_helper_acceptance.rb:

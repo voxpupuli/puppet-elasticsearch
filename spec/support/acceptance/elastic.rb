@@ -1,8 +1,10 @@
 # frozen_string_literal: true
 
-require 'infrataster/rspec'
 require 'securerandom'
 require 'rspec/retry'
+
+require 'simp/beaker_helpers'
+include Simp::BeakerHelpers # rubocop:disable Style/MixinUsage
 
 require_relative '../../spec_helper_tls'
 require_relative '../../spec_utilities'
@@ -12,6 +14,10 @@ require_relative '../../../lib/puppet_x/elastic/deep_to_s'
 # def f
 #   RSpec.configuration.fact
 # end
+
+# FIXME: This value should better not be hardcoded
+ENV['ELASTICSEARCH_VERSION'] = '7.10.1'
+ENV.delete('BEAKER_debug')
 
 run_puppet_install_helper('agent') unless ENV['BEAKER_provision'] == 'no'
 
@@ -172,15 +178,6 @@ hosts.each do |host|
       [[:url, url], [:filename, filename], [:path, artifact(filename)]]
     end.to_h
   )
-
-  Infrataster::Server.define(:docker) do |server|
-    server.address = host[:ip]
-    server.ssh = host[:ssh].tap { |s| s.delete :forward_agent }
-  end
-  Infrataster::Server.define(:container) do |server|
-    server.address = host[:vm_ip] # this gets ignored anyway
-    server.from = :docker
-  end
 end
 
 RSpec.configure do |c|
@@ -194,6 +191,8 @@ RSpec.configure do |c|
   end
 
   c.before :suite do
+    fetch_archives(derive_artifact_urls_for(ENV['ELASTICSEARCH_VERSION']))
+
     # Use the Java class once before the suite of tests
     unless shell('command -v java', accept_all_exit_codes: true).exit_code.zero?
       java = case fact('os.name')

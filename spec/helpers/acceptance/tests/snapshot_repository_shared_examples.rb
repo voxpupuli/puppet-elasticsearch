@@ -65,18 +65,16 @@ shared_examples 'snapshot repository acceptance tests' do
       end
     end
 
-    describe server :container do
-      describe http(
-        "http://localhost:#{es_port}/_snapshot/backup"
-      ) do
-        it 'returns the snapshot repository', :with_retries do
-          expect(JSON.parse(response.body)['backup']).
-            to include('settings' => a_hash_including(
-              'location' => '/var/lib/elasticsearch/backup',
-              'max_restore_rate' => '20mb',
-              'max_snapshot_rate' => '80mb'
-            ))
-        end
+    describe "http://localhost:#{es_port}/_snapshot/backup" do
+      subject { shell("curl http://localhost:#{es_port}/_snapshot/backup") }
+
+      it 'returns the snapshot repository', :with_retries do
+        expect(JSON.parse(subject.stdout)['backup']).
+          to include('settings' => a_hash_including(
+            'location' => '/var/lib/elasticsearch/backup',
+            'max_restore_rate' => '20mb',
+            'max_snapshot_rate' => '80mb'
+          ))
       end
     end
   end
