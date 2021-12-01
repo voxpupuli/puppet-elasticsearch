@@ -32,7 +32,7 @@ define elasticsearch::role (
   Array                     $mappings   = [],
   Hash                      $privileges = {},
 ) {
-  validate_slength($name, 30, 1)
+  validate_slength($name, 40, 1)
 
   if empty($privileges) or $ensure == 'absent' {
     $_role_ensure = 'absent'

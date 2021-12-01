@@ -44,7 +44,7 @@ describe Puppet::Type.type(:elasticsearch_role_mapping) do
     describe 'name' do
       it 'should reject long role names' do
         expect { described_class.new(
-          :name => 'a' * 31
+          :name => 'a' * 41
         ) }.to raise_error(
           Puppet::ResourceError,
           /valid values/i
