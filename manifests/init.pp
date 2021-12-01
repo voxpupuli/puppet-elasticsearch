@@ -511,7 +511,12 @@ class elasticsearch (
     # Installation, configuration and service
     Class['elasticsearch::package']
     -> Class['elasticsearch::config']
-    ~> Class['elasticsearch::service']
+
+    if $restart_config_change {
+      Class['elasticsearch::config'] ~> Class['elasticsearch::service']
+    } else {
+      Class['elasticsearch::config'] -> Class['elasticsearch::service']
+    }
 
     # Top-level ordering bindings for resources.
     Class['elasticsearch::config']
