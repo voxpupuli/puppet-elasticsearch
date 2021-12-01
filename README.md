@@ -71,7 +71,7 @@ When using the repository management, the following module dependencies are requ
 
 * General: [Elastic/elastic_stack](https://forge.puppet.com/elastic/elastic_stack)
 * Debian/Ubuntu: [Puppetlabs/apt](https://forge.puppetlabs.com/puppetlabs/apt)
-* OpenSuSE/SLES: [puppet/zypprepo](https://forge.puppetlabs.com/puppet/zypprepo)
+* openSUSE/SLES: [puppet/zypprepo](https://forge.puppetlabs.com/puppet/zypprepo)
 
 ### Beginning with Elasticsearch
 
