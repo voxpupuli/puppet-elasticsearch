@@ -39,10 +39,12 @@ end
 
 def derive_full_package_url(full_version, extensions = %w[deb rpm])
   extensions.map do |ext|
-    url = if full_version.start_with? '2'
-            "https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-#{full_version}.#{ext}"
-          else
+    url = if full_version.start_with? '6'
             "https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-#{full_version}.#{ext}"
+          elsif ext == 'deb'
+            "https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-#{full_version}-amd64.#{ext}"
+          else
+            "https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-#{full_version}-x86_64.#{ext}"
           end
     [url, File.basename(url)]
   end.to_h
@@ -50,11 +52,7 @@ end
 
 def derive_plugin_urls_for(full_version, plugins = ['analysis-icu'])
   plugins.map do |plugin|
-    url = if full_version.start_with? '2'
-            "https://download.elasticsearch.org/elasticsearch/release/org/elasticsearch/plugin/#{plugin}/#{full_version}/#{plugin}-#{full_version}.zip"
-          else
-            "https://artifacts.elastic.co/downloads/elasticsearch-plugins/#{plugin}/#{plugin}-#{full_version}.zip"
-          end
+    url = "https://artifacts.elastic.co/downloads/elasticsearch-plugins/#{plugin}/#{plugin}-#{full_version}.zip"
     [url, File.join('plugins', File.basename(url))]
   end.to_h
 end
@@ -96,23 +94,23 @@ def fetch_archives(archives)
   end
 end
 
-def pid_for(instance)
-  if fact('operatingsystem') == 'Ubuntu' \
-      and Gem::Version.new(fact('operatingsystemrelease')) \
-      < Gem::Version.new('15.04')
-    "/var/run/elasticsearch-#{instance}.pid"
-  elsif fact('operatingsystem') == 'Debian' \
+def pid_file
+  if fact('operatingsystem') == 'Debian' \
       and fact('lsbmajdistrelease').to_i <= 7
-    "/var/run/elasticsearch-#{instance}.pid"
+    '/var/run/elasticsearch.pid'
   else
-    "/var/run/elasticsearch/elasticsearch-#{instance}.pid"
+    '/var/run/elasticsearch/elasticsearch.pid'
   end
 end
 
 def vault_available?
-  %w[VAULT_ADDR VAULT_APPROLE_ROLE_ID VAULT_APPROLE_SECRET_ID VAULT_PATH].select do |var|
-    ENV[var].nil?
-  end.empty?
+  if ENV['CI']
+    %w[VAULT_ADDR VAULT_APPROLE_ROLE_ID VAULT_APPROLE_SECRET_ID VAULT_PATH].select do |var|
+      ENV[var].nil?
+    end.empty?
+  else
+    true
+  end
 end
 
 def http_retry(url)

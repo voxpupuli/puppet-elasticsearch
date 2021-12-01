@@ -1,14 +1,14 @@
 source ENV['GEM_SOURCE'] || 'https://rubygems.org'
 
 group :test do
-  gem 'puppet', (ENV['PUPPET_VERSION'] || '~> 4.10'), :require => false
+  gem 'puppet', (ENV['PUPPET_VERSION'] || '~> 6.0'), :require => false
 
   gem 'metadata-json-lint'
   gem 'specinfra', '~> 2.60'
   gem 'xmlrpc'
 
   gem 'ci_reporter_rspec'
-  gem 'facter'
+  gem 'facter', "~> 2.4"
   gem 'pry'
   gem 'puppet-lint'
   gem 'puppet-strings'
@@ -46,8 +46,12 @@ end
 
 group :system_tests do
   gem 'bcrypt'
-  gem 'beaker', '~> 3.7'
+  gem 'beaker', '>= 4.2.0'
   gem 'beaker-rspec', '~> 6.0'
+  gem 'beaker-docker'
+  gem 'beaker-puppet'
+  gem 'beaker-puppet_install_helper'
+  gem 'simp-beaker-helpers'
   gem 'docker-api', '~> 1.0'
   gem 'infrataster'
   gem 'vault'

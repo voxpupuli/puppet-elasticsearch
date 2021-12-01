@@ -18,9 +18,11 @@ class Puppet::Provider::ElasticUserCommand < Puppet::Provider
   # Run the user management command with specified tool arguments.
   def self.command_with_path(args, configdir = nil)
     options = {
+      :combine            => true,
       :custom_environment => {
         'ES_PATH_CONF' => configdir || '/etc/elasticsearch'
-      }
+      },
+      :failonfail => true
     }
 
     execute(

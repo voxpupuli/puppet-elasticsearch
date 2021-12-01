@@ -14,9 +14,10 @@ elasticsearch::configdir: /etc/elasticsearch
 elasticsearch::configdir_recurselimit: 2
 elasticsearch::daily_rolling_date_pattern: |
   "'.'yyyy-MM-dd"
-elasticsearch::datadir_instance_directories: true
 elasticsearch::default_logging_level: 'INFO'
 elasticsearch::defaults_location: ~
+elasticsearch::deprecation_logging: false
+elasticsearch::deprecation_logging_level: 'DEBUG'
 elasticsearch::download_tool: ~
 elasticsearch::download_tool_insecure: ~
 elasticsearch::download_tool_verify_certificates: true
@@ -31,6 +32,7 @@ elasticsearch::license: ~
 elasticsearch::logdir: /var/log/elasticsearch
 elasticsearch::logging_config: {}
 elasticsearch::logging_file: ~
+elasticsearch::logging_level: 'INFO'
 elasticsearch::logging_template: ~
 elasticsearch::manage_repo: true
 elasticsearch::oss: false
@@ -55,9 +57,10 @@ elasticsearch::scripts: {}
 elasticsearch::secrets: ~
 elasticsearch::security_logging_content: ~
 elasticsearch::security_logging_source: ~
-elasticsearch::security_plugin: ~
+elasticsearch::service_name: elasticsearch
 elasticsearch::service_provider: systemd
 elasticsearch::snapshot_repositories: {}
+elasticsearch::ssl: false
 elasticsearch::status: enabled
 elasticsearch::system_key: ~
 elasticsearch::systemd_service_path: /lib/systemd/system

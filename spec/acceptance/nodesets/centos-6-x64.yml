@@ -2,6 +2,7 @@ HOSTS:
   centos-6-x64:
     roles:
       - master
+      - agent
       - database
       - dashboard
     platform: el-6-x86_64

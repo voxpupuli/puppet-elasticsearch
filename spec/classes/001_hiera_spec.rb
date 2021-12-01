@@ -46,39 +46,18 @@ describe 'elasticsearch', :type => 'class' do
           end
         end
 
-        describe 'instances' do
-          context 'single instance' do
-            let(:facts) { facts.merge(:scenario => 'singleinstance') }
+        context 'config' do
+          let(:facts) { facts.merge(:scenario => 'singleinstance') }
 
-            include_examples 'instance', 'es-hiera-single', :systemd
-          end
-
-          context 'multiple instances' do
-            let(:facts) { facts.merge(:scenario => 'multipleinstances') }
-
-            include_examples 'instance', 'es-hiera-multiple-1', :systemd
-            include_examples 'instance', 'es-hiera-multiple-2', :systemd
-          end
-
-          context 'no instances' do
-            let(:facts) { facts.merge(:scenario => '') }
-
-            it { should_not contain_elasticsearch__instance('es-hiera-multiple-1') }
-            it { should_not contain_elasticsearch__instance('es-hiera-multiple-2') }
-          end
-
-          context 'multiple instances using lookup_options' do
-            let(:facts) do
-              facts.merge(
-                :common => 'defaultinstance-merged',
-                :scenario => 'singleinstance'
-              )
-            end
-
-            include_examples 'instance', 'default', :systemd
-            include_examples 'instance', 'es-hiera-single', :systemd
-          end
-        end # of instances
+          it { should contain_augeas('/etc/sysconfig/elasticsearch') }
+          it { should contain_file('/etc/elasticsearch/elasticsearch.yml') }
+          it { should contain_datacat('/etc/elasticsearch/elasticsearch.yml') }
+          it { should contain_datacat_fragment('main_config') }
+          it { should contain_service('elasticsearch').with(
+            :ensure => 'running',
+            :enable => true
+          ) }
+        end # of config
 
         describe 'pipelines' do
           context 'single pipeline' do
@@ -115,9 +94,8 @@ describe 'elasticsearch', :type => 'class' do
 
             it { should contain_elasticsearch__plugin('mobz/elasticsearch-head')
               .with(
-                :ensure => 'present',
-                :module_dir => 'head',
-                :instances => ['es-hiera-single']
+                :ensure     => 'present',
+                :module_dir => 'head'
               ) }
             it { should contain_elasticsearch_plugin('mobz/elasticsearch-head') }
           end
@@ -135,7 +113,7 @@ describe 'elasticsearch', :type => 'class' do
           context 'single roles' do
             let(:facts) { facts.merge(:scenario => 'singlerole') }
             let(:params) do
-              default_params.merge(:security_plugin => 'x-pack')
+              default_params
             end
 
             it { should contain_elasticsearch__role('admin')
@@ -211,7 +189,7 @@ describe 'elasticsearch', :type => 'class' do
           context 'single users' do
             let(:facts) { facts.merge(:scenario => 'singleuser') }
             let(:params) do
-              default_params.merge(:security_plugin => 'x-pack')
+              default_params
             end
 
             it { should contain_elasticsearch__user('elastic')

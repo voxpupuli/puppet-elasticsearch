@@ -18,9 +18,6 @@
 #   Path to the elasticsearch configuration directory (ES_PATH_CONF)
 #   to which the plugin should be installed.
 #
-# @param instances
-#   Specify all the instances related
-#
 # @param java_opts
 #   Array of Java options to be passed to `ES_JAVA_OPTS`
 #
@@ -56,11 +53,11 @@
 # @author Matteo Sessa <matteo.sessa@catchoftheday.com.au>
 # @author Dennis Konert <dkonert@gmail.com>
 # @author Tyler Langlois <tyler.langlois@elastic.co>
+# @author Gavin Williams <gavin.williams@elastic.co>
 #
 define elasticsearch::plugin (
   Enum['absent', 'present']      $ensure         = 'present',
   Stdlib::Absolutepath           $configdir      = $elasticsearch::configdir,
-  Variant[String, Array[String]] $instances      = [],
   Array[String]                  $java_opts      = [],
   Optional[Stdlib::Absolutepath] $java_home      = undef,
   Optional[String]               $module_dir     = undef,
@@ -76,16 +73,12 @@ define elasticsearch::plugin (
 
   case $ensure {
     'present': {
-      if empty($instances) and $elasticsearch::restart_plugin_change {
-        fail('no $instances defined, even though `restart_plugin_change` is set!')
-      }
-
       $_file_ensure = 'directory'
       $_file_before = []
     }
     'absent': {
       $_file_ensure = $ensure
-      $_file_before = File[$elasticsearch::_plugindir]
+      $_file_before = File[$elasticsearch::real_plugindir]
     }
     default: { }
   }
@@ -134,19 +127,20 @@ define elasticsearch::plugin (
     source                     => $file_source,
     url                        => $url,
     proxy                      => $_proxy,
-    plugin_dir                 => $::elasticsearch::_plugindir,
+    plugin_dir                 => $elasticsearch::real_plugindir,
     plugin_path                => $module_dir,
+    before                     => Service['elasticsearch'],
   }
-  -> file { "${::elasticsearch::_plugindir}/${_module_dir}":
+  -> file { "${elasticsearch::real_plugindir}/${_module_dir}":
     ensure  => $_file_ensure,
     mode    => 'o+Xr',
     recurse => true,
     before  => $_file_before,
   }
 
-  if ! empty($instances) and $elasticsearch::restart_plugin_change {
+  if $elasticsearch::restart_plugin_change {
     Elasticsearch_plugin[$name] {
-      notify +> Elasticsearch::Instance[$instances],
+      notify +> Service['elasticsearch'],
     }
   }
 }

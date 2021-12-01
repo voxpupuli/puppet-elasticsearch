@@ -3,7 +3,6 @@ require 'json'
 require 'yaml'
 
 # Helper module to encapsulate custom fact injection
-# rubocop:disable Metrics/ModuleLength
 module EsFacts
   # Add a fact to the catalog of host facts
   def self.add_fact(prefix, key, value)
@@ -15,9 +14,7 @@ module EsFacts
 
   def self.ssl?(config)
     tls_keys = [
-      'xpack.security.http.ssl.enabled',
-      'shield.http.ssl',
-      'searchguard.ssl.http.enabled'
+      'xpack.security.http.ssl.enabled'
     ]
 
     tls_keys.any? { |key| (config.key? key) && (config[key] == true) }
@@ -28,13 +25,9 @@ module EsFacts
     enabled = 'http.enabled'
     httpport = 'http.port'
 
-    if !config[enabled].nil? && config[enabled] == 'false'
-      false
-    elsif !config[httpport].nil?
-      { config[httpport] => ssl?(config) }
-    else
-      { '9200' => ssl?(config) }
-    end
+    return false, false if !config[enabled].nil? && config[enabled] == 'false'
+    return config[httpport], ssl?(config) unless config[httpport].nil?
+    ['9200', ssl?(config)]
   end
 
   # Entrypoint for custom fact populator
@@ -46,7 +39,6 @@ module EsFacts
   def self.run
     dir_prefix = '/etc/elasticsearch'
     # httpports is a hash of port_number => ssl?
-    httpports = {}
     transportports = []
     http_bound_addresses = []
     transport_bound_addresses = []
@@ -56,34 +48,26 @@ module EsFacts
     # only when the directory exists we need to process the stuff
     return unless File.directory?(dir_prefix)
 
-    Dir.foreach(dir_prefix) do |dir|
-      next if dir == '.'
-
-      if File.readable?("#{dir_prefix}/#{dir}/elasticsearch.yml")
-        config_data = YAML.load_file("#{dir_prefix}/#{dir}/elasticsearch.yml")
-        httpport = get_httpport(config_data)
-        httpports.merge! httpport if httpport
-      end
+    if File.readable?("#{dir_prefix}/elasticsearch.yml")
+      config_data = YAML.load_file("#{dir_prefix}/elasticsearch.yml")
+      httpport, ssl = get_httpport(config_data)
     end
 
     begin
-      if httpports.keys.count > 0
+      add_fact('elasticsearch', 'port', httpport)
 
-        add_fact('elasticsearch', 'ports', httpports.keys.join(','))
+      unless ssl
+        key_prefix = 'elasticsearch'
+        # key_prefix = "elasticsearch_#{httpport}"
 
-        httpports.each_pair do |httpport, ssl|
-          next if ssl
+        uri = URI("http://localhost:#{httpport}")
+        http = Net::HTTP.new(uri.host, uri.port)
+        http.read_timeout = 10
+        http.open_timeout = 2
+        response = http.get('/')
+        json_data = JSON.parse(response.body)
 
-          key_prefix = "elasticsearch_#{httpport}"
-
-          uri = URI("http://localhost:#{httpport}")
-          http = Net::HTTP.new(uri.host, uri.port)
-          http.read_timeout = 10
-          http.open_timeout = 2
-          response = http.get('/')
-          json_data = JSON.parse(response.body)
-          next if json_data['status'] && json_data['status'] != 200
-
+        if json_data['status'] && json_data['status'] == 200
           add_fact(key_prefix, 'name', json_data['name'])
           add_fact(key_prefix, 'version', json_data['version']['number'])
 
@@ -122,12 +106,18 @@ module EsFacts
           transport_publish_addresses << nodes_data['transport']['publish_address'] unless nodes_data['transport']['publish_address'].nil?
           transportports << nodes_data['settings']['transport']['tcp']['port'] unless nodes_data['settings']['transport']['tcp'].nil? or nodes_data['settings']['transport']['tcp']['port'].nil?
 
-          node = { 'http_ports' => httpports.keys,
-                   'transport_ports' => transportports,
-                   'http_bound_addresses' => http_bound_addresses,
-                   'transport_bound_addresses' => transport_bound_addresses,
-                   'transport_publish_addresses' => transport_publish_addresses,
-                   json_data['name'] => { 'settings' => nodes_data['settings'], 'http' => nodes_data['http'], 'transport' => nodes_data['transport'] } }
+          node = {
+            'http_ports'                  => httpports.keys,
+            'transport_ports'             => transportports,
+            'http_bound_addresses'        => http_bound_addresses,
+            'transport_bound_addresses'   => transport_bound_addresses,
+            'transport_publish_addresses' => transport_publish_addresses,
+            json_data['name']             => {
+              'settings'  => nodes_data['settings'],
+              'http'      => nodes_data['http'],
+              'transport' => nodes_data['transport']
+            }
+          }
           nodes.merge! node
         end
       end

@@ -58,6 +58,13 @@
 #   one. The exact behavior is provider dependent (see
 #   {package, "upgradeable"}[http://j.mp/xbxmNP] in the Puppet documentation).
 #
+# @param ca_certificate
+#   Path to the trusted CA certificate to add to this node's Java keystore.
+#
+# @param certificate
+#   Path to the certificate for this node signed by the CA listed in
+#   ca_certificate.
+#
 # @param config
 #   Elasticsearch configuration hash.
 #
@@ -75,15 +82,18 @@
 # @param datadir
 #   Allows you to set the data directory of Elasticsearch.
 #
-# @param datadir_instance_directories
-#   Control whether individual directories for instances will be created within
-#   each instance's data directory.
-#
 # @param default_logging_level
 #   Default logging level for Elasticsearch.
 #
 # @param defaults_location
 #   Absolute path to directory containing init defaults file.
+#
+# @param deprecation_logging
+#   Whether to enable deprecation logging. If enabled, deprecation logs will be
+#   saved to ${cluster.name}_deprecation.log in the Elasticsearch log folder.
+#
+# @param deprecation_logging_level
+#   Default deprecation logging level for Elasticsearch.
 #
 # @param download_tool
 #   Command-line invocation with which to retrieve an optional package_url.
@@ -123,11 +133,14 @@
 # @param init_template
 #   Service file as a template.
 #
-# @param instances
-#   Define instances via a hash. This is mainly used with Hiera's auto binding.
-#
 # @param jvm_options
 #   Array of options to set in jvm_options.
+#
+# @param keystore_password
+#   Password to encrypt this node's Java keystore.
+#
+# @param keystore_path
+#   Custom path to the Java keystore file. This parameter is optional.
 #
 # @param license
 #   Optional Elasticsearch license in hash or string form.
@@ -136,11 +149,14 @@
 #   Directory that will be used for Elasticsearch logging.
 #
 # @param logging_config
-#   Representation of information to be included in the logging.yml file.
+#   Representation of information to be included in the log4j.properties file.
 #
 # @param logging_file
 #   Instead of a hash, you may supply a `puppet://` file source for the
-#   logging.yml file.
+#   log4j.properties file.
+#
+# @param logging_level
+#   Default logging level for Elasticsearch.
 #
 # @param logging_template
 #   Use a custom logging template - just supply the relative path, i.e.
@@ -182,6 +198,9 @@
 #
 # @param plugins
 #   Define plugins via a hash. This is mainly used with Hiera's auto binding.
+#
+# @param private_key
+#   Path to the key associated with this node's certificate.
 #
 # @param proxy_url
 #   For http and https downloads, you may set a proxy server to use. By default,
@@ -250,22 +269,25 @@
 #   Elasticsearch keystore file. If unset, the keystore is left unmanaged.
 #
 # @param security_logging_content
-#   File content for shield/x-pack logging configuration file (will be placed
-#   into logging.yml or log4j2.properties file as appropriate).
+#   File content for x-pack logging configuration file (will be placed
+#   into log4j2.properties file).
 #
 # @param security_logging_source
-#   File source for shield/x-pack logging configuration file (will be placed
-#   into logging.yml or log4j2.properties file as appropriate).
+#   File source for x-pack logging configuration file (will be placed
+#   into log4j2.properties).
 #
-# @param security_plugin
-#   Which security plugin will be used to manage users, roles, and
-#   certificates.
+# @param service_name
+#   Elasticsearch service name
 #
 # @param service_provider
 #   The service resource type provider to use when managing elasticsearch instances.
 #
 # @param snapshot_repositories
 #   Define snapshot repositories via a hash. This is mainly used with Hiera's auto binding.
+#
+# @param ssl
+#   Whether to manage TLS certificates. Requires the ca_certificate,
+#   certificate, private_key and keystore_password parameters to be set.
 #
 # @param status
 #   To define the status of the service. If set to `enabled`, the service will
@@ -279,7 +301,7 @@
 #   the service plus assuring it is running on the desired node.
 #
 # @param system_key
-#   Source for the Shield/x-pack system key. Valid values are any that are
+#   Source for the x-pack system key. Valid values are any that are
 #   supported for the file resource `source` parameter.
 #
 # @param systemd_service_path
@@ -299,6 +321,7 @@
 #
 # @author Richard Pijnenburg <richard.pijnenburg@elasticsearch.com>
 # @author Tyler Langlois <tyler.langlois@elastic.co>
+# @author Gavin Williams <gavin.williams@elastic.co>
 #
 class elasticsearch (
   Enum['absent', 'present']                       $ensure,
@@ -316,9 +339,9 @@ class elasticsearch (
   Integer                                         $configdir_recurselimit,
   String                                          $daily_rolling_date_pattern,
   Elasticsearch::Multipath                        $datadir,
-  Boolean                                         $datadir_instance_directories,
-  String                                          $default_logging_level,
   Optional[Stdlib::Absolutepath]                  $defaults_location,
+  Boolean                                         $deprecation_logging,
+  String                                          $deprecation_logging_level,
   Optional[String]                                $download_tool,
   Optional[String]                                $download_tool_insecure,
   Boolean                                         $download_tool_verify_certificates,
@@ -330,12 +353,12 @@ class elasticsearch (
   Hash                                            $init_defaults,
   Optional[String]                                $init_defaults_file,
   String                                          $init_template,
-  Hash                                            $instances,
   Array[String]                                   $jvm_options,
   Optional[Variant[String, Hash]]                 $license,
   Stdlib::Absolutepath                            $logdir,
   Hash                                            $logging_config,
   Optional[String]                                $logging_file,
+  String                                          $logging_level,
   Optional[String]                                $logging_template,
   Boolean                                         $manage_repo,
   Boolean                                         $oss,
@@ -361,9 +384,10 @@ class elasticsearch (
   Optional[Hash]                                  $secrets,
   Optional[String]                                $security_logging_content,
   Optional[String]                                $security_logging_source,
-  Optional[Enum['shield', 'x-pack']]              $security_plugin,
+  String                                          $service_name,
   Enum['init', 'openbsd', 'openrc', 'systemd']    $service_provider,
   Hash                                            $snapshot_repositories,
+  Boolean                                         $ssl,
   Elasticsearch::Status                           $status,
   Optional[String]                                $system_key,
   Stdlib::Absolutepath                            $systemd_service_path,
@@ -371,9 +395,15 @@ class elasticsearch (
   Hash                                            $users,
   Boolean                                         $validate_tls,
   Variant[String, Boolean]                        $version,
-  Boolean $restart_config_change  = $restart_on_change,
-  Boolean $restart_package_change = $restart_on_change,
-  Boolean $restart_plugin_change  = $restart_on_change,
+  Optional[Stdlib::Absolutepath]                  $ca_certificate            = undef,
+  Optional[Stdlib::Absolutepath]                  $certificate               = undef,
+  String                                          $default_logging_level     = $logging_level,
+  Optional[String]                                $keystore_password         = undef,
+  Optional[Stdlib::Absolutepath]                  $keystore_path             = undef,
+  Optional[Stdlib::Absolutepath]                  $private_key               = undef,
+  Boolean                                         $restart_config_change     = $restart_on_change,
+  Boolean                                         $restart_package_change    = $restart_on_change,
+  Boolean                                         $restart_plugin_change     = $restart_on_change,
 ) {
 
   #### Validate parameters
@@ -414,25 +444,31 @@ class elasticsearch (
 
   # Set the plugin path variable for use later in the module.
   if $plugindir == undef {
-    $_plugindir = "${homedir}/plugins"
+    $real_plugindir = "${homedir}/plugins"
   } else {
-    $_plugindir = $plugindir
+    $real_plugindir = $plugindir
+  }
+
+  # Should we restart Elasticsearch on config change?
+  $_notify_service = $elasticsearch::restart_config_change ? {
+    true  => Service[$elasticsearch::service_name],
+    false => undef,
   }
 
   #### Manage actions
 
   contain elasticsearch::package
   contain elasticsearch::config
+  contain elasticsearch::service
 
-  create_resources('elasticsearch::index', $::elasticsearch::indices)
-  create_resources('elasticsearch::instance', $::elasticsearch::instances)
-  create_resources('elasticsearch::pipeline', $::elasticsearch::pipelines)
-  create_resources('elasticsearch::plugin', $::elasticsearch::plugins)
-  create_resources('elasticsearch::role', $::elasticsearch::roles)
-  create_resources('elasticsearch::script', $::elasticsearch::scripts)
-  create_resources('elasticsearch::snapshot_repository', $::elasticsearch::snapshot_repositories)
-  create_resources('elasticsearch::template', $::elasticsearch::templates)
-  create_resources('elasticsearch::user', $::elasticsearch::users)
+  create_resources('elasticsearch::index', $elasticsearch::indices)
+  create_resources('elasticsearch::pipeline', $elasticsearch::pipelines)
+  create_resources('elasticsearch::plugin', $elasticsearch::plugins)
+  create_resources('elasticsearch::role', $elasticsearch::roles)
+  create_resources('elasticsearch::script', $elasticsearch::scripts)
+  create_resources('elasticsearch::snapshot_repository', $elasticsearch::snapshot_repositories)
+  create_resources('elasticsearch::template', $elasticsearch::templates)
+  create_resources('elasticsearch::user', $elasticsearch::users)
 
   if ($manage_repo == true) {
     if ($repo_stage == false) {
@@ -472,9 +508,15 @@ class elasticsearch (
 
   if $ensure == 'present' {
 
-    # Installation and configuration
+    # Installation, configuration and service
     Class['elasticsearch::package']
     -> Class['elasticsearch::config']
+
+    if $restart_config_change {
+      Class['elasticsearch::config'] ~> Class['elasticsearch::service']
+    } else {
+      Class['elasticsearch::config'] -> Class['elasticsearch::service']
+    }
 
     # Top-level ordering bindings for resources.
     Class['elasticsearch::config']
@@ -482,11 +524,11 @@ class elasticsearch (
     Elasticsearch::Plugin <| ensure == 'absent' |>
     -> Class['elasticsearch::config']
     Class['elasticsearch::config']
-    -> Elasticsearch::Instance <| |>
-    Class['elasticsearch::config']
-    -> Elasticsearch::User <| |>
-    Class['elasticsearch::config']
-    -> Elasticsearch::Role <| |>
+    -> Elasticsearch::User <| ensure == 'present' |>
+    # Elasticsearch::User <| ensure == 'absent' |>
+    # -> Class['elasticsearch::config']
+    # Class['elasticsearch::config']
+    # -> Elasticsearch::Role <| |>
     Class['elasticsearch::config']
     -> Elasticsearch::Template <| |>
     Class['elasticsearch::config']
@@ -505,8 +547,6 @@ class elasticsearch (
     # Top-level ordering bindings for resources.
     Elasticsearch::Plugin <| |>
     -> Class['elasticsearch::config']
-    Elasticsearch::Instance <| |>
-    -> Class['elasticsearch::config']
     Elasticsearch::User <| |>
     -> Class['elasticsearch::config']
     Elasticsearch::Role <| |>
@@ -522,9 +562,7 @@ class elasticsearch (
 
   }
 
-  # Install plugins before managing instances or users/roles
-  Elasticsearch::Plugin <| ensure == 'present' or ensure == 'installed' |>
-  -> Elasticsearch::Instance <| |>
+  # Install plugins before managing users/roles
   Elasticsearch::Plugin <| ensure == 'present' or ensure == 'installed' |>
   -> Elasticsearch::User <| |>
   Elasticsearch::Plugin <| ensure == 'present' or ensure == 'installed' |>
@@ -565,33 +603,4 @@ class elasticsearch (
   # file is modified
   Elasticsearch_user <| |>
   -> Elasticsearch_user_file <| |>
-
-  # Manage users/roles before instances (req'd to keep dir in sync)
-  Elasticsearch::Role <| |>
-  -> Elasticsearch::Instance <| |>
-  Elasticsearch::User <| |>
-  -> Elasticsearch::Instance <| |>
-
-  # Ensure instances are started before managing REST resources
-  Elasticsearch::Instance <| ensure == 'present' |>
-  -> Elasticsearch::Template <| |>
-  Elasticsearch::Instance <| ensure == 'present' |>
-  -> Elasticsearch::Pipeline <| |>
-  Elasticsearch::Instance <| ensure == 'present' |>
-  -> Elasticsearch::Index <| |>
-  Elasticsearch::Instance <| ensure == 'present' |>
-  -> Elasticsearch::Snapshot_repository <| |>
-  # Ensure instances are stopped after managing REST resources
-  Elasticsearch::Template <| |>
-  -> Elasticsearch::Instance <| ensure == 'absent' |>
-  Elasticsearch::Pipeline <| |>
-  -> Elasticsearch::Instance <| ensure == 'absent' |>
-  Elasticsearch::Index <| |>
-  -> Elasticsearch::Instance <| ensure == 'absent' |>
-  Elasticsearch::Snapshot_repository <| |>
-  -> Elasticsearch::Instance <| ensure == 'absent' |>
-
-  # Ensure scripts are installed before copying them to configuration directory
-  Elasticsearch::Script <| |>
-  -> File["${configdir}/scripts"]
 }

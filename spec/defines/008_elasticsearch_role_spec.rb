@@ -5,9 +5,7 @@ describe 'elasticsearch::role' do
 
   let(:pre_condition) do
     <<-EOS
-      class { 'elasticsearch':
-        security_plugin => 'shield',
-      }
+      class { 'elasticsearch': }
     EOS
   end
 
@@ -65,11 +63,7 @@ describe 'elasticsearch::role' do
         describe 'when present' do
           let(:pre_condition) do
             <<-EOS
-              class { 'elasticsearch':
-                security_plugin => 'shield',
-              }
-              elasticsearch::instance { 'es-security-role': }
-              elasticsearch::plugin { 'shield': instances => 'es-security-role' }
+              class { 'elasticsearch': }
               elasticsearch::template { 'foo': content => {"foo" => "bar"} }
               elasticsearch::user { 'elastic':
                 password => 'foobar',
@@ -78,32 +72,19 @@ describe 'elasticsearch::role' do
             EOS
           end
 
-          it { should contain_elasticsearch__plugin('shield') }
           it { should contain_elasticsearch__role('elastic_role')
             .that_comes_before([
             'Elasticsearch::Template[foo]',
             'Elasticsearch::User[elastic]'
-          ]).that_requires([
-            'Elasticsearch::Plugin[shield]'
           ])}
 
-          include_examples 'instance', 'es-security-role', :systemd
-          it { should contain_file(
-            '/etc/elasticsearch/es-security-role/shield'
-          ) }
+          include_examples 'class', :systemd
         end
 
         describe 'when absent' do
           let(:pre_condition) do
             <<-EOS
-              class { 'elasticsearch':
-                security_plugin => 'shield',
-              }
-              elasticsearch::instance { 'es-security-role': }
-              elasticsearch::plugin { 'shield':
-                ensure => 'absent',
-                instances => 'es-security-role',
-              }
+              class { 'elasticsearch': }
               elasticsearch::template { 'foo': content => {"foo" => "bar"} }
               elasticsearch::user { 'elastic':
                 password => 'foobar',
@@ -112,8 +93,7 @@ describe 'elasticsearch::role' do
             EOS
           end
 
-          it { should contain_elasticsearch__plugin('shield') }
-          include_examples 'instance', 'es-security-role', :systemd
+          include_examples 'class', :systemd
           # TODO: Uncomment once upstream issue is fixed.
           # https://github.com/rodjek/rspec-puppet/issues/418
           # it { should contain_elasticsearch__shield__role('elastic_role')

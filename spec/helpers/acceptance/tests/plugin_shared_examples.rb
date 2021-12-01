@@ -3,30 +3,16 @@ require 'helpers/acceptance/tests/bad_manifest_shared_examples'
 require 'helpers/acceptance/tests/manifest_shared_examples'
 require 'helpers/acceptance/tests/plugin_api_shared_examples'
 
-shared_examples 'plugin acceptance tests' do |plugins|
+shared_examples 'plugin acceptance tests' do |es_config, plugins|
   describe 'elasticsearch::plugin' do
-    instances = {
-      'es-01' => {
-        'config' => {
-          'http.port' => 9200,
-          'node.name' => 'elasticsearch001'
-        }
-      }
-    }
-
     describe 'invalid plugins', :with_cleanup do
       let(:extra_manifest) do
         <<-MANIFEST
-          elasticsearch::plugin { 'elastic/non-existing':
-            instances => 'es-01',
-          }
+          elasticsearch::plugin { 'elastic/non-existing': }
         MANIFEST
       end
 
-      include_examples(
-        'invalid manifest application',
-        instances
-      )
+      include_examples('invalid manifest application')
     end
 
     before :all do
@@ -42,16 +28,11 @@ shared_examples 'plugin acceptance tests' do |plugins|
           describe 'using simple names', :with_cleanup do
             let(:extra_manifest) do
               <<-MANIFEST
-                elasticsearch::plugin { '#{plugin}':
-                  instances => 'es-01',
-                }
+                elasticsearch::plugin { '#{plugin}': }
               MANIFEST
             end
 
-            include_examples(
-              'manifest application',
-              instances
-            )
+            include_examples('manifest application', es_config)
 
             describe file("/usr/share/elasticsearch/plugins/#{plugin}/") do
               it { should be_directory }
@@ -59,7 +40,7 @@ shared_examples 'plugin acceptance tests' do |plugins|
 
             include_examples(
               'plugin API response',
-              instances,
+              es_config,
               'reports the plugin as installed',
               'name' => plugin
             )
@@ -77,20 +58,16 @@ shared_examples 'plugin acceptance tests' do |plugins|
             let(:extra_manifest) do
               <<-MANIFEST
                 elasticsearch::plugin { '#{plugin}':
-                  instances => 'es-01',
-                  source    => 'puppet:///modules/another/#{plugin}.zip',
+                  source => 'puppet:///modules/another/#{plugin}.zip',
                 }
               MANIFEST
             end
 
-            include_examples(
-              'manifest application',
-              instances
-            )
+            include_examples('manifest application', es_config)
 
             include_examples(
               'plugin API response',
-              instances,
+              es_config,
               'reports the plugin as installed',
               'name' => plugin
             )
@@ -100,20 +77,16 @@ shared_examples 'plugin acceptance tests' do |plugins|
             let(:extra_manifest) do
               <<-MANIFEST
                 elasticsearch::plugin { '#{plugin}':
-                  instances => 'es-01',
-                  url       => '#{meta[:url]}',
+                  url => '#{meta[:url]}',
                 }
               MANIFEST
             end
 
-            include_examples(
-              'manifest application',
-              instances
-            )
+            include_examples('manifest application', es_config)
 
             include_examples(
               'plugin API response',
-              instances,
+              es_config,
               'reports the plugin as installed',
               'name' => plugin
             )

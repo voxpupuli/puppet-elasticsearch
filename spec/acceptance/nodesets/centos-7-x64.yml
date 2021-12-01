@@ -1,6 +1,7 @@
 HOSTS:
   centos-7-x64:
     roles:
+      - agent
       - master
       - database
       - dashboard

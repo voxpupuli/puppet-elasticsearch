@@ -4,6 +4,28 @@
 
 #### Fixes
 
+## 7.0.0 (December 23, 2020)
+
+This is a new major version release of the Elasticsearch module that contains a number of breaking changes and adds support for deploying
+and managing Elasticsearch 7.x.
+
+### Breaking changes
+* Removed support for running multiple instances of Elasticsearch on a single host
+* Removed support for Elasticsearch older than version 6.x
+
+### Features
+* Support for deploying Elasticsearch 7.x
+* Support and Testing for a number of newer OS'
+  * Amazon Linux 2
+  * CentOS 8
+  * Oracle Linux 8
+  * Debian 10
+  * Ubuntu 18.04
+  * Ubuntu 20.04
+
+### Bug fixes
+Various little bug fixes as a result of cleaning up and refactoring a lot of the code.
+
 ## 6.4.0 (August 28, 2019)
 
 #### Features
