@@ -33,6 +33,29 @@ Puppet::Type.newtype(:elasticsearch_snapshot_repository) do
     desc 'Repository location'
   end
 
+  newproperty(:client) do
+    defaultto 'default'
+    desc 'Azure client'
+  end
+
+  newproperty(:container) do
+    desc 'Azure storage container'
+  end
+
+  newproperty(:base_path) do
+    desc 'Specifies the path within container to repository data.'
+  end
+
+  newproperty(:readonly) do
+    defaultto 'false'
+    desc 'Makes repository read-only.'
+  end
+
+  newproperty(:location_mode) do
+    defaultto 'primary_only'
+    desc 'primary_only or secondary_only. Note that if you set it to secondary_only, it will force readonly to true.'
+  end
+
   newproperty(:chunk_size) do
     desc 'File chunk size'
   end
@@ -46,6 +69,10 @@ Puppet::Type.newtype(:elasticsearch_snapshot_repository) do
   end
 
   validate do
-    raise ArgumentError, 'Location is required.' if self[:location].nil?
+    if self[:type] == 'fs'
+      raise ArgumentError, 'Location is required.' if self[:location].nil?
+    elsif self[:type] == 'azure'
+      raise ArgumentError, 'Container is required.' if self[:container].nil?
+    end
   end
 end # of newtype
