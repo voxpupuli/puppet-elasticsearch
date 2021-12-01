@@ -37,7 +37,13 @@
 #   Snapshot repository type.
 #
 # @param location
-#   Location of snapshots. Mandatory
+#   Location of snapshots.
+#
+# @param region
+#   The S3 region of the bucket to be used for snapshots.
+#
+# @param bucket
+#   The S3 name of the bucket to be used for snapshots.
 #
 # @param compress
 #   Compress the snapshot metadata files?
@@ -60,8 +66,10 @@
 # @author Tyler Langlois <tyler.langlois@elastic.co>
 #
 define elasticsearch::snapshot_repository (
-  String                          $location,
+  Optional[String]                $location                = undef,
   Enum['absent', 'present']       $ensure                  = 'present',
+  Optional[String]                $bucket                  = undef,
+  Optional[String]                $region                  = undef,
   Optional[String]                $api_basic_auth_password = $elasticsearch::api_basic_auth_password,
   Optional[String]                $api_basic_auth_username = $elasticsearch::api_basic_auth_username,
   Optional[Stdlib::Absolutepath]  $api_ca_file             = $elasticsearch::api_ca_file,
@@ -88,6 +96,8 @@ define elasticsearch::snapshot_repository (
     chunk_size        => $chunk_size,
     compress          => $compress,
     location          => $location,
+    region            => $region,
+    bucket            => $bucket,
     max_restore_rate  => $max_restore_rate,
     max_snapshot_rate => $max_snapshot_rate,
     type              => $repository_type,
