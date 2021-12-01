@@ -57,7 +57,9 @@ shared_examples 'hiera acceptance tests' do |es_config, plugins|
     end
 
     describe 'with hieradata' do
-      nodename = SecureRandom.hex(10)
+      # Remove leading 0: 01234567 is valid octal, but 89abcdef is not and the
+      # serialisation will cause trouble for the test suite (quoting the value?).
+      nodename = SecureRandom.hex(10).sub(%r{^0+}, '')
       include_examples(
         'hiera tests with',
         es_config.merge('node.name' => nodename)
