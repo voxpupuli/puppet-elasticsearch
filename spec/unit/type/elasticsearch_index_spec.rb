@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative '../../helpers/unit/type/elasticsearch_rest_shared_examples'
 
 describe Puppet::Type.type(:elasticsearch_index) do
@@ -8,9 +10,9 @@ describe Puppet::Type.type(:elasticsearch_index) do
   describe 'settings' do
     let(:resource) do
       described_class.new(
-        :name => resource_name,
-        :ensure => 'present',
-        :settings => {
+        name: resource_name,
+        ensure: 'present',
+        settings: {
           'index' => {
             'number_of_replicas' => '0'
           }
@@ -38,7 +40,7 @@ describe Puppet::Type.type(:elasticsearch_index) do
         end
 
         it 'only enforces defined settings' do
-          expect(settings.insync?(is_settings)).to be_truthy
+          expect(settings).to be_insync(is_settings)
         end
       end
 
@@ -59,7 +61,7 @@ describe Puppet::Type.type(:elasticsearch_index) do
         end
 
         it 'detects out-of-sync nested values' do
-          expect(settings.insync?(is_settings)).to be_falsy
+          expect(settings).not_to be_insync(is_settings)
         end
       end
     end

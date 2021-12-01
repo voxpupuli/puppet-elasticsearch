@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', '..'))
 
 require 'puppet_x/elastic/elasticsearch_rest_resource'
@@ -9,7 +11,7 @@ Puppet::Type.newtype(:elasticsearch_snapshot_repository) do
 
   ensurable
 
-  newparam(:name, :namevar => true) do
+  newparam(:name, namevar: true) do
     desc 'Repository name.'
   end
 
@@ -23,10 +25,10 @@ Puppet::Type.newtype(:elasticsearch_snapshot_repository) do
   end
 
   # newproperty(:compress, :boolean => true, :parent => Puppet::Property::Boolean) do
-  newproperty(:compress, :boolean => true) do
+  newproperty(:compress, boolean: true) do
     desc 'Compress the repository data'
 
-    defaultto :true
+    defaultto true
   end
 
   newproperty(:location) do
@@ -48,4 +50,4 @@ Puppet::Type.newtype(:elasticsearch_snapshot_repository) do
   validate do
     raise ArgumentError, 'Location is required.' if self[:location].nil?
   end
-end # of newtype
+end

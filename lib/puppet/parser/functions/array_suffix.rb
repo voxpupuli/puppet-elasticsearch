@@ -1,40 +1,38 @@
+# frozen_string_literal: true
+
 # Top-level Puppet functions
 module Puppet::Parser::Functions
   newfunction(
     :array_suffix,
-    :type => :rvalue,
-    :doc => <<-EOS
-This function applies a suffix to all elements in an array.
+    type: :rvalue,
+    doc: <<~EOS
+      This function applies a suffix to all elements in an array.
 
-*Examples:*
+      *Examples:*
 
-    array_suffix(['a','b','c'], 'p')
+          array_suffix(['a','b','c'], 'p')
 
-Will return: ['ap','bp','cp']
+      Will return: ['ap','bp','cp']
 
-@return Array
+      @return Array
     EOS
   ) do |arguments|
     # Technically we support two arguments but only first is mandatory ...
-    raise(Puppet::ParseError, 'array_suffix(): Wrong number of arguments ' \
-      "given (#{arguments.size} for 1)") if arguments.empty?
+    if arguments.empty?
+      raise(Puppet::ParseError, 'array_suffix(): Wrong number of arguments ' \
+                                "given (#{arguments.size} for 1)")
+    end
 
     array = arguments[0]
 
-    unless array.is_a?(Array)
-      raise Puppet::ParseError, "array_suffix(): expected first argument to be an Array, got #{array.inspect}"
-    end
+    raise Puppet::ParseError, "array_suffix(): expected first argument to be an Array, got #{array.inspect}" unless array.is_a?(Array)
 
     suffix = arguments[1] if arguments[1]
 
-    if suffix
-      unless suffix.is_a? String
-        raise Puppet::ParseError, "array_suffix(): expected second argument to be a String, got #{suffix.inspect}"
-      end
-    end
+    raise Puppet::ParseError, "array_suffix(): expected second argument to be a String, got #{suffix.inspect}" if suffix && !(suffix.is_a? String)
 
     # Turn everything into string same as join would do ...
-    result = array.collect do |i|
+    result = array.map do |i|
       i = i.to_s
       suffix ? i + suffix : i
     end

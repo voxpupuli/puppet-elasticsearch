@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', '..', 'lib'))
 
 require 'spec_helper_rspec'
@@ -18,21 +20,21 @@ describe Puppet::Provider::ElasticYaml do
 
   let :unsorted_hash do
     [{
-      :name => 'role',
-      :metadata => {
+      name: 'role',
+      metadata: {
         'zeta' => {
-          'zeta'  => 5,
+          'zeta' => 5,
           'gamma' => 4,
           'delta' => 3,
-          'beta'  => 2,
+          'beta' => 2,
           'alpha' => 1
         },
         'phi' => [{
-          'zeta'  => 3,
+          'zeta' => 3,
           'gamma' => 2,
           'alpha' => 1
         }],
-        'beta'  => 'foobaz',
+        'beta' => 'foobaz',
         'gamma' => 1,
         'alpha' => 'foobar'
       }

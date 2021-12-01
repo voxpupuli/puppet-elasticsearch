@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'puppet/provider/parsedfile'
 
 # Parent class for Elasticsearch-based providers that need to access

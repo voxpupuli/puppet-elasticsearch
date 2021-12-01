@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 Puppet::Type.newtype(:es_instance_conn_validator) do
   @doc = "Verify that a connection can be successfully established between a
   node and Elasticsearch. It could potentially be used for other purposes
@@ -5,7 +7,7 @@ Puppet::Type.newtype(:es_instance_conn_validator) do
 
   ensurable
 
-  newparam(:name, :namevar => true) do
+  newparam(:name, namevar: true) do
     desc 'An arbitrary name used as the identity of the resource.'
   end
 

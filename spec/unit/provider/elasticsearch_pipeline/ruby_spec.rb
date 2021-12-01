@@ -1,12 +1,14 @@
+# frozen_string_literal: true
+
 require_relative '../../../helpers/unit/provider/elasticsearch_rest_shared_examples'
 
 describe Puppet::Type.type(:elasticsearch_pipeline).provider(:ruby) do
   let(:example_1) do
     {
-      :name => 'foo',
-      :ensure => :present,
-      :provider => :ruby,
-      :content => {
+      name: 'foo',
+      ensure: :present,
+      provider: :ruby,
+      content: {
         'description' => 'Sets the foo field to "bar"',
         'processors' => [{
           'set' => {
@@ -34,10 +36,10 @@ describe Puppet::Type.type(:elasticsearch_pipeline).provider(:ruby) do
 
   let(:example_2) do
     {
-      :name => 'baz',
-      :ensure => :present,
-      :provider => :ruby,
-      :content => {
+      name: 'baz',
+      ensure: :present,
+      provider: :ruby,
+      content: {
         'description' => 'A pipeline that never gives you up',
         'processors' => [{
           'set' => {
@@ -84,8 +86,8 @@ describe Puppet::Type.type(:elasticsearch_pipeline).provider(:ruby) do
   let(:provider) { described_class.new resource }
   let(:props) do
     {
-      :name => 'foo',
-      :content => {
+      name: 'foo',
+      content: {
         'description' => 'Empty pipeline',
         'processors' => []
       }

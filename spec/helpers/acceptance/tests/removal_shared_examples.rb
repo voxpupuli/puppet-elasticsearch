@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 shared_examples 'module removal' do |es_config|
   describe 'uninstalling' do
     let(:manifest) do
@@ -6,23 +8,23 @@ shared_examples 'module removal' do |es_config|
       MANIFEST
     end
 
-    it 'should run successfully' do
-      apply_manifest(manifest, :catch_failures => true, :debug => v[:puppet_debug])
+    it 'runs successfully' do
+      apply_manifest(manifest, catch_failures: true, debug: v[:puppet_debug])
     end
 
     describe package("elasticsearch#{v[:oss] ? '-oss' : ''}") do
-      it { should_not be_installed }
+      it { is_expected.not_to be_installed }
     end
 
     describe service('elasticsearch') do
-      it { should_not be_enabled }
-      it { should_not be_running }
+      it { is_expected.not_to be_enabled }
+      it { is_expected.not_to be_running }
     end
 
     unless es_config.empty?
       describe port(es_config['http.port']) do
         it 'closed' do
-          should_not be_listening
+          expect(subject).not_to be_listening
         end
       end
     end

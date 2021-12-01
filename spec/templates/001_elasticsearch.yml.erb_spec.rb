@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 require 'yaml'
 
@@ -7,7 +9,7 @@ class String
   end
 
   def unindent
-    gsub(/^#{scan(/^\s*/).min_by(&:length)}/, '')
+    gsub(%r{^#{scan(%r{^\s*}).min_by(&:length)}}, '')
   end
 end
 
@@ -18,7 +20,7 @@ describe 'elasticsearch.yml.erb' do
     )
   end
 
-  it 'should render normal hashes' do
+  it 'renders normal hashes' do
     harness.set(
       '@data',
       'node.name' => 'test',
@@ -28,7 +30,7 @@ describe 'elasticsearch.yml.erb' do
       ]
     )
 
-    expect(YAML.load(harness.run)).to eq(YAML.load(%(
+    expect(YAML.safe_load(harness.run)).to eq(YAML.safe_load(%(
       discovery.zen.ping.unicast.hosts:
         - host1
         - host2
@@ -37,7 +39,7 @@ describe 'elasticsearch.yml.erb' do
       ).config))
   end
 
-  it 'should render arrays of hashes correctly' do
+  it 'renders arrays of hashes correctly' do
     harness.set(
       '@data',
       'data' => [
@@ -48,7 +50,7 @@ describe 'elasticsearch.yml.erb' do
       ]
     )
 
-    expect(YAML.load(harness.run)).to eq(YAML.load(%(
+    expect(YAML.safe_load(harness.run)).to eq(YAML.safe_load(%(
       data:
       - key: value0
         other_key: othervalue0
@@ -57,26 +59,26 @@ describe 'elasticsearch.yml.erb' do
       ).config))
   end
 
-  it 'should quote IPv6 loopback addresses' do
+  it 'quotes IPv6 loopback addresses' do
     harness.set(
       '@data',
       'network.host' => ['::', '[::]']
     )
 
-    expect(YAML.load(harness.run)).to eq(YAML.load(%(
+    expect(YAML.safe_load(harness.run)).to eq(YAML.safe_load(%(
       network.host:
         - "::"
         - "[::]"
       ).config))
   end
 
-  it 'should not quote numeric values' do
+  it 'does not quote numeric values' do
     harness.set(
       '@data',
       'some.setting' => '10'
     )
 
-    expect(YAML.load(harness.run)).to eq(YAML.load(%(
+    expect(YAML.safe_load(harness.run)).to eq(YAML.safe_load(%(
       some.setting: 10
     ).config))
   end

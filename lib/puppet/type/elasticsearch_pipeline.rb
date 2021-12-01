@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', '..'))
 
 require 'puppet_x/elastic/deep_to_i'
@@ -11,7 +13,7 @@ Puppet::Type.newtype(:elasticsearch_pipeline) do
 
   ensurable
 
-  newparam(:name, :namevar => true) do
+  newparam(:name, namevar: true) do
     desc 'Pipeline name.'
   end
 
@@ -26,4 +28,4 @@ Puppet::Type.newtype(:elasticsearch_pipeline) do
       Puppet_X::Elastic.deep_to_i(Puppet_X::Elastic.deep_to_s(value))
     end
   end
-end # of newtype
+end

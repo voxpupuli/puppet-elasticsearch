@@ -1,7 +1,9 @@
+# frozen_string_literal: true
+
 require 'openssl'
 
 def gen_certs(num_certs, path)
-  ret = { :clients => [] }
+  ret = { clients: [] }
   serial = 1_000_000
   ca_key = OpenSSL::PKey::RSA.new 2048
 
@@ -28,25 +30,25 @@ def gen_certs(num_certs, path)
   ca_cert.add_extension extension_factory.create_extension(
     'basicConstraints', 'CA:TRUE', true
   )
-  ca_cert.sign ca_key, OpenSSL::Digest::SHA256.new
+  ca_cert.sign ca_key, OpenSSL::Digest.new('SHA256')
   ret[:ca] = {
-    :cert => {
-      :pem => ca_cert.to_pem,
-      :path => path + '/ca_cert.pem'
+    cert: {
+      pem: ca_cert.to_pem,
+      path: "#{path}/ca_cert.pem"
     }
   }
 
   num_certs.times do |i|
     key, cert, serial = gen_cert_pair serial, ca_cert
-    cert.sign ca_key, OpenSSL::Digest::SHA256.new
+    cert.sign ca_key, OpenSSL::Digest.new('SHA256')
     ret[:clients] << {
-      :key => {
-        :pem => key.to_pem,
-        :path => path + '/' + i.to_s + '_key.pem'
+      key: {
+        pem: key.to_pem,
+        path: "#{path}/#{i}_key.pem"
       },
-      :cert => {
-        :pem => cert.to_pem,
-        :path => path + '/' + i.to_s + '_cert.pem'
+      cert: {
+        pem: cert.to_pem,
+        path: "#{path}/#{i}_cert.pem"
       }
     }
   end

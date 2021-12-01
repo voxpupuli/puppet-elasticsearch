@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 require 'helpers/class_shared_examples'
 
@@ -12,10 +14,10 @@ describe 'elasticsearch::role' do
 
   let(:params) do
     {
-      :privileges => {
+      privileges: {
         'cluster' => '*'
       },
-      :mappings => [
+      mappings: [
         'cn=users,dc=example,dc=com',
         'cn=admins,dc=example,dc=com',
         'cn=John Doe,cn=other users,dc=example,dc=com'
@@ -24,8 +26,8 @@ describe 'elasticsearch::role' do
   end
 
   on_supported_os(
-    :hardwaremodels => ['x86_64'],
-    :supported_os => [
+    hardwaremodels: ['x86_64'],
+    supported_os: [
       {
         'operatingsystem' => 'CentOS',
         'operatingsystemrelease' => ['7']
@@ -33,23 +35,27 @@ describe 'elasticsearch::role' do
     ]
   ).each do |os, facts|
     context "on #{os}" do
-      let(:facts) { facts.merge(
-        :scenario => '',
-        :common => ''
-      ) }
+      let(:facts) do
+        facts.merge(
+          scenario: '',
+          common: ''
+        )
+      end
 
       context 'with an invalid role name' do
         context 'too long' do
           let(:title) { 'A' * 41 }
-          it { should raise_error(Puppet::Error, /expected length/i) }
+
+          it { is_expected.to raise_error(Puppet::Error, %r{expected length}i) }
         end
       end
 
       context 'with default parameters' do
-        it { should contain_elasticsearch__role('elastic_role') }
-        it { should contain_elasticsearch_role('elastic_role') }
+        it { is_expected.to contain_elasticsearch__role('elastic_role') }
+        it { is_expected.to contain_elasticsearch_role('elastic_role') }
+
         it do
-          should contain_elasticsearch_role_mapping('elastic_role').with(
+          expect(subject).to contain_elasticsearch_role_mapping('elastic_role').with(
             'ensure' => 'present',
             'mappings' => [
               'cn=users,dc=example,dc=com',
@@ -73,11 +79,13 @@ describe 'elasticsearch::role' do
             EOS
           end
 
-          it { should contain_elasticsearch__role('elastic_role')
-            .that_comes_before([
-            'Elasticsearch::Template[foo]',
-            'Elasticsearch::User[elastic]'
-          ])}
+          it {
+            expect(subject).to contain_elasticsearch__role('elastic_role').
+              that_comes_before([
+                                  'Elasticsearch::Template[foo]',
+                                  'Elasticsearch::User[elastic]'
+                                ])
+          }
 
           include_examples 'class', :systemd
         end

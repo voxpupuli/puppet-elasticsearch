@@ -1,9 +1,11 @@
+# frozen_string_literal: true
+
 # Top-level Puppet functions
 module Puppet::Parser::Functions
   newfunction(
     :concat_merge,
-    :type => :rvalue,
-    :doc => <<-'ENDHEREDOC') do |args|
+    type: :rvalue,
+    doc: <<-'ENDHEREDOC') do |args|
     Merges two or more hashes together concatenating duplicate keys
     with array values and returns the resulting hash.
 
@@ -21,9 +23,7 @@ module Puppet::Parser::Functions
     @return String
     ENDHEREDOC
 
-    if args.length < 2
-      raise Puppet::ParseError, "concat_merge(): wrong number of arguments (#{args.length}; must be at least 2)"
-    end
+    raise Puppet::ParseError, "concat_merge(): wrong number of arguments (#{args.length}; must be at least 2)" if args.length < 2
 
     concat_merge = proc do |hash1, hash2|
       hash1.merge(hash2) do |_key, old_value, new_value|
@@ -37,11 +37,9 @@ module Puppet::Parser::Functions
 
     result = {}
     args.each do |arg|
-      next if arg.is_a? String and arg.empty? # empty string is synonym for puppet's undef
+      next if arg.is_a?(String) && arg.empty? # empty string is synonym for puppet's undef
       # If the argument was not a hash, skip it.
-      unless arg.is_a?(Hash)
-        raise Puppet::ParseError, "concat_merge: unexpected argument type #{arg.class}, only expects hash arguments"
-      end
+      raise Puppet::ParseError, "concat_merge: unexpected argument type #{arg.class}, only expects hash arguments" unless arg.is_a?(Hash)
 
       result = concat_merge.call(result, arg)
     end

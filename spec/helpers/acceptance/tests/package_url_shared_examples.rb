@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'json'
 require 'helpers/acceptance/tests/basic_shared_examples'
 
@@ -33,7 +35,7 @@ shared_examples 'package_url acceptance tests' do |es_config|
     end
 
     context 'via local filesystem', :with_cleanup do
-      before :all do
+      before :all do # rubocop:disable RSpec/BeforeAfterAll
         scp_to default,
                v[:elasticsearch_package][:path],
                "/tmp/#{v[:elasticsearch_package][:filename]}"
@@ -50,7 +52,7 @@ shared_examples 'package_url acceptance tests' do |es_config|
     end
 
     context 'via puppet paths', :with_cleanup do
-      before :all do
+      before :all do # rubocop:disable RSpec/BeforeAfterAll
         shell "mkdir -p #{default['distmoduledir']}/another/files"
 
         scp_to default,

@@ -1,4 +1,5 @@
-# -*- coding: utf-8 -*-
+# frozen_string_literal: true
+
 $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', '..'))
 
 require 'puppet/provider/elastic_parsedfile'
@@ -14,7 +15,7 @@ class Puppet::Provider::ElasticYaml < Puppet::Provider::ElasticParsedFile
   # Transform a given string into a Hash-based representation of the
   # provider.
   def self.parse(text)
-    yaml = YAML.load text
+    yaml = YAML.safe_load text
     if yaml
       yaml.map do |key, metadata|
         {
@@ -33,13 +34,15 @@ class Puppet::Provider::ElasticYaml < Puppet::Provider::ElasticParsedFile
   def self.to_file(records)
     yaml = records.map do |record|
       # Convert top-level symbols to strings
-      Hash[record.map { |k, v| [k.to_s, v] }]
-    end.inject({}) do |hash, record|
+      record.transform_keys(&:to_s)
+    end
+    yaml = yaml.reduce({}) do |hash, record|
       # Flatten array of hashes into single hash
       hash.merge(record['name'] => record.delete(@metadata.to_s))
-    end.extend(Puppet_X::Elastic::SortedHash).to_yaml.split("\n")
+    end
+    yaml = yaml.extend(Puppet_X::Elastic::SortedHash).to_yaml.split("\n")
 
-    yaml.shift if yaml.first =~ /---/
+    yaml.shift if yaml.first =~ %r{---}
     yaml = yaml.join("\n")
 
     yaml << "\n"
