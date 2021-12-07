@@ -1,9 +1,11 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
-describe 'elasticsearch::snapshot_repository', :type => 'define' do
+describe 'elasticsearch::snapshot_repository', type: 'define' do
   on_supported_os(
-    :hardwaremodels => ['x86_64'],
-    :supported_os => [
+    hardwaremodels: ['x86_64'],
+    supported_os: [
       {
         'operatingsystem' => 'CentOS',
         'operatingsystemrelease' => ['6']
@@ -11,10 +13,12 @@ describe 'elasticsearch::snapshot_repository', :type => 'define' do
     ]
   ).each do |os, facts|
     context "on #{os}" do
-      let(:facts) { facts.merge(
-        :scenario => '',
-        :common => ''
-      ) }
+      let(:facts) do
+        facts.merge(
+          scenario: '',
+          common: ''
+        )
+      end
 
       let(:title) { 'backup' }
       let(:pre_condition) do
@@ -22,7 +26,7 @@ describe 'elasticsearch::snapshot_repository', :type => 'define' do
       end
 
       describe 'parameter validation' do
-        [:api_ca_file, :api_ca_path].each do |param|
+        %i[api_ca_file api_ca_path].each do |param|
           let :params do
             {
               :ensure => 'present',
@@ -32,47 +36,48 @@ describe 'elasticsearch::snapshot_repository', :type => 'define' do
           end
 
           it 'validates cert paths' do
-            is_expected.to compile.and_raise_error(/expects a/)
+            expect(subject).to compile.and_raise_error(%r{expects a})
           end
         end
 
         describe 'missing parent class' do
-          let(:pre_condition) {}
-          it { should_not compile }
+          it { is_expected.not_to compile }
         end
       end
 
       describe 'template from source' do
         let :params do
           {
-            :ensure                  => 'present',
-            :location                => '/var/lib/elasticsearch/backup',
-            :api_protocol            => 'https',
-            :api_host                => '127.0.0.1',
-            :api_port                => 9201,
-            :api_timeout             => 11,
-            :api_basic_auth_username => 'elastic',
-            :api_basic_auth_password => 'password',
-            :validate_tls            => false
+            ensure: 'present',
+            location: '/var/lib/elasticsearch/backup',
+            api_protocol: 'https',
+            api_host: '127.0.0.1',
+            api_port: 9201,
+            api_timeout: 11,
+            api_basic_auth_username: 'elastic',
+            api_basic_auth_password: 'password',
+            validate_tls: false
           }
         end
 
-        it { should contain_elasticsearch__snapshot_repository('backup') }
+        it { is_expected.to contain_elasticsearch__snapshot_repository('backup') }
+
         it do
-          should contain_es_instance_conn_validator('backup-snapshot')
-            .that_comes_before('Elasticsearch_snapshot_repository[backup]')
+          expect(subject).to contain_es_instance_conn_validator('backup-snapshot').
+            that_comes_before('Elasticsearch_snapshot_repository[backup]')
         end
+
         it 'passes through parameters' do
-          should contain_elasticsearch_snapshot_repository('backup').with(
-            :ensure       => 'present',
-            :location     => '/var/lib/elasticsearch/backup',
-            :protocol     => 'https',
-            :host         => '127.0.0.1',
-            :port         => 9201,
-            :timeout      => 11,
-            :username     => 'elastic',
-            :password     => 'password',
-            :validate_tls => false
+          expect(subject).to contain_elasticsearch_snapshot_repository('backup').with(
+            ensure: 'present',
+            location: '/var/lib/elasticsearch/backup',
+            protocol: 'https',
+            host: '127.0.0.1',
+            port: 9201,
+            timeout: 11,
+            username: 'elastic',
+            password: 'password',
+            validate_tls: false
           )
         end
       end
@@ -80,8 +85,8 @@ describe 'elasticsearch::snapshot_repository', :type => 'define' do
       describe 'class parameter inheritance' do
         let :params do
           {
-            :ensure   => 'present',
-            :location => '/var/lib/elasticsearch/backup'
+            ensure: 'present',
+            location: '/var/lib/elasticsearch/backup'
           }
         end
         let(:pre_condition) do
@@ -101,18 +106,18 @@ describe 'elasticsearch::snapshot_repository', :type => 'define' do
         end
 
         it do
-          should contain_elasticsearch_snapshot_repository('backup').with(
-            :ensure       => 'present',
-            :location     => '/var/lib/elasticsearch/backup',
-            :protocol     => 'https',
-            :host         => '127.0.0.1',
-            :port         => 9201,
-            :timeout      => 11,
-            :username     => 'elastic',
-            :password     => 'password',
-            :ca_file      => '/foo/bar.pem',
-            :ca_path      => '/foo/',
-            :validate_tls => false
+          expect(subject).to contain_elasticsearch_snapshot_repository('backup').with(
+            ensure: 'present',
+            location: '/var/lib/elasticsearch/backup',
+            protocol: 'https',
+            host: '127.0.0.1',
+            port: 9201,
+            timeout: 11,
+            username: 'elastic',
+            password: 'password',
+            ca_file: '/foo/bar.pem',
+            ca_path: '/foo/',
+            validate_tls: false
           )
         end
       end
@@ -120,13 +125,13 @@ describe 'elasticsearch::snapshot_repository', :type => 'define' do
       describe 'snapshot repository deletion' do
         let :params do
           {
-            :ensure   => 'absent',
-            :location => '/var/lib/elasticsearch/backup'
+            ensure: 'absent',
+            location: '/var/lib/elasticsearch/backup'
           }
         end
 
         it 'removes snapshot repository' do
-          should contain_elasticsearch_snapshot_repository('backup').with(:ensure => 'absent')
+          expect(subject).to contain_elasticsearch_snapshot_repository('backup').with(ensure: 'absent')
         end
       end
     end

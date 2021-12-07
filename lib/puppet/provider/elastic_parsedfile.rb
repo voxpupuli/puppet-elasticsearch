@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'puppet/provider/parsedfile'
 
 # Parent class for Elasticsearch-based providers that need to access
@@ -7,6 +9,6 @@ class Puppet::Provider::ElasticParsedFile < Puppet::Provider::ParsedFile
   #
   # @return String
   def self.xpack_config(val)
-    @default_target ||= "/etc/elasticsearch/#{val}"
+    @xpack_config ||= "/etc/elasticsearch/#{val}"
   end
 end

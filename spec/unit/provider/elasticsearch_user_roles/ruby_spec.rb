@@ -1,32 +1,34 @@
+# frozen_string_literal: true
+
 require 'spec_helper_rspec'
 
-describe Puppet::Type.type(:elasticsearch_user_roles)
-  .provider(:ruby) do
+describe Puppet::Type.type(:elasticsearch_user_roles).
+  provider(:ruby) do
   describe 'instances' do
-    it 'should have an instance method' do
+    it 'has an instance method' do
       expect(described_class).to respond_to :instances
     end
 
     context 'without roles' do
-      it 'should return no resources' do
+      it 'returns no resources' do
         expect(described_class.parse("\n")).to eq([])
       end
     end
 
     context 'with one user' do
-      it 'should return one resource' do
+      it 'returns one resource' do
         expect(described_class.parse(%(
           admin:elastic
           power_user:elastic
         ))[0]).to eq(
-          :name  => 'elastic',
-          :roles => %w[admin power_user]
+          name: 'elastic',
+          roles: %w[admin power_user]
         )
       end
     end
 
     context 'with multiple users' do
-      it 'should return three resources' do
+      it 'returns three resources' do
         expect(described_class.parse(%(
           admin:elastic
           logstash:user
@@ -34,10 +36,10 @@ describe Puppet::Type.type(:elasticsearch_user_roles)
         )).length).to eq(3)
       end
     end
-  end # of describe instances
+  end
 
   describe 'prefetch' do
-    it 'should have a prefetch method' do
+    it 'has a prefetch method' do
       expect(described_class).to respond_to :prefetch
     end
   end

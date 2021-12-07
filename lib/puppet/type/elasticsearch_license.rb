@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', '..'))
 
 require 'puppet_x/elastic/asymmetric_compare'
@@ -12,33 +14,30 @@ Puppet::Type.newtype(:elasticsearch_license) do
 
   ensurable
 
-  newparam(:name, :namevar => true) do
+  newparam(:name, namevar: true) do
     desc 'Pipeline name.'
   end
 
   newproperty(:content) do
     desc 'Structured hash for license content data.'
 
-    def insync?(is)
+    def insync?(value)
       Puppet_X::Elastic.asymmetric_compare(
-        should.map { |k, v| [k, v.is_a?(Hash) ? (v.reject { |s, _| s == 'signature' }) : v] }.to_h,
-        is
+        should.transform_values { |v| v.is_a?(Hash) ? (v.reject { |s, _| s == 'signature' }) : v },
+        value
       )
     end
 
     def should_to_s(newvalue)
-      newvalue.map do |license, license_data|
-        [
-          license,
-          if license_data.is_a? Hash
-            license_data.map do |field, value|
-              [field, field == 'signature' ? '[redacted]' : value]
-            end.to_h
-          else
-            v
-          end
-        ]
-      end.to_h.to_s
+      newvalue.transform_values do |license_data|
+        if license_data.is_a? Hash
+          license_data.map do |field, value|
+            [field, field == 'signature' ? '[redacted]' : value]
+          end.to_h
+        else
+          v
+        end
+      end.to_s
     end
 
     validate do |value|
@@ -49,4 +48,4 @@ Puppet::Type.newtype(:elasticsearch_license) do
       Puppet_X::Elastic.deep_to_i(Puppet_X::Elastic.deep_to_s(value))
     end
   end
-end # of newtype
+end

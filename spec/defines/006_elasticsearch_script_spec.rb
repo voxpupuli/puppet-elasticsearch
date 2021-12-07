@@ -1,6 +1,8 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
-describe 'elasticsearch::script', :type => 'define' do
+describe 'elasticsearch::script', type: 'define' do
   let(:title) { 'foo' }
   let(:pre_condition) do
     %(
@@ -13,8 +15,8 @@ describe 'elasticsearch::script', :type => 'define' do
   end
 
   on_supported_os(
-    :hardwaremodels => ['x86_64'],
-    :supported_os => [
+    hardwaremodels: ['x86_64'],
+    supported_os: [
       {
         'operatingsystem' => 'CentOS',
         'operatingsystemrelease' => ['6']
@@ -22,59 +24,75 @@ describe 'elasticsearch::script', :type => 'define' do
     ]
   ).each do |os, facts|
     context "on #{os}" do
-      let(:facts) { facts.merge(
-        :scenario => '',
-        :common => ''
-      ) }
+      let(:facts) do
+        facts.merge(
+          scenario: '',
+          common: ''
+        )
+      end
 
       describe 'missing parent class' do
-        let(:pre_condition) {}
-        it { should_not compile }
+        it { is_expected.not_to compile }
       end
 
       describe 'adding script files' do
-        let(:params) do {
-          :ensure => 'present',
-          :source => 'puppet:///path/to/foo.groovy'
-        } end
+        let(:params) do
+          {
+            ensure: 'present',
+            source: 'puppet:///path/to/foo.groovy'
+          }
+        end
 
-        it { should contain_elasticsearch__script('foo') }
-        it { should contain_file('/usr/share/elasticsearch/scripts/foo.groovy')
-          .with(
-            :source => 'puppet:///path/to/foo.groovy',
-            :ensure => 'present'
-          ) }
+        it { is_expected.to contain_elasticsearch__script('foo') }
+
+        it {
+          expect(subject).to contain_file('/usr/share/elasticsearch/scripts/foo.groovy').
+            with(
+              source: 'puppet:///path/to/foo.groovy',
+              ensure: 'present'
+            )
+        }
       end
 
       describe 'adding script directories' do
-        let(:params) do {
-          :ensure  => 'directory',
-          :source  => 'puppet:///path/to/my_scripts',
-          :recurse => 'remote'
-        } end
+        let(:params) do
+          {
+            ensure: 'directory',
+            source: 'puppet:///path/to/my_scripts',
+            recurse: 'remote'
+          }
+        end
 
-        it { should contain_elasticsearch__script('foo') }
-        it { should contain_file(
-          '/usr/share/elasticsearch/scripts/my_scripts'
-        ).with(
-          :ensure  => 'directory',
-          :source  => 'puppet:///path/to/my_scripts',
-          :recurse => 'remote'
-        ) }
+        it { is_expected.to contain_elasticsearch__script('foo') }
+
+        it {
+          expect(subject).to contain_file(
+            '/usr/share/elasticsearch/scripts/my_scripts'
+          ).with(
+            ensure: 'directory',
+            source: 'puppet:///path/to/my_scripts',
+            recurse: 'remote'
+          )
+        }
       end
 
       describe 'removing scripts' do
-        let(:params) do {
-          :ensure => 'absent',
-          :source => 'puppet:///path/to/foo.groovy'
-        } end
+        let(:params) do
+          {
+            ensure: 'absent',
+            source: 'puppet:///path/to/foo.groovy'
+          }
+        end
 
-        it { should contain_elasticsearch__script('foo') }
-        it { should contain_file('/usr/share/elasticsearch/scripts/foo.groovy')
-          .with(
-            :source => 'puppet:///path/to/foo.groovy',
-            :ensure => 'absent'
-          ) }
+        it { is_expected.to contain_elasticsearch__script('foo') }
+
+        it {
+          expect(subject).to contain_file('/usr/share/elasticsearch/scripts/foo.groovy').
+            with(
+              source: 'puppet:///path/to/foo.groovy',
+              ensure: 'absent'
+            )
+        }
       end
     end
   end

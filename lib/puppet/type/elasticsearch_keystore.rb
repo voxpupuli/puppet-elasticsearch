@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'puppet/parameter/boolean'
 
 Puppet::Type.newtype(:elasticsearch_keystore) do
@@ -5,7 +7,7 @@ Puppet::Type.newtype(:elasticsearch_keystore) do
 
   ensurable
 
-  newparam(:instance, :namevar => true) do
+  newparam(:instance, namevar: true) do
     desc 'Elasticsearch instance this keystore belongs to.'
   end
 
@@ -14,7 +16,7 @@ Puppet::Type.newtype(:elasticsearch_keystore) do
     defaultto '/etc/elasticsearch'
   end
 
-  newparam(:purge, :boolean => true, :parent => Puppet::Parameter::Boolean) do
+  newparam(:purge, boolean: true, parent: Puppet::Parameter::Boolean) do
     desc <<-EOS
       Whether to proactively remove settings that exist in the keystore but
       are not present in this resource's settings.
@@ -23,17 +25,17 @@ Puppet::Type.newtype(:elasticsearch_keystore) do
     defaultto false
   end
 
-  newproperty(:settings, :array_matching => :all) do
+  newproperty(:settings, array_matching: :all) do
     desc 'A key/value hash of settings names and values.'
 
     # The keystore utility can only retrieve a list of stored settings,
     # so here we only compare the existing settings (sorted) with the
     # desired settings' keys
-    def insync?(is)
+    def insync?(value)
       if resource[:purge]
-        is.sort == @should.first.keys.sort
+        value.sort == @should.first.keys.sort
       else
-        (@should.first.keys - is).empty?
+        (@should.first.keys - value).empty?
       end
     end
 

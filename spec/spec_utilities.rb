@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'bcrypt'
 require 'open-uri'
 
@@ -82,7 +84,7 @@ def fetch_archives(archives)
   archives.each do |url, orig_fp|
     fp = "spec/fixtures/artifacts/#{orig_fp}"
     if File.exist? fp
-      if fp.end_with? 'tar.gz' and !system("tar -tzf #{fp} &>/dev/null")
+      if fp.end_with?('tar.gz') && !system("tar -tzf #{fp} &>/dev/null")
         puts "Archive #{fp} corrupt, re-fetching..."
         File.delete fp
       else
@@ -96,7 +98,7 @@ end
 
 def pid_file
   if fact('operatingsystem') == 'Debian' \
-      and fact('lsbmajdistrelease').to_i <= 7
+      && fact('lsbmajdistrelease').to_i <= 7
     '/var/run/elasticsearch.pid'
   else
     '/var/run/elasticsearch/elasticsearch.pid'
@@ -115,8 +117,8 @@ end
 
 def http_retry(url)
   retries ||= 0
-  open(url).read
-rescue
+  URI.parse(url).open.read
+rescue StandardError
   retry if (retries += 1) < 3
 end
 

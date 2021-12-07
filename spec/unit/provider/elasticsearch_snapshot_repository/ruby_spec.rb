@@ -1,18 +1,20 @@
+# frozen_string_literal: true
+
 require_relative '../../../helpers/unit/provider/elasticsearch_rest_shared_examples'
 
-describe Puppet::Type.type(:elasticsearch_snapshot_repository).provider(:ruby) do
-  let(:example_1) do
+describe Puppet::Type.type(:elasticsearch_snapshot_repository).provider(:ruby) do # rubocop:disable RSpec/MultipleMemoizedHelpers
+  let(:example1) do
     {
-      :name     => 'foobar1',
-      :ensure   => :present,
-      :provider => :ruby,
-      :location => '/bak1',
-      :type     => 'fs',
-      :compress => true
+      name: 'foobar1',
+      ensure: :present,
+      provider: :ruby,
+      location: '/bak1',
+      type: 'fs',
+      compress: true
     }
   end
 
-  let(:json_1) do
+  let(:json1) do
     {
       'foobar1' => {
         'type' => 'fs',
@@ -24,18 +26,18 @@ describe Puppet::Type.type(:elasticsearch_snapshot_repository).provider(:ruby) d
     }
   end
 
-  let(:example_2) do
+  let(:example2) do
     {
-      :name     => 'foobar2',
-      :ensure   => :present,
-      :provider => :ruby,
-      :location => '/bak2',
-      :type     => 'fs',
-      :compress => true
+      name: 'foobar2',
+      ensure: :present,
+      provider: :ruby,
+      location: '/bak2',
+      type: 'fs',
+      compress: true
     }
   end
 
-  let(:json_2) do
+  let(:json2) do
     {
       'foobar2' => {
         'type' => 'fs',
@@ -61,10 +63,10 @@ describe Puppet::Type.type(:elasticsearch_snapshot_repository).provider(:ruby) d
   let(:provider) { described_class.new resource }
   let(:props) do
     {
-      :name     => 'backup',
-      :type     => 'fs',
-      :compress => true,
-      :location => '/backups'
+      name: 'backup',
+      type: 'fs',
+      compress: true,
+      location: '/backups'
     }
   end
 

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'socket'
 require 'timeout'
 
@@ -6,8 +8,7 @@ module Puppet
   module Util
     # Helper class to assist with talking to the Elasticsearch service ports.
     class EsInstanceValidator
-      attr_reader :instance_server
-      attr_reader :instance_port
+      attr_reader :instance_server, :instance_port
 
       def initialize(instance_server, instance_port)
         @instance_server = instance_server
@@ -28,13 +29,11 @@ module Puppet
       # @return true if the connection is successful, false otherwise.
       def attempt_connection
         Timeout.timeout(@timeout) do
-          begin
-            TCPSocket.new(@instance_server, @instance_port).close
-            true
-          rescue Errno::EADDRNOTAVAIL, Errno::ECONNREFUSED, Errno::EHOSTUNREACH => e
-            Puppet.debug "Unable to connect to Elasticsearch instance (#{@instance_server}:#{@instance_port}): #{e.message}"
-            false
-          end
+          TCPSocket.new(@instance_server, @instance_port).close
+          true
+        rescue Errno::EADDRNOTAVAIL, Errno::ECONNREFUSED, Errno::EHOSTUNREACH => e
+          Puppet.debug "Unable to connect to Elasticsearch instance (#{@instance_server}:#{@instance_port}): #{e.message}"
+          false
         end
       rescue Timeout::Error
         false

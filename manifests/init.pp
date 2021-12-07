@@ -405,7 +405,6 @@ class elasticsearch (
   Boolean                                         $restart_package_change    = $restart_on_change,
   Boolean                                         $restart_plugin_change     = $restart_on_change,
 ) {
-
   #### Validate parameters
 
   if ($package_url != undef and $version != false) {
@@ -477,7 +476,6 @@ class elasticsearch (
 
       Class['elastic_stack::repo']
       -> Class['elasticsearch::package']
-
     } else {
       # Use staging for ordering
       if !(defined(Stage[$repo_stage])) {
@@ -485,7 +483,7 @@ class elasticsearch (
       }
 
       include elastic_stack::repo
-      Class<|title == 'elastic_stack::repo'|>{
+      Class<|title == 'elastic_stack::repo'|> {
         stage => $repo_stage,
       }
     }
@@ -507,7 +505,6 @@ class elasticsearch (
   if defined(Class['java']) { Class['java'] -> Class['elasticsearch::config'] }
 
   if $ensure == 'present' {
-
     # Installation, configuration and service
     Class['elasticsearch::package']
     -> Class['elasticsearch::config']
@@ -537,9 +534,7 @@ class elasticsearch (
     -> Elasticsearch::Index <| |>
     Class['elasticsearch::config']
     -> Elasticsearch::Snapshot_repository <| |>
-
   } else {
-
     # Absent; remove configuration before the package.
     Class['elasticsearch::config']
     -> Class['elasticsearch::package']
@@ -559,7 +554,6 @@ class elasticsearch (
     -> Class['elasticsearch::config']
     Elasticsearch::Snapshot_repository <| |>
     -> Class['elasticsearch::config']
-
   }
 
   # Install plugins before managing users/roles

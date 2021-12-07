@@ -1,35 +1,13 @@
 fixtures:
-  forge_modules:
-    archive:
-      repo: puppet/archive
-      ref: 0.5.1
-    augeas_core:
-      repo: puppetlabs/augeas_core
-      ref: 1.0.4
-    stdlib:
-      repo: puppetlabs/stdlib
-      ref: 4.13.1
-    java:
-      repo: puppetlabs/java
-      ref: 6.5.0
-    concat:
-      repo: puppetlabs/concat
-      ref: 2.2.1
-    datacat:
-      repo: richardc/datacat
-      ref: 0.6.2
-    apt:
-      repo: puppetlabs/apt
-      ref: 7.4.1
-    zypprepo:
-      repo: puppet/zypprepo
-      ref: 2.2.2
-    yumrepo_core:
-      repo: puppetlabs/yumrepo_core
-      ref: 1.0.3
-    java_ks: puppetlabs/java_ks
-    elastic_stack:
-      repo: elastic/elastic_stack
-      ref: 6.1.0
-  symlinks:
-    elasticsearch: "#{source_dir}"
+  repositories:
+    apt: https://github.com/puppetlabs/puppetlabs-apt.git
+    archive: https://github.com/voxpupuli/puppet-archive.git
+    augeas_core: https://github.com/puppetlabs/puppetlabs-augeas_core.git
+    concat: https://github.com/puppetlabs/puppetlabs-concat.git
+    datacat: https://github.com/richardc/puppet-datacat.git
+    elastic_stack: https://github.com/voxpupuli/puppet-elastic_stack.git
+    java: https://github.com/puppetlabs/puppetlabs-java.git
+    java_ks: https://github.com/puppetlabs/puppetlabs-java_ks.git
+    stdlib: https://github.com/puppetlabs/puppetlabs-stdlib.git
+    yumrepo_core: https://github.com/puppetlabs/puppetlabs-yumrepo_core.git
+    zypprepo: https://github.com/voxpupuli/puppet-zypprepo.git

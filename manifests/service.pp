@@ -10,11 +10,9 @@
 # @author Gavin Williams <gavin.williams@elastic.co>
 #
 class elasticsearch::service {
-
   #### Service management
 
   if $elasticsearch::ensure == 'present' {
-
     case $elasticsearch::status {
       # make sure service is currently running, start it on boot
       'enabled': {
@@ -37,7 +35,8 @@ class elasticsearch::service {
         $_service_ensure = undef
         $_service_enable = false
       }
-      default: { }
+      default: {
+      }
     }
   } else {
     # make sure the service is stopped and disabled (the removal itself will be

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative '../../helpers/unit/type/elasticsearch_rest_shared_examples'
 
 describe Puppet::Type.type(:elasticsearch_template) do
@@ -6,56 +8,56 @@ describe Puppet::Type.type(:elasticsearch_template) do
   include_examples 'REST API types', 'template', :content
 
   describe 'template attribute validation' do
-    it 'should have a source parameter' do
+    it 'has a source parameter' do
       expect(described_class.attrtype(:source)).to eq(:param)
     end
 
     describe 'content and source validation' do
-      it 'should require either "content" or "source"' do
+      it 'requires either "content" or "source"' do
         expect do
           described_class.new(
-            :name => resource_name,
-            :ensure => :present
+            name: resource_name,
+            ensure: :present
           )
-        end.to raise_error(Puppet::Error, /content.*or.*source.*required/)
+        end.to raise_error(Puppet::Error, %r{content.*or.*source.*required})
       end
 
-      it 'should fail with both defined' do
+      it 'fails with both defined' do
         expect do
           described_class.new(
-            :name => resource_name,
-            :content => {},
-            :source => 'puppet:///example.json'
+            name: resource_name,
+            content: {},
+            source: 'puppet:///example.json'
           )
-        end.to raise_error(Puppet::Error, /simultaneous/)
+        end.to raise_error(Puppet::Error, %r{simultaneous})
       end
 
-      it 'should parse source paths into the content property' do
-        file_stub = 'foo'
+      it 'parses source paths into the content property' do
+        file_stub = 'foo'.dup
         [
           Puppet::FileServing::Metadata,
           Puppet::FileServing::Content
         ].each do |klass|
-          allow(klass).to receive(:indirection)
-            .and_return(Object)
+          allow(klass).to receive(:indirection).
+            and_return(Object)
         end
-        allow(Object).to receive(:find)
-          .and_return(file_stub)
-        allow(file_stub).to receive(:content)
-          .and_return('{"template":"foobar-*", "order": 1}')
+        allow(Object).to receive(:find).
+          and_return(file_stub)
+        allow(file_stub).to receive(:content).
+          and_return('{"template":"foobar-*", "order": 1}')
         expect(described_class.new(
-          :name => resource_name,
-          :source => '/example.json'
+          name: resource_name,
+          source: '/example.json'
         )[:content]).to include(
           'template' => 'foobar-*',
           'order' => 1
         )
       end
 
-      it 'should qualify settings' do
+      it 'qualifies settings' do
         expect(described_class.new(
-          :name => resource_name,
-          :content => { 'settings' => {
+          name: resource_name,
+          content: { 'settings' => {
             'number_of_replicas' => '2',
             'index' => { 'number_of_shards' => '3' }
           } }
@@ -74,8 +76,8 @@ describe Puppet::Type.type(:elasticsearch_template) do
 
       it 'detects flat qualified index settings' do
         expect(described_class.new(
-          :name => resource_name,
-          :content => {
+          name: resource_name,
+          content: {
             'settings' => {
               'number_of_replicas' => '2',
               'index.number_of_shards' => '3'
@@ -94,7 +96,7 @@ describe Puppet::Type.type(:elasticsearch_template) do
         )
       end
     end
-  end # of describing when validing values
+  end
 
   describe 'insync?' do
     # Although users can pass the type a hash structure with any sort of values
@@ -118,17 +120,17 @@ describe Puppet::Type.type(:elasticsearch_template) do
       json = JSON.parse(File.read('spec/fixtures/templates/6.x.json'))
 
       is_template = described_class.new(
-        :name => resource_name,
-        :ensure => 'present',
-        :content => json
+        name: resource_name,
+        ensure: 'present',
+        content: json
       ).property(:content)
       should_template = described_class.new(
-        :name => resource_name,
-        :ensure => 'present',
-        :content => deep_stringify(json)
+        name: resource_name,
+        ensure: 'present',
+        content: deep_stringify(json)
       ).property(:content).should
 
-      expect(is_template.insync?(should_template)).to be_truthy
+      expect(is_template).to be_insync(should_template)
     end
   end
-end # of describe Puppet::Type
+end

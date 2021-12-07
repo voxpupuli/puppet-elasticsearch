@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', '..', '..'))
 
 require 'puppet_x/elastic/deep_implode'
@@ -6,8 +8,8 @@ require 'puppet_x/elastic/deep_implode'
 module Puppet::Parser::Functions
   newfunction(
     :deep_implode,
-    :type => :rvalue,
-    :doc => <<-'ENDHEREDOC') do |args|
+    type: :rvalue,
+    doc: <<-'ENDHEREDOC') do |args|
     Recursively flattens all keys of a hash into a dot-notated
     hash, deeply merging duplicate key values by natively combining
     them and returns the resulting hash.
@@ -29,15 +31,11 @@ module Puppet::Parser::Functions
     @return Hash
     ENDHEREDOC
 
-    if args.length != 1
-      raise Puppet::ParseError, "deep_implode(): wrong number of arguments (#{args.length}; must be 1)"
-    end
+    raise Puppet::ParseError, "deep_implode(): wrong number of arguments (#{args.length}; must be 1)" if args.length != 1
 
     arg = args[0]
 
-    unless arg.is_a? Hash
-      raise Puppet::ParseError, 'deep_implode: unexpected argument type, only expects hashes'
-    end
+    raise Puppet::ParseError, 'deep_implode: unexpected argument type, only expects hashes' unless arg.is_a? Hash
 
     return {} if arg.empty?
 

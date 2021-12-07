@@ -1,14 +1,16 @@
+# frozen_string_literal: true
+
 require_relative '../../../helpers/unit/provider/elasticsearch_rest_shared_examples'
 
-describe Puppet::Type.type(:elasticsearch_index).provider(:ruby) do
+describe Puppet::Type.type(:elasticsearch_index).provider(:ruby) do # rubocop:disable RSpec/MultipleMemoizedHelpers
   let(:name) { 'test-index' }
 
-  let(:example_1) do
+  let(:example1) do
     {
-      :name => 'index-one',
-      :ensure => :present,
-      :provider => :ruby,
-      :settings => {
+      name: 'index-one',
+      ensure: :present,
+      provider: :ruby,
+      settings: {
         'index' => {
           'creation_date' => 1_487_354_196_301,
           'number_of_replicas' => 1,
@@ -33,7 +35,7 @@ describe Puppet::Type.type(:elasticsearch_index).provider(:ruby) do
     }
   end
 
-  let(:json_1) do
+  let(:json1) do
     {
       'index-one' => {
         'settings' => {
@@ -62,12 +64,12 @@ describe Puppet::Type.type(:elasticsearch_index).provider(:ruby) do
     }
   end
 
-  let(:example_2) do
+  let(:example2) do
     {
-      :name => 'index-two',
-      :ensure => :present,
-      :provider => :ruby,
-      :settings => {
+      name: 'index-two',
+      ensure: :present,
+      provider: :ruby,
+      settings: {
         'index' => {
           'creation_date' => 1_487_354_196_301,
           'number_of_replicas' => 1,
@@ -82,7 +84,7 @@ describe Puppet::Type.type(:elasticsearch_index).provider(:ruby) do
     }
   end
 
-  let(:json_2) do
+  let(:json2) do
     {
       'index-two' => {
         'settings' => {
@@ -113,8 +115,8 @@ describe Puppet::Type.type(:elasticsearch_index).provider(:ruby) do
   let(:provider) { described_class.new resource }
   let(:props) do
     {
-      :name => name,
-      :settings => {
+      name: name,
+      settings: {
         'index' => {
           'number_of_replicas' => '0'
         }

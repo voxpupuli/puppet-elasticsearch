@@ -1,8 +1,10 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
-describe 'elasticsearch', :type => 'class' do
+describe 'elasticsearch', type: 'class' do
   default_params = {
-    :config => { 'node.name' => 'foo' }
+    config: { 'node.name' => 'foo' }
   }
 
   let(:params) do
@@ -10,8 +12,8 @@ describe 'elasticsearch', :type => 'class' do
   end
 
   on_supported_os(
-    :hardwaremodels => ['x86_64'],
-    :supported_os => [
+    hardwaremodels: ['x86_64'],
+    supported_os: [
       {
         'operatingsystem' => 'CentOS',
         'operatingsystemrelease' => ['7']
@@ -22,189 +24,218 @@ describe 'elasticsearch', :type => 'class' do
       context 'hiera' do
         describe 'indices' do
           context 'single indices' do
-            let(:facts) { facts.merge(:scenario => 'singleindex') }
+            let(:facts) { facts.merge(scenario: 'singleindex') }
 
-            it { should contain_elasticsearch__index('baz')
-              .with(
-                :ensure => 'present',
-                :settings => {
-                  'index' => {
-                    'number_of_shards' => 1
+            it {
+              expect(subject).to contain_elasticsearch__index('baz').
+                with(
+                  ensure: 'present',
+                  settings: {
+                    'index' => {
+                      'number_of_shards' => 1
+                    }
                   }
-                }
-              ) }
-            it { should contain_elasticsearch_index('baz') }
-            it { should contain_es_instance_conn_validator(
-              'baz-index-conn-validator'
-            ) }
+                )
+            }
+
+            it { is_expected.to contain_elasticsearch_index('baz') }
+
+            it {
+              expect(subject).to contain_es_instance_conn_validator(
+                'baz-index-conn-validator'
+              )
+            }
           end
 
           context 'no indices' do
-            let(:facts) { facts.merge(:scenario => '') }
+            let(:facts) { facts.merge(scenario: '') }
 
-            it { should_not contain_elasticsearch__index('baz') }
+            it { is_expected.not_to contain_elasticsearch__index('baz') }
           end
         end
 
         context 'config' do
-          let(:facts) { facts.merge(:scenario => 'singleinstance') }
+          let(:facts) { facts.merge(scenario: 'singleinstance') }
 
-          it { should contain_augeas('/etc/sysconfig/elasticsearch') }
-          it { should contain_file('/etc/elasticsearch/elasticsearch.yml') }
-          it { should contain_datacat('/etc/elasticsearch/elasticsearch.yml') }
-          it { should contain_datacat_fragment('main_config') }
-          it { should contain_service('elasticsearch').with(
-            :ensure => 'running',
-            :enable => true
-          ) }
-        end # of config
+          it { is_expected.to contain_augeas('/etc/sysconfig/elasticsearch') }
+          it { is_expected.to contain_file('/etc/elasticsearch/elasticsearch.yml') }
+          it { is_expected.to contain_datacat('/etc/elasticsearch/elasticsearch.yml') }
+          it { is_expected.to contain_datacat_fragment('main_config') }
+
+          it {
+            expect(subject).to contain_service('elasticsearch').with(
+              ensure: 'running',
+              enable: true
+            )
+          }
+        end
 
         describe 'pipelines' do
           context 'single pipeline' do
-            let(:facts) { facts.merge(:scenario => 'singlepipeline') }
+            let(:facts) { facts.merge(scenario: 'singlepipeline') }
 
-            it { should contain_elasticsearch__pipeline('testpipeline')
-              .with(
-                :ensure => 'present',
-                :content => {
-                  'description' => 'Add the foo field',
-                  'processors' => [
-                    {
-                      'set' => {
-                        'field' => 'foo',
-                        'value' => 'bar'
+            it {
+              expect(subject).to contain_elasticsearch__pipeline('testpipeline').
+                with(
+                  ensure: 'present',
+                  content: {
+                    'description' => 'Add the foo field',
+                    'processors' => [
+                      {
+                        'set' => {
+                          'field' => 'foo',
+                          'value' => 'bar'
+                        }
                       }
-                    }
-                  ]
-                }
-              ) }
-            it { should contain_elasticsearch_pipeline('testpipeline') }
+                    ]
+                  }
+                )
+            }
+
+            it { is_expected.to contain_elasticsearch_pipeline('testpipeline') }
           end
 
           context 'no pipelines' do
-            let(:facts) { facts.merge(:scenario => '') }
+            let(:facts) { facts.merge(scenario: '') }
 
-            it { should_not contain_elasticsearch__pipeline('testpipeline') }
+            it { is_expected.not_to contain_elasticsearch__pipeline('testpipeline') }
           end
         end
 
         describe 'plugins' do
           context 'single plugin' do
-            let(:facts) { facts.merge(:scenario => 'singleplugin') }
+            let(:facts) { facts.merge(scenario: 'singleplugin') }
 
-            it { should contain_elasticsearch__plugin('mobz/elasticsearch-head')
-              .with(
-                :ensure     => 'present',
-                :module_dir => 'head'
-              ) }
-            it { should contain_elasticsearch_plugin('mobz/elasticsearch-head') }
+            it {
+              expect(subject).to contain_elasticsearch__plugin('mobz/elasticsearch-head').
+                with(
+                  ensure: 'present',
+                  module_dir: 'head'
+                )
+            }
+
+            it { is_expected.to contain_elasticsearch_plugin('mobz/elasticsearch-head') }
           end
 
           context 'no plugins' do
-            let(:facts) { facts.merge(:scenario => '') }
+            let(:facts) { facts.merge(scenario: '') }
 
-            it { should_not contain_elasticsearch__plugin(
-              'mobz/elasticsearch-head/1.0.0'
-            ) }
+            it {
+              expect(subject).not_to contain_elasticsearch__plugin(
+                'mobz/elasticsearch-head/1.0.0'
+              )
+            }
           end
         end
 
         describe 'roles' do
           context 'single roles' do
-            let(:facts) { facts.merge(:scenario => 'singlerole') }
+            let(:facts) { facts.merge(scenario: 'singlerole') }
             let(:params) do
               default_params
             end
 
-            it { should contain_elasticsearch__role('admin')
-              .with(
-                :ensure => 'present',
-                :privileges => {
-                  'cluster' => 'monitor',
-                  'indices' => {
-                    '*' => 'all'
-                  }
-                },
-                :mappings => [
-                  'cn=users,dc=example,dc=com'
-                ]
-              ) }
-            it { should contain_elasticsearch_role('admin') }
-            it { should contain_elasticsearch_role_mapping('admin') }
+            it {
+              expect(subject).to contain_elasticsearch__role('admin').
+                with(
+                  ensure: 'present',
+                  privileges: {
+                    'cluster' => 'monitor',
+                    'indices' => {
+                      '*' => 'all'
+                    }
+                  },
+                  mappings: [
+                    'cn=users,dc=example,dc=com'
+                  ]
+                )
+            }
+
+            it { is_expected.to contain_elasticsearch_role('admin') }
+            it { is_expected.to contain_elasticsearch_role_mapping('admin') }
           end
 
           context 'no roles' do
-            let(:facts) { facts.merge(:scenario => '') }
+            let(:facts) { facts.merge(scenario: '') }
 
-            it { should_not contain_elasticsearch__role('admin') }
+            it { is_expected.not_to contain_elasticsearch__role('admin') }
           end
         end
 
         describe 'scripts' do
           context 'single scripts' do
-            let(:facts) { facts.merge(:scenario => 'singlescript') }
+            let(:facts) { facts.merge(scenario: 'singlescript') }
 
-            it { should contain_elasticsearch__script('myscript')
-              .with(
-                :ensure => 'present',
-                :source => 'puppet:///file/here'
-              ) }
-            it { should contain_file('/usr/share/elasticsearch/scripts/here') }
+            it {
+              expect(subject).to contain_elasticsearch__script('myscript').
+                with(
+                  ensure: 'present',
+                  source: 'puppet:///file/here'
+                )
+            }
+
+            it { is_expected.to contain_file('/usr/share/elasticsearch/scripts/here') }
           end
 
           context 'no roles' do
-            let(:facts) { facts.merge(:scenario => '') }
+            let(:facts) { facts.merge(scenario: '') }
 
-            it { should_not contain_elasticsearch__script('myscript') }
+            it { is_expected.not_to contain_elasticsearch__script('myscript') }
           end
         end
 
         describe 'templates' do
           context 'single template' do
-            let(:facts) { facts.merge(:scenario => 'singletemplate') }
+            let(:facts) { facts.merge(scenario: 'singletemplate') }
 
-            it { should contain_elasticsearch__template('foo')
-              .with(
-                :ensure => 'present',
-                :content => {
-                  'template' => 'foo-*',
-                  'settings' => {
-                    'index' => {
-                      'number_of_replicas' => 0
+            it {
+              expect(subject).to contain_elasticsearch__template('foo').
+                with(
+                  ensure: 'present',
+                  content: {
+                    'template' => 'foo-*',
+                    'settings' => {
+                      'index' => {
+                        'number_of_replicas' => 0
+                      }
                     }
                   }
-                }
-              ) }
-            it { should contain_elasticsearch_template('foo') }
+                )
+            }
+
+            it { is_expected.to contain_elasticsearch_template('foo') }
           end
 
           context 'no templates' do
-            let(:facts) { facts.merge(:scenario => '') }
+            let(:facts) { facts.merge(scenario: '') }
 
-            it { should_not contain_elasticsearch__template('foo') }
+            it { is_expected.not_to contain_elasticsearch__template('foo') }
           end
         end
 
         describe 'users' do
           context 'single users' do
-            let(:facts) { facts.merge(:scenario => 'singleuser') }
+            let(:facts) { facts.merge(scenario: 'singleuser') }
             let(:params) do
               default_params
             end
 
-            it { should contain_elasticsearch__user('elastic')
-              .with(
-                :ensure => 'present',
-                :roles => ['admin'],
-                :password => 'password'
-              ) }
-            it { should contain_elasticsearch_user('elastic') }
+            it {
+              expect(subject).to contain_elasticsearch__user('elastic').
+                with(
+                  ensure: 'present',
+                  roles: ['admin'],
+                  password: 'password'
+                )
+            }
+
+            it { is_expected.to contain_elasticsearch_user('elastic') }
           end
 
           context 'no users' do
-            let(:facts) { facts.merge(:scenario => '') }
+            let(:facts) { facts.merge(scenario: '') }
 
-            it { should_not contain_elasticsearch__user('elastic') }
+            it { is_expected.not_to contain_elasticsearch__user('elastic') }
           end
         end
       end

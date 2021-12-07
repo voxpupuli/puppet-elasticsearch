@@ -1,9 +1,20 @@
-<!-- The following list of checkboxes are the prerequisites for getting your contribution accepted. Please check them as they are completed. -->
+<!--
+Thank you for contributing to this project!
 
-Pull request acceptance prerequisites:
+- This project has a Contributor Code of Conduct: https://voxpupuli.org/coc/
+- Please check that here is no existing issue or PR that addresses your problem.
+- Our vulnerabilities reporting process is at https://voxpupuli.org/security/
 
-- [ ] Signed the [CLA](https://www.elastic.co/contributor-agreement/) (if not already signed)
-- [ ] Rebased/up-to-date with base branch
-- [ ] Tests pass
-- [ ] Updated CHANGELOG.md with patch notes (if necessary)
-- [ ] Updated CONTRIBUTORS (if attribution is requested)
+-->
+#### Pull Request (PR) description
+<!--
+Replace this comment with a description of your pull request.
+-->
+
+#### This Pull Request (PR) fixes the following issues
+<!--
+Replace this comment with the list of issues or n/a.
+Use format:
+Fixes #123
+Fixes #124
+-->

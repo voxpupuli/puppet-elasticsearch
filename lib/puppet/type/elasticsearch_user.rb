@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 Puppet::Type.newtype(:elasticsearch_user) do
   desc 'Type to model Elasticsearch users.'
 
@@ -6,7 +8,7 @@ Puppet::Type.newtype(:elasticsearch_user) do
 
   ensurable
 
-  newparam(:name, :namevar => true) do
+  newparam(:name, namevar: true) do
     desc 'User name.'
   end
 
@@ -20,14 +22,12 @@ Puppet::Type.newtype(:elasticsearch_user) do
 
   newparam(
     :password,
-    :required_features => :manages_plaintext_passwords
+    required_features: :manages_plaintext_passwords
   ) do
     desc 'Plaintext password for user.'
 
     validate do |value|
-      if value.length < 6
-        raise ArgumentError, 'Password must be at least 6 characters long'
-      end
+      raise ArgumentError, 'Password must be at least 6 characters long' if value.length < 6
     end
 
     # rubocop:disable Style/PredicateName

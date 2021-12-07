@@ -11,16 +11,14 @@
 # @author Tyler Langlois <tyler.langlois@elastic.co>
 #
 class elasticsearch::package {
-
   Exec {
-    path      => [ '/bin', '/usr/bin', '/usr/local/bin' ],
+    path      => ['/bin', '/usr/bin', '/usr/local/bin'],
     cwd       => '/',
     tries     => 3,
     try_sleep => 10,
   }
 
   if $elasticsearch::ensure == 'present' {
-
     if $elasticsearch::restart_package_change {
       Package['elasticsearch'] ~> Class['elasticsearch::service']
     }
@@ -45,24 +43,19 @@ class elasticsearch::package {
 
     # Check if we want to install a specific version or not
     if $elasticsearch::version == false {
-
       $package_ensure = $elasticsearch::autoupgrade ? {
         true  => 'latest',
         false => 'present',
       }
-
     } else {
-
       # install specific version
       $package_ensure = $elasticsearch::pkg_version
-
     }
 
     # action
     if ($elasticsearch::package_url != undef) {
-
       case $elasticsearch::package_provider {
-        'package': { $before = Package['elasticsearch']  }
+        'package': { $before = Package['elasticsearch'] }
         default:   { fail("software provider \"${elasticsearch::package_provider}\".") }
       }
 
@@ -78,9 +71,7 @@ class elasticsearch::package {
       $pkg_source = "${package_dir}/${basefilename}"
 
       case $protocol_type {
-
         'puppet': {
-
           file { $pkg_source:
             ensure  => file,
             source  => $elasticsearch::package_url,
@@ -88,10 +79,8 @@ class elasticsearch::package {
             backup  => false,
             before  => $before,
           }
-
         }
         'ftp', 'https', 'http': {
-
           if $elasticsearch::proxy_url != undef {
             $exec_environment = [
               'use_proxy=yes',
@@ -123,10 +112,8 @@ class elasticsearch::package {
               fail("no \$elasticsearch::download_tool defined for ${facts['os']['family']}")
             }
           }
-
         }
         'file': {
-
           $source_path = $source_array[1]
           file { $pkg_source:
             ensure  => file,
@@ -135,7 +122,6 @@ class elasticsearch::package {
             backup  => false,
             before  => $before,
           }
-
         }
         default: {
           fail("Protocol must be puppet, file, http, https, or ftp. You have given \"${protocol_type}\"")
@@ -143,24 +129,19 @@ class elasticsearch::package {
       }
 
       if ($elasticsearch::package_provider == 'package') {
-
         case $ext {
           'deb':   { Package { provider => 'dpkg', source => $pkg_source } }
           'rpm':   { Package { provider => 'rpm', source => $pkg_source } }
           default: { fail("Unknown file extention \"${ext}\".") }
         }
-
       }
-
     } else {
       if ($elasticsearch::manage_repo and $facts['os']['family'] == 'Debian') {
         Class['apt::update'] -> Package['elasticsearch']
       }
     }
-
-  # Package removal
   } else {
-
+    # Package removal
     if ($facts['os']['family'] == 'Suse') {
       Package {
         provider  => 'rpm',
@@ -169,11 +150,9 @@ class elasticsearch::package {
     } else {
       $package_ensure = 'purged'
     }
-
   }
 
   if ($elasticsearch::package_provider == 'package') {
-
     package { 'elasticsearch':
       ensure => $package_ensure,
       name   => $elasticsearch::_package_name,
@@ -183,10 +162,7 @@ class elasticsearch::package {
       refreshonly => true,
       command     => "rm -rf ${elasticsearch::real_plugindir}",
     }
-
-
   } else {
     fail("\"${elasticsearch::package_provider}\" is not supported")
   }
-
 }

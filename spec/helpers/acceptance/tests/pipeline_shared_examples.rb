@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'json'
 require 'helpers/acceptance/tests/manifest_shared_examples'
 require 'helpers/acceptance/tests/bad_manifest_shared_examples'
@@ -5,6 +7,7 @@ require 'helpers/acceptance/tests/bad_manifest_shared_examples'
 shared_examples 'pipeline operations' do |es_config, pipeline|
   describe 'pipeline resources' do
     let(:pipeline_name) { 'foo' }
+
     context 'present' do
       let(:extra_manifest) do
         <<-MANIFEST
@@ -39,18 +42,16 @@ shared_examples 'pipeline content' do |es_config, pipeline|
   elasticsearch_port = es_config['http.port']
   describe port(elasticsearch_port) do
     it 'open', :with_retries do
-      should be_listening
+      expect(subject).to be_listening
     end
   end
 
-  describe server :container do
-    describe http(
-      "http://localhost:#{elasticsearch_port}/_ingest/pipeline"
-    ) do
-      it 'returns the configured pipelines', :with_retries do
-        expect(JSON.parse(response.body).values)
-          .to include(include(pipeline))
-      end
+  describe "http://localhost:#{elasticsearch_port}/_ingest/pipeline" do
+    subject { shell("curl http://localhost:#{elasticsearch_port}/_ingest/pipeline") }
+
+    it 'returns the configured pipelines', :with_retries do
+      expect(JSON.parse(subject.stdout).values).
+        to include(include(pipeline))
     end
   end
 end

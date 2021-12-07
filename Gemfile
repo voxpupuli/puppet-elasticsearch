@@ -1,58 +1,39 @@
-source ENV['GEM_SOURCE'] || 'https://rubygems.org'
+# Managed by modulesync - DO NOT EDIT
+# https://voxpupuli.org/docs/updating-files-managed-with-modulesync/
+
+source ENV['GEM_SOURCE'] || "https://rubygems.org"
 
 group :test do
-  gem 'puppet', (ENV['PUPPET_VERSION'] || '~> 6.0'), :require => false
-
-  gem 'metadata-json-lint'
-  gem 'specinfra', '~> 2.60'
-  gem 'xmlrpc'
-
-  gem 'ci_reporter_rspec'
-  gem 'facter', "~> 2.4"
-  gem 'pry'
-  gem 'puppet-lint'
-  gem 'puppet-strings'
-  gem 'puppet-syntax'
-  gem 'puppetlabs_spec_helper', '>= 2.7.0'
-  gem 'rake'
-  gem 'rspec', '~> 3.0'
-  gem 'rspec-puppet', '~> 2.6'
-  gem 'rspec-puppet-facts'
-  gem 'rspec-puppet-utils'
-  gem 'rspec-retry'
-  # Required to test against Ruby 1.9
-  gem 'rubocop', '~> 0.41.2'
-  gem 'rubysl-securerandom'
-  gem 'webmock'
-
-  # Extra Puppet-lint gems
-  gem 'puppet-lint-appends-check',
-      :git => 'https://github.com/voxpupuli/puppet-lint-appends-check',
-      :ref => '07be8ce22d69353db055820b60bb77fe020238a6',
-      :require => false
-  gem 'puppet-lint-empty_string-check', :require => false
-  gem 'puppet-lint-file_ensure-check', :require => false
-  gem 'puppet-lint-leading_zero-check', :require => false
-  gem 'puppet-lint-param-docs', :require => false
-  gem 'puppet-lint-trailing_comma-check', :require => false
-  gem 'puppet-lint-undef_in_function-check', :require => false
-  gem 'puppet-lint-unquoted_string-check', :require => false
-  gem 'puppet-lint-version_comparison-check', :require => false
+  gem 'voxpupuli-test', '~> 5.0',   :require => false
+  gem 'coveralls',                  :require => false
+  gem 'simplecov-console',          :require => false
+  gem 'puppet_metadata', '~> 1.0',  :require => false
+  gem 'bcrypt',                     :require => false
+  gem 'webmock',                    :require => false
 end
 
 group :development do
-  gem 'puppet-blacksmith'
+  gem 'guard-rake',               :require => false
+  gem 'overcommit', '>= 0.39.1',  :require => false
 end
 
 group :system_tests do
-  gem 'bcrypt'
-  gem 'beaker', '>= 4.2.0'
-  gem 'beaker-rspec', '~> 6.0'
-  gem 'beaker-docker'
-  gem 'beaker-puppet'
-  gem 'beaker-puppet_install_helper'
-  gem 'simp-beaker-helpers'
-  gem 'docker-api', '~> 1.0'
-  gem 'infrataster'
-  gem 'vault'
+  gem 'voxpupuli-acceptance', '~> 1.0',  :require => false
+  gem 'bcrypt',                          :require => false
+  gem 'rspec-retry',                     :require => false
+  gem 'simp-beaker-helpers',             :require => false
 end
+
+group :release do
+  gem 'github_changelog_generator', '>= 1.16.1',  :require => false if RUBY_VERSION >= '2.5'
+  gem 'voxpupuli-release', '>= 1.2.0',            :require => false
+  gem 'puppet-strings', '>= 2.2',                 :require => false
+end
+
+gem 'rake', :require => false
+gem 'facter', ENV['FACTER_GEM_VERSION'], :require => false, :groups => [:test]
+
+puppetversion = ENV['PUPPET_VERSION'] || '>= 6.0'
+gem 'puppet', puppetversion, :require => false, :groups => [:test]
+
+# vim: syntax=ruby

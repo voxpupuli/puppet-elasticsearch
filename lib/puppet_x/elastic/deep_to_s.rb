@@ -1,4 +1,6 @@
-module Puppet_X
+# frozen_string_literal: true
+
+module Puppet_X # rubocop:disable Style/ClassAndModuleCamelCase
   # Custom Elastic functions
   module Elastic
     # When given a hash, this method recurses deeply into all values to convert
@@ -10,11 +12,11 @@ module Puppet_X
         obj.map { |element| deep_to_s(element) }
       elsif obj.is_a? Hash
         obj.merge(obj) { |_key, val| deep_to_s(val) }
-      elsif (not obj.is_a? String) and (not [true, false].include?(obj)) and obj.respond_to? :to_s
+      elsif (!obj.is_a? String) && ![true, false].include?(obj) && obj.respond_to?(:to_s)
         obj.to_s
       else
         obj
       end
     end
-  end # of Elastic
-end # of Puppet_X
+  end
+end

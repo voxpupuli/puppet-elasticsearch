@@ -1,43 +1,45 @@
+# frozen_string_literal: true
+
 require 'spec_helper_rspec'
 
 describe Puppet::Type.type(:elasticsearch_user_file).provider(:ruby) do
   describe 'instances' do
-    it 'should have an instance method' do
+    it 'has an instance method' do
       expect(described_class).to respond_to :instances
     end
 
     context 'without users' do
-      it 'should return no resources' do
+      it 'returns no resources' do
         expect(described_class.parse("\n")).to eq([])
       end
     end
 
     context 'with one user' do
-      it 'should return one resource' do
+      it 'returns one resource' do
         expect(described_class.parse(%(
           elastic:$2a$10$DddrTs0PS3qNknUTq0vpa.g.0JpU.jHDdlKp1xox1W5ZHX.w8Cc8C
-        ).gsub(/^\s+/, ''))[0]).to eq(
-          :name            => 'elastic',
-          :hashed_password => '$2a$10$DddrTs0PS3qNknUTq0vpa.g.0JpU.jHDdlKp1xox1W5ZHX.w8Cc8C',
-          :record_type     => :ruby
+        ).gsub(%r{^\s+}, ''))[0]).to eq(
+          name: 'elastic',
+          hashed_password: '$2a$10$DddrTs0PS3qNknUTq0vpa.g.0JpU.jHDdlKp1xox1W5ZHX.w8Cc8C',
+          record_type: :ruby
         )
       end
     end
 
     context 'with multiple users' do
-      it 'should return three resources' do
+      it 'returns three resources' do
         expect(described_class.parse(%(
 
           admin:$2a$10$DddrTs0PS3qNknUTq0vpa.g.0JpU.jHDdlKp1xox1W5ZHX.w8Cc8C
           user:$2a$10$caYr8GhYeJ2Yo0yEhQhQvOjLSwt8Lm6MKQWx8WSnZ/L/IL5sGdQFu
           kibana:$2a$10$daYr8GhYeJ2Yo0yEhQhQvOjLSwt8Lm6MKQWx8WSnZ/L/IL5sGdQFu
-        ).gsub(/^\s+/, '')).length).to eq(3)
+        ).gsub(%r{^\s+}, '')).length).to eq(3)
       end
     end
-  end # of describe instances
+  end
 
   describe 'prefetch' do
-    it 'should have a prefetch method' do
+    it 'has a prefetch method' do
       expect(described_class).to respond_to :prefetch
     end
   end

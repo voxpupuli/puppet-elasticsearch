@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', '..'))
 
 require 'puppet/file_serving/content'
@@ -15,7 +17,7 @@ Puppet::Type.newtype(:elasticsearch_template) do
 
   ensurable
 
-  newparam(:name, :namevar => true) do
+  newparam(:name, namevar: true) do
     desc 'Template name.'
   end
 
@@ -62,8 +64,8 @@ Puppet::Type.newtype(:elasticsearch_template) do
       )
     end
 
-    def insync?(is)
-      Puppet_X::Elastic.deep_implode(is) == \
+    def insync?(value)
+      Puppet_X::Elastic.deep_implode(value) == \
         Puppet_X::Elastic.deep_implode(should)
     end
   end
@@ -81,8 +83,9 @@ Puppet::Type.newtype(:elasticsearch_template) do
     # Ensure that at least one source of template content has been provided
     if self[:ensure] == :present
       fail Puppet::ParseError, '"content" or "source" required' \
-        if self[:content].nil? and self[:source].nil?
-      if !self[:content].nil? and !self[:source].nil?
+        if self[:content].nil? && self[:source].nil?
+
+      if !self[:content].nil? && !self[:source].nil?
         fail(
           Puppet::ParseError,
           "'content' and 'source' cannot be simultaneously defined"
@@ -93,22 +96,22 @@ Puppet::Type.newtype(:elasticsearch_template) do
     # If a source was passed, retrieve the source content from Puppet's
     # FileServing indirection and set the content property
     unless self[:source].nil?
-      unless Puppet::FileServing::Metadata.indirection.find(self[:source])
-        fail(format('Could not retrieve source %s', self[:source]))
-      end
+      fail(format('Could not retrieve source %s', self[:source])) unless Puppet::FileServing::Metadata.indirection.find(self[:source])
 
       tmp = if !catalog.nil? \
-                and catalog.respond_to?(:environment_instance)
+                && catalog.respond_to?(:environment_instance)
               Puppet::FileServing::Content.indirection.find(
                 self[:source],
-                :environment => catalog.environment_instance
+                environment: catalog.environment_instance
               )
             else
               Puppet::FileServing::Content.indirection.find(self[:source])
             end
 
       fail(format('Could not find any content at %s', self[:source])) unless tmp
+
       self[:content] = PSON.load(tmp.content)
     end
   end
-end # of newtype
+  # rubocop:enable Style/SignalException
+end

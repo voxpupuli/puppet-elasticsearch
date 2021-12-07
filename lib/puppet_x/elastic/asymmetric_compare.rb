@@ -1,4 +1,6 @@
-module Puppet_X
+# frozen_string_literal: true
+
+module Puppet_X # rubocop:disable Style/ClassAndModuleCamelCase
   # Custom Elastic functions
   module Elastic
     # Certain Elasticsearch APIs return fields that are present in responses
@@ -20,5 +22,5 @@ module Puppet_X
         end
       end
     end
-  end # of Elastic
-end # of Puppet_X
+  end
+end

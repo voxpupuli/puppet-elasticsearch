@@ -1,30 +1,26 @@
 <!--
-Please note that issues should be used for bugs and feature requests.
-If you have a general support question, consider asking it on the
-[Elastic discussion forums](https://discuss.elastic.co/) before
-creating an issue to determine whether your question is for support
-or an actual bug/feature.
+Thank you for contributing to this project!
 
-Please use **only one** of the following examples depending upon
-whether you are reporting a bug or feature request.
+- This project has a Contributor Code of Conduct: https://voxpupuli.org/coc/
+- Please check that here is no existing issue or PR that addresses your problem.
+- Please fill the following form to enable us to help you.
+- Our vulnerabilities reporting process is at https://voxpupuli.org/security/
+
 -->
 
-<!--
-If you are filing a bug report, please remove the Feature
-Description block and provide responses for all of the below items.
+## Affected Puppet, Ruby, OS and module versions/distributions
 
-Please also include an example manifest and puppet logs if relevant.
--->
+- Puppet:
+- Ruby:
+- Distribution:
+- Module version:
 
-* Module version:
-* Puppet version:
-* OS and version:
+## How to reproduce (e.g Puppet code you use)
 
-## Bug description
+## What are you seeing
 
-<!--
-If you are filing a feature request, please remove the above bug
-report block and describe the feature below the heading.
--->
+## What behaviour did you expect instead
 
-## Feature Description
+## Output log
+
+## Any additional information you'd like to impart

@@ -1,0 +1,18 @@
+---
+.puppet-lint.rc:
+  enabled_lint_checks:
+    - parameter_documentation
+    - parameter_types
+Gemfile:
+  optional:
+    ':test':
+      - gem: bcrypt
+      - gem: webmock
+    ':system_tests':
+      - gem: bcrypt
+      - gem: rspec-retry
+      - gem: simp-beaker-helpers
+spec/spec_helper.rb:
+  hiera_config: "'spec/fixtures/hiera/hiera.yaml'"
+spec/spec_helper_acceptance.rb:
+  unmanaged: false

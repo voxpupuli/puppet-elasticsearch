@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'json'
 require 'helpers/acceptance/tests/manifest_shared_examples'
 
@@ -12,15 +14,15 @@ shared_examples 'snapshot repository acceptance tests' do
 
     # Override the manifest in order to populate 'path.repo'
     let(:manifest) do
-      package = if not v[:is_snapshot]
-                  <<-MANIFEST
-                    # Hard version set here due to plugin incompatibilities.
-                    version => '#{v[:elasticsearch_full_version]}',
-                  MANIFEST
-                else
+      package = if v[:is_snapshot]
                   <<-MANIFEST
                     manage_repo => false,
                     package_url => '#{v[:snapshot_package]}',
+                  MANIFEST
+                else
+                  <<-MANIFEST
+                    # Hard version set here due to plugin incompatibilities.
+                    version => '#{v[:elasticsearch_full_version]}',
                   MANIFEST
                 end
 
@@ -59,22 +61,20 @@ shared_examples 'snapshot repository acceptance tests' do
     es_port = es_config['http.port']
     describe port(es_port) do
       it 'open', :with_retries do
-        should be_listening
+        expect(subject).to be_listening
       end
     end
 
-    describe server :container do
-      describe http(
-        "http://localhost:#{es_port}/_snapshot/backup"
-      ) do
-        it 'returns the snapshot repository', :with_retries do
-          expect(JSON.parse(response.body)['backup'])
-            .to include('settings' => a_hash_including(
-              'location'          => '/var/lib/elasticsearch/backup',
-              'max_restore_rate'  => '20mb',
-              'max_snapshot_rate' => '80mb'
-            ))
-        end
+    describe "http://localhost:#{es_port}/_snapshot/backup" do
+      subject { shell("curl http://localhost:#{es_port}/_snapshot/backup") }
+
+      it 'returns the snapshot repository', :with_retries do
+        expect(JSON.parse(subject.stdout)['backup']).
+          to include('settings' => a_hash_including(
+            'location' => '/var/lib/elasticsearch/backup',
+            'max_restore_rate' => '20mb',
+            'max_snapshot_rate' => '80mb'
+          ))
       end
     end
   end

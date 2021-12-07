@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'json'
 require 'helpers/acceptance/tests/manifest_shared_examples'
 require 'helpers/acceptance/tests/bad_manifest_shared_examples'
@@ -37,19 +39,16 @@ shared_examples 'template content' do |es_config, template|
   elasticsearch_port = es_config['http.port']
   describe port(elasticsearch_port) do
     it 'open', :with_retries do
-      should be_listening
+      expect(subject).to be_listening
     end
   end
 
-  describe server :container do
-    describe http(
-      "http://localhost:#{elasticsearch_port}/_template",
-      :params => { 'flat_settings' => 'false' }
-    ) do
-      it 'returns the installed template', :with_retries do
-        expect(JSON.parse(response.body).values)
-          .to include(include(template))
-      end
+  describe "http://localhost:#{elasticsearch_port}/_template" do
+    subject { shell("curl http://localhost:#{elasticsearch_port}/_template") }
+
+    it 'returns the installed template', :with_retries do
+      expect(JSON.parse(subject.stdout).values).
+        to include(include(template))
     end
   end
 end
@@ -57,7 +56,7 @@ end
 # Main entrypoint for template tests
 shared_examples 'template operations' do |es_config, template|
   describe 'template resources' do
-    before :all do
+    before :all do # rubocop:disable RSpec/BeforeAfterAll
       shell "mkdir -p #{default['distmoduledir']}/another/files"
 
       create_remote_file(

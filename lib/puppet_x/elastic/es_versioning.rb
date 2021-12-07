@@ -1,6 +1,8 @@
+# frozen_string_literal: true
+
 class ElasticsearchPackageNotFoundError < StandardError; end
 
-module Puppet_X
+module Puppet_X # rubocop:disable Style/ClassAndModuleCamelCase
   module Elastic
     # Assists with discerning the locally installed version of Elasticsearch.
     # Implemented in a way to be called from native types and providers in order
@@ -54,6 +56,7 @@ module Puppet_X
       def self.version(package_name, catalog)
         es_pkg = catalog.resource("Package[#{package_name}]")
         raise Puppet::Error, "could not find `Package[#{package_name}]` resource" unless es_pkg
+
         [
           es_pkg.provider.properties[:version],
           es_pkg.provider.properties[:ensure]

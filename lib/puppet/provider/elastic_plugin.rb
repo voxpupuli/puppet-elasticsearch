@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', '..'))
 
 require 'uri'
@@ -6,7 +8,6 @@ require 'puppet_x/elastic/plugin_parsing'
 
 # Generalized parent class for providers that behave like Elasticsearch's plugin
 # command line tool.
-# rubocop:disable Metrics/ClassLength
 class Puppet::Provider::ElasticPlugin < Puppet::Provider
   # Elasticsearch's home directory.
   #
@@ -41,16 +42,20 @@ class Puppet::Provider::ElasticPlugin < Puppet::Provider
       # in one. Therefore, we need to find the first "sub" plugin that
       # indicates which version of x-pack this is.
       properties = properties_files.sort.map do |prop_file|
-        IO.readlines(prop_file).map(&:strip).reject do |line|
-          line.start_with?('#') or line.empty?
-        end.map do |property|
+        lines = File.readlines(prop_file).map(&:strip).reject do |line|
+          line.start_with?('#') || line.empty?
+        end
+        lines = lines.map do |property|
           property.split('=')
-        end.reject do |pairs|
-          pairs.length != 2
-        end.to_h
-      end.find { |prop| prop.key? 'version' }
+        end
+        lines = lines.select do |pairs|
+          pairs.length == 2
+        end
+        lines.to_h
+      end
+      properties = properties.find { |prop| prop.key? 'version' }
 
-      if properties and properties['version'] != plugin_version
+      if properties && properties['version'] != plugin_version
         debug "Elasticsearch plugin #{@resource[:name]} not version #{plugin_version}, reinstalling"
         destroy
         return false
@@ -90,7 +95,7 @@ class Puppet::Provider::ElasticPlugin < Puppet::Provider
   def proxy_args(url)
     parsed = URI(url)
     %w[http https].map do |schema|
-      [:host, :port, :user, :password].map do |param|
+      %i[host port user password].map do |param|
         option = parsed.send(param)
         "-D#{schema}.proxy#{param.to_s.capitalize}=#{option}" unless option.nil?
       end
@@ -137,7 +142,7 @@ class Puppet::Provider::ElasticPlugin < Puppet::Provider
     saved_vars = {}
 
     # Use 'java_home' param if supplied, otherwise default to Elasticsearch shipped JDK
-    env_vars['JAVA_HOME'] = if @resource[:java_home].nil? or @resource[:java_home] == ''
+    env_vars['JAVA_HOME'] = if @resource[:java_home].nil? || @resource[:java_home] == ''
                               "#{homedir}/jdk"
                             else
                               @resource[:java_home]

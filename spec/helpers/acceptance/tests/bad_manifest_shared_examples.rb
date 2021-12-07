@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 shared_examples 'invalid manifest application' do
   context 'bad manifest' do
     let(:applied_manifest) do
@@ -12,7 +14,7 @@ shared_examples 'invalid manifest application' do
     end
 
     it 'fails to apply' do
-      apply_manifest(applied_manifest, :expect_failures => true, :debug => v[:puppet_debug])
+      apply_manifest(applied_manifest, expect_failures: true, debug: v[:puppet_debug])
     end
   end
 end

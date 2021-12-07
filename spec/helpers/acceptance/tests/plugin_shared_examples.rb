@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'json'
 require 'helpers/acceptance/tests/bad_manifest_shared_examples'
 require 'helpers/acceptance/tests/manifest_shared_examples'
@@ -5,6 +7,10 @@ require 'helpers/acceptance/tests/plugin_api_shared_examples'
 
 shared_examples 'plugin acceptance tests' do |es_config, plugins|
   describe 'elasticsearch::plugin' do
+    before :all do # rubocop:disable RSpec/BeforeAfterAll
+      shell "mkdir -p #{default['distmoduledir']}/another/files"
+    end
+
     describe 'invalid plugins', :with_cleanup do
       let(:extra_manifest) do
         <<-MANIFEST
@@ -13,10 +19,6 @@ shared_examples 'plugin acceptance tests' do |es_config, plugins|
       end
 
       include_examples('invalid manifest application')
-    end
-
-    before :all do
-      shell "mkdir -p #{default['distmoduledir']}/another/files"
     end
 
     plugins.each_pair do |plugin, meta|
@@ -35,7 +37,7 @@ shared_examples 'plugin acceptance tests' do |es_config, plugins|
             include_examples('manifest application', es_config)
 
             describe file("/usr/share/elasticsearch/plugins/#{plugin}/") do
-              it { should be_directory }
+              it { is_expected.to be_directory }
             end
 
             include_examples(
@@ -47,7 +49,7 @@ shared_examples 'plugin acceptance tests' do |es_config, plugins|
           end
 
           describe 'offline via puppet://', :with_cleanup do
-            before :all do
+            before :all do # rubocop:disable RSpec/BeforeAfterAll
               scp_to(
                 default,
                 meta[:path],

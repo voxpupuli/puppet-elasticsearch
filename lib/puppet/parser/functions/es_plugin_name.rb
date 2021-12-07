@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', '..', '..'))
 
 require 'puppet_x/elastic/plugin_parsing'
@@ -6,8 +8,8 @@ require 'puppet_x/elastic/plugin_parsing'
 module Puppet::Parser::Functions
   newfunction(
     :es_plugin_name,
-    :type => :rvalue,
-    :doc => <<-'ENDHEREDOC') do |args|
+    type: :rvalue,
+    doc: <<-'ENDHEREDOC') do |args|
     Given a string, return the best guess at what the directory name
     will be for the given plugin. Any arguments past the first will
     be fallbacks (using the same logic) should the first fail.
@@ -29,7 +31,7 @@ module Puppet::Parser::Functions
     end
 
     ret = args.select do |arg|
-      arg.is_a? String and not arg.empty?
+      arg.is_a?(String) && !arg.empty?
     end.first
 
     if ret

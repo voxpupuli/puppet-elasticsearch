@@ -68,7 +68,6 @@ define elasticsearch::plugin (
   Optional[String]               $source         = undef,
   Optional[Stdlib::HTTPUrl]      $url            = undef,
 ) {
-
   include elasticsearch
 
   case $ensure {
@@ -80,7 +79,8 @@ define elasticsearch::plugin (
       $_file_ensure = $ensure
       $_file_before = File[$elasticsearch::real_plugindir]
     }
-    default: { }
+    default: {
+    }
   }
 
   # set proxy by override or parse and use proxy_url from
@@ -100,7 +100,6 @@ define elasticsearch::plugin (
   }
 
   if ($source != undef) {
-
     $filename_array = split($source, '/')
     $basefilename = $filename_array[-1]
 
@@ -111,7 +110,6 @@ define elasticsearch::plugin (
       source => $source,
       before => Elasticsearch_plugin[$name],
     }
-
   } else {
     $file_source = undef
   }
