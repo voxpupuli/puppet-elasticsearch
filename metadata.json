@@ -1,12 +1,12 @@
 {
-  "name": "elastic-elasticsearch",
+  "name": "puppet-elasticsearch",
   "version": "7.0.0",
-  "source": "https://github.com/elastic/puppet-elasticsearch",
-  "author": "elastic",
+  "source": "https://github.com/voxpupuli/puppet-elasticsearch",
+  "author": "voxpupuli@groups.io",
   "license": "Apache-2.0",
   "summary": "Module for managing and configuring Elasticsearch nodes",
-  "project_page": "https://github.com/elastic/puppet-elasticsearch",
-  "issues_url": "https://github.com/elastic/puppet-elasticsearch/issues",
+  "project_page": "https://github.com/voxpupuli/puppet-elasticsearch",
+  "issues_url": "https://github.com/voxpupuli/puppet-elasticsearch/issues",
   "dependencies": [
     {
       "name": "elastic/elastic_stack",
