@@ -9,7 +9,7 @@
   "issues_url": "https://github.com/voxpupuli/puppet-elasticsearch/issues",
   "dependencies": [
     {
-      "name": "elastic/elastic_stack",
+      "name": "puppet/elastic_stack",
       "version_requirement": ">= 6.1.0 < 8.0.0"
     },
     {
