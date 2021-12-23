@@ -3,6 +3,8 @@
 
 source ENV['GEM_SOURCE'] || "https://rubygems.org"
 
+gem 'hiera', '< 3.8.0'
+
 group :test do
   gem 'voxpupuli-test', '~> 5.0',   :require => false
   gem 'coveralls',                  :require => false
