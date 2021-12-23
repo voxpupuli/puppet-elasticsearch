@@ -34,6 +34,6 @@ gem 'rake', :require => false
 gem 'facter', ENV['FACTER_GEM_VERSION'], :require => false, :groups => [:test]
 
 puppetversion = ENV['PUPPET_VERSION'] || '>= 6.0'
-gem 'puppet', puppetversion, :require => false, :groups => [:test]
+gem 'puppet', puppetversion, '<= 7.13.0', :require => false, :groups => [:test]
 
 # vim: syntax=ruby
