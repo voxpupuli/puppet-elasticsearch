@@ -50,6 +50,8 @@ module EsFacts
 
     if File.readable?("#{dir_prefix}/elasticsearch.yml")
       config_data = YAML.load_file("#{dir_prefix}/elasticsearch.yml")
+      return unless config_data
+
       httpport, ssl = get_httpport(config_data)
     end
 
