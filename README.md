@@ -1,11 +1,13 @@
 # Elasticsearch Puppet Module
-
-[![Puppet Forge endorsed](https://img.shields.io/puppetforge/e/elastic/elasticsearch.svg)](https://forge.puppetlabs.com/elastic/elasticsearch)
-[![Puppet Forge Version](https://img.shields.io/puppetforge/v/elastic/elasticsearch.svg)](https://forge.puppetlabs.com/elastic/elasticsearch)
-[![Puppet Forge Downloads](https://img.shields.io/puppetforge/dt/elastic/elasticsearch.svg)](https://forge.puppetlabs.com/elastic/elasticsearch)
-[![Puppet Forge Score](https://img.shields.io/puppetforge/f/elastic/elasticsearch.svg)](https://forge.puppetlabs.com/elastic/elasticsearch)
-[![Build Status](https://travis-ci.org/elastic/puppet-elasticsearch.png?branch=master)](https://travis-ci.org/elastic/puppet-elasticsearch)
-<!-- [![Code Coverage](https://coveralls.io/repos/github/elastic/elasticsearch/badge.svg?branch=master)](https://coveralls.io/github/elastic/elasticsearch) -->
+[![Build Status](https://github.com/voxpupuli/puppet-elasticsearch/workflows/CI/badge.svg)](https://github.com/voxpupuli/puppet-elasticsearch/actions?query=workflow%3ACI)
+[![Release](https://github.com/voxpupuli/puppet-elasticsearch/actions/workflows/release.yml/badge.svg)](https://github.com/voxpupuli/puppet-elasticsearch/actions/workflows/release.yml)
+[![Puppet Forge](https://img.shields.io/puppetforge/v/puppet/elasticsearch.svg)](https://forge.puppetlabs.com/puppet/elasticsearch)
+[![Puppet Forge - downloads](https://img.shields.io/puppetforge/dt/puppet/elasticsearch.svg)](https://forge.puppetlabs.com/puppet/elasticsearch)
+[![Puppet Forge - endorsement](https://img.shields.io/puppetforge/e/puppet/elasticsearch.svg)](https://forge.puppetlabs.com/puppet/elasticsearch)
+[![Puppet Forge - scores](https://img.shields.io/puppetforge/f/puppet/elasticsearch.svg)](https://forge.puppetlabs.com/puppet/elasticsearch)
+[![puppetmodule.info docs](http://www.puppetmodule.info/images/badge.png)](http://www.puppetmodule.info/m/puppet-elasticsearch)
+[![Apache-2 License](https://img.shields.io/github/license/voxpupuli/puppet-elasticsearch.svg)](LICENSE)
+[![Donated by Elastic](https://img.shields.io/badge/donated%20by-Elastic-fb7047.svg)](#transfer-notice)
 
 #### Table of Contents
 
@@ -19,6 +21,7 @@
 6. [Limitations - OS compatibility, etc.](#limitations)
 7. [Development - Guide for contributing to the module](#development)
 8. [Support - When you need help with this module](#support)
+9. [Transfer Notice](#transfer-notice)
 
 ## Module description
 
@@ -69,7 +72,7 @@ We recommend managing your Java installation with the [puppetlabs-java](https://
 
 When using the repository management, the following module dependencies are required:
 
-* General: [Elastic/elastic_stack](https://forge.puppet.com/elastic/elastic_stack)
+* General: [Puppet/elastic_stack](https://forge.puppet.com/puppet/elastic_stack)
 * Debian/Ubuntu: [Puppetlabs/apt](https://forge.puppetlabs.com/puppetlabs/apt)
 * openSUSE/SLES: [puppet/zypprepo](https://forge.puppetlabs.com/puppet/zypprepo)
 
@@ -834,12 +837,14 @@ Testing on other platforms has been light and cannot be guaranteed.
 
 ## Development
 
-Please see the [CONTRIBUTING.md](CONTRIBUTING.md) file for instructions regarding development environments and testing.
+Please see the [CONTRIBUTING.md](https://github.com/voxpupuli/puppet-elasticsearch/blob/master/.github/CONTRIBUTING.md) file for instructions regarding development environments and testing.
 
 ## Support
 
 The Puppet Elasticsearch module is community supported and not officially supported by Elastic Support.
 
-For questions about the module, open a topic in the [Discuss](http://discuss.elastic.co/) forums or join us in [#elasticsearch](https://webchat.freenode.net/?channels=%23elasticsearch) on Freenode IRC.
+## Transfer Notice
 
-For bugs or feature requests, open an issue in [Github](https://github.com/elastic/puppet-elasticsearch/issues).
+This module was originally authored by [Elastic](https://www.elastic.co).
+The maintainer preferred that Vox Pupuli take ownership of the module for future improvement and maintenance.
+Existing pull requests and issues were transferred over, please fork and continue to contribute here instead of Elastic.
