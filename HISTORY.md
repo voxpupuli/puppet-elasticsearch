@@ -1,56 +1,3 @@
-# Changelog
-
-All notable changes to this project will be documented in this file.
-Each new release typically also includes the latest modulesync defaults.
-These should not affect the functionality of the module.
-
-## [v8.0.0](https://github.com/voxpupuli/puppet-elasticsearch/tree/v8.0.0) (2022-01-07)
-
-[Full Changelog](https://github.com/voxpupuli/puppet-elasticsearch/compare/7.0.0...v8.0.0)
-
-**Breaking changes:**
-
-- Unlist Operating Systems which have reached EOL [\#1127](https://github.com/voxpupuli/puppet-elasticsearch/pull/1127) ([smortex](https://github.com/smortex))
-- Drop support of Puppet 4 and 5 \(EOL\) [\#1126](https://github.com/voxpupuli/puppet-elasticsearch/pull/1126) ([smortex](https://github.com/smortex))
-
-**Implemented enhancements:**
-
-- Add support for Debian 11 [\#1132](https://github.com/voxpupuli/puppet-elasticsearch/pull/1132) ([smortex](https://github.com/smortex))
-- Add support for Puppet 7 [\#1128](https://github.com/voxpupuli/puppet-elasticsearch/pull/1128) ([smortex](https://github.com/smortex))
-
-**Fixed bugs:**
-
-- typo in config.pp [\#1130](https://github.com/voxpupuli/puppet-elasticsearch/issues/1130)
-- fix error in custom fact resolution when conf file is empty [\#1140](https://github.com/voxpupuli/puppet-elasticsearch/pull/1140) ([fe80](https://github.com/fe80))
-- regression: Fix rubocop cleanup [\#1139](https://github.com/voxpupuli/puppet-elasticsearch/pull/1139) ([bastelfreak](https://github.com/bastelfreak))
-- config.pp: fix typo [\#1131](https://github.com/voxpupuli/puppet-elasticsearch/pull/1131) ([Aseiide](https://github.com/Aseiide))
-- Fix more failing master tests [\#1077](https://github.com/voxpupuli/puppet-elasticsearch/pull/1077) ([fatmcgav](https://github.com/fatmcgav))
-
-**Closed issues:**
-
-- elasticsearch::init does not respect service\_name other than 'elasticsearch' [\#1110](https://github.com/voxpupuli/puppet-elasticsearch/issues/1110)
-- Centos/RHEL 8 support [\#1100](https://github.com/voxpupuli/puppet-elasticsearch/issues/1100)
-- RFC: Remove support for instances [\#1025](https://github.com/voxpupuli/puppet-elasticsearch/issues/1025)
-- Add support for other OS's / distro's [\#94](https://github.com/voxpupuli/puppet-elasticsearch/issues/94)
-
-**Merged pull requests:**
-
-- puppetlabs/stdlib: Allow 8.x & elastic\_stack: Migrate from elastic to puppet namespace [\#1141](https://github.com/voxpupuli/puppet-elasticsearch/pull/1141) ([bastelfreak](https://github.com/bastelfreak))
-- update metadata.json for Vox Pupuli namespace [\#1136](https://github.com/voxpupuli/puppet-elasticsearch/pull/1136) ([bastelfreak](https://github.com/bastelfreak))
-- Stop using Travis CI [\#1124](https://github.com/voxpupuli/puppet-elasticsearch/pull/1124) ([jmlrt](https://github.com/jmlrt))
-- Increase of the role-name length to 40 [\#1115](https://github.com/voxpupuli/puppet-elasticsearch/pull/1115) ([Kuermel](https://github.com/Kuermel))
-- Do not restart Elasticsearch on config change when restart\_config\_change is set to false [\#1114](https://github.com/voxpupuli/puppet-elasticsearch/pull/1114) ([scornelissen85](https://github.com/scornelissen85))
-- make sure plugins installed before service is started [\#1106](https://github.com/voxpupuli/puppet-elasticsearch/pull/1106) ([shamil](https://github.com/shamil))
-- Bump module version to `7.0.0` and update docs [\#1105](https://github.com/voxpupuli/puppet-elasticsearch/pull/1105) ([fatmcgav](https://github.com/fatmcgav))
-- Bump Elasticsearch version and some cleanup [\#1104](https://github.com/voxpupuli/puppet-elasticsearch/pull/1104) ([fatmcgav](https://github.com/fatmcgav))
-- Add Elasticsearch 7 to test matrix [\#1088](https://github.com/voxpupuli/puppet-elasticsearch/pull/1088) ([fatmcgav](https://github.com/fatmcgav))
-- Remove multi instance support [\#1085](https://github.com/voxpupuli/puppet-elasticsearch/pull/1085) ([fatmcgav](https://github.com/fatmcgav))
-- Add some more badges [\#1076](https://github.com/voxpupuli/puppet-elasticsearch/pull/1076) ([fatmcgav](https://github.com/fatmcgav))
-- Bump Beaker versions to support latest OS' [\#1075](https://github.com/voxpupuli/puppet-elasticsearch/pull/1075) ([fatmcgav](https://github.com/fatmcgav))
-- Fix failing tests on master [\#1074](https://github.com/voxpupuli/puppet-elasticsearch/pull/1074) ([fatmcgav](https://github.com/fatmcgav))
-- Fix misspelling of openSUSE [\#1073](https://github.com/voxpupuli/puppet-elasticsearch/pull/1073) ([m-rey](https://github.com/m-rey))
-- Fix intake failure for variable\_scope [\#1066](https://github.com/voxpupuli/puppet-elasticsearch/pull/1066) ([fatmcgav](https://github.com/fatmcgav))
-
 ## [7.0.0](https://github.com/voxpupuli/puppet-elasticsearch/tree/7.0.0) (2020-12-23)
 
 This is a new major version release of the Elasticsearch module that contains a number of breaking changes and adds support for deploying
@@ -1071,6 +1018,3 @@ This release introduces instances to facilitate the option to have more then a s
 
 ##0.0.1 ( Jan 13, 2013 )
 *  Initial release of the module
-
-
-\* *This Changelog was automatically generated by [github_changelog_generator](https://github.com/github-changelog-generator/github-changelog-generator)*
