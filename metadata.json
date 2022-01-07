@@ -9,8 +9,8 @@
   "issues_url": "https://github.com/elastic/puppet-elasticsearch/issues",
   "dependencies": [
     {
-      "name": "elastic/elastic_stack",
-      "version_requirement": ">= 6.1.0 < 8.0.0"
+      "name": "puppet/elastic_stack",
+      "version_requirement": ">= 8.0.0 < 9.0.0"
     },
     {
       "name": "richardc/datacat",
