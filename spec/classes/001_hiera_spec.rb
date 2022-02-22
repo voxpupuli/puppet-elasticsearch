@@ -204,6 +204,99 @@ describe 'elasticsearch', type: 'class' do
             it { is_expected.to contain_elasticsearch_template('foo') }
           end
 
+          context 'composable template' do
+            let(:facts) { facts.merge(scenario: 'composabletemplate') }
+
+            it {
+              expect(subject).to contain_elasticsearch__component_template('b1').
+                with(
+                  ensure: 'present',
+                  content: {
+                    'template' => {
+                      'mappings' => {
+                        'properties' => {
+                          'baz1' => {
+                            'type' => 'keyword'
+                          }
+                        }
+                      }
+                    }
+                  }
+                )
+            }
+
+            it { is_expected.to contain_elasticsearch_component_template('b1') }
+
+            it {
+              expect(subject).to contain_es_instance_conn_validator(
+                'b1-component_template-conn-validator'
+              )
+            }
+
+            it {
+              expect(subject).to contain_elasticsearch__index_template('foo').
+                with(
+                  ensure: 'present',
+                  content: {
+                    'index_patterns' => ['foo-*']
+                  }
+                )
+            }
+
+            it {
+              expect(subject).to contain_es_instance_conn_validator(
+                'foo-index_template-conn-validator'
+              )
+            }
+
+            it { is_expected.to contain_elasticsearch_index_template('foo') }
+
+            it {
+              expect(subject).to contain_elasticsearch__index_template('baz').
+                with(
+                  ensure: 'present',
+                  content: {
+                    'index_patterns' => ['baz-*'],
+                    'template' => {
+                      'settings' => {
+                        'index' => {
+                          'number_of_replicas' => 1
+                        }
+                      },
+                      'mappings' => {
+                        '_source' => {
+                          'enabled' => true
+                        },
+                        'properties' => {
+                          'host_name' => {
+                            'type' => 'keyword'
+                          },
+                          'created_at' => {
+                            'type' => 'date',
+                            'format' => 'EEE MMM dd HH:mm:ss Z yyyy'
+                          }
+                        }
+                      }
+                    },
+                    'composed_of' => ['b1'],
+                    'priority' => 10,
+                    'version' => 3,
+                    '_meta' => {
+                      'description' => 'my custom'
+                    }
+                  }
+                )
+            }
+
+            it {
+              expect(subject).to contain_es_instance_conn_validator(
+                'baz-index_template-conn-validator'
+              )
+            }
+
+            it { is_expected.to contain_elasticsearch_index_template('baz') }
+          end
+
           context 'no templates' do
             let(:facts) { facts.merge(scenario: '') }
 

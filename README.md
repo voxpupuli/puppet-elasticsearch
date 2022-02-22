@@ -279,6 +279,16 @@ elasticsearch::template { 'templatename':
 }
 ```
 
+From version 7.8 elasticserch provides a new composable templates functionality, both legacy templates api and new composable templates api are supported using different data types.
+
+#### Data types & defines
+
+For legacy templates `template` is used.
+
+For composable templates `component_template` and `index_template` are used.
+
+Both types can be used at the same time
+
 #### Add a new template using a file
 
 This will install and/or replace the template in Elasticsearch:

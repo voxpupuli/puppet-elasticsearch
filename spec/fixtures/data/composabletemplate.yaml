@@ -1,0 +1,40 @@
+---
+elasticsearch::component_templates:
+  b1:
+    content:
+      template:
+        mappings:
+          properties:
+            baz1:
+              type: keyword
+
+elasticsearch::index_templates:
+  foo:
+    ensure: 'present'
+    content:
+      index_patterns:
+        - foo-*
+  baz:
+    ensure: 'present'
+    content:
+      index_patterns:
+        - baz-*
+      template:
+        settings:
+          index:
+            number_of_replicas: 1
+        mappings:
+          _source:
+            enabled: true
+          properties:
+            host_name:
+              type: keyword
+            created_at:
+              type: date
+              format: "EEE MMM dd HH:mm:ss Z yyyy"
+      composed_of:
+        - b1
+      priority: 10
+      version: 3
+      _meta:
+        description: "my custom"

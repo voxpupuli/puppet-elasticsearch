@@ -322,6 +322,12 @@
 # @param templates
 #   Define templates via a hash. This is mainly used with Hiera's auto binding.
 #
+# @param index_templates
+#   Define index_templates via a hash. This is mainly used with Hiera's auto binding.
+#
+# @param component_templates
+#   Define component_templates via a hash. This is mainly used with Hiera's auto binding.
+#
 # @param users
 #   Define templates via a hash. This is mainly used with Hiera's auto binding.
 #
@@ -409,6 +415,8 @@ class elasticsearch (
   Hash                                            $users,
   Boolean                                         $validate_tls,
   Variant[String, Boolean]                        $version,
+  Hash                                            $index_templates           = {},
+  Hash                                            $component_templates       = {},
   Optional[Stdlib::Absolutepath]                  $ca_certificate            = undef,
   Optional[Stdlib::Absolutepath]                  $certificate               = undef,
   String                                          $default_logging_level     = $logging_level,
@@ -483,6 +491,16 @@ class elasticsearch (
   create_resources('elasticsearch::script', $elasticsearch::scripts)
   create_resources('elasticsearch::snapshot_repository', $elasticsearch::snapshot_repositories)
   create_resources('elasticsearch::template', $elasticsearch::templates)
+  $elasticsearch::component_templates.each |String $key, Hash $values| {
+    elasticsearch::component_template { $key:
+      * => $values,
+    }
+  }
+  $elasticsearch::index_templates.each |String $key, Hash $values| {
+    elasticsearch::index_template { $key:
+      * => $values,
+    }
+  }
   create_resources('elasticsearch::user', $elasticsearch::users)
 
   if ($manage_repo == true) {
@@ -613,4 +631,8 @@ class elasticsearch (
   # file is modified
   Elasticsearch_user <| |>
   -> Elasticsearch_user_file <| |>
+
+  # Ensure component templates are loaded before index templates
+  Elasticsearch_component_template <| |>
+  -> Elasticsearch_index_template <| |>
 }

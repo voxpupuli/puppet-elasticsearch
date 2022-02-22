@@ -3,6 +3,8 @@
 require 'spec_helper_acceptance'
 require 'helpers/acceptance/tests/basic_shared_examples'
 require 'helpers/acceptance/tests/template_shared_examples'
+require 'helpers/acceptance/tests/component_template_shared_examples'
+require 'helpers/acceptance/tests/index_template_shared_examples'
 require 'helpers/acceptance/tests/removal_shared_examples'
 require 'helpers/acceptance/tests/pipeline_shared_examples'
 require 'helpers/acceptance/tests/plugin_shared_examples'
@@ -59,6 +61,10 @@ describe "elasticsearch v#{v[:elasticsearch_full_version]} class" do
   end
 
   include_examples('template operations', es_config, v[:template])
+
+  include_examples('component template operations', es_config, v[:component_template])
+
+  include_examples('index template operations', es_config, v[:index_template])
 
   include_examples('pipeline operations', es_config, v[:pipeline])
 

@@ -27,7 +27,13 @@ shared_examples 'REST API' do |resource_type, create_uri, singleton = false|
       let(:json) { json1 }
       let(:instance) { [example1] }
     else
-      let(:json) { json1.merge(json2) }
+      let(:json) do
+        if json1["#{resource_type}s"].is_a? Array
+          json1.update(json2) { |key, v1, v2| v1 + v2 if key == "#{resource_type}s" }
+        else
+          json1.merge(json2)
+        end
+      end
       let(:instance) { [example1, example2] }
     end
 

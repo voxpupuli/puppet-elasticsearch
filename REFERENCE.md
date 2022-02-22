@@ -14,7 +14,9 @@
 
 ### Defined types
 
+* [`elasticsearch::component_template`](#elasticsearch--component_template): This define allows you to insert, update or delete Elasticsearch component  templates.   Template content should be defined through either th
 * [`elasticsearch::index`](#elasticsearch--index): A defined type to control Elasticsearch index-level settings.
+* [`elasticsearch::index_template`](#elasticsearch--index_template): This define allows you to insert, update or delete Elasticsearch index  templates (using new composable api).   Template content should be de
 * [`elasticsearch::pipeline`](#elasticsearch--pipeline): This define allows you to insert, update or delete Elasticsearch index  ingestion pipelines.   Pipeline content should be defined through the
 * [`elasticsearch::plugin`](#elasticsearch--plugin): This define allows you to install arbitrary Elasticsearch plugins either by using the default repositories or by specifying an URL
 * [`elasticsearch::role`](#elasticsearch--role): Manage x-pack roles.
@@ -25,7 +27,9 @@
 
 ### Resource types
 
+* [`elasticsearch_component_template`](#elasticsearch_component_template): Manages Elasticsearch component templates.
 * [`elasticsearch_index`](#elasticsearch_index): Manages Elasticsearch index settings.
+* [`elasticsearch_index_template`](#elasticsearch_index_template): Manages Elasticsearch index templates.
 * [`elasticsearch_keystore`](#elasticsearch_keystore): Manages an Elasticsearch keystore settings file.
 * [`elasticsearch_license`](#elasticsearch_license): Manages Elasticsearch licenses.
 * [`elasticsearch_pipeline`](#elasticsearch_pipeline): Manages Elasticsearch ingest pipelines.
@@ -169,6 +173,8 @@ The following parameters are available in the `elasticsearch` class:
 * [`system_key`](#-elasticsearch--system_key)
 * [`systemd_service_path`](#-elasticsearch--systemd_service_path)
 * [`templates`](#-elasticsearch--templates)
+* [`index_templates`](#-elasticsearch--index_templates)
+* [`component_templates`](#-elasticsearch--component_templates)
 * [`users`](#-elasticsearch--users)
 * [`validate_tls`](#-elasticsearch--validate_tls)
 * [`version`](#-elasticsearch--version)
@@ -743,6 +749,22 @@ Data type: `Hash`
 
 Define templates via a hash. This is mainly used with Hiera's auto binding.
 
+##### <a name="-elasticsearch--index_templates"></a>`index_templates`
+
+Data type: `Hash`
+
+Define index_templates via a hash. This is mainly used with Hiera's auto binding.
+
+Default value: `{}`
+
+##### <a name="-elasticsearch--component_templates"></a>`component_templates`
+
+Data type: `Hash`
+
+Define component_templates via a hash. This is mainly used with Hiera's auto binding.
+
+Default value: `{}`
+
 ##### <a name="-elasticsearch--users"></a>`users`
 
 Data type: `Hash`
@@ -920,6 +942,136 @@ in general and is used in a platform-independent way. E.g. "service" means
 
 ## Defined types
 
+### <a name="elasticsearch--component_template"></a>`elasticsearch::component_template`
+
+This define allows you to insert, update or delete Elasticsearch component
+ templates.
+
+ Template content should be defined through either the `content` parameter
+ (when passing a hash or json string) or the `source` parameter (when passing
+ the puppet file URI to a template json file).
+
+#### Parameters
+
+The following parameters are available in the `elasticsearch::component_template` defined type:
+
+* [`ensure`](#-elasticsearch--component_template--ensure)
+* [`api_basic_auth_password`](#-elasticsearch--component_template--api_basic_auth_password)
+* [`api_basic_auth_username`](#-elasticsearch--component_template--api_basic_auth_username)
+* [`api_ca_file`](#-elasticsearch--component_template--api_ca_file)
+* [`api_ca_path`](#-elasticsearch--component_template--api_ca_path)
+* [`api_host`](#-elasticsearch--component_template--api_host)
+* [`api_port`](#-elasticsearch--component_template--api_port)
+* [`api_protocol`](#-elasticsearch--component_template--api_protocol)
+* [`api_timeout`](#-elasticsearch--component_template--api_timeout)
+* [`content`](#-elasticsearch--component_template--content)
+* [`source`](#-elasticsearch--component_template--source)
+* [`validate_tls`](#-elasticsearch--component_template--validate_tls)
+
+##### <a name="-elasticsearch--component_template--ensure"></a>`ensure`
+
+Data type: `Enum['absent', 'present']`
+
+Controls whether the named component template should be present or absent in
+the cluster.
+
+Default value: `'present'`
+
+##### <a name="-elasticsearch--component_template--api_basic_auth_password"></a>`api_basic_auth_password`
+
+Data type: `Optional[String]`
+
+HTTP basic auth password to use when communicating over the Elasticsearch
+API.
+
+Default value: `$elasticsearch::api_basic_auth_password`
+
+##### <a name="-elasticsearch--component_template--api_basic_auth_username"></a>`api_basic_auth_username`
+
+Data type: `Optional[String]`
+
+HTTP basic auth username to use when communicating over the Elasticsearch
+API.
+
+Default value: `$elasticsearch::api_basic_auth_username`
+
+##### <a name="-elasticsearch--component_template--api_ca_file"></a>`api_ca_file`
+
+Data type: `Optional[Stdlib::Absolutepath]`
+
+Path to a CA file which will be used to validate server certs when
+communicating with the Elasticsearch API over HTTPS.
+
+Default value: `$elasticsearch::api_ca_file`
+
+##### <a name="-elasticsearch--component_template--api_ca_path"></a>`api_ca_path`
+
+Data type: `Optional[Stdlib::Absolutepath]`
+
+Path to a directory with CA files which will be used to validate server
+certs when communicating with the Elasticsearch API over HTTPS.
+
+Default value: `$elasticsearch::api_ca_path`
+
+##### <a name="-elasticsearch--component_template--api_host"></a>`api_host`
+
+Data type: `String`
+
+Host name or IP address of the ES instance to connect to.
+
+Default value: `$elasticsearch::api_host`
+
+##### <a name="-elasticsearch--component_template--api_port"></a>`api_port`
+
+Data type: `Integer[0, 65535]`
+
+Port number of the ES instance to connect to
+
+Default value: `$elasticsearch::api_port`
+
+##### <a name="-elasticsearch--component_template--api_protocol"></a>`api_protocol`
+
+Data type: `Enum['http', 'https']`
+
+Protocol that should be used to connect to the Elasticsearch API.
+
+Default value: `$elasticsearch::api_protocol`
+
+##### <a name="-elasticsearch--component_template--api_timeout"></a>`api_timeout`
+
+Data type: `Integer`
+
+Timeout period (in seconds) for the Elasticsearch API.
+
+Default value: `$elasticsearch::api_timeout`
+
+##### <a name="-elasticsearch--component_template--content"></a>`content`
+
+Data type: `Optional[Variant[String, Hash]]`
+
+Contents of the template. Can be either a puppet hash or a string
+containing JSON.
+
+Default value: `undef`
+
+##### <a name="-elasticsearch--component_template--source"></a>`source`
+
+Data type: `Optional[String]`
+
+Source path for the template file. Can be any value similar to `source`
+values for `file` resources.
+
+Default value: `undef`
+
+##### <a name="-elasticsearch--component_template--validate_tls"></a>`validate_tls`
+
+Data type: `Boolean`
+
+Determines whether the validity of SSL/TLS certificates received from the
+Elasticsearch API should be verified or ignored.
+
+Default value: `$elasticsearch::validate_tls`
+
 ### <a name="elasticsearch--index"></a>`elasticsearch::index`
 
 A defined type to control Elasticsearch index-level settings.
@@ -1026,6 +1178,136 @@ Index settings in hash form (typically nested).
 Default value: `{}`
 
 ##### <a name="-elasticsearch--index--validate_tls"></a>`validate_tls`
+
+Data type: `Boolean`
+
+Determines whether the validity of SSL/TLS certificates received from the
+Elasticsearch API should be verified or ignored.
+
+Default value: `$elasticsearch::validate_tls`
+
+### <a name="elasticsearch--index_template"></a>`elasticsearch::index_template`
+
+This define allows you to insert, update or delete Elasticsearch index
+ templates (using new composable api).
+
+ Template content should be defined through either the `content` parameter
+ (when passing a hash or json string) or the `source` parameter (when passing
+ the puppet file URI to a template json file).
+
+#### Parameters
+
+The following parameters are available in the `elasticsearch::index_template` defined type:
+
+* [`ensure`](#-elasticsearch--index_template--ensure)
+* [`api_basic_auth_password`](#-elasticsearch--index_template--api_basic_auth_password)
+* [`api_basic_auth_username`](#-elasticsearch--index_template--api_basic_auth_username)
+* [`api_ca_file`](#-elasticsearch--index_template--api_ca_file)
+* [`api_ca_path`](#-elasticsearch--index_template--api_ca_path)
+* [`api_host`](#-elasticsearch--index_template--api_host)
+* [`api_port`](#-elasticsearch--index_template--api_port)
+* [`api_protocol`](#-elasticsearch--index_template--api_protocol)
+* [`api_timeout`](#-elasticsearch--index_template--api_timeout)
+* [`content`](#-elasticsearch--index_template--content)
+* [`source`](#-elasticsearch--index_template--source)
+* [`validate_tls`](#-elasticsearch--index_template--validate_tls)
+
+##### <a name="-elasticsearch--index_template--ensure"></a>`ensure`
+
+Data type: `Enum['absent', 'present']`
+
+Controls whether the named index template should be present or absent in
+the cluster.
+
+Default value: `'present'`
+
+##### <a name="-elasticsearch--index_template--api_basic_auth_password"></a>`api_basic_auth_password`
+
+Data type: `Optional[String]`
+
+HTTP basic auth password to use when communicating over the Elasticsearch
+API.
+
+Default value: `$elasticsearch::api_basic_auth_password`
+
+##### <a name="-elasticsearch--index_template--api_basic_auth_username"></a>`api_basic_auth_username`
+
+Data type: `Optional[String]`
+
+HTTP basic auth username to use when communicating over the Elasticsearch
+API.
+
+Default value: `$elasticsearch::api_basic_auth_username`
+
+##### <a name="-elasticsearch--index_template--api_ca_file"></a>`api_ca_file`
+
+Data type: `Optional[Stdlib::Absolutepath]`
+
+Path to a CA file which will be used to validate server certs when
+communicating with the Elasticsearch API over HTTPS.
+
+Default value: `$elasticsearch::api_ca_file`
+
+##### <a name="-elasticsearch--index_template--api_ca_path"></a>`api_ca_path`
+
+Data type: `Optional[Stdlib::Absolutepath]`
+
+Path to a directory with CA files which will be used to validate server
+certs when communicating with the Elasticsearch API over HTTPS.
+
+Default value: `$elasticsearch::api_ca_path`
+
+##### <a name="-elasticsearch--index_template--api_host"></a>`api_host`
+
+Data type: `String`
+
+Host name or IP address of the ES instance to connect to.
+
+Default value: `$elasticsearch::api_host`
+
+##### <a name="-elasticsearch--index_template--api_port"></a>`api_port`
+
+Data type: `Integer[0, 65535]`
+
+Port number of the ES instance to connect to
+
+Default value: `$elasticsearch::api_port`
+
+##### <a name="-elasticsearch--index_template--api_protocol"></a>`api_protocol`
+
+Data type: `Enum['http', 'https']`
+
+Protocol that should be used to connect to the Elasticsearch API.
+
+Default value: `$elasticsearch::api_protocol`
+
+##### <a name="-elasticsearch--index_template--api_timeout"></a>`api_timeout`
+
+Data type: `Integer`
+
+Timeout period (in seconds) for the Elasticsearch API.
+
+Default value: `$elasticsearch::api_timeout`
+
+##### <a name="-elasticsearch--index_template--content"></a>`content`
+
+Data type: `Optional[Variant[String, Hash]]`
+
+Contents of the template. Can be either a puppet hash or a string
+containing JSON.
+
+Default value: `undef`
+
+##### <a name="-elasticsearch--index_template--source"></a>`source`
+
+Data type: `Optional[String]`
+
+Source path for the template file. Can be any value similar to `source`
+values for `file` resources.
+
+Default value: `undef`
+
+##### <a name="-elasticsearch--index_template--validate_tls"></a>`validate_tls`
 
 Data type: `Boolean`
 
@@ -1714,6 +1996,49 @@ Default value: `[]`
 
 ## Resource types
 
+### <a name="elasticsearch_component_template"></a>`elasticsearch_component_template`
+
+Manages Elasticsearch component templates.
+
+#### Properties
+
+The following properties are available in the `elasticsearch_component_template` type.
+
+##### `content`
+
+Structured content of template.
+
+##### `ensure`
+
+Valid values: `present`, `absent`
+
+The basic property that the resource should be in.
+
+Default value: `present`
+
+#### Parameters
+
+The following parameters are available in the `elasticsearch_component_template` type.
+
+* [`name`](#-elasticsearch_component_template--name)
+* [`provider`](#-elasticsearch_component_template--provider)
+* [`source`](#-elasticsearch_component_template--source)
+
+##### <a name="-elasticsearch_component_template--name"></a>`name`
+
+namevar
+
+Template name.
+
+##### <a name="-elasticsearch_component_template--provider"></a>`provider`
+
+The specific backend to use for this `elasticsearch_component_template` resource. You will seldom need to specify this
+--- Puppet will usually discover the appropriate provider for your platform.
+
+##### <a name="-elasticsearch_component_template--source"></a>`source`
+
+Puppet source to file containing template contents.
+
 ### <a name="elasticsearch_index"></a>`elasticsearch_index`
 
 Manages Elasticsearch index settings.
@@ -1751,6 +2076,49 @@ Index name.
 
 The specific backend to use for this `elasticsearch_index` resource. You will seldom need to specify this --- Puppet
 will usually discover the appropriate provider for your platform.
+
+### <a name="elasticsearch_index_template"></a>`elasticsearch_index_template`
+
+Manages Elasticsearch index templates.
+
+#### Properties
+
+The following properties are available in the `elasticsearch_index_template` type.
+
+##### `content`
+
+Structured content of template.
+
+##### `ensure`
+
+Valid values: `present`, `absent`
+
+The basic property that the resource should be in.
+
+Default value: `present`
+
+#### Parameters
+
+The following parameters are available in the `elasticsearch_index_template` type.
+
+* [`name`](#-elasticsearch_index_template--name)
+* [`provider`](#-elasticsearch_index_template--provider)
+* [`source`](#-elasticsearch_index_template--source)
+
+##### <a name="-elasticsearch_index_template--name"></a>`name`
+
+namevar
+
+Template name.
+
+##### <a name="-elasticsearch_index_template--provider"></a>`provider`
+
+The specific backend to use for this `elasticsearch_index_template` resource. You will seldom need to specify this ---
+Puppet will usually discover the appropriate provider for your platform.
+
+##### <a name="-elasticsearch_index_template--source"></a>`source`
+
+Puppet source to file containing template contents.
 
 ### <a name="elasticsearch_keystore"></a>`elasticsearch_keystore`
 

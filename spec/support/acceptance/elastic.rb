@@ -45,6 +45,8 @@ RSpec.configure do |c|
                      JSON.parse(File.read('spec/fixtures/templates/7.x.json'))
                    end
     v[:template] = Puppet_X::Elastic.deep_to_i(Puppet_X::Elastic.deep_to_s(v[:template]))
+    v[:component_template] = Puppet_X::Elastic.deep_to_i(Puppet_X::Elastic.deep_to_s(JSON.parse(File.read('spec/fixtures/templates/component.json'))))
+    v[:index_template] = Puppet_X::Elastic.deep_to_i(Puppet_X::Elastic.deep_to_s(JSON.parse(File.read('spec/fixtures/templates/index.json'))))
     v[:pipeline] = JSON.parse(File.read('spec/fixtures/pipelines/example.json'))
   end
 

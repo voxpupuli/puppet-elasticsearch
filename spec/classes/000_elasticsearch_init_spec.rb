@@ -578,7 +578,9 @@ describe 'elasticsearch', type: 'class' do
           },
           'snapshot_repositories' => { 'backup' => { 'location' => '/backups' } },
           'templates' => { 'foo' => { 'content' => {} } },
-          'users' => { 'elastic' => { 'password' => 'foobar' } }
+          'users' => { 'elastic' => { 'password' => 'foobar' } },
+          'index_templates' => { 'foo' => { 'content' => {} } },
+          'component_templates' => { 'foo' => { 'content' => {} } }
         }.each_pair do |deftype, params|
           describe deftype do
             let(:params) do
