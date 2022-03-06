@@ -1,6 +1,8 @@
 fixtures:
   repositories:
-    apt: https://github.com/puppetlabs/puppetlabs-apt.git
+    apt:
+      repo: https://github.com/root-expert/puppetlabs-apt.git
+      branch: safe-facts
     archive: https://github.com/voxpupuli/puppet-archive.git
     augeas_core: https://github.com/puppetlabs/puppetlabs-augeas_core.git
     concat: https://github.com/puppetlabs/puppetlabs-concat.git

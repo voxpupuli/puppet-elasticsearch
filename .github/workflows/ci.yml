@@ -61,7 +61,7 @@ jobs:
     needs: setup_matrix
     runs-on: ubuntu-latest
     env:
-      BUNDLE_WITHOUT: development:test:release
+      BUNDLE_WITHOUT: development:release
     strategy:
       fail-fast: false
       matrix:
@@ -74,6 +74,8 @@ jobs:
         with:
           ruby-version: '3.0'
           bundler-cache: true
+      - name: Install fixtures
+        run: bundle exec rake spec_prep
       - name: Run tests
         run: bundle exec rake beaker
         env:
