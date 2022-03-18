@@ -4,6 +4,18 @@ All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
 These should not affect the functionality of the module.
 
+## [v8.0.1](https://github.com/voxpupuli/puppet-elasticsearch/tree/v8.0.1) (2022-03-18)
+
+[Full Changelog](https://github.com/voxpupuli/puppet-elasticsearch/compare/v8.0.0...v8.0.1)
+
+**Fixed bugs:**
+
+- Define default\_target for parsed file providers [\#1150](https://github.com/voxpupuli/puppet-elasticsearch/pull/1150) ([towo](https://github.com/towo))
+
+**Merged pull requests:**
+
+- Cleanup README.md [\#1143](https://github.com/voxpupuli/puppet-elasticsearch/pull/1143) ([bastelfreak](https://github.com/bastelfreak))
+
 ## [v8.0.0](https://github.com/voxpupuli/puppet-elasticsearch/tree/v8.0.0) (2022-01-07)
 
 [Full Changelog](https://github.com/voxpupuli/puppet-elasticsearch/compare/7.0.0...v8.0.0)
@@ -39,7 +51,7 @@ These should not affect the functionality of the module.
 - update metadata.json for Vox Pupuli namespace [\#1136](https://github.com/voxpupuli/puppet-elasticsearch/pull/1136) ([bastelfreak](https://github.com/bastelfreak))
 - Stop using Travis CI [\#1124](https://github.com/voxpupuli/puppet-elasticsearch/pull/1124) ([jmlrt](https://github.com/jmlrt))
 - Increase of the role-name length to 40 [\#1115](https://github.com/voxpupuli/puppet-elasticsearch/pull/1115) ([Kuermel](https://github.com/Kuermel))
-- Do not restart Elasticsearch on config change when restart\_config\_change is set to false [\#1114](https://github.com/voxpupuli/puppet-elasticsearch/pull/1114) ([scornelissen85](https://github.com/scornelissen85))
+- Do not restart Elasticsearch on config change when restart\_config\_change is set to false [\#1114](https://github.com/voxpupuli/puppet-elasticsearch/pull/1114) ([sanderc85](https://github.com/sanderc85))
 - make sure plugins installed before service is started [\#1106](https://github.com/voxpupuli/puppet-elasticsearch/pull/1106) ([shamil](https://github.com/shamil))
 - Bump module version to `7.0.0` and update docs [\#1105](https://github.com/voxpupuli/puppet-elasticsearch/pull/1105) ([fatmcgav](https://github.com/fatmcgav))
 - Bump Elasticsearch version and some cleanup [\#1104](https://github.com/voxpupuli/puppet-elasticsearch/pull/1104) ([fatmcgav](https://github.com/fatmcgav))
