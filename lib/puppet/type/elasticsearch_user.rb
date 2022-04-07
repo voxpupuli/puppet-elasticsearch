@@ -30,11 +30,9 @@ Puppet::Type.newtype(:elasticsearch_user) do
       raise ArgumentError, 'Password must be at least 6 characters long' if value.length < 6
     end
 
-    # rubocop:disable Style/PredicateName
     def is_to_s(_currentvalue)
       '[old password hash redacted]'
     end
-    # rubocop:enable Style/PredicateName
 
     def should_to_s(_newvalue)
       '[new password hash redacted]'
