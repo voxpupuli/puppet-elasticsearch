@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
 These should not affect the functionality of the module.
 
+## [v8.0.2](https://github.com/voxpupuli/puppet-elasticsearch/tree/v8.0.2) (2022-04-08)
+
+[Full Changelog](https://github.com/voxpupuli/puppet-elasticsearch/compare/v8.0.1...v8.0.2)
+
+**Merged pull requests:**
+
+- puppetlabs/java: Allow 8.x [\#1156](https://github.com/voxpupuli/puppet-elasticsearch/pull/1156) ([bastelfreak](https://github.com/bastelfreak))
+
 ## [v8.0.1](https://github.com/voxpupuli/puppet-elasticsearch/tree/v8.0.1) (2022-03-18)
 
 [Full Changelog](https://github.com/voxpupuli/puppet-elasticsearch/compare/v8.0.0...v8.0.1)
