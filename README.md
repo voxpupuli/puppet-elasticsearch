@@ -424,6 +424,67 @@ elasticsearch::snapshot_repository { 'backups':
 }
 ```
 
+### ILM (Index Lifecycle Management)
+
+By default ILM use the top-level `elasticsearch::api_*` settings to communicate with Elasticsearch.
+The following is an example of how to override these settings:
+
+```puppet
+elasticsearch::ilm_policy { 'policiyname':
+  api_protocol            => 'https',
+  api_host                => $::ipaddress,
+  api_port                => 9201,
+  api_timeout             => 60,
+  api_basic_auth_username => 'admin',
+  api_basic_auth_password => 'adminpassword',
+  api_ca_file             => '/etc/ssl/certs',
+  api_ca_path             => '/etc/pki/certs',
+  validate_tls            => false,
+  source                  => 'puppet:///path/to/policy.json',
+}
+```
+
+#### Add a new ILM policy using a file
+
+This will install and/or replace the ILM ploicy in Elasticsearch:
+
+```puppet
+elasticsearch::ilm_policy { 'policyname':
+  source => 'puppet:///path/to/policy.json',
+}
+```
+
+#### Add a new ILM policy using content
+This will install and/or replace ILM policy in Elasticsearch:
+
+```puppet
+elasticsearch::ilm_policy { 'policyname':
+  content => {
+    policy => {
+      phases => {
+        warm => {
+          min_age => "7d"
+          actions => {
+            forcemerge => {
+              max_num_segments => 1
+            }
+          }
+        }
+      }
+    }
+  }
+}
+```
+#### Delete an ILM policy
+
+This will install and/or replace the ILM ploicy in Elasticsearch:
+
+```puppet
+elasticsearch::ilm_policy { 'policyname':
+  ensure => 'absent',
+}
+```
+
 ### Connection Validator
 
 This module offers a way to make sure an instance has been started and is up and running before

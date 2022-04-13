@@ -328,6 +328,9 @@
 # @param component_templates
 #   Define component_templates via a hash. This is mainly used with Hiera's auto binding.
 #
+# @param ilm_policies
+#   Define ilm_policies via a hash. This is mainly used with Hiera's auto binding.
+#
 # @param users
 #   Define templates via a hash. This is mainly used with Hiera's auto binding.
 #
@@ -417,6 +420,7 @@ class elasticsearch (
   Variant[String, Boolean]                        $version,
   Hash                                            $index_templates           = {},
   Hash                                            $component_templates       = {},
+  Hash                                            $ilm_policies              = {},
   Optional[Stdlib::Absolutepath]                  $ca_certificate            = undef,
   Optional[Stdlib::Absolutepath]                  $certificate               = undef,
   String                                          $default_logging_level     = $logging_level,
@@ -498,6 +502,11 @@ class elasticsearch (
   }
   $elasticsearch::index_templates.each |String $key, Hash $values| {
     elasticsearch::index_template { $key:
+      * => $values,
+    }
+  }
+  $elasticsearch::ilm_policies.each |String $key, Hash $values| {
+    elasticsearch::ilm_policy { $key:
       * => $values,
     }
   }
@@ -634,5 +643,11 @@ class elasticsearch (
 
   # Ensure component templates are loaded before index templates
   Elasticsearch_component_template <| |>
+  -> Elasticsearch_index_template <| |>
+
+  # Ensure ILM policies are loaded before index or component templates
+  Elasticsearch_ilm_policy <| |>
+  -> Elasticsearch_component_template <| |>
+  Elasticsearch_ilm_policy <| |>
   -> Elasticsearch_index_template <| |>
 }

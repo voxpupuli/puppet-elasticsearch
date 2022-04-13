@@ -1,0 +1,17 @@
+{
+  "policy" : {
+    "phases" : {
+      "warm" : {
+        "min_age" : "2d",
+        "actions" : {
+          "shrink" : {
+            "number_of_shards" : 1
+          },
+          "forcemerge" : {
+            "max_num_segments" : 1
+          }
+        }
+      }
+    }
+  }
+}

@@ -562,6 +562,8 @@ describe 'elasticsearch', type: 'class' do
             'index'
           when 'snapshot_repositories'
             'snapshot_repository'
+          when 'ilm_policies'
+            'ilm_policy'
           else
             string[0..-2]
           end
@@ -580,7 +582,8 @@ describe 'elasticsearch', type: 'class' do
           'templates' => { 'foo' => { 'content' => {} } },
           'users' => { 'elastic' => { 'password' => 'foobar' } },
           'index_templates' => { 'foo' => { 'content' => {} } },
-          'component_templates' => { 'foo' => { 'content' => {} } }
+          'component_templates' => { 'foo' => { 'content' => {} } },
+          'ilm_policies' => { 'foo' => { 'content' => {} } },
         }.each_pair do |deftype, params|
           describe deftype do
             let(:params) do

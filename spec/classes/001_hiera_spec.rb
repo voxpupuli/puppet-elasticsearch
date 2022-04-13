@@ -304,6 +304,53 @@ describe 'elasticsearch', type: 'class' do
           end
         end
 
+        describe 'ilm policies' do
+          context 'single ilm policy' do
+            let(:facts) { facts.merge(scenario: 'singleilmpolicy') }
+
+            it {
+              expect(subject).to contain_elasticsearch__ilm_policy('mypolicy').
+                with(
+                  ensure: 'present',
+                  content: {
+                    'policy' => {
+                      'phases' => {
+                        'warm' => {
+                          'min_age' => '2d',
+                          'actions' => {
+                            'shrink' => {
+                              'number_of_shards' => 1
+                            },
+                            'forcemerge' => {
+                              'max_num_segments' => 1
+                            }
+                          }
+                        },
+                        'cold' => {
+                          'min_age' => '30d'
+                        }
+                      }
+                    }
+                  }
+                )
+            }
+
+            it {
+              expect(subject).to contain_es_instance_conn_validator(
+                'mypolicy-ilm_policy-conn-validator'
+              )
+            }
+
+            it { is_expected.to contain_elasticsearch_ilm_policy('mypolicy') }
+          end
+
+          context 'no ilm policy' do
+            let(:facts) { facts.merge(scenario: '') }
+
+            it { is_expected.not_to contain_elasticsearch__ilm_policy('mypolicy') }
+          end
+        end
+
         describe 'users' do
           context 'single users' do
             let(:facts) { facts.merge(scenario: 'singleuser') }

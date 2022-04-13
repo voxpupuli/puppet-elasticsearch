@@ -15,6 +15,7 @@
 ### Defined types
 
 * [`elasticsearch::component_template`](#elasticsearch--component_template): This define allows you to insert, update or delete Elasticsearch component  templates.   Template content should be defined through either th
+* [`elasticsearch::ilm_policy`](#elasticsearch--ilm_policy): This define allows you to insert, update or delete Elasticsearch ILM  policies.   Policy content should be defined through either the `conten
 * [`elasticsearch::index`](#elasticsearch--index): A defined type to control Elasticsearch index-level settings.
 * [`elasticsearch::index_template`](#elasticsearch--index_template): This define allows you to insert, update or delete Elasticsearch index  templates (using new composable api).   Template content should be de
 * [`elasticsearch::pipeline`](#elasticsearch--pipeline): This define allows you to insert, update or delete Elasticsearch index  ingestion pipelines.   Pipeline content should be defined through the
@@ -28,6 +29,7 @@
 ### Resource types
 
 * [`elasticsearch_component_template`](#elasticsearch_component_template): Manages Elasticsearch component templates.
+* [`elasticsearch_ilm_policy`](#elasticsearch_ilm_policy): Manages Elasticsearch ILM policies.
 * [`elasticsearch_index`](#elasticsearch_index): Manages Elasticsearch index settings.
 * [`elasticsearch_index_template`](#elasticsearch_index_template): Manages Elasticsearch index templates.
 * [`elasticsearch_keystore`](#elasticsearch_keystore): Manages an Elasticsearch keystore settings file.
@@ -175,6 +177,7 @@ The following parameters are available in the `elasticsearch` class:
 * [`templates`](#-elasticsearch--templates)
 * [`index_templates`](#-elasticsearch--index_templates)
 * [`component_templates`](#-elasticsearch--component_templates)
+* [`ilm_policies`](#-elasticsearch--ilm_policies)
 * [`users`](#-elasticsearch--users)
 * [`validate_tls`](#-elasticsearch--validate_tls)
 * [`version`](#-elasticsearch--version)
@@ -765,6 +768,14 @@ Define component_templates via a hash. This is mainly used with Hiera's auto bin
 
 Default value: `{}`
 
+##### <a name="-elasticsearch--ilm_policies"></a>`ilm_policies`
+
+Data type: `Hash`
+
+Define ilm_policies via a hash. This is mainly used with Hiera's auto binding.
+
+Default value: `{}`
+
 ##### <a name="-elasticsearch--users"></a>`users`
 
 Data type: `Hash`
@@ -1064,6 +1075,136 @@ values for `file` resources.
 Default value: `undef`
 
 ##### <a name="-elasticsearch--component_template--validate_tls"></a>`validate_tls`
+
+Data type: `Boolean`
+
+Determines whether the validity of SSL/TLS certificates received from the
+Elasticsearch API should be verified or ignored.
+
+Default value: `$elasticsearch::validate_tls`
+
+### <a name="elasticsearch--ilm_policy"></a>`elasticsearch::ilm_policy`
+
+This define allows you to insert, update or delete Elasticsearch ILM
+ policies.
+
+ Policy content should be defined through either the `content` parameter
+ (when passing a hash or json string) or the `source` parameter (when passing
+ the puppet file URI to a policy json file).
+
+#### Parameters
+
+The following parameters are available in the `elasticsearch::ilm_policy` defined type:
+
+* [`ensure`](#-elasticsearch--ilm_policy--ensure)
+* [`api_basic_auth_password`](#-elasticsearch--ilm_policy--api_basic_auth_password)
+* [`api_basic_auth_username`](#-elasticsearch--ilm_policy--api_basic_auth_username)
+* [`api_ca_file`](#-elasticsearch--ilm_policy--api_ca_file)
+* [`api_ca_path`](#-elasticsearch--ilm_policy--api_ca_path)
+* [`api_host`](#-elasticsearch--ilm_policy--api_host)
+* [`api_port`](#-elasticsearch--ilm_policy--api_port)
+* [`api_protocol`](#-elasticsearch--ilm_policy--api_protocol)
+* [`api_timeout`](#-elasticsearch--ilm_policy--api_timeout)
+* [`content`](#-elasticsearch--ilm_policy--content)
+* [`source`](#-elasticsearch--ilm_policy--source)
+* [`validate_tls`](#-elasticsearch--ilm_policy--validate_tls)
+
+##### <a name="-elasticsearch--ilm_policy--ensure"></a>`ensure`
+
+Data type: `Enum['absent', 'present']`
+
+Controls whether the named ILM policy should be present or absent in the
+cluster.
+
+Default value: `'present'`
+
+##### <a name="-elasticsearch--ilm_policy--api_basic_auth_password"></a>`api_basic_auth_password`
+
+Data type: `Optional[String]`
+
+HTTP basic auth password to use when communicating over the Elasticsearch
+API.
+
+Default value: `$elasticsearch::api_basic_auth_password`
+
+##### <a name="-elasticsearch--ilm_policy--api_basic_auth_username"></a>`api_basic_auth_username`
+
+Data type: `Optional[String]`
+
+HTTP basic auth username to use when communicating over the Elasticsearch
+API.
+
+Default value: `$elasticsearch::api_basic_auth_username`
+
+##### <a name="-elasticsearch--ilm_policy--api_ca_file"></a>`api_ca_file`
+
+Data type: `Optional[Stdlib::Absolutepath]`
+
+Path to a CA file which will be used to validate server certs when
+communicating with the Elasticsearch API over HTTPS.
+
+Default value: `$elasticsearch::api_ca_file`
+
+##### <a name="-elasticsearch--ilm_policy--api_ca_path"></a>`api_ca_path`
+
+Data type: `Optional[Stdlib::Absolutepath]`
+
+Path to a directory with CA files which will be used to validate server
+certs when communicating with the Elasticsearch API over HTTPS.
+
+Default value: `$elasticsearch::api_ca_path`
+
+##### <a name="-elasticsearch--ilm_policy--api_host"></a>`api_host`
+
+Data type: `String`
+
+Host name or IP address of the ES instance to connect to.
+
+Default value: `$elasticsearch::api_host`
+
+##### <a name="-elasticsearch--ilm_policy--api_port"></a>`api_port`
+
+Data type: `Integer[0, 65535]`
+
+Port number of the ES instance to connect to
+
+Default value: `$elasticsearch::api_port`
+
+##### <a name="-elasticsearch--ilm_policy--api_protocol"></a>`api_protocol`
+
+Data type: `Enum['http', 'https']`
+
+Protocol that should be used to connect to the Elasticsearch API.
+
+Default value: `$elasticsearch::api_protocol`
+
+##### <a name="-elasticsearch--ilm_policy--api_timeout"></a>`api_timeout`
+
+Data type: `Integer`
+
+Timeout period (in seconds) for the Elasticsearch API.
+
+Default value: `$elasticsearch::api_timeout`
+
+##### <a name="-elasticsearch--ilm_policy--content"></a>`content`
+
+Data type: `Optional[Variant[String, Hash]]`
+
+Contents of the policy. Can be either a puppet hash or a string containing
+JSON.
+
+Default value: `undef`
+
+##### <a name="-elasticsearch--ilm_policy--source"></a>`source`
+
+Data type: `Optional[String]`
+
+Source path for the policy file. Can be any value similar to `source`
+values for `file` resources.
+
+Default value: `undef`
+
+##### <a name="-elasticsearch--ilm_policy--validate_tls"></a>`validate_tls`
 
 Data type: `Boolean`
 
@@ -2038,6 +2179,49 @@ The specific backend to use for this `elasticsearch_component_template` resource
 ##### <a name="-elasticsearch_component_template--source"></a>`source`
 
 Puppet source to file containing template contents.
+
+### <a name="elasticsearch_ilm_policy"></a>`elasticsearch_ilm_policy`
+
+Manages Elasticsearch ILM policies.
+
+#### Properties
+
+The following properties are available in the `elasticsearch_ilm_policy` type.
+
+##### `content`
+
+Structured content of policy.
+
+##### `ensure`
+
+Valid values: `present`, `absent`
+
+The basic property that the resource should be in.
+
+Default value: `present`
+
+#### Parameters
+
+The following parameters are available in the `elasticsearch_ilm_policy` type.
+
+* [`name`](#-elasticsearch_ilm_policy--name)
+* [`provider`](#-elasticsearch_ilm_policy--provider)
+* [`source`](#-elasticsearch_ilm_policy--source)
+
+##### <a name="-elasticsearch_ilm_policy--name"></a>`name`
+
+namevar
+
+Policy name.
+
+##### <a name="-elasticsearch_ilm_policy--provider"></a>`provider`
+
+The specific backend to use for this `elasticsearch_ilm_policy` resource. You will seldom need to specify this ---
+Puppet will usually discover the appropriate provider for your platform.
+
+##### <a name="-elasticsearch_ilm_policy--source"></a>`source`
+
+Puppet source to file containing ILM policy contents.
 
 ### <a name="elasticsearch_index"></a>`elasticsearch_index`
 
