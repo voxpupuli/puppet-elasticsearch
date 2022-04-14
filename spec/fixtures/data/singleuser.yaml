@@ -4,4 +4,4 @@ elasticsearch::users:
     ensure: present
     password: password
     roles:
-      - admin
+    - admin

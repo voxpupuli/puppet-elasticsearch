@@ -1,0 +1,5 @@
+---
+elasticsearch::plugins:
+  mobz/elasticsearch-head:
+    ensure: present
+    module_dir: head

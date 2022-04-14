@@ -5,6 +5,6 @@ elasticsearch::pipelines:
     content:
       description: Add the foo field
       processors:
-        - set:
-            field: foo
-            value: bar
+      - set:
+          field: foo
+          value: bar
