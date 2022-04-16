@@ -1,0 +1,4 @@
+### MANAGED BY PUPPET ###
+<% $sorted_jvm_options.each |$jvm_option| { -%>
+<%= $jvm_option %>
+<% } -%>
