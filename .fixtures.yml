@@ -4,7 +4,6 @@ fixtures:
     archive: https://github.com/voxpupuli/puppet-archive.git
     augeas_core: https://github.com/puppetlabs/puppetlabs-augeas_core.git
     concat: https://github.com/puppetlabs/puppetlabs-concat.git
-    datacat: https://github.com/richardc/puppet-datacat.git
     elastic_stack: https://github.com/voxpupuli/puppet-elastic_stack.git
     java: https://github.com/puppetlabs/puppetlabs-java.git
     java_ks: https://github.com/puppetlabs/puppetlabs-java_ks.git

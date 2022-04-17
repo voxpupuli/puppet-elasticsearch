@@ -60,7 +60,6 @@ Therefore please ensure that you test this major release in your environment bef
 ### Requirements
 
 * The [stdlib](https://forge.puppetlabs.com/puppetlabs/stdlib) Puppet library.
-* [richardc/datacat](https://forge.puppetlabs.com/richardc/datacat)
 * [Augeas](http://augeas.net/)
 * [puppetlabs-java_ks](https://forge.puppetlabs.com/puppetlabs/java_ks) for certificate management (optional).
 

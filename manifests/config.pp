@@ -156,25 +156,21 @@ class elasticsearch::config {
     # }
 
     # Generate Elasticsearch config
-    $_es_config = merge(
+    $data = merge(
       $elasticsearch::config,
       { 'path.data' => $elasticsearch::datadir },
       { 'path.logs' => $elasticsearch::logdir },
       $_tls_config
     )
 
-    datacat_fragment { 'main_config':
-      target => "${elasticsearch::configdir}/elasticsearch.yml",
-      data   => $_es_config,
-    }
-
-    datacat { "${elasticsearch::configdir}/elasticsearch.yml":
-      template => "${module_name}/etc/elasticsearch/elasticsearch.yml.erb",
-      notify   => $elasticsearch::_notify_service,
-      require  => Class['elasticsearch::package'],
-      owner    => $elasticsearch::elasticsearch_user,
-      group    => $elasticsearch::elasticsearch_group,
-      mode     => '0440',
+    file { "${elasticsearch::configdir}/elasticsearch.yml":
+      ensure  => 'file',
+      content => template("${module_name}/etc/elasticsearch/elasticsearch.yml.erb"),
+      notify  => $elasticsearch::_notify_service,
+      require => Class['elasticsearch::package'],
+      owner   => $elasticsearch::elasticsearch_user,
+      group   => $elasticsearch::elasticsearch_group,
+      mode    => '0440',
     }
 
     # Add any additional JVM options
