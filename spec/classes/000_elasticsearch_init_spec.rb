@@ -412,7 +412,7 @@ describe 'elasticsearch', type: 'class' do
         }
       end
 
-      describe 'setting jvm_options' do
+      describe 'setting jvm_options before version 7.7.0' do
         jvm_options = [
           '-Xms16g',
           '-Xmx16g'
@@ -420,7 +420,8 @@ describe 'elasticsearch', type: 'class' do
 
         let(:params) do
           default_params.merge(
-            jvm_options: jvm_options
+            jvm_options: jvm_options,
+            version: '7.0.0'
           )
         end
 
@@ -434,6 +435,25 @@ describe 'elasticsearch', type: 'class' do
               )
           }
         end
+      end
+
+      describe 'setting jvm_options after version 7.7.0' do
+        jvm_options = [
+          '-Xms16g',
+          '-Xmx16g'
+        ]
+
+        let(:params) do
+          default_params.merge(
+            jvm_options: jvm_options,
+            version: '7.7.0'
+          )
+        end
+
+        it {
+          expect(subject).to contain_file('/etc/elasticsearch/jvm.options.d/jvm.options').
+            with(ensure: 'file')
+        }
       end
 
       context 'with restart_on_change => true' do
@@ -450,15 +470,30 @@ describe 'elasticsearch', type: 'class' do
           }
         end
 
-        describe 'setting jvm_options triggers restart' do
+        describe 'setting jvm_options triggers restart before version 7.7.0' do
           let(:params) do
             super().merge(
-              jvm_options: ['-Xmx16g']
+              jvm_options: ['-Xmx16g'],
+              version: '7.0.0'
             )
           end
 
           it {
             expect(subject).to contain_file_line('jvm_option_-Xmx16g').
+              that_notifies('Service[elasticsearch]')
+          }
+        end
+
+        describe 'setting jvm_options triggers restart after version 7.7.0' do
+          let(:params) do
+            super().merge(
+              jvm_options: ['-Xmx16g'],
+              version: '7.7.0'
+            )
+          end
+
+          it {
+            expect(subject).to contain_file('/etc/elasticsearch/jvm.options.d/jvm.options').
               that_notifies('Service[elasticsearch]')
           }
         end

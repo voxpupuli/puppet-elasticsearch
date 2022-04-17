@@ -177,13 +177,31 @@ class elasticsearch::config {
       mode     => '0440',
     }
 
-    # Add any additional JVM options
-    $elasticsearch::jvm_options.each |String $jvm_option| {
-      file_line { "jvm_option_${jvm_option}":
-        ensure => present,
-        path   => "${elasticsearch::configdir}/jvm.options",
-        line   => $jvm_option,
-        notify => $elasticsearch::_notify_service,
+    if ($elasticsearch::version != false and versioncmp($elasticsearch::version, '7.7.0') >= 0) {
+      # https://www.elastic.co/guide/en/elasticsearch/reference/master/advanced-configuration.html#set-jvm-options
+      # https://github.com/elastic/elasticsearch/pull/51882
+      # >> "Do not modify the root jvm.options file. Use files in jvm.options.d/ instead."
+      $_epp_hash = {
+        sorted_jvm_options => sort(unique($elasticsearch::jvm_options)),
+      }
+      file { "${elasticsearch::configdir}/jvm.options.d/jvm.options":
+        ensure  => 'file',
+        content => epp("${module_name}/etc/elasticsearch/jvm.options.d/jvm.options.epp", $_epp_hash),
+        owner   => $elasticsearch::elasticsearch_user,
+        group   => $elasticsearch::elasticsearch_group,
+        mode    => '0640',
+        notify  => $elasticsearch::_notify_service,
+      }
+    }
+    else {
+      # Add any additional JVM options
+      $elasticsearch::jvm_options.each |String $jvm_option| {
+        file_line { "jvm_option_${jvm_option}":
+          ensure => present,
+          path   => "${elasticsearch::configdir}/jvm.options",
+          line   => $jvm_option,
+          notify => $elasticsearch::_notify_service,
+        }
       }
     }
 
