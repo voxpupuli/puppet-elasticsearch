@@ -294,6 +294,9 @@
 # @param service_provider
 #   The service resource type provider to use when managing elasticsearch instances.
 #
+# @param slm_policies
+#   Define slm_policies via a hash. This is mainly used with Hiera's auto binding.
+#
 # @param snapshot_repositories
 #   Define snapshot repositories via a hash. This is mainly used with Hiera's auto binding.
 #
@@ -421,6 +424,7 @@ class elasticsearch (
   Hash                                            $index_templates           = {},
   Hash                                            $component_templates       = {},
   Hash                                            $ilm_policies              = {},
+  Hash                                            $slm_policies              = {},
   Optional[Stdlib::Absolutepath]                  $ca_certificate            = undef,
   Optional[Stdlib::Absolutepath]                  $certificate               = undef,
   String                                          $default_logging_level     = $logging_level,
@@ -507,6 +511,11 @@ class elasticsearch (
   }
   $elasticsearch::ilm_policies.each |String $key, Hash $values| {
     elasticsearch::ilm_policy { $key:
+      * => $values,
+    }
+  }
+  $elasticsearch::slm_policies.each |String $key, Hash $values| {
+    elasticsearch::slm_policy { $key:
       * => $values,
     }
   }
@@ -650,4 +659,8 @@ class elasticsearch (
   -> Elasticsearch_component_template <| |>
   Elasticsearch_ilm_policy <| |>
   -> Elasticsearch_index_template <| |>
+
+  # Ensure snapshot repositories are loaded before SLM policies
+  Elasticsearch::Snapshot_repository <| |>
+  -> Elasticsearch_slm_policy <| |>
 }

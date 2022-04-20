@@ -424,6 +424,55 @@ elasticsearch::snapshot_repository { 'backups':
 }
 ```
 
+### SLM (Snapshot Lifecycle Management)
+
+By default SLM use the top-level `elasticsearch::api_*` settings to communicate with Elasticsearch.
+The following is an example of how to override these settings:
+
+```puppet
+elasticsearch::slm_policy { 'policiyname':
+  api_protocol            => 'https',
+  api_host                => $::ipaddress,
+  api_port                => 9201,
+  api_timeout             => 60,
+  api_basic_auth_username => 'admin',
+  api_basic_auth_password => 'adminpassword',
+  api_ca_file             => '/etc/ssl/certs',
+  api_ca_path             => '/etc/pki/certs',
+  validate_tls            => false,
+  source                  => 'puppet:///path/to/policy.json',
+}
+```
+
+#### Add a new SLM policy using a file
+
+This will install and/or replace the SLM ploicy in Elasticsearch:
+
+```puppet
+elasticsearch::slm_policy { 'policyname':
+  source => 'puppet:///path/to/policy.json',
+}
+```
+
+#### Add a new SLM policy using content
+This will install and/or replace ILM policy in Elasticsearch:
+
+```puppet
+elasticsearch::slm_policy { 'policyname':
+  content => {
+    name       => '<backup-{now/d}>',
+    schedule   => '0 30 1 * * ?',
+    repository => 'backup',
+    config     => { },
+    retention  => {
+      expire_after => '60d',
+      min_count    => 2,
+      max_count    => 10
+    }
+  }
+}
+```
+
 ### ILM (Index Lifecycle Management)
 
 By default ILM use the top-level `elasticsearch::api_*` settings to communicate with Elasticsearch.

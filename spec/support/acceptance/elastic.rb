@@ -49,6 +49,7 @@ RSpec.configure do |c|
     v[:index_template] = Puppet_X::Elastic.deep_to_i(Puppet_X::Elastic.deep_to_s(JSON.parse(File.read('spec/fixtures/templates/index.json'))))
     v[:pipeline] = JSON.parse(File.read('spec/fixtures/pipelines/example.json'))
     v[:ilm_policy] = Puppet_X::Elastic.deep_to_i(Puppet_X::Elastic.deep_to_s(JSON.parse(File.read('spec/fixtures/ilm_policies/example.json'))))
+    v[:slm_policy] = Puppet_X::Elastic.deep_to_i(Puppet_X::Elastic.deep_to_s(JSON.parse(File.read('spec/fixtures/slm_policies/example.json'))))
   end
 
   v[:elasticsearch_plugins] = Dir[

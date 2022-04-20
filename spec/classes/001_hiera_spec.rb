@@ -351,6 +351,44 @@ describe 'elasticsearch', type: 'class' do
           end
         end
 
+        describe 'slm policies' do
+          context 'single slm policy' do
+            let(:facts) { facts.merge(scenario: 'singleslmpolicy') }
+
+            it {
+              expect(subject).to contain_elasticsearch__slm_policy('mypolicy').
+                with(
+                  ensure: 'present',
+                  content: {
+                    'name' => '<backup-{now/d}>',
+                    'schedule' => '0 30 1 * * ?',
+                    'repository' => 'backup',
+                    'config' => {},
+                    'retention' => {
+                      'expire_after' => '60d',
+                      'min_count' => 2,
+                      'max_count' => 10
+                    }
+                  }
+                )
+            }
+
+            it {
+              expect(subject).to contain_es_instance_conn_validator(
+                'mypolicy-slm_policy-conn-validator'
+              )
+            }
+
+            it { is_expected.to contain_elasticsearch_slm_policy('mypolicy') }
+          end
+
+          context 'no slm policy' do
+            let(:facts) { facts.merge(scenario: '') }
+
+            it { is_expected.not_to contain_elasticsearch__slm_policy('mypolicy') }
+          end
+        end
+
         describe 'users' do
           context 'single users' do
             let(:facts) { facts.merge(scenario: 'singleuser') }

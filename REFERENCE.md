@@ -22,6 +22,7 @@
 * [`elasticsearch::plugin`](#elasticsearch--plugin): This define allows you to install arbitrary Elasticsearch plugins either by using the default repositories or by specifying an URL
 * [`elasticsearch::role`](#elasticsearch--role): Manage x-pack roles.
 * [`elasticsearch::script`](#elasticsearch--script): This define allows you to insert, update or delete scripts that are used  within Elasticsearch.
+* [`elasticsearch::slm_policy`](#elasticsearch--slm_policy): This define allows you to insert, update or delete Elasticsearch SLM  policies.   Policy content should be defined through either the `conten
 * [`elasticsearch::snapshot_repository`](#elasticsearch--snapshot_repository): This define allows you to insert, update or delete Elasticsearch snapshot  repositories.
 * [`elasticsearch::template`](#elasticsearch--template): This define allows you to insert, update or delete Elasticsearch index  templates.   Template content should be defined through either the `c
 * [`elasticsearch::user`](#elasticsearch--user): Manages x-pack users.
@@ -38,6 +39,7 @@
 * [`elasticsearch_plugin`](#elasticsearch_plugin): Plugin installation type
 * [`elasticsearch_role`](#elasticsearch_role): Type to model Elasticsearch roles.
 * [`elasticsearch_role_mapping`](#elasticsearch_role_mapping): Type to model Elasticsearch role mappings.
+* [`elasticsearch_slm_policy`](#elasticsearch_slm_policy): Manages Elasticsearch SLM policies.
 * [`elasticsearch_snapshot_repository`](#elasticsearch_snapshot_repository): Manages Elasticsearch snapshot repositories.
 * [`elasticsearch_template`](#elasticsearch_template): Manages Elasticsearch index templates.
 * [`elasticsearch_user`](#elasticsearch_user): Type to model Elasticsearch users.
@@ -169,6 +171,7 @@ The following parameters are available in the `elasticsearch` class:
 * [`security_logging_source`](#-elasticsearch--security_logging_source)
 * [`service_name`](#-elasticsearch--service_name)
 * [`service_provider`](#-elasticsearch--service_provider)
+* [`slm_policies`](#-elasticsearch--slm_policies)
 * [`snapshot_repositories`](#-elasticsearch--snapshot_repositories)
 * [`ssl`](#-elasticsearch--ssl)
 * [`status`](#-elasticsearch--status)
@@ -705,6 +708,14 @@ Elasticsearch service name
 Data type: `Enum['init', 'openbsd', 'openrc', 'systemd']`
 
 The service resource type provider to use when managing elasticsearch instances.
+
+##### <a name="-elasticsearch--slm_policies"></a>`slm_policies`
+
+Data type: `Hash`
+
+Define slm_policies via a hash. This is mainly used with Hiera's auto binding.
+
+Default value: `{}`
 
 ##### <a name="-elasticsearch--snapshot_repositories"></a>`snapshot_repositories`
 
@@ -1798,6 +1809,136 @@ Data type: `String`
 
 Puppet source of the script
 
+### <a name="elasticsearch--slm_policy"></a>`elasticsearch::slm_policy`
+
+This define allows you to insert, update or delete Elasticsearch SLM
+ policies.
+
+ Policy content should be defined through either the `content` parameter
+ (when passing a hash or json string) or the `source` parameter (when passing
+ the puppet file URI to a policy json file).
+
+#### Parameters
+
+The following parameters are available in the `elasticsearch::slm_policy` defined type:
+
+* [`ensure`](#-elasticsearch--slm_policy--ensure)
+* [`api_basic_auth_password`](#-elasticsearch--slm_policy--api_basic_auth_password)
+* [`api_basic_auth_username`](#-elasticsearch--slm_policy--api_basic_auth_username)
+* [`api_ca_file`](#-elasticsearch--slm_policy--api_ca_file)
+* [`api_ca_path`](#-elasticsearch--slm_policy--api_ca_path)
+* [`api_host`](#-elasticsearch--slm_policy--api_host)
+* [`api_port`](#-elasticsearch--slm_policy--api_port)
+* [`api_protocol`](#-elasticsearch--slm_policy--api_protocol)
+* [`api_timeout`](#-elasticsearch--slm_policy--api_timeout)
+* [`content`](#-elasticsearch--slm_policy--content)
+* [`source`](#-elasticsearch--slm_policy--source)
+* [`validate_tls`](#-elasticsearch--slm_policy--validate_tls)
+
+##### <a name="-elasticsearch--slm_policy--ensure"></a>`ensure`
+
+Data type: `Enum['absent', 'present']`
+
+Controls whether the named SLM policy should be present or absent in the
+cluster.
+
+Default value: `'present'`
+
+##### <a name="-elasticsearch--slm_policy--api_basic_auth_password"></a>`api_basic_auth_password`
+
+Data type: `Optional[String]`
+
+HTTP basic auth password to use when communicating over the Elasticsearch
+API.
+
+Default value: `$elasticsearch::api_basic_auth_password`
+
+##### <a name="-elasticsearch--slm_policy--api_basic_auth_username"></a>`api_basic_auth_username`
+
+Data type: `Optional[String]`
+
+HTTP basic auth username to use when communicating over the Elasticsearch
+API.
+
+Default value: `$elasticsearch::api_basic_auth_username`
+
+##### <a name="-elasticsearch--slm_policy--api_ca_file"></a>`api_ca_file`
+
+Data type: `Optional[Stdlib::Absolutepath]`
+
+Path to a CA file which will be used to validate server certs when
+communicating with the Elasticsearch API over HTTPS.
+
+Default value: `$elasticsearch::api_ca_file`
+
+##### <a name="-elasticsearch--slm_policy--api_ca_path"></a>`api_ca_path`
+
+Data type: `Optional[Stdlib::Absolutepath]`
+
+Path to a directory with CA files which will be used to validate server
+certs when communicating with the Elasticsearch API over HTTPS.
+
+Default value: `$elasticsearch::api_ca_path`
+
+##### <a name="-elasticsearch--slm_policy--api_host"></a>`api_host`
+
+Data type: `String`
+
+Host name or IP address of the ES instance to connect to.
+
+Default value: `$elasticsearch::api_host`
+
+##### <a name="-elasticsearch--slm_policy--api_port"></a>`api_port`
+
+Data type: `Integer[0, 65535]`
+
+Port number of the ES instance to connect to
+
+Default value: `$elasticsearch::api_port`
+
+##### <a name="-elasticsearch--slm_policy--api_protocol"></a>`api_protocol`
+
+Data type: `Enum['http', 'https']`
+
+Protocol that should be used to connect to the Elasticsearch API.
+
+Default value: `$elasticsearch::api_protocol`
+
+##### <a name="-elasticsearch--slm_policy--api_timeout"></a>`api_timeout`
+
+Data type: `Integer`
+
+Timeout period (in seconds) for the Elasticsearch API.
+
+Default value: `$elasticsearch::api_timeout`
+
+##### <a name="-elasticsearch--slm_policy--content"></a>`content`
+
+Data type: `Optional[Variant[String, Hash]]`
+
+Contents of the policy. Can be either a puppet hash or a string containing
+JSON.
+
+Default value: `undef`
+
+##### <a name="-elasticsearch--slm_policy--source"></a>`source`
+
+Data type: `Optional[String]`
+
+Source path for the policy file. Can be any value similar to `source`
+values for `file` resources.
+
+Default value: `undef`
+
+##### <a name="-elasticsearch--slm_policy--validate_tls"></a>`validate_tls`
+
+Data type: `Boolean`
+
+Determines whether the validity of SSL/TLS certificates received from the
+Elasticsearch API should be verified or ignored.
+
+Default value: `$elasticsearch::validate_tls`
+
 ### <a name="elasticsearch--snapshot_repository"></a>`elasticsearch::snapshot_repository`
 
 This define allows you to insert, update or delete Elasticsearch snapshot
@@ -2597,6 +2738,49 @@ Role name.
 
 The specific backend to use for this `elasticsearch_role_mapping` resource. You will seldom need to specify this ---
 Puppet will usually discover the appropriate provider for your platform.
+
+### <a name="elasticsearch_slm_policy"></a>`elasticsearch_slm_policy`
+
+Manages Elasticsearch SLM policies.
+
+#### Properties
+
+The following properties are available in the `elasticsearch_slm_policy` type.
+
+##### `content`
+
+Structured content of policy.
+
+##### `ensure`
+
+Valid values: `present`, `absent`
+
+The basic property that the resource should be in.
+
+Default value: `present`
+
+#### Parameters
+
+The following parameters are available in the `elasticsearch_slm_policy` type.
+
+* [`name`](#-elasticsearch_slm_policy--name)
+* [`provider`](#-elasticsearch_slm_policy--provider)
+* [`source`](#-elasticsearch_slm_policy--source)
+
+##### <a name="-elasticsearch_slm_policy--name"></a>`name`
+
+namevar
+
+Policy name.
+
+##### <a name="-elasticsearch_slm_policy--provider"></a>`provider`
+
+The specific backend to use for this `elasticsearch_slm_policy` resource. You will seldom need to specify this ---
+Puppet will usually discover the appropriate provider for your platform.
+
+##### <a name="-elasticsearch_slm_policy--source"></a>`source`
+
+Puppet source to file containing SLM policy contents.
 
 ### <a name="elasticsearch_snapshot_repository"></a>`elasticsearch_snapshot_repository`
 

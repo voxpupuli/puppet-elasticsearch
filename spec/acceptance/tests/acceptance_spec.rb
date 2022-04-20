@@ -11,6 +11,7 @@ require 'helpers/acceptance/tests/ilm_policy_shared_examples'
 require 'helpers/acceptance/tests/plugin_shared_examples'
 require 'helpers/acceptance/tests/plugin_upgrade_shared_examples'
 require 'helpers/acceptance/tests/snapshot_repository_shared_examples'
+require 'helpers/acceptance/tests/slm_policy_shared_examples'
 require 'helpers/acceptance/tests/datadir_shared_examples'
 require 'helpers/acceptance/tests/package_url_shared_examples'
 require 'helpers/acceptance/tests/hiera_shared_examples'
@@ -70,6 +71,8 @@ describe "elasticsearch v#{v[:elasticsearch_full_version]} class" do
   include_examples('pipeline operations', es_config, v[:pipeline])
 
   include_examples('ILM policy operations', es_config, v[:ilm_policy])
+
+  include_examples('SLM policy operations', es_config, v[:slm_policy])
 
   unless v[:elasticsearch_plugins].empty?
     include_examples(
