@@ -11,7 +11,7 @@ describe 'jvm.options.epp' do
 
   it 'render the same string each time' do
     harness.set(
-      '@_sorted_jvm_options', [
+      '$sorted_jvm_options', [
         '-Xms2g',
         '-Xmx2g'
       ]
@@ -25,7 +25,7 @@ describe 'jvm.options.epp' do
 
   it 'test content' do
     harness.set(
-      '@_sorted_jvm_options', [
+      '$sorted_jvm_options', [
         '-Xms2g',
         '-Xmx2g'
       ]

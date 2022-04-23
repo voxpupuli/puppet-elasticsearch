@@ -48,6 +48,7 @@ elasticsearch::proxy_url: ~
 elasticsearch::purge_configdir: false
 elasticsearch::purge_package_dir: false
 elasticsearch::purge_secrets: false
+elasticsearch::release_type: ~
 elasticsearch::repo_stage: false
 elasticsearch::restart_on_change: false
 elasticsearch::roles: {}

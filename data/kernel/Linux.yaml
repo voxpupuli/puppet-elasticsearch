@@ -6,3 +6,4 @@ elasticsearch::elasticsearch_user: elasticsearch
 elasticsearch::elasticsearch_group: elasticsearch
 elasticsearch::homedir: /usr/share/elasticsearch
 elasticsearch::package_dir: /opt/elasticsearch/swdl
+elasticsearch::release_type: LINUX

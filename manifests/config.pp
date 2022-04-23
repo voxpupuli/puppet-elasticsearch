@@ -177,7 +177,9 @@ class elasticsearch::config {
       mode     => '0440',
     }
 
-    if ($elasticsearch::version != false and versioncmp($elasticsearch::version, '7.7.0') >= 0) {
+    $_version = $elasticsearch::version
+    $_release_type = $elasticsearch::release_type
+    if $_version != false and versioncmp($_version, '7.7.0') >= 0 {
       # https://www.elastic.co/guide/en/elasticsearch/reference/master/advanced-configuration.html#set-jvm-options
       # https://github.com/elastic/elasticsearch/pull/51882
       # >> "Do not modify the root jvm.options file. Use files in jvm.options.d/ instead."
@@ -190,6 +192,24 @@ class elasticsearch::config {
         owner   => $elasticsearch::elasticsearch_user,
         group   => $elasticsearch::elasticsearch_group,
         mode    => '0640',
+        notify  => $elasticsearch::_notify_service,
+      }
+    }
+    elsif $_version != false and versioncmp($_version, '6.0.0') >= 0 and $_release_type {
+      # Version 6 ou 7 and release_type define
+      $_epp_file = versioncmp($_version, '7.0.0') >= 0 ? {
+        true => "${module_name}/etc/elasticsearch/jvm.options/7/jvm.options.${_release_type}.epp",
+        default => "${module_name}/etc/elasticsearch/jvm.options/6/jvm.options.${_release_type}.epp",
+      }
+      $_epp_hash = empty($elasticsearch::jvm_options) ? {
+        true => { sorted_jvm_options => ['-Xms1g', '-Xmx1g'], }, # Initial heap definition
+        default => { sorted_jvm_options => sort(unique($elasticsearch::jvm_options)), },
+      }
+      file { "${elasticsearch::configdir}/jvm.options":
+        ensure  => 'file',
+        content => epp($_epp_file, $_epp_hash),
+        owner   => $elasticsearch::elasticsearch_user,
+        group   => $elasticsearch::elasticsearch_group,
         notify  => $elasticsearch::_notify_service,
       }
     }

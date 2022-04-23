@@ -412,7 +412,7 @@ describe 'elasticsearch', type: 'class' do
         }
       end
 
-      describe 'setting jvm_options before version 7.7.0' do
+      describe 'setting jvm_options before version 6.0.0' do
         jvm_options = [
           '-Xms16g',
           '-Xmx16g'
@@ -421,7 +421,7 @@ describe 'elasticsearch', type: 'class' do
         let(:params) do
           default_params.merge(
             jvm_options: jvm_options,
-            version: '7.0.0'
+            version: '5.6.16'
           )
         end
 
@@ -437,15 +437,37 @@ describe 'elasticsearch', type: 'class' do
         end
       end
 
-      describe 'setting jvm_options after version 7.7.0' do
-        jvm_options = [
-          '-Xms16g',
-          '-Xmx16g'
-        ]
-
+      describe 'setting jvm_options last version 6 (6.0.0<=version<7.7.0)' do
         let(:params) do
           default_params.merge(
-            jvm_options: jvm_options,
+            jvm_options: ['-Xms16g', '-Xmx16g'],
+            version: '6.8.23'
+          )
+        end
+
+        it {
+          expect(subject).to contain_file('/etc/elasticsearch/jvm.options').
+            with(ensure: 'file')
+        }
+      end
+
+      describe 'setting default jvm_options first version 7 (6.0.0<=version<7.7.0)' do
+        let(:params) do
+          default_params.merge(
+            version: '7.0.0'
+          )
+        end
+
+        it {
+          expect(subject).to contain_file('/etc/elasticsearch/jvm.options').
+            with(ensure: 'file')
+        }
+      end
+
+      describe 'setting jvm_options after version 7.7.0' do
+        let(:params) do
+          default_params.merge(
+            jvm_options: ['-Xms16g', '-Xmx16g'],
             version: '7.7.0'
           )
         end
@@ -470,11 +492,11 @@ describe 'elasticsearch', type: 'class' do
           }
         end
 
-        describe 'setting jvm_options triggers restart before version 7.7.0' do
+        describe 'setting jvm_options triggers restart before version 6.0.0' do
           let(:params) do
             super().merge(
-              jvm_options: ['-Xmx16g'],
-              version: '7.0.0'
+              jvm_options: ['-Xms16g', '-Xmx16g'],
+              version: '5.6.16'
             )
           end
 
@@ -484,10 +506,38 @@ describe 'elasticsearch', type: 'class' do
           }
         end
 
+        describe 'setting jvm_options triggers restart last version 6 (6.0.0<=version<7.7.0)' do
+          let(:params) do
+            super().merge(
+              jvm_options: ['-Xms16g', '-Xmx16g'],
+              version: '6.8.23'
+            )
+          end
+
+          it {
+            expect(subject).to contain_file('/etc/elasticsearch/jvm.options').
+              that_notifies('Service[elasticsearch]')
+          }
+        end
+
+        describe 'setting jvm_options triggers restart first version 7 (6.0.0<=version<7.7.0)' do
+          let(:params) do
+            super().merge(
+              jvm_options: ['-Xms16g', '-Xmx16g'],
+              version: '7.0.0'
+            )
+          end
+
+          it {
+            expect(subject).to contain_file('/etc/elasticsearch/jvm.options').
+              that_notifies('Service[elasticsearch]')
+          }
+        end
+
         describe 'setting jvm_options triggers restart after version 7.7.0' do
           let(:params) do
             super().merge(
-              jvm_options: ['-Xmx16g'],
+              jvm_options: ['-Xms16g', '-Xmx16g'],
               version: '7.7.0'
             )
           end

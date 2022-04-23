@@ -145,6 +145,7 @@ The following parameters are available in the `elasticsearch` class:
 * [`purge_configdir`](#purge_configdir)
 * [`purge_package_dir`](#purge_package_dir)
 * [`purge_secrets`](#purge_secrets)
+* [`release_type`](#release_type)
 * [`repo_stage`](#repo_stage)
 * [`restart_on_change`](#restart_on_change)
 * [`restart_config_change`](#restart_config_change)
@@ -551,6 +552,12 @@ Data type: `Boolean`
 
 Whether or not keys present in the keystore will be removed if they are not
 present in the specified secrets hash.
+
+##### <a name="release_type"></a>`release_type`
+
+Data type: `Optional[Elasticsearch::ReleaseType]`
+
+Define editor release type ('WINDOWS', 'MACOS', 'LINUX', 'DEB', 'RPM', 'MSI').
 
 ##### <a name="repo_stage"></a>`repo_stage`
 

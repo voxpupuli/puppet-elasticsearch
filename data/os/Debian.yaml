@@ -1,2 +1,3 @@
 ---
 elasticsearch::defaults_location: /etc/default
+elasticsearch::release_type: DEB

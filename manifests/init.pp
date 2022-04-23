@@ -217,6 +217,9 @@
 #   Whether or not keys present in the keystore will be removed if they are not
 #   present in the specified secrets hash.
 #
+# @param release_type
+#   Define editor release type ('WINDOWS', 'MACOS', 'LINUX', 'DEB', 'RPM', 'MSI').
+#
 # @param repo_stage
 #   Use stdlib stage setup for managing the repo instead of relationship
 #   ordering.
@@ -375,6 +378,7 @@ class elasticsearch (
   Boolean                                         $purge_configdir,
   Boolean                                         $purge_package_dir,
   Boolean                                         $purge_secrets,
+  Optional[Elasticsearch::ReleaseType]            $release_type,
   Variant[Boolean, String]                        $repo_stage,
   Boolean                                         $restart_on_change,
   Hash                                            $roles,
