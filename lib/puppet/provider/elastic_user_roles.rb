@@ -36,7 +36,7 @@ class Puppet::Provider::ElasticUserRoles < Puppet::Provider::ElasticYaml
   # Represent this user/role record as a correctly-formatted config file.
   def self.to_file(records)
     debug "Flushing: #{records.inspect}"
-    records.map do |record|
+    records = records.map do |record|
       record[:roles].map do |r|
         { [record[:name]] => r }
       end
