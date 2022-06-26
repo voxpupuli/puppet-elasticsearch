@@ -59,8 +59,6 @@ describe 'elasticsearch', type: 'class' do
 
           it { is_expected.to contain_augeas('/etc/sysconfig/elasticsearch') }
           it { is_expected.to contain_file('/etc/elasticsearch/elasticsearch.yml') }
-          it { is_expected.to contain_datacat('/etc/elasticsearch/elasticsearch.yml') }
-          it { is_expected.to contain_datacat_fragment('main_config') }
 
           it {
             expect(subject).to contain_service('elasticsearch').with(
