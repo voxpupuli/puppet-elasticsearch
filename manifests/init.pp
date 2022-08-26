@@ -148,6 +148,9 @@
 # @param logdir
 #   Directory that will be used for Elasticsearch logging.
 #
+# @param logdir_mode
+#   Mode directory that will be used for Elasticsearch logging (default 2750).
+#
 # @param logging_config
 #   Representation of information to be included in the log4j.properties file.
 #
@@ -404,6 +407,7 @@ class elasticsearch (
   Boolean                                         $restart_config_change     = $restart_on_change,
   Boolean                                         $restart_package_change    = $restart_on_change,
   Boolean                                         $restart_plugin_change     = $restart_on_change,
+  Stdlib::Filemode                                $logdir_mode               = '2750',
 ) {
   #### Validate parameters
 

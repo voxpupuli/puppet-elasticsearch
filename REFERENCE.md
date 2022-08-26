@@ -125,6 +125,7 @@ The following parameters are available in the `elasticsearch` class:
 * [`keystore_path`](#keystore_path)
 * [`license`](#license)
 * [`logdir`](#logdir)
+* [`logdir_mode`](#logdir_mode)
 * [`logging_config`](#logging_config)
 * [`logging_file`](#logging_file)
 * [`logging_level`](#logging_level)
@@ -420,6 +421,12 @@ Optional Elasticsearch license in hash or string form.
 Data type: `Stdlib::Absolutepath`
 
 Directory that will be used for Elasticsearch logging.
+
+##### <a name="logdir_mode"></a>`logdir_mode`
+
+Data type: `String`
+
+Mode directory that will be used for Elasticsearch logging (default 2750).
 
 ##### <a name="logging_config"></a>`logging_config`
 
