@@ -43,7 +43,7 @@ class elasticsearch::config {
         ensure => 'directory',
         group  => $elasticsearch::elasticsearch_group,
         owner  => $elasticsearch::elasticsearch_user,
-        mode   => '2750';
+        mode   => $elasticsearch::logdir_mode;
       $elasticsearch::real_plugindir:
         ensure => 'directory',
         group  => $elasticsearch::elasticsearch_group,
