@@ -123,15 +123,24 @@ describe 'elasticsearch', type: 'class' do
           end
         end
 
-        context 'when setting package version and package_url' do
+        context 'when setting package version and package_url and jvm_options after version 7.7.0' do
+          jvm_options = [
+            '-Xms16g',
+            '-Xmx16g'
+          ]
+
           let(:params) do
             default_params.merge(
-              version: '0.90.10',
-              package_url: "puppet:///path/to/some/es-0.90.10.#{pkg_ext}"
+              jvm_options: jvm_options,
+              version: '7.7.0',
+              package_url: "puppet:///path/to/some/es-7.7.0.#{pkg_ext}"
             )
           end
 
-          it { is_expected.to raise_error(Puppet::Error) }
+          it {
+            expect(subject).to contain_file('/etc/elasticsearch/jvm.options.d/jvm.options').
+              with(ensure: 'file')
+          }
         end
 
         context 'via package_url setting' do

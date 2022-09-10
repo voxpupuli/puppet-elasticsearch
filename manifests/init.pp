@@ -411,11 +411,7 @@ class elasticsearch (
 ) {
   #### Validate parameters
 
-  if ($package_url != undef and $version != false) {
-    fail('Unable to set the version number when using package_url option.')
-  }
-
-  if ($version != false) {
+  if $package_url == undef and $version != false {
     case $facts['os']['family'] {
       'RedHat', 'Linux', 'Suse': {
         if ($version =~ /.+-\d/) {

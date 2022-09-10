@@ -42,14 +42,14 @@ class elasticsearch::package {
     }
 
     # Check if we want to install a specific version or not
-    if $elasticsearch::version == false {
+    if $elasticsearch::package_url == undef and $elasticsearch::version != false {
+      # install specific version
+      $package_ensure = $elasticsearch::pkg_version
+    } else {
       $package_ensure = $elasticsearch::autoupgrade ? {
         true  => 'latest',
         false => 'present',
       }
-    } else {
-      # install specific version
-      $package_ensure = $elasticsearch::pkg_version
     }
 
     # action
