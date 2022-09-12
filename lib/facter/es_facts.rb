@@ -69,7 +69,7 @@ module EsFacts
         response = http.get('/')
         json_data = JSON.parse(response.body)
 
-        if json_data['status'] && json_data['status'] == 200
+        if response.code == '200' && json_data['version'] && json_data['name']
           add_fact(key_prefix, 'name', json_data['name'])
           add_fact(key_prefix, 'version', json_data['version']['number'])
 
@@ -128,9 +128,8 @@ module EsFacts
     end
     Facter.add(:elasticsearch) do
       setcode do
-        nodes
+        nodes unless nodes.empty?
       end
-      nodes unless nodes.empty?
     end
   end
 end
