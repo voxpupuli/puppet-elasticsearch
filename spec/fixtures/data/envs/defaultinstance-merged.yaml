@@ -2,9 +2,8 @@
 lookup_options:
   elasticsearch::instances:
     merge: deep
-
 elasticsearch::instances:
   default:
     config:
-      node.name: 'default'
-      http.bind_host: '0.0.0.0'
+      node.name: default
+      http.bind_host: 0.0.0.0
