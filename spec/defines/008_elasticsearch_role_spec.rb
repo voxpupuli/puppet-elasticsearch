@@ -42,14 +42,6 @@ describe 'elasticsearch::role' do
         )
       end
 
-      context 'with an invalid role name' do
-        context 'too long' do
-          let(:title) { 'A' * 41 }
-
-          it { is_expected.to raise_error(Puppet::Error, %r{expected length}i) }
-        end
-      end
-
       context 'with default parameters' do
         it { is_expected.to contain_elasticsearch__role('elastic_role') }
         it { is_expected.to contain_elasticsearch_role('elastic_role') }
