@@ -127,7 +127,7 @@ define elasticsearch::plugin (
     proxy                      => $_proxy,
     plugin_dir                 => $elasticsearch::real_plugindir,
     plugin_path                => $module_dir,
-    before                     => Service['elasticsearch'],
+    before                     => Service[$elasticsearch::service_name],
   }
   -> file { "${elasticsearch::real_plugindir}/${_module_dir}":
     ensure  => $_file_ensure,
@@ -138,7 +138,7 @@ define elasticsearch::plugin (
 
   if $elasticsearch::restart_plugin_change {
     Elasticsearch_plugin[$name] {
-      notify +> Service['elasticsearch'],
+      notify +> Service[$elasticsearch::service_name],
     }
   }
 }
