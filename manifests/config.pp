@@ -65,7 +65,7 @@ class elasticsearch::config {
         owner  => 'root',
         group  => $elasticsearch::elasticsearch_group,
         mode   => '0660',
-        before => Service['elasticsearch'],
+        before => Service[$elasticsearch::service_name],
         notify => $elasticsearch::_notify_service,
       }
     } else {
@@ -73,7 +73,7 @@ class elasticsearch::config {
         incl    => "${elasticsearch::defaults_location}/elasticsearch",
         lens    => 'Shellvars.lns',
         changes => template("${module_name}/etc/sysconfig/defaults.erb"),
-        before  => Service['elasticsearch'],
+        before  => Service[$elasticsearch::service_name],
         notify  => $elasticsearch::_notify_service,
       }
     }
@@ -94,7 +94,7 @@ class elasticsearch::config {
       }
 
       # Set the correct xpack. settings based on ES version
-      if (versioncmp($elasticsearch::version, '7') >= 0) {
+      if ($elasticsearch::version != false and versioncmp($elasticsearch::version, '7') >= 0) {
         $_tls_config = {
           'xpack.security.http.ssl.enabled'                => true,
           'xpack.security.http.ssl.keystore.path'          => $_keystore_path,
@@ -230,7 +230,7 @@ class elasticsearch::config {
 
     file { "${elasticsearch::defaults_location}/elasticsearch":
       ensure    => 'absent',
-      subscribe => Service['elasticsearch'],
+      subscribe => Service[$elasticsearch::service_name],
     }
   }
 }

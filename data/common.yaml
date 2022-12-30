@@ -1,50 +1,50 @@
 ---
-elasticsearch::ensure: present
-elasticsearch::api_basic_auth_password: ~
-elasticsearch::api_basic_auth_username: ~
-elasticsearch::api_ca_file: ~
-elasticsearch::api_ca_path: ~
+elasticsearch::api_basic_auth_password:
+elasticsearch::api_basic_auth_username:
+elasticsearch::api_ca_file:
+elasticsearch::api_ca_path:
 elasticsearch::api_host: localhost
 elasticsearch::api_port: 9200
 elasticsearch::api_protocol: http
 elasticsearch::api_timeout: 10
 elasticsearch::autoupgrade: false
 elasticsearch::config: {}
-elasticsearch::configdir: /etc/elasticsearch
+elasticsearch::configdir: "/etc/elasticsearch"
 elasticsearch::configdir_recurselimit: 2
+elasticsearch::default_logging_level: INFO
 elasticsearch::daily_rolling_date_pattern: |
   "'.'yyyy-MM-dd"
-elasticsearch::default_logging_level: 'INFO'
-elasticsearch::defaults_location: ~
+elasticsearch::defaults_location:
 elasticsearch::deprecation_logging: false
-elasticsearch::deprecation_logging_level: 'DEBUG'
-elasticsearch::download_tool: ~
-elasticsearch::download_tool_insecure: ~
+elasticsearch::deprecation_logging_level: DEBUG
+elasticsearch::download_tool:
+elasticsearch::download_tool_insecure:
 elasticsearch::download_tool_verify_certificates: true
+elasticsearch::ensure: present
 elasticsearch::file_rolling_type: dailyRollingFile
 elasticsearch::indices: {}
 elasticsearch::init_defaults: {}
-elasticsearch::init_defaults_file: ~
+elasticsearch::init_defaults_file:
 elasticsearch::init_template: "%{module_name}/etc/init.d/elasticsearch.systemd.erb"
 elasticsearch::instances: {}
 elasticsearch::jvm_options: []
-elasticsearch::license: ~
-elasticsearch::logdir: /var/log/elasticsearch
+elasticsearch::license:
+elasticsearch::logdir: "/var/log/elasticsearch"
 elasticsearch::logging_config: {}
-elasticsearch::logging_file: ~
-elasticsearch::logging_level: 'INFO'
-elasticsearch::logging_template: ~
+elasticsearch::logging_file:
+elasticsearch::logging_level: INFO
+elasticsearch::logging_template:
 elasticsearch::manage_repo: true
 elasticsearch::oss: false
 elasticsearch::package_dl_timeout: 600
 elasticsearch::package_name: elasticsearch
 elasticsearch::package_provider: package
-elasticsearch::package_url: ~
-elasticsearch::pid_dir: /var/run/elasticsearch
+elasticsearch::package_url:
+elasticsearch::pid_dir: "/var/run/elasticsearch"
 elasticsearch::pipelines: {}
-elasticsearch::plugindir: ~
+elasticsearch::plugindir:
 elasticsearch::plugins: {}
-elasticsearch::proxy_url: ~
+elasticsearch::proxy_url:
 elasticsearch::purge_configdir: false
 elasticsearch::purge_package_dir: false
 elasticsearch::purge_secrets: false
@@ -54,16 +54,16 @@ elasticsearch::roles: {}
 elasticsearch::rolling_file_max_backup_index: 1
 elasticsearch::rolling_file_max_file_size: 10MB
 elasticsearch::scripts: {}
-elasticsearch::secrets: ~
-elasticsearch::security_logging_content: ~
-elasticsearch::security_logging_source: ~
+elasticsearch::secrets:
+elasticsearch::security_logging_content:
+elasticsearch::security_logging_source:
 elasticsearch::service_name: elasticsearch
 elasticsearch::service_provider: systemd
 elasticsearch::snapshot_repositories: {}
 elasticsearch::ssl: false
 elasticsearch::status: enabled
-elasticsearch::system_key: ~
-elasticsearch::systemd_service_path: /lib/systemd/system
+elasticsearch::system_key:
+elasticsearch::systemd_service_path: "/lib/systemd/system"
 elasticsearch::templates: {}
 elasticsearch::users: {}
 elasticsearch::validate_tls: true

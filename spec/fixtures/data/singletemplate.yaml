@@ -1,9 +1,9 @@
 ---
 elasticsearch::templates:
   foo:
-    ensure: 'present'
+    ensure: present
     content:
-      template: 'foo-*'
+      template: foo-*
       settings:
         index:
           number_of_replicas: 0

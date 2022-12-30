@@ -32,7 +32,10 @@ define elasticsearch::role (
   Array                     $mappings   = [],
   Hash                      $privileges = {},
 ) {
-  validate_slength($name, 40, 1)
+  #validate_slength($name, 40, 1)
+  if ($name.length < 1 or $name.length > 40) {
+    fail("Invalid length role name '${name}' must be between 1 and 40")
+  }
 
   if empty($privileges) or $ensure == 'absent' {
     $_role_ensure = 'absent'

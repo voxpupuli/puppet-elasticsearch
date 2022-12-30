@@ -5,6 +5,6 @@ elasticsearch::roles:
     privileges:
       cluster: monitor
       indices:
-        '*': all
+        "*": all
     mappings:
-      - cn=users,dc=example,dc=com
+    - cn=users,dc=example,dc=com
