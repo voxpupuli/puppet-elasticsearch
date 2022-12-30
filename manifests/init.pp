@@ -95,6 +95,12 @@
 # @param deprecation_logging_level
 #   Default deprecation logging level for Elasticsearch.
 #
+# @param deprecation_rolling_file_max_backup_index
+#   Max number of logs to store (appender.deprecation_rolling)
+#
+# @param deprecation_rolling_file_max_file_size
+#   Max log file size (appender.deprecation_rolling)
+#
 # @param download_tool
 #   Command-line invocation with which to retrieve an optional package_url.
 #
@@ -259,7 +265,7 @@
 #   Define roles via a hash. This is mainly used with Hiera's auto binding.
 #
 # @param rolling_file_max_backup_index
-#   Max number of logs to store whern file_rolling_type is 'rollingFile'
+#   Max number of logs to store when file_rolling_type is 'rollingFile'
 #
 # @param rolling_file_max_file_size
 #   Max log file size when file_rolling_type is 'rollingFile'
@@ -345,6 +351,8 @@ class elasticsearch (
   Optional[Stdlib::Absolutepath]                  $defaults_location,
   Boolean                                         $deprecation_logging,
   String                                          $deprecation_logging_level,
+  Integer                                         $deprecation_rolling_file_max_backup_index,
+  String                                          $deprecation_rolling_file_max_file_size,
   Optional[String]                                $download_tool,
   Optional[String]                                $download_tool_insecure,
   Boolean                                         $download_tool_verify_certificates,
