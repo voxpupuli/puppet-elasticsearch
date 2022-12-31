@@ -205,6 +205,9 @@
 # @param private_key
 #   Path to the key associated with this node's certificate.
 #
+# @param private_key_type
+#   Type of private key that will be used; see java_ks for valid options
+#
 # @param proxy_url
 #   For http and https downloads, you may set a proxy server to use. By default,
 #   no proxy is used.
@@ -404,6 +407,7 @@ class elasticsearch (
   Optional[String]                                $keystore_password         = undef,
   Optional[Stdlib::Absolutepath]                  $keystore_path             = undef,
   Optional[Stdlib::Absolutepath]                  $private_key               = undef,
+  Optional[String]                                $private_key_type          = undef,
   Boolean                                         $restart_config_change     = $restart_on_change,
   Boolean                                         $restart_package_change    = $restart_on_change,
   Boolean                                         $restart_plugin_change     = $restart_on_change,
