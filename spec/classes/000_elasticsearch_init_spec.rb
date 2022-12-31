@@ -292,6 +292,60 @@ describe 'elasticsearch', type: 'class' do
 
         it { is_expected.to compile.with_all_deps }
       end
+
+      context 'When managing the datadir' do
+        let(:params) do
+          default_params.merge(
+            datadir: '/var/lib/elasticsearch-data',
+            manage_datadir: true
+          )
+        end
+
+        it {
+          expect(subject).to contain_file('/var/lib/elasticsearch-data').
+            with(ensure: 'directory')
+        }
+      end
+
+      context 'When not managing the datadir' do
+        let(:params) do
+          default_params.merge(
+            datadir: '/var/lib/elasticsearch-data',
+            manage_datadir: false
+          )
+        end
+
+        it {
+          expect(subject).not_to contain_file('/var/lib/elasticsearch-data')
+        }
+      end
+
+      context 'When managing the logdir' do
+        let(:params) do
+          default_params.merge(
+            logdir: '/var/log/elasticsearch-log',
+            manage_logdir: true
+          )
+        end
+
+        it {
+          expect(subject).to contain_file('/var/log/elasticsearch-log').
+            with(ensure: 'directory')
+        }
+      end
+
+      context 'When not managing the logdir' do
+        let(:params) do
+          default_params.merge(
+            logdir: '/var/log/elasticsearch-log',
+            manage_logdir: false
+          )
+        end
+
+        it {
+          expect(subject).not_to contain_file('/var/log/elasticsearch-log')
+        }
+      end
     end
   end
   # rubocop:enable RSpec/MultipleMemoizedHelpers

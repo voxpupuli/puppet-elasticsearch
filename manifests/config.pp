@@ -34,16 +34,6 @@ class elasticsearch::config {
         group  => $elasticsearch::elasticsearch_group,
         owner  => $elasticsearch::elasticsearch_user,
         mode   => '2750';
-      $elasticsearch::datadir:
-        ensure => 'directory',
-        group  => $elasticsearch::elasticsearch_group,
-        owner  => $elasticsearch::elasticsearch_user,
-        mode   => '2750';
-      $elasticsearch::logdir:
-        ensure => 'directory',
-        group  => $elasticsearch::elasticsearch_group,
-        owner  => $elasticsearch::elasticsearch_user,
-        mode   => $elasticsearch::logdir_mode;
       $elasticsearch::real_plugindir:
         ensure => 'directory',
         group  => $elasticsearch::elasticsearch_group,
@@ -55,6 +45,22 @@ class elasticsearch::config {
         owner   => 'root',
         mode    => '0755',
         recurse => true;
+    }
+    if $elasticsearch::manage_datadir {
+      file { $elasticsearch::datadir:
+        ensure => 'directory',
+        group  => $elasticsearch::elasticsearch_group,
+        owner  => $elasticsearch::elasticsearch_user,
+        mode   => '2750',
+      }
+    }
+    if $elasticsearch::manage_logdir {
+      file { $elasticsearch::logdir:
+        ensure => 'directory',
+        group  => $elasticsearch::elasticsearch_group,
+        owner  => $elasticsearch::elasticsearch_user,
+        mode   => $elasticsearch::logdir_mode,
+      }
     }
 
     # Defaults file, either from file source or from hash to augeas commands

@@ -34,6 +34,8 @@ elasticsearch::logging_config: {}
 elasticsearch::logging_file:
 elasticsearch::logging_level: INFO
 elasticsearch::logging_template:
+elasticsearch::manage_datadir: true
+elasticsearch::manage_logdir: true
 elasticsearch::manage_repo: true
 elasticsearch::oss: false
 elasticsearch::package_dl_timeout: 600
