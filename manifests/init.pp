@@ -77,23 +77,23 @@
 #   copying files from the `configdir` to instance `configdir`s.
 #
 # @param daily_rolling_date_pattern
-#   File pattern for the file appender log when file_rolling_type is 'dailyRollingFile'.
+#   DEPRECATED, File pattern for the file appender log when file_rolling_type is 'dailyRollingFile'.
 #
 # @param datadir
 #   Allows you to set the data directory of Elasticsearch.
 #
 # @param default_logging_level
-#   Default logging level for Elasticsearch.
+#   DEPRECATED, Default logging level for Elasticsearch.
 #
 # @param defaults_location
 #   Absolute path to directory containing init defaults file.
 #
 # @param deprecation_logging
-#   Whether to enable deprecation logging. If enabled, deprecation logs will be
+#   DEPRECATED, Whether to enable deprecation logging. If enabled, deprecation logs will be
 #   saved to ${cluster.name}_deprecation.log in the Elasticsearch log folder.
 #
 # @param deprecation_logging_level
-#   Default deprecation logging level for Elasticsearch.
+#   DEPRECATED, Default deprecation logging level for Elasticsearch.
 #
 # @param download_tool
 #   Command-line invocation with which to retrieve an optional package_url.
@@ -152,17 +152,17 @@
 #   Mode directory that will be used for Elasticsearch logging (default 2750).
 #
 # @param logging_config
-#   Representation of information to be included in the log4j.properties file.
+#   Representation of information to be included in the log4j2.properties file.
 #
 # @param logging_file
-#   Instead of a hash, you may supply a `puppet://` file source for the
+#   DEPRECATED, Instead of a hash, you may supply a `puppet://` file source for the
 #   log4j.properties file.
 #
 # @param logging_level
-#   Default logging level for Elasticsearch.
+#   DEPRECATED, Default logging level for Elasticsearch.
 #
 # @param logging_template
-#   Use a custom logging template - just supply the relative path, i.e.
+#   DEPRECATED, Use a custom logging template - just supply the relative path, i.e.
 #   `$module/elasticsearch/logging.yml.erb`
 #
 # @param manage_repo
@@ -259,10 +259,10 @@
 #   Define roles via a hash. This is mainly used with Hiera's auto binding.
 #
 # @param rolling_file_max_backup_index
-#   Max number of logs to store whern file_rolling_type is 'rollingFile'
+#   DEPRECATED, Max number of logs to store whern file_rolling_type is 'rollingFile'
 #
 # @param rolling_file_max_file_size
-#   Max log file size when file_rolling_type is 'rollingFile'
+#   DEPRECATED, Max log file size when file_rolling_type is 'rollingFile'
 #
 # @param scripts
 #   Define scripts via a hash. This is mainly used with Hiera's auto binding.
@@ -272,11 +272,11 @@
 #   Elasticsearch keystore file. If unset, the keystore is left unmanaged.
 #
 # @param security_logging_content
-#   File content for x-pack logging configuration file (will be placed
+#   DEPRECATED, File content for x-pack logging configuration file (will be placed
 #   into log4j2.properties file).
 #
 # @param security_logging_source
-#   File source for x-pack logging configuration file (will be placed
+#   DEPRECATED, File source for x-pack logging configuration file (will be placed
 #   into log4j2.properties).
 #
 # @param service_name
@@ -340,17 +340,13 @@ class elasticsearch (
   Hash                                            $config,
   Stdlib::Absolutepath                            $configdir,
   Integer                                         $configdir_recurselimit,
-  String                                          $daily_rolling_date_pattern,
   Elasticsearch::Multipath                        $datadir,
   Optional[Stdlib::Absolutepath]                  $defaults_location,
-  Boolean                                         $deprecation_logging,
-  String                                          $deprecation_logging_level,
   Optional[String]                                $download_tool,
   Optional[String]                                $download_tool_insecure,
   Boolean                                         $download_tool_verify_certificates,
   String                                          $elasticsearch_group,
   String                                          $elasticsearch_user,
-  Enum['dailyRollingFile', 'rollingFile', 'file'] $file_rolling_type,
   Stdlib::Absolutepath                            $homedir,
   Hash                                            $indices,
   Hash                                            $init_defaults,
@@ -359,10 +355,6 @@ class elasticsearch (
   Array[String]                                   $jvm_options,
   Optional[Variant[String, Hash]]                 $license,
   Stdlib::Absolutepath                            $logdir,
-  Hash                                            $logging_config,
-  Optional[String]                                $logging_file,
-  String                                          $logging_level,
-  Optional[String]                                $logging_template,
   Boolean                                         $manage_repo,
   Boolean                                         $oss,
   Stdlib::Absolutepath                            $package_dir,
@@ -381,12 +373,8 @@ class elasticsearch (
   Variant[Boolean, String]                        $repo_stage,
   Boolean                                         $restart_on_change,
   Hash                                            $roles,
-  Integer                                         $rolling_file_max_backup_index,
-  String                                          $rolling_file_max_file_size,
   Hash                                            $scripts,
   Optional[Hash]                                  $secrets,
-  Optional[String]                                $security_logging_content,
-  Optional[String]                                $security_logging_source,
   String                                          $service_name,
   Enum['init', 'openbsd', 'openrc', 'systemd']    $service_provider,
   Hash                                            $snapshot_repositories,
@@ -400,14 +388,27 @@ class elasticsearch (
   Variant[String, Boolean]                        $version,
   Optional[Stdlib::Absolutepath]                  $ca_certificate            = undef,
   Optional[Stdlib::Absolutepath]                  $certificate               = undef,
-  String                                          $default_logging_level     = $logging_level,
   Optional[String]                                $keystore_password         = undef,
   Optional[Stdlib::Absolutepath]                  $keystore_path             = undef,
+  Optional[Hash]                                  $logging_config            = undef,
   Optional[Stdlib::Absolutepath]                  $private_key               = undef,
   Boolean                                         $restart_config_change     = $restart_on_change,
   Boolean                                         $restart_package_change    = $restart_on_change,
   Boolean                                         $restart_plugin_change     = $restart_on_change,
   Stdlib::Filemode                                $logdir_mode               = '2750',
+  # Deprecated (not used)
+  Optional[String]                                $daily_rolling_date_pattern    = undef,
+  Optional[String]                                $default_logging_level         = undef,
+  Enum['dailyRollingFile', 'rollingFile', 'file'] $file_rolling_type             = 'dailyRollingFile',
+  Optional[String]                                $logging_file                  = undef,
+  Optional[String]                                $logging_level                 = undef,
+  Optional[String]                                $logging_template              = undef,
+  Optional[Boolean]                               $deprecation_logging           = undef,
+  Optional[String]                                $deprecation_logging_level     = undef,
+  Optional[Integer]                               $rolling_file_max_backup_index = undef,
+  Optional[String]                                $rolling_file_max_file_size    = undef,
+  Optional[String]                                $security_logging_content      = undef,
+  Optional[String]                                $security_logging_source       = undef,
 ) {
   #### Validate parameters
 

@@ -134,27 +134,20 @@ class elasticsearch::config {
       $_tls_config = {}
     }
 
-    # # Logging file or hash
-    # if ($elasticsearch::logging_file != undef) {
-    #   $_log4j_content = undef
-    # } else {
-    #   if ($elasticsearch::logging_template != undef ) {
-    #     $_log4j_content = template($elasticsearch::logging_template)
-    #   } else {
-    #     $_log4j_content = template("${module_name}/etc/elasticsearch/log4j2.properties.erb")
-    #   }
-    #   $_logging_source = undef
-    # }
-    # file {
-    #   "${elasticsearch::configdir}/log4j2.properties":
-    #     ensure  => file,
-    #     content => $_log4j_content,
-    #     source  => $_logging_source,
-    #     mode    => '0644',
-    #     notify  => $elasticsearch::_notify_service,
-    #     require => Class['elasticsearch::package'],
-    #     before  => Class['elasticsearch::service'],
-    # }
+    # Generate log4j2.properties file
+    if ($elasticsearch::logging_config != undef) {
+      file {
+        "${elasticsearch::configdir}/log4j2.properties":
+          ensure  => file,
+          content => es_hash2properties($elasticsearch::logging_config),
+          group   => $elasticsearch::elasticsearch_group,
+          owner   => $elasticsearch::elasticsearch_user,
+          mode    => '0644',
+          notify  => $elasticsearch::_notify_service,
+          require => Class['elasticsearch::package'],
+          before  => Class['elasticsearch::service'],
+      }
+    }
 
     # Generate Elasticsearch config
     $data = merge(
