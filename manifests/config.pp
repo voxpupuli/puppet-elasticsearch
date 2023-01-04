@@ -124,11 +124,12 @@ class elasticsearch::config {
 
       # Load node certificate and private key
       java_ks { 'elasticsearch_node':
-        ensure      => 'latest',
-        certificate => $elasticsearch::certificate,
-        private_key => $elasticsearch::private_key,
-        target      => $_keystore_path,
-        password    => $elasticsearch::keystore_password,
+        ensure           => 'latest',
+        certificate      => $elasticsearch::certificate,
+        private_key      => $elasticsearch::private_key,
+        private_key_type => $elasticsearch::private_key_type,
+        target           => $_keystore_path,
+        password         => $elasticsearch::keystore_password,
       }
     } else {
       $_tls_config = {}
