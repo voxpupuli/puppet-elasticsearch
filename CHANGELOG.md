@@ -4,6 +4,35 @@ All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
 These should not affect the functionality of the module.
 
+## [v8.1.0](https://github.com/voxpupuli/puppet-elasticsearch/tree/v8.1.0) (2023-01-05)
+
+[Full Changelog](https://github.com/voxpupuli/puppet-elasticsearch/compare/v8.0.2...v8.1.0)
+
+**Implemented enhancements:**
+
+- Make datadir and logdir management optional [\#1184](https://github.com/voxpupuli/puppet-elasticsearch/pull/1184) ([phaedriel](https://github.com/phaedriel))
+- Support different paths for elasticsearch-plugin [\#1181](https://github.com/voxpupuli/puppet-elasticsearch/pull/1181) ([phaedriel](https://github.com/phaedriel))
+- Remove deprecated validate\_slength [\#1176](https://github.com/voxpupuli/puppet-elasticsearch/pull/1176) ([phaedriel](https://github.com/phaedriel))
+- Use jvm.options.d folder on ES 7.7.0+ [\#1159](https://github.com/voxpupuli/puppet-elasticsearch/pull/1159) ([phaedriel](https://github.com/phaedriel))
+- Update tests to use Hiera 5 [\#1158](https://github.com/voxpupuli/puppet-elasticsearch/pull/1158) ([cocker-cc](https://github.com/cocker-cc))
+
+**Fixed bugs:**
+
+- Some exception when installing analysis-ik plugin  [\#1011](https://github.com/voxpupuli/puppet-elasticsearch/issues/1011)
+- Fix usage of static `'elasticsearch'` instead of `$elasticsearch::service_name` [\#1178](https://github.com/voxpupuli/puppet-elasticsearch/pull/1178) ([phaedriel](https://github.com/phaedriel))
+- Fix user role mapping config file [\#1165](https://github.com/voxpupuli/puppet-elasticsearch/pull/1165) ([otterz](https://github.com/otterz))
+
+**Merged pull requests:**
+
+- Add option to set private key type [\#1186](https://github.com/voxpupuli/puppet-elasticsearch/pull/1186) ([phaedriel](https://github.com/phaedriel))
+- Add test condition 'version != false' \(tls\_config block\) [\#1175](https://github.com/voxpupuli/puppet-elasticsearch/pull/1175) ([phaedriel](https://github.com/phaedriel))
+- Fix elasticsearch facts and http check [\#1170](https://github.com/voxpupuli/puppet-elasticsearch/pull/1170) ([fe80](https://github.com/fe80))
+- Add match to file\_line jvm.options [\#1168](https://github.com/voxpupuli/puppet-elasticsearch/pull/1168) ([phaedriel](https://github.com/phaedriel))
+- Allow change logdir mode value [\#1167](https://github.com/voxpupuli/puppet-elasticsearch/pull/1167) ([phaedriel](https://github.com/phaedriel))
+- fix lib directory permissions; do not depend on umask [\#1166](https://github.com/voxpupuli/puppet-elasticsearch/pull/1166) ([fionera](https://github.com/fionera))
+- Delete old CI job definitions [\#1161](https://github.com/voxpupuli/puppet-elasticsearch/pull/1161) ([bastelfreak](https://github.com/bastelfreak))
+- Remove datacat module from Richard Clamp [\#1160](https://github.com/voxpupuli/puppet-elasticsearch/pull/1160) ([phaedriel](https://github.com/phaedriel))
+
 ## [v8.0.2](https://github.com/voxpupuli/puppet-elasticsearch/tree/v8.0.2) (2022-04-08)
 
 [Full Changelog](https://github.com/voxpupuli/puppet-elasticsearch/compare/v8.0.1...v8.0.2)
