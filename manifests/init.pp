@@ -165,6 +165,12 @@
 #   Use a custom logging template - just supply the relative path, i.e.
 #   `$module/elasticsearch/logging.yml.erb`
 #
+# @param manage_datadir
+#   Enable datadir management (default true).
+#
+# @param manage_logdir
+#   Enable logdir management (default true).
+#
 # @param manage_repo
 #   Enable repo management by enabling official Elastic repositories.
 #
@@ -366,6 +372,8 @@ class elasticsearch (
   Optional[String]                                $logging_file,
   String                                          $logging_level,
   Optional[String]                                $logging_template,
+  Boolean                                         $manage_datadir,
+  Boolean                                         $manage_logdir,
   Boolean                                         $manage_repo,
   Boolean                                         $oss,
   Stdlib::Absolutepath                            $package_dir,
