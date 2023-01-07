@@ -165,6 +165,12 @@
 #   DEPRECATED, Use a custom logging template - just supply the relative path, i.e.
 #   `$module/elasticsearch/logging.yml.erb`
 #
+# @param manage_datadir
+#   Enable datadir management (default true).
+#
+# @param manage_logdir
+#   Enable logdir management (default true).
+#
 # @param manage_repo
 #   Enable repo management by enabling official Elastic repositories.
 #
@@ -204,6 +210,9 @@
 #
 # @param private_key
 #   Path to the key associated with this node's certificate.
+#
+# @param private_key_type
+#   The type of the private key. Usually the private key is of type RSA key but it can also be an Elliptic Curve key (EC) or DSA.
 #
 # @param proxy_url
 #   For http and https downloads, you may set a proxy server to use. By default,
@@ -355,6 +364,8 @@ class elasticsearch (
   Array[String]                                   $jvm_options,
   Optional[Variant[String, Hash]]                 $license,
   Stdlib::Absolutepath                            $logdir,
+  Boolean                                         $manage_datadir,
+  Boolean                                         $manage_logdir,
   Boolean                                         $manage_repo,
   Boolean                                         $oss,
   Stdlib::Absolutepath                            $package_dir,
@@ -392,6 +403,7 @@ class elasticsearch (
   Optional[Stdlib::Absolutepath]                  $keystore_path             = undef,
   Optional[Hash]                                  $logging_config            = undef,
   Optional[Stdlib::Absolutepath]                  $private_key               = undef,
+  Enum['rsa','dsa','ec']                          $private_key_type          = 'rsa',
   Boolean                                         $restart_config_change     = $restart_on_change,
   Boolean                                         $restart_package_change    = $restart_on_change,
   Boolean                                         $restart_plugin_change     = $restart_on_change,

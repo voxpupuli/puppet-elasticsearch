@@ -24,6 +24,8 @@ elasticsearch::instances: {}
 elasticsearch::jvm_options: []
 elasticsearch::license:
 elasticsearch::logdir: "/var/log/elasticsearch"
+elasticsearch::manage_datadir: true
+elasticsearch::manage_logdir: true
 elasticsearch::manage_repo: true
 elasticsearch::oss: false
 elasticsearch::package_dl_timeout: 600

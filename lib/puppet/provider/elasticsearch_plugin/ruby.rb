@@ -17,7 +17,11 @@ Puppet::Type.type(:elasticsearch_plugin).provide(
     commands es: '/usr/local/elasticsearch/bin/elasticsearch'
     commands javapathhelper: '/usr/local/bin/javaPathHelper'
   else
-    commands plugin: '/usr/share/elasticsearch/bin/elasticsearch-plugin'
+    if File.exist? '/usr/share/elasticsearch/bin/elasticsearch-plugin'
+      commands plugin: '/usr/share/elasticsearch/bin/elasticsearch-plugin'
+    else
+      commands plugin: '/usr/share/elasticsearch/bin/plugin'
+    end
     commands es: '/usr/share/elasticsearch/bin/elasticsearch'
   end
 end

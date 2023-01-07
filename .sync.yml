@@ -13,6 +13,6 @@ Gemfile:
       - gem: rspec-retry
       - gem: simp-beaker-helpers
 spec/spec_helper.rb:
-  hiera_config: "'spec/fixtures/hiera/hiera.yaml'"
+  hiera_config: "'spec/fixtures/hiera.yaml'"
 spec/spec_helper_acceptance.rb:
   unmanaged: false
