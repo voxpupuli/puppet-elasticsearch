@@ -1,0 +1,33 @@
+{
+  "index_patterns": ["foo*", "bar*", "baz*"],
+  "template": {
+    "settings": {
+      "index": {
+        "refresh_interval": "5s"
+      }
+    },
+    "mappings": {
+      "_source": {
+        "enabled": true
+      },
+      "properties": {
+        "host_name": {
+          "type": "keyword"
+        },
+        "created_at": {
+          "type": "date",
+          "format": "EEE MMM dd HH:mm:ss Z yyyy"
+        }
+      }
+    },
+    "aliases": {
+      "mydata": { }
+    }
+  },
+  "priority": 500,
+  "composed_of": [],
+  "version": 3,
+  "_meta": {
+    "description": "my custom"
+  }
+}

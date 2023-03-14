@@ -279,6 +279,16 @@ elasticsearch::template { 'templatename':
 }
 ```
 
+From version 7.8 elasticserch provides a new composable templates functionality, both legacy templates api and new composable templates api are supported using different data types.
+
+#### Data types & defines
+
+For legacy templates `template` is used.
+
+For composable templates `component_template` and `index_template` are used.
+
+Both types can be used at the same time
+
 #### Add a new template using a file
 
 This will install and/or replace the template in Elasticsearch:
@@ -411,6 +421,116 @@ elasticsearch::snapshot_repository { 'backups':
 elasticsearch::snapshot_repository { 'backups':
   ensure   => 'absent',
   location => '/backup'
+}
+```
+
+### SLM (Snapshot Lifecycle Management)
+
+By default SLM use the top-level `elasticsearch::api_*` settings to communicate with Elasticsearch.
+The following is an example of how to override these settings:
+
+```puppet
+elasticsearch::slm_policy { 'policiyname':
+  api_protocol            => 'https',
+  api_host                => $::ipaddress,
+  api_port                => 9201,
+  api_timeout             => 60,
+  api_basic_auth_username => 'admin',
+  api_basic_auth_password => 'adminpassword',
+  api_ca_file             => '/etc/ssl/certs',
+  api_ca_path             => '/etc/pki/certs',
+  validate_tls            => false,
+  source                  => 'puppet:///path/to/policy.json',
+}
+```
+
+#### Add a new SLM policy using a file
+
+This will install and/or replace the SLM ploicy in Elasticsearch:
+
+```puppet
+elasticsearch::slm_policy { 'policyname':
+  source => 'puppet:///path/to/policy.json',
+}
+```
+
+#### Add a new SLM policy using content
+This will install and/or replace ILM policy in Elasticsearch:
+
+```puppet
+elasticsearch::slm_policy { 'policyname':
+  content => {
+    name       => '<backup-{now/d}>',
+    schedule   => '0 30 1 * * ?',
+    repository => 'backup',
+    config     => { },
+    retention  => {
+      expire_after => '60d',
+      min_count    => 2,
+      max_count    => 10
+    }
+  }
+}
+```
+
+### ILM (Index Lifecycle Management)
+
+By default ILM use the top-level `elasticsearch::api_*` settings to communicate with Elasticsearch.
+The following is an example of how to override these settings:
+
+```puppet
+elasticsearch::ilm_policy { 'policiyname':
+  api_protocol            => 'https',
+  api_host                => $::ipaddress,
+  api_port                => 9201,
+  api_timeout             => 60,
+  api_basic_auth_username => 'admin',
+  api_basic_auth_password => 'adminpassword',
+  api_ca_file             => '/etc/ssl/certs',
+  api_ca_path             => '/etc/pki/certs',
+  validate_tls            => false,
+  source                  => 'puppet:///path/to/policy.json',
+}
+```
+
+#### Add a new ILM policy using a file
+
+This will install and/or replace the ILM ploicy in Elasticsearch:
+
+```puppet
+elasticsearch::ilm_policy { 'policyname':
+  source => 'puppet:///path/to/policy.json',
+}
+```
+
+#### Add a new ILM policy using content
+This will install and/or replace ILM policy in Elasticsearch:
+
+```puppet
+elasticsearch::ilm_policy { 'policyname':
+  content => {
+    policy => {
+      phases => {
+        warm => {
+          min_age => "7d"
+          actions => {
+            forcemerge => {
+              max_num_segments => 1
+            }
+          }
+        }
+      }
+    }
+  }
+}
+```
+#### Delete an ILM policy
+
+This will install and/or replace the ILM ploicy in Elasticsearch:
+
+```puppet
+elasticsearch::ilm_policy { 'policyname':
+  ensure => 'absent',
 }
 ```
 

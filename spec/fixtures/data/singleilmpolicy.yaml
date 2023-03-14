@@ -1,0 +1,16 @@
+---
+elasticsearch::ilm_policies:
+  mypolicy:
+    ensure: 'present'
+    content:
+      policy:
+        phases:
+          warm:
+            min_age: '2d'
+            actions:
+              shrink:
+                number_of_shards: 1
+              forcemerge:
+                max_num_segments: 1
+          cold:
+            min_age: '30d'
