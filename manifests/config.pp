@@ -229,7 +229,7 @@ class elasticsearch::config {
     }
 
     # Add secrets to keystore
-    if $elasticsearch::secrets != undef {
+    if ($elasticsearch::manage_secrets and $elasticsearch::secrets != undef) {
       elasticsearch_keystore { 'elasticsearch_secrets':
         configdir => $elasticsearch::configdir,
         purge     => $elasticsearch::purge_secrets,
