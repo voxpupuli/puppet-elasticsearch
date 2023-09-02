@@ -181,7 +181,29 @@ class elasticsearch::config {
       mode    => '0440',
     }
 
-    if ($elasticsearch::version != false and versioncmp($elasticsearch::version, '7.7.0') >= 0) {
+    file { "${elasticsearch::configdir}/jvm.options":
+      ensure  => 'file',
+      notify  => $elasticsearch::_notify_service,
+      require => Class['elasticsearch::package'],
+      owner   => 'root',
+      group   => $elasticsearch::elasticsearch_group,
+      mode    => '0640',
+    }
+
+    if ($elasticsearch::version != false and versioncmp($elasticsearch::version, '7.7.0') < 0) {
+      # Add any additional JVM options
+      $elasticsearch::jvm_options.each |String $jvm_option| {
+        $split_jvm_option = split($jvm_option, '=')
+        file_line { "jvm_option_${jvm_option}":
+          ensure => present,
+          path   => "${elasticsearch::configdir}/jvm.options",
+          match  => $split_jvm_option.length ? { 2 => "^${split_jvm_option[0]}=", default => undef, },
+          line   => $jvm_option,
+          notify => $elasticsearch::_notify_service,
+        }
+      }
+    }
+    else {
       # https://www.elastic.co/guide/en/elasticsearch/reference/master/advanced-configuration.html#set-jvm-options
       # https://github.com/elastic/elasticsearch/pull/51882
       # >> "Do not modify the root jvm.options file. Use files in jvm.options.d/ instead."
@@ -195,19 +217,6 @@ class elasticsearch::config {
         group   => $elasticsearch::elasticsearch_group,
         mode    => '0640',
         notify  => $elasticsearch::_notify_service,
-      }
-    }
-    else {
-      # Add any additional JVM options
-      $elasticsearch::jvm_options.each |String $jvm_option| {
-        $split_jvm_option = split($jvm_option, '=')
-        file_line { "jvm_option_${jvm_option}":
-          ensure => present,
-          path   => "${elasticsearch::configdir}/jvm.options",
-          match  => $split_jvm_option.length ? { 2 => "^${split_jvm_option[0]}=", default => undef, },
-          line   => $jvm_option,
-          notify => $elasticsearch::_notify_service,
-        }
       }
     }
 

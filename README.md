@@ -446,7 +446,7 @@ elasticsearch::slm_policy { 'policiyname':
 
 #### Add a new SLM policy using a file
 
-This will install and/or replace the SLM ploicy in Elasticsearch:
+This will install and/or replace the SLM policy in Elasticsearch:
 
 ```puppet
 elasticsearch::slm_policy { 'policyname':
@@ -495,7 +495,7 @@ elasticsearch::ilm_policy { 'policiyname':
 
 #### Add a new ILM policy using a file
 
-This will install and/or replace the ILM ploicy in Elasticsearch:
+This will install and/or replace the ILM policy in Elasticsearch:
 
 ```puppet
 elasticsearch::ilm_policy { 'policyname':
@@ -526,7 +526,7 @@ elasticsearch::ilm_policy { 'policyname':
 ```
 #### Delete an ILM policy
 
-This will install and/or replace the ILM ploicy in Elasticsearch:
+This will install and/or replace the ILM policy in Elasticsearch:
 
 ```puppet
 elasticsearch::ilm_policy { 'policyname':
