@@ -43,7 +43,7 @@ class elasticsearch::config {
         ensure  => 'directory',
         group   => '0',
         owner   => 'root',
-        mode    => '0755',
+        mode    => '0644',
         recurse => true;
     }
     if $elasticsearch::manage_datadir {
