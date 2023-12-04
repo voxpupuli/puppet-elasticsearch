@@ -21,7 +21,7 @@ class elasticsearch::config {
 
   $init_defaults = {
     'MAX_OPEN_FILES' => '65535',
-  }.merge($elasticsearch::init_defaults)
+  }.stdlib::merge($elasticsearch::init_defaults)
 
   if ($elasticsearch::ensure == 'present') {
     file {
@@ -164,7 +164,7 @@ class elasticsearch::config {
     # }
 
     # Generate Elasticsearch config
-    $data = merge(
+    $data = stdlib::merge(
       $elasticsearch::config,
       { 'path.data' => $elasticsearch::datadir },
       { 'path.logs' => $elasticsearch::logdir },
