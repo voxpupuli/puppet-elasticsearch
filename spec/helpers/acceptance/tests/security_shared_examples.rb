@@ -66,7 +66,7 @@ shared_examples 'secured request' do |test_desc, es_config, path, http_test, exp
 end
 
 shared_examples 'security acceptance tests' do |es_config|
-  describe 'security plugin operations', if: vault_available?, then_purge: true, with_license: true, with_certificates: true do
+  describe 'security plugin operations', if: vault_available?, then_purge: true, with_certificates: true, with_license: true do
     rand_string = -> { [*('a'..'z')].sample(8).join }
 
     admin_user = rand_string.call

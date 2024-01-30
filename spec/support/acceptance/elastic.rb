@@ -110,14 +110,14 @@ RSpec.configure do |c|
   end
 
   c.before :context, :with_license do
-    Vault.address = ENV['VAULT_ADDR']
+    Vault.address = ENV.fetch('VAULT_ADDR', nil)
     if ENV['CI']
-      Vault.auth.approle(ENV['VAULT_APPROLE_ROLE_ID'], ENV['VAULT_APPROLE_SECRET_ID'])
+      Vault.auth.approle(ENV.fetch('VAULT_APPROLE_ROLE_ID', nil), ENV.fetch('VAULT_APPROLE_SECRET_ID', nil))
     else
-      Vault.auth.token(ENV['VAULT_TOKEN'])
+      Vault.auth.token(ENV.fetch('VAULT_TOKEN', nil))
     end
     licenses = Vault.with_retries(Vault::HTTPConnectionError) do
-      Vault.logical.read(ENV['VAULT_PATH'])
+      Vault.logical.read(ENV.fetch('VAULT_PATH', nil))
     end.data
 
     raise 'No license found!' unless licenses
@@ -195,7 +195,7 @@ RSpec.configure do |c|
   end
 
   c.before :suite do
-    fetch_archives(derive_artifact_urls_for(ENV['ELASTICSEARCH_VERSION']))
+    fetch_archives(derive_artifact_urls_for(ENV.fetch('ELASTICSEARCH_VERSION', nil)))
 
     # Use the Java class once before the suite of tests
     unless shell('command -v java', accept_all_exit_codes: true).exit_code.zero?
