@@ -54,7 +54,7 @@ RSpec.configure do |c|
 
   v[:elasticsearch_plugins] = Dir[
     artifact("*#{v[:elasticsearch_full_version]}.zip", ['plugins'])
-  ].map do |plugin|
+  ].to_h do |plugin|
     plugin_filename = File.basename(plugin)
     plugin_name = plugin_filename.match(%r{^(?<name>.+)-#{v[:elasticsearch_full_version]}.zip})[:name]
     [
@@ -64,7 +64,7 @@ RSpec.configure do |c|
         url: derive_plugin_urls_for(v[:elasticsearch_full_version], [plugin_name]).keys.first,
       },
     ]
-  end.to_h
+  end
 
   v[:oss] = !ENV['OSS_PACKAGE'].nil? and ENV['OSS_PACKAGE'] == 'true'
   v[:cluster_name] = SecureRandom.hex(10)
