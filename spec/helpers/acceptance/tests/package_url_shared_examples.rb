@@ -10,8 +10,6 @@ shared_examples 'package_url acceptance tests' do |es_config|
       <<-MANIFEST
         api_timeout => 60,
         config => {
-          'cluster.name' => '#{v[:cluster_name]}',
-          'http.bind_host' => '0.0.0.0',
   #{es_config.map { |k, v| "        '#{k}' => '#{v}'," }.join("\n")}
         },
         jvm_options => [

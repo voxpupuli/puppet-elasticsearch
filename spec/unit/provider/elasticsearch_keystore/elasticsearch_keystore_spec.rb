@@ -54,13 +54,15 @@ describe Puppet::Type.type(:elasticsearch_keystore).provider(:elasticsearch_keys
           to receive(:execute).
           with(
             [executable, 'list'],
-            custom_environment: {
-              'ES_INCLUDE' => defaults_file,
-              'ES_PATH_CONF' => "/etc/elasticsearch/#{instance}"
-            },
-            uid: 'elasticsearch',
-            gid: 'elasticsearch',
-            failonfail: true
+            {
+              custom_environment: {
+                'ES_INCLUDE' => defaults_file,
+                'ES_PATH_CONF' => "/etc/elasticsearch/#{instance}"
+              },
+              uid: 'elasticsearch',
+              gid: 'elasticsearch',
+              failonfail: true
+            }
           ).
           and_return(
             Puppet::Util::Execution::ProcessOutput.new(
@@ -118,13 +120,15 @@ describe Puppet::Type.type(:elasticsearch_keystore).provider(:elasticsearch_keys
         receive(:execute).
           with(
             [executable, 'create'],
-            custom_environment: {
-              'ES_INCLUDE' => '/etc/default/elasticsearch-es-03',
-              'ES_PATH_CONF' => '/etc/elasticsearch/es-03'
-            },
-            uid: 'elasticsearch',
-            gid: 'elasticsearch',
-            failonfail: true
+            {
+              custom_environment: {
+                'ES_INCLUDE' => '/etc/default/elasticsearch-es-03',
+                'ES_PATH_CONF' => '/etc/elasticsearch/es-03'
+              },
+              uid: 'elasticsearch',
+              gid: 'elasticsearch',
+              failonfail: true
+            }
           ).
           and_return(Puppet::Util::Execution::ProcessOutput.new('', 0))
       )
@@ -135,13 +139,15 @@ describe Puppet::Type.type(:elasticsearch_keystore).provider(:elasticsearch_keys
         have_received(:execute).
           with(
             [executable, 'create'],
-            custom_environment: {
-              'ES_INCLUDE' => '/etc/default/elasticsearch-es-03',
-              'ES_PATH_CONF' => '/etc/elasticsearch/es-03'
-            },
-            uid: 'elasticsearch',
-            gid: 'elasticsearch',
-            failonfail: true
+            {
+              custom_environment: {
+                'ES_INCLUDE' => '/etc/default/elasticsearch-es-03',
+                'ES_PATH_CONF' => '/etc/elasticsearch/es-03'
+              },
+              uid: 'elasticsearch',
+              gid: 'elasticsearch',
+              failonfail: true
+            }
           )
       )
     end
