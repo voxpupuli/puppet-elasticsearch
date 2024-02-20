@@ -65,7 +65,7 @@ shared_examples 'REST API types' do |resource_type, meta_property|
         end.not_to raise_error
       end
 
-      it 'parses PSON-like values for certain types' do
+      it 'parses JSON-like values for certain types' do
         expect(described_class.new(
           :name => resource_name,
           meta_property => { 'key' => { 'value' => '0', 'other' => true } }

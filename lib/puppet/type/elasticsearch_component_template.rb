@@ -102,7 +102,7 @@ Puppet::Type.newtype(:elasticsearch_component_template) do
 
       fail(format('Could not find any content at %s', self[:source])) unless tmp
 
-      self[:content] = PSON.load(tmp.content)
+      self[:content] = JSON.parse(tmp.content)
     end
   end
   # rubocop:enable Style/SignalException
