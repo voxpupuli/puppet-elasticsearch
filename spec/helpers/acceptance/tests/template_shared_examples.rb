@@ -57,17 +57,17 @@ end
 shared_examples 'template operations' do |es_config, template|
   describe 'template resources' do
     before :all do # rubocop:disable RSpec/BeforeAfterAll
-      shell "mkdir -p #{default['distmoduledir']}/another/files"
+      shell "mkdir -p #{default.puppet['codedir']}/modules/another/files"
 
       create_remote_file(
         default,
-        "#{default['distmoduledir']}/another/files/good.json",
+        "#{default.puppet['codedir']}/modules/another/files/good.json",
         JSON.dump(template)
       )
 
       create_remote_file(
         default,
-        "#{default['distmoduledir']}/another/files/bad.json",
+        "#{default.puppet['codedir']}/modules/another/files/bad.json",
         JSON.dump(template)[0..-5]
       )
     end
