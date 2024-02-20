@@ -53,11 +53,11 @@ shared_examples 'package_url acceptance tests' do |es_config|
 
     context 'via puppet paths', :with_cleanup do
       before :all do # rubocop:disable RSpec/BeforeAfterAll
-        shell "mkdir -p #{default['distmoduledir']}/another/files"
+        shell "mkdir -p #{default.puppet['codedir']}/modules/another/files"
 
         scp_to default,
                v[:elasticsearch_package][:path],
-               "#{default['distmoduledir']}/another/files/#{v[:elasticsearch_package][:filename]}"
+               "#{default.puppet['codedir']}/modules/another/files/#{v[:elasticsearch_package][:filename]}"
       end
 
       let(:manifest_class_parameters) do

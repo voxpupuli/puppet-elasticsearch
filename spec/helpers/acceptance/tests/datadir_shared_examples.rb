@@ -34,7 +34,7 @@ shared_examples 'datadir directory validation' do |es_config, datapaths|
       json = JSON.parse(subject.stdout)['nodes'].values.first
       expect(
         json['settings']['path']['data']
-      ).to(datapaths.one? && v[:elasticsearch_major_version] <= 2 ? eq(datapaths.first) : contain_exactly(*datapaths))
+      ).to(datapaths.one? && v[:elasticsearch_major_version] <= 2 ? eq(datapaths.first) : match_array(datapaths))
     end
   end
 end

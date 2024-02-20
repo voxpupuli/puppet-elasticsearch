@@ -29,7 +29,7 @@ Puppet::Type.newtype(:elasticsearch_slm_policy) do
     end
 
     def insync?(value)
-      Puppet_X::Elastic.deep_implode(value) == \
+      Puppet_X::Elastic.deep_implode(value) ==
         Puppet_X::Elastic.deep_implode(should)
     end
 

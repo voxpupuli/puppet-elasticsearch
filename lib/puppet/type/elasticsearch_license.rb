@@ -31,9 +31,9 @@ Puppet::Type.newtype(:elasticsearch_license) do
     def should_to_s(newvalue)
       newvalue.transform_values do |license_data|
         if license_data.is_a? Hash
-          license_data.map do |field, value|
+          license_data.to_h do |field, value|
             [field, field == 'signature' ? '[redacted]' : value]
-          end.to_h
+          end
         else
           v
         end
