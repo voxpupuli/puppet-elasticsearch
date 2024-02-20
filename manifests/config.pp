@@ -181,6 +181,15 @@ class elasticsearch::config {
       mode    => '0440',
     }
 
+    file { "${elasticsearch::configdir}/jvm.options":
+      ensure  => 'file',
+      notify  => $elasticsearch::_notify_service,
+      require => Class['elasticsearch::package'],
+      owner   => $elasticsearch::elasticsearch_user,
+      group   => $elasticsearch::elasticsearch_group,
+      mode    => '0640',
+    }
+
     if ($elasticsearch::version != false and versioncmp($elasticsearch::version, '7.7.0') >= 0) {
       # https://www.elastic.co/guide/en/elasticsearch/reference/master/advanced-configuration.html#set-jvm-options
       # https://github.com/elastic/elasticsearch/pull/51882
@@ -220,7 +229,7 @@ class elasticsearch::config {
     }
 
     # Add secrets to keystore
-    if $elasticsearch::secrets != undef {
+    if ($elasticsearch::manage_secrets and $elasticsearch::secrets != undef) {
       elasticsearch_keystore { 'elasticsearch_secrets':
         configdir => $elasticsearch::configdir,
         purge     => $elasticsearch::purge_secrets,

@@ -174,6 +174,9 @@
 # @param manage_repo
 #   Enable repo management by enabling official Elastic repositories.
 #
+# @param manage_secrets
+#   Enable secret management through the use of elastic-keystore.
+#
 # @param oss
 #   Whether to use the purely open source Elasticsearch package distribution.
 #
@@ -387,6 +390,7 @@ class elasticsearch (
   Boolean                                         $manage_datadir,
   Boolean                                         $manage_logdir,
   Boolean                                         $manage_repo,
+  Boolean                                         $manage_secrets,
   Boolean                                         $oss,
   Stdlib::Absolutepath                            $package_dir,
   Integer                                         $package_dl_timeout,
