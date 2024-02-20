@@ -19,8 +19,6 @@ require_relative '../../../lib/puppet_x/elastic/deep_to_s'
 ENV['ELASTICSEARCH_VERSION'] = '7.10.1'
 ENV.delete('BEAKER_debug')
 
-run_puppet_install_helper('agent') unless ENV['BEAKER_provision'] == 'no'
-
 RSpec.configure do |c|
   # General-purpose spec-global variables
   c.add_setting :v, default: {}
