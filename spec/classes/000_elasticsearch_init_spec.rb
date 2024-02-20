@@ -437,7 +437,7 @@ describe 'elasticsearch', type: 'class' do
         end
       end
 
-      describe 'running a a different user' do
+      describe 'running a different user' do
         let(:params) do
           default_params.merge(
             elasticsearch_user: 'myesuser',
@@ -463,6 +463,11 @@ describe 'elasticsearch', type: 'class' do
         it {
           expect(subject).to contain_file('/var/lib/elasticsearch').
             with(owner: 'myesuser', group: 'myesgroup')
+        }
+
+        it {
+          expect(subject).to contain_file('/etc/elasticsearch/jvm.options').
+            with(owner: 'root', group: 'myesgroup')
         }
       end
 
