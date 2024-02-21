@@ -22,7 +22,6 @@ class elasticsearch::config {
   $init_defaults = {
     'MAX_OPEN_FILES' => '65535',
   } + $elasticsearch::init_defaults
-  
 
   if ($elasticsearch::ensure == 'present') {
     file {
