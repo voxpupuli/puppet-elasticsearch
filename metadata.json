@@ -19,6 +19,10 @@
     {
       "name": "puppetlabs/java_ks",
       "version_requirement": ">= 1.5.0 < 6.0.0"
+    },
+    {
+      "name": "puppetlabs/stdlib",
+      "version_requirement": ">= 6.1.0 < 10.0.0"
     }
   ],
   "operatingsystem_support": [
