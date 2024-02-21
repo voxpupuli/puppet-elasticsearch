@@ -21,7 +21,7 @@ class elasticsearch::config {
 
   $init_defaults = {
     'MAX_OPEN_FILES' => '65535',
-  }.merge($elasticsearch::init_defaults)
+  } + $elasticsearch::init_defaults
 
   if ($elasticsearch::ensure == 'present') {
     file {
@@ -164,12 +164,8 @@ class elasticsearch::config {
     # }
 
     # Generate Elasticsearch config
-    $data = merge(
-      $elasticsearch::config,
-      { 'path.data' => $elasticsearch::datadir },
-      { 'path.logs' => $elasticsearch::logdir },
-      $_tls_config
-    )
+    $data =
+      $elasticsearch::config + { 'path.data' => $elasticsearch::datadir } + { 'path.logs' => $elasticsearch::logdir } + $_tls_config
 
     file { "${elasticsearch::configdir}/elasticsearch.yml":
       ensure  => 'file',
