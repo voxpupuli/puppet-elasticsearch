@@ -165,12 +165,7 @@ class elasticsearch::config {
     # }
 
     # Generate Elasticsearch config
-    $data = stdlib::merge(
-      $elasticsearch::config,
-      { 'path.data' => $elasticsearch::datadir },
-      { 'path.logs' => $elasticsearch::logdir },
-      $_tls_config
-    )
+    $data = $elasticsearch::config + { 'path.data' => $elasticsearch::datadir } + { 'path.logs' => $elasticsearch::logdir } + $_tls_config
 
     file { "${elasticsearch::configdir}/elasticsearch.yml":
       ensure  => 'file',
