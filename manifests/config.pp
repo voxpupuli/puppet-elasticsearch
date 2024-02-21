@@ -21,7 +21,8 @@ class elasticsearch::config {
 
   $init_defaults = {
     'MAX_OPEN_FILES' => '65535',
-  }.stdlib::merge($elasticsearch::init_defaults)
+  } + $elasticsearch::init_defaults
+  
 
   if ($elasticsearch::ensure == 'present') {
     file {
