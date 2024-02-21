@@ -100,7 +100,15 @@ class elasticsearch::config {
       }
 
       # Set the correct xpack. settings based on ES version
-      if ($elasticsearch::version != false and versioncmp($elasticsearch::version, '7') >= 0) {
+      if ($elasticsearch::version != false and versioncmp($elasticsearch::version, '7') < 0) {
+        $_tls_config = {
+          'xpack.security.transport.ssl.enabled' => true,
+          'xpack.security.http.ssl.enabled'      => true,
+          'xpack.ssl.keystore.path'              => $_keystore_path,
+          'xpack.ssl.keystore.password'          => $elasticsearch::keystore_password,
+        }
+      }
+      else {
         $_tls_config = {
           'xpack.security.http.ssl.enabled'                => true,
           'xpack.security.http.ssl.keystore.path'          => $_keystore_path,
@@ -108,14 +116,6 @@ class elasticsearch::config {
           'xpack.security.transport.ssl.enabled'           => true,
           'xpack.security.transport.ssl.keystore.path'     => $_keystore_path,
           'xpack.security.transport.ssl.keystore.password' => $elasticsearch::keystore_password,
-        }
-      }
-      else {
-        $_tls_config = {
-          'xpack.security.transport.ssl.enabled' => true,
-          'xpack.security.http.ssl.enabled'      => true,
-          'xpack.ssl.keystore.path'              => $_keystore_path,
-          'xpack.ssl.keystore.password'          => $elasticsearch::keystore_password,
         }
       }
 
