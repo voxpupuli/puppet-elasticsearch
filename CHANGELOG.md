@@ -4,6 +4,45 @@ All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
 These should not affect the functionality of the module.
 
+## [v9.0.0](https://github.com/voxpupuli/puppet-elasticsearch/tree/v9.0.0) (2024-02-21)
+
+[Full Changelog](https://github.com/voxpupuli/puppet-elasticsearch/compare/v8.1.0...v9.0.0)
+
+**Breaking changes:**
+
+- Drop Debian 10 support [\#1214](https://github.com/voxpupuli/puppet-elasticsearch/pull/1214) ([h-haaks](https://github.com/h-haaks))
+- Drop Ubuntu 18.04 support [\#1213](https://github.com/voxpupuli/puppet-elasticsearch/pull/1213) ([zilchms](https://github.com/zilchms))
+- Drop Puppet 6 support [\#1191](https://github.com/voxpupuli/puppet-elasticsearch/pull/1191) ([bastelfreak](https://github.com/bastelfreak))
+
+**Implemented enhancements:**
+
+- Add Ubuntu 22.04 support [\#1212](https://github.com/voxpupuli/puppet-elasticsearch/pull/1212) ([zilchms](https://github.com/zilchms))
+- bump elastic\_stack \<10.0.0 [\#1207](https://github.com/voxpupuli/puppet-elasticsearch/pull/1207) ([sandwitch](https://github.com/sandwitch))
+- Add Puppet 8 support [\#1196](https://github.com/voxpupuli/puppet-elasticsearch/pull/1196) ([bastelfreak](https://github.com/bastelfreak))
+- modulesync 7.3.0; allow stdlib 9.x [\#1192](https://github.com/voxpupuli/puppet-elasticsearch/pull/1192) ([bastelfreak](https://github.com/bastelfreak))
+- Add support for SLM policies [\#1164](https://github.com/voxpupuli/puppet-elasticsearch/pull/1164) ([NITEMAN](https://github.com/NITEMAN))
+- Add support for ILM policies [\#1163](https://github.com/voxpupuli/puppet-elasticsearch/pull/1163) ([NITEMAN](https://github.com/NITEMAN))
+- Add support for composable index templates [\#1146](https://github.com/voxpupuli/puppet-elasticsearch/pull/1146) ([NITEMAN](https://github.com/NITEMAN))
+
+**Closed issues:**
+
+- Use Elasticsearch 7+ as default for configuration [\#1210](https://github.com/voxpupuli/puppet-elasticsearch/issues/1210)
+- fix lib directory permissions without changing the mode of files in the directory [\#1203](https://github.com/voxpupuli/puppet-elasticsearch/issues/1203)
+- warnings when used with stlib 9. [\#1201](https://github.com/voxpupuli/puppet-elasticsearch/issues/1201)
+- File jvm.options in root is unmanaged/may be missing [\#1197](https://github.com/voxpupuli/puppet-elasticsearch/issues/1197)
+- Setting an Elastic Version should be optional [\#1174](https://github.com/voxpupuli/puppet-elasticsearch/issues/1174)
+- 'jvm.options' \(prerequisite, required file\) is unmanaged by module [\#1093](https://github.com/voxpupuli/puppet-elasticsearch/issues/1093)
+- Support for index lifecycle management \(ILM\) [\#1038](https://github.com/voxpupuli/puppet-elasticsearch/issues/1038)
+- Puppet for elastic stack 7.1 [\#1037](https://github.com/voxpupuli/puppet-elasticsearch/issues/1037)
+
+**Merged pull requests:**
+
+- Use Elasticsearch 7+ as default for configuration [\#1211](https://github.com/voxpupuli/puppet-elasticsearch/pull/1211) ([asusk7m550](https://github.com/asusk7m550))
+- Remove legacy top-scope syntax [\#1205](https://github.com/voxpupuli/puppet-elasticsearch/pull/1205) ([smortex](https://github.com/smortex))
+- \(\#1203\) Fix lib directory and file permissions [\#1204](https://github.com/voxpupuli/puppet-elasticsearch/pull/1204) ([ttousai](https://github.com/ttousai))
+- Add owner/group to jvm.options file and Use jvm.options.d/jvm.options file by default [\#1202](https://github.com/voxpupuli/puppet-elasticsearch/pull/1202) ([phaedriel](https://github.com/phaedriel))
+- Allow newer java and java\_ks versions [\#1193](https://github.com/voxpupuli/puppet-elasticsearch/pull/1193) ([saz](https://github.com/saz))
+
 ## [v8.1.0](https://github.com/voxpupuli/puppet-elasticsearch/tree/v8.1.0) (2023-01-05)
 
 [Full Changelog](https://github.com/voxpupuli/puppet-elasticsearch/compare/v8.0.2...v8.1.0)
@@ -88,7 +127,7 @@ These should not affect the functionality of the module.
 - update metadata.json for Vox Pupuli namespace [\#1136](https://github.com/voxpupuli/puppet-elasticsearch/pull/1136) ([bastelfreak](https://github.com/bastelfreak))
 - Stop using Travis CI [\#1124](https://github.com/voxpupuli/puppet-elasticsearch/pull/1124) ([jmlrt](https://github.com/jmlrt))
 - Increase of the role-name length to 40 [\#1115](https://github.com/voxpupuli/puppet-elasticsearch/pull/1115) ([Kuermel](https://github.com/Kuermel))
-- Do not restart Elasticsearch on config change when restart\_config\_change is set to false [\#1114](https://github.com/voxpupuli/puppet-elasticsearch/pull/1114) ([sanderc85](https://github.com/sanderc85))
+- Do not restart Elasticsearch on config change when restart\_config\_change is set to false [\#1114](https://github.com/voxpupuli/puppet-elasticsearch/pull/1114) ([scornelissen85](https://github.com/scornelissen85))
 - make sure plugins installed before service is started [\#1106](https://github.com/voxpupuli/puppet-elasticsearch/pull/1106) ([shamil](https://github.com/shamil))
 - Bump module version to `7.0.0` and update docs [\#1105](https://github.com/voxpupuli/puppet-elasticsearch/pull/1105) ([fatmcgav](https://github.com/fatmcgav))
 - Bump Elasticsearch version and some cleanup [\#1104](https://github.com/voxpupuli/puppet-elasticsearch/pull/1104) ([fatmcgav](https://github.com/fatmcgav))
