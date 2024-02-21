@@ -9,7 +9,7 @@ module Puppet::Parser::Functions
   newfunction(
     :es_plugin_name,
     type: :rvalue,
-    doc: <<-'ENDHEREDOC') do |args|
+    doc: <<-ENDHEREDOC) do |args|
     Given a string, return the best guess at what the directory name
     will be for the given plugin. Any arguments past the first will
     be fallbacks (using the same logic) should the first fail.

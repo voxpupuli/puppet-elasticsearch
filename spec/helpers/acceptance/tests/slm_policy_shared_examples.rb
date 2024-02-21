@@ -61,17 +61,17 @@ end
 shared_examples 'SLM policy operations' do |es_config, slm_policy|
   describe 'policy resources' do
     before :all do # rubocop:disable RSpec/BeforeAfterAll
-      shell "mkdir -p #{default['distmoduledir']}/another/files"
+      shell "mkdir -p #{default.puppet['codedir']}/modules/another/files"
 
       create_remote_file(
         default,
-        "#{default['distmoduledir']}/another/files/good.json",
+        "#{default.puppet['codedir']}/modules/another/files/good.json",
         JSON.dump(slm_policy)
       )
 
       create_remote_file(
         default,
-        "#{default['distmoduledir']}/another/files/bad.json",
+        "#{default.puppet['codedir']}/modules/another/files/bad.json",
         JSON.dump(slm_policy)[0..-5]
       )
     end
@@ -99,8 +99,6 @@ shared_examples 'SLM policy operations' do |es_config, slm_policy|
       <<-MANIFEST
         api_timeout => 60,
         config => {
-          'cluster.name' => '#{v[:cluster_name]}',
-          'http.bind_host' => '0.0.0.0',
     #{es_config.map { |k, v| "        '#{k}' => '#{v}'," }.join("\n")}
         },
         jvm_options => [

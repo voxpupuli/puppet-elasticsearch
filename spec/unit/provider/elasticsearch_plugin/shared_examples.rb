@@ -130,7 +130,7 @@ shared_examples 'plugin provider' do |version|
         it 'sets the ES_PATH_CONF env var' do
           resource[:configdir] = '/etc/elasticsearch'
           expect(provider.with_environment do
-            ENV['ES_PATH_CONF']
+            ENV.fetch('ES_PATH_CONF', nil)
           end).to eq('/etc/elasticsearch')
         end
       end
@@ -140,7 +140,7 @@ shared_examples 'plugin provider' do |version|
       it 'uses authentication credentials' do
         resource[:java_opts] = ['-Des.plugins.staging=4a2ffaf5']
         expect(provider.with_environment do
-          ENV['ES_JAVA_OPTS']
+          ENV.fetch('ES_JAVA_OPTS', nil)
         end).to eq('-Des.plugins.staging=4a2ffaf5')
       end
     end
@@ -149,7 +149,7 @@ shared_examples 'plugin provider' do |version|
       it 'sets the JAVA_HOME env var' do
         resource[:java_home] = '/opt/foo'
         expect(provider.with_environment do
-          ENV['JAVA_HOME']
+          ENV.fetch('JAVA_HOME', nil)
         end).to eq('/opt/foo')
       end
     end
@@ -159,7 +159,7 @@ shared_examples 'plugin provider' do |version|
       it 'defaults to the elasticsearch bundled JDK' do
         resource[:java_home] = ''
         expect(provider.with_environment do
-          ENV['JAVA_HOME']
+          ENV.fetch('JAVA_HOME', nil)
         end).to eq(elasticsearch_java_home)
       end
     end

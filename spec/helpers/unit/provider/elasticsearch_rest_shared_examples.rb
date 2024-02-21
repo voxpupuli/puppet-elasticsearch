@@ -47,7 +47,7 @@ shared_examples 'REST API' do |resource_type, create_uri, singleton = false|
 
       expect(described_class.instances.map do |provider|
         provider.instance_variable_get(:@property_hash)
-      end).to contain_exactly(*instance)
+      end).to match_array(instance)
     end
   end
 

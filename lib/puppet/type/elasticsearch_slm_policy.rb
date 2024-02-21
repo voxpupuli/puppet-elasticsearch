@@ -29,7 +29,7 @@ Puppet::Type.newtype(:elasticsearch_slm_policy) do
     end
 
     def insync?(value)
-      Puppet_X::Elastic.deep_implode(value) == \
+      Puppet_X::Elastic.deep_implode(value) ==
         Puppet_X::Elastic.deep_implode(should)
     end
 
@@ -78,7 +78,7 @@ Puppet::Type.newtype(:elasticsearch_slm_policy) do
 
       fail(format('Could not find any content at %s', self[:source])) unless tmp
 
-      self[:content] = PSON.load(tmp.content)
+      self[:content] = JSON.parse(tmp.content)
     end
   end
   # rubocop:enable Style/SignalException

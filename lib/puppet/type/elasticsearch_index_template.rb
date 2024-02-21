@@ -54,7 +54,7 @@ Puppet::Type.newtype(:elasticsearch_index_template) do
                 val['template']['settings']['index'] = {} unless val['template']['settings'].key? 'index'
                 (val['template']['settings'].keys - ['index']).each do |setting|
                   new_key = if setting.start_with? 'index.'
-                              setting[6..-1]
+                              setting[6..]
                             else
                               setting
                             end
@@ -109,7 +109,7 @@ Puppet::Type.newtype(:elasticsearch_index_template) do
 
       fail(format('Could not find any content at %s', self[:source])) unless tmp
 
-      self[:content] = PSON.load(tmp.content)
+      self[:content] = JSON.parse(tmp.content)
     end
   end
   # rubocop:enable Style/SignalException

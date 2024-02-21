@@ -8,7 +8,7 @@ require 'helpers/acceptance/tests/plugin_api_shared_examples'
 shared_examples 'plugin acceptance tests' do |es_config, plugins|
   describe 'elasticsearch::plugin' do
     before :all do # rubocop:disable RSpec/BeforeAfterAll
-      shell "mkdir -p #{default['distmoduledir']}/another/files"
+      shell "mkdir -p #{default.puppet['codedir']}/modules/another/files"
     end
 
     describe 'invalid plugins', :with_cleanup do
@@ -53,7 +53,7 @@ shared_examples 'plugin acceptance tests' do |es_config, plugins|
               scp_to(
                 default,
                 meta[:path],
-                "#{default['distmoduledir']}/another/files/#{plugin}.zip"
+                "#{default.puppet['codedir']}/modules/another/files/#{plugin}.zip"
               )
             end
 

@@ -92,7 +92,7 @@ class Puppet::Provider::ElasticREST < Puppet::Provider
                        password = nil,
                        ca_file = nil,
                        ca_path = nil,
-                       validate_tls: true)
+                       validate_tls = true)
 
     uri = URI("#{protocol}://#{host}:#{port}/#{format_uri(api_discovery_uri)}")
     http = Net::HTTP.new uri.host, uri.port
@@ -158,7 +158,7 @@ class Puppet::Provider::ElasticREST < Puppet::Provider
         (p.key?(:password) ? p[:password].value : nil),
         (p.key?(:ca_file) ? p[:ca_file].value : nil),
         (p.key?(:ca_path) ? p[:ca_path].value : nil),
-        { validate_tls: p[:validate_tls].value },
+        (p.key?(:validate_tls) ? p[:validate_tls].value : true),
       ]
       # Deduplicate identical settings, and fetch templates
     end.uniq
@@ -264,7 +264,7 @@ class Puppet::Provider::ElasticREST < Puppet::Provider
       resource[:password],
       resource[:ca_file],
       resource[:ca_path],
-      validate_tls: resource[:validate_tls]
+      resource[:validate_tls].nil? ? true : resource[:validate_tls]
     ).find do |t|
       t[:name] == resource[:name]
     end

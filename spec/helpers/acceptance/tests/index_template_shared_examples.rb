@@ -57,17 +57,17 @@ end
 shared_examples 'index template operations' do |es_config, index_template|
   describe 'template resources' do
     before :all do # rubocop:disable RSpec/BeforeAfterAll
-      shell "mkdir -p #{default['distmoduledir']}/another/files"
+      shell "mkdir -p #{default.puppet['codedir']}/modules/another/files"
 
       create_remote_file(
         default,
-        "#{default['distmoduledir']}/another/files/good.json",
+        "#{default.puppet['codedir']}/modules/another/files/good.json",
         JSON.dump(index_template)
       )
 
       create_remote_file(
         default,
-        "#{default['distmoduledir']}/another/files/bad.json",
+        "#{default.puppet['codedir']}/modules/another/files/bad.json",
         JSON.dump(index_template)[0..-5]
       )
     end

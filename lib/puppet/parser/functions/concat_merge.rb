@@ -5,7 +5,7 @@ module Puppet::Parser::Functions
   newfunction(
     :concat_merge,
     type: :rvalue,
-    doc: <<-'ENDHEREDOC') do |args|
+    doc: <<-ENDHEREDOC) do |args|
     Merges two or more hashes together concatenating duplicate keys
     with array values and returns the resulting hash.
 

@@ -499,7 +499,7 @@ This release also adds the ability to define logging rolling file settings and a
 * Recursively create the logdir for elasticsearch when creating multiple instances
 * Files and directories with root ownership now specify UID/GID 0 instead to improve compatability with *BSDs.
 * Elasticsearch Debian init file changed to avoid throwing errors when DATA_DIR, WORK_DIR and/or LOG_DIR were an empty variable.
-* Fixed a broken File dependency when a plugin was set to absent and ::elasticsearch set to present.
+* Fixed a broken File dependency when a plugin was set to absent and elasticsearch set to present.
 * Fixed issue when using the `proxy` parameter on plugins in Elasticsearch 2.x.
 
 #### Changes
