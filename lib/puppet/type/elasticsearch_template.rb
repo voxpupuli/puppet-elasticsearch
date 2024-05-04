@@ -50,7 +50,7 @@ Puppet::Type.newtype(:elasticsearch_template) do
                 val['settings']['index'] = {} unless val['settings'].key? 'index'
                 (val['settings'].keys - ['index']).each do |setting|
                   new_key = if setting.start_with? 'index.'
-                              setting[6..]
+                              setting[6..setting.length - 1]
                             else
                               setting
                             end
