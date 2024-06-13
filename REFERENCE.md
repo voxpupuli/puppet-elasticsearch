@@ -199,7 +199,7 @@ This is a destructive parameter and should be used with care.
 
 ##### <a name="-elasticsearch--api_basic_auth_password"></a>`api_basic_auth_password`
 
-Data type: `Optional[String]`
+Data type: `Optional[Variant[String, Sensitive[String]]]`
 
 Defines the default REST basic auth password for API authentication.
 
@@ -854,7 +854,7 @@ Default value: `'present'`
 
 ##### <a name="-elasticsearch--license--api_basic_auth_password"></a>`api_basic_auth_password`
 
-Data type: `Optional[String]`
+Data type: `Optional[Variant[String, Sensitive[String]]]`
 
 HTTP basic auth password to use when communicating over the Elasticsearch
 API.
@@ -1255,7 +1255,7 @@ Default value: `'present'`
 
 ##### <a name="-elasticsearch--index--api_basic_auth_password"></a>`api_basic_auth_password`
 
-Data type: `Optional[String]`
+Data type: `Optional[Variant[String, Sensitive[String]]]`
 
 HTTP basic auth password to use when communicating over the Elasticsearch
 API.
@@ -1510,7 +1510,7 @@ Default value: `{}`
 
 ##### <a name="-elasticsearch--pipeline--api_basic_auth_password"></a>`api_basic_auth_password`
 
-Data type: `Optional[String]`
+Data type: `Optional[Variant[String, Sensitive[String]]]`
 
 HTTP basic auth password to use when communicating over the Elasticsearch
 API.
@@ -1976,7 +1976,7 @@ Default value: `'present'`
 
 ##### <a name="-elasticsearch--snapshot_repository--api_basic_auth_password"></a>`api_basic_auth_password`
 
-Data type: `Optional[String]`
+Data type: `Optional[Variant[String, Sensitive[String]]]`
 
 HTTP basic auth password to use when communicating over the Elasticsearch
 API.
@@ -2134,7 +2134,7 @@ Default value: `'present'`
 
 ##### <a name="-elasticsearch--template--api_basic_auth_password"></a>`api_basic_auth_password`
 
-Data type: `Optional[String]`
+Data type: `Optional[Variant[String, Sensitive[String]]]`
 
 HTTP basic auth password to use when communicating over the Elasticsearch
 API.
