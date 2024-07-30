@@ -184,6 +184,9 @@
 #   For http, https, and ftp downloads, you may set how long the exec resource
 #   may take.
 #
+# @param package_hold
+#   Set to hold to tell Debian apt/Solaris pkg to hold the package version.
+#
 # @param package_name
 #   Name Of the package to install.
 #
@@ -430,12 +433,13 @@ class elasticsearch (
   String                                          $default_logging_level     = $logging_level,
   Optional[String]                                $keystore_password         = undef,
   Optional[Stdlib::Absolutepath]                  $keystore_path             = undef,
+  Stdlib::Filemode                                $logdir_mode               = '2750',
+  Boolean                                         $package_hold              = false,
   Optional[Stdlib::Absolutepath]                  $private_key               = undef,
   Enum['rsa','dsa','ec']                          $private_key_type          = 'rsa',
   Boolean                                         $restart_config_change     = $restart_on_change,
   Boolean                                         $restart_package_change    = $restart_on_change,
   Boolean                                         $restart_plugin_change     = $restart_on_change,
-  Stdlib::Filemode                                $logdir_mode               = '2750',
 ) {
   #### Validate parameters
 
