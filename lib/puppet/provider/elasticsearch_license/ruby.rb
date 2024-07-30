@@ -3,8 +3,7 @@
 require 'puppet/provider/elastic_rest'
 
 Puppet::Type.type(:elasticsearch_license).provide(
-  :xpack,
-  api_resource_style: :bare,
+  :ruby,
   parent: Puppet::Provider::ElasticREST,
   metadata: :content,
   metadata_pipeline: [
