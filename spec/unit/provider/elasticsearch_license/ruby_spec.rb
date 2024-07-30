@@ -3,11 +3,9 @@
 require_relative '../../../helpers/unit/provider/elasticsearch_rest_shared_examples'
 
 describe Puppet::Type.type(:elasticsearch_license).provider(:ruby) do # rubocop:disable RSpec/MultipleMemoizedHelpers
-  let(:name) { 'xpack' }
-
   let(:example1) do
     {
-      name: 'license',
+      name: 'foobar1',
       ensure: :present,
       provider: :ruby,
       content: {
@@ -59,5 +57,5 @@ describe Puppet::Type.type(:elasticsearch_license).provider(:ruby) do # rubocop:
     }
   end
 
-  include_examples 'REST API', 'license', '_license'
+  include_examples 'REST API', '_license'
 end
