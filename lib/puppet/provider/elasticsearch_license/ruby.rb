@@ -28,7 +28,7 @@ Puppet::Type.type(:elasticsearch_license).provide(
       {
         name: object_name,
         ensure: :present,
-        metadata => { 'license' => process_metadata(api_object) },
+        metadata => { 'licenses' => process_metadata(api_object) },
         provider: name
       }.compact
     end
