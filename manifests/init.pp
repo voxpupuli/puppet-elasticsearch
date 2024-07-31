@@ -139,6 +139,9 @@
 # @param manage_logdir
 #   Enable logdir management (default true).
 #
+# @param manage_logging
+#   Enable logging (log4j) management (default false).
+#
 # @param manage_repo
 #   Enable repo management by enabling official Elastic repositories.
 #
@@ -375,6 +378,9 @@ class elasticsearch (
   Optional[String]                                $keystore_password         = undef,
   Optional[Stdlib::Absolutepath]                  $keystore_path             = undef,
   Stdlib::Filemode                                $logdir_mode               = '2750',
+  Optional[String]                                $logging_content           = undef,
+  Stdlib::Absolutepath                            $logging_path              = "${configdir}/log4j2.properties",
+  Boolean                                         $manage_logging            = false,
   Boolean                                         $package_hold              = false,
   Optional[Stdlib::Absolutepath]                  $private_key               = undef,
   Enum['rsa','dsa','ec']                          $private_key_type          = 'rsa',

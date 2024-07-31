@@ -131,6 +131,7 @@ The following parameters are available in the `elasticsearch` class:
 * [`logdir_mode`](#-elasticsearch--logdir_mode)
 * [`manage_datadir`](#-elasticsearch--manage_datadir)
 * [`manage_logdir`](#-elasticsearch--manage_logdir)
+* [`manage_logging`](#-elasticsearch--manage_logging)
 * [`manage_repo`](#-elasticsearch--manage_repo)
 * [`oss`](#-elasticsearch--oss)
 * [`package_dir`](#-elasticsearch--package_dir)
@@ -409,6 +410,14 @@ Enable datadir management (default true).
 Data type: `Boolean`
 
 Enable logdir management (default true).
+
+##### <a name="-elasticsearch--manage_logging"></a>`manage_logging`
+
+Data type: `Boolean`
+
+Enable logging (log4j) management (default false).
+
+Default value: `false`
 
 ##### <a name="-elasticsearch--manage_repo"></a>`manage_repo`
 
