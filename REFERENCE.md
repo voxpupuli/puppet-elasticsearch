@@ -135,11 +135,14 @@ The following parameters are available in the `elasticsearch` class:
 * [`logdir`](#-elasticsearch--logdir)
 * [`logdir_mode`](#-elasticsearch--logdir_mode)
 * [`logging_config`](#-elasticsearch--logging_config)
+* [`logging_content`](#-elasticsearch--logging_content)
 * [`logging_file`](#-elasticsearch--logging_file)
 * [`logging_level`](#-elasticsearch--logging_level)
+* [`logging_path`](#-elasticsearch--logging_path)
 * [`logging_template`](#-elasticsearch--logging_template)
 * [`manage_datadir`](#-elasticsearch--manage_datadir)
 * [`manage_logdir`](#-elasticsearch--manage_logdir)
+* [`manage_logging`](#-elasticsearch--manage_logging)
 * [`manage_repo`](#-elasticsearch--manage_repo)
 * [`oss`](#-elasticsearch--oss)
 * [`package_dir`](#-elasticsearch--package_dir)
@@ -451,6 +454,14 @@ Data type: `Hash`
 
 Representation of information to be included in the log4j.properties file.
 
+##### <a name="-elasticsearch--logging_content"></a>`logging_content`
+
+Data type: `Optional[String]`
+
+Representation of content to be included in the log4j2.properties file.
+
+Default value: `undef`
+
 ##### <a name="-elasticsearch--logging_file"></a>`logging_file`
 
 Data type: `Optional[String]`
@@ -463,6 +474,14 @@ log4j.properties file.
 Data type: `String`
 
 Default logging level for Elasticsearch.
+
+##### <a name="-elasticsearch--logging_path"></a>`logging_path`
+
+Data type: `Stdlib::Absolutepath`
+
+Custom path to the logging file.
+
+Default value: `"${configdir}/log4j2.properties"`
 
 ##### <a name="-elasticsearch--logging_template"></a>`logging_template`
 
@@ -482,6 +501,14 @@ Enable datadir management (default true).
 Data type: `Boolean`
 
 Enable logdir management (default true).
+
+##### <a name="-elasticsearch--manage_logging"></a>`manage_logging`
+
+Data type: `Boolean`
+
+Enable logging (log4j) management (default false).
+
+Default value: `false`
 
 ##### <a name="-elasticsearch--manage_repo"></a>`manage_repo`
 

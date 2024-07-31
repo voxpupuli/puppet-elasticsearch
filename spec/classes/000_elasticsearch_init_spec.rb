@@ -515,6 +515,59 @@ describe 'elasticsearch', type: 'class' do
         }
       end
 
+      context 'When managing the logging file (with content)' do
+        let(:params) do
+          default_params.merge(
+            logging_content: '# Content',
+            manage_logging: true
+          )
+        end
+
+        it {
+          expect(subject).to contain_file('/etc/elasticsearch/log4j2.properties').
+            with(ensure: 'file', content: '# Content')
+        }
+      end
+
+      context 'When managing the logging file (with content and specific path)' do
+        let(:params) do
+          default_params.merge(
+            logging_content: '# Content',
+            logging_path: '/etc/elasticsearch/log4j.properties',
+            manage_logging: true
+          )
+        end
+
+        it {
+          expect(subject).to contain_file('/etc/elasticsearch/log4j.properties').
+            with(ensure: 'file', content: '# Content')
+        }
+      end
+
+      context 'When managing the logging file (with no content)' do
+        let(:params) do
+          default_params.merge(
+            manage_logging: true
+          )
+        end
+
+        it {
+          expect(subject).not_to contain_file('/etc/elasticsearch/log4j2.properties')
+        }
+      end
+
+      context 'When not managing the logging file' do
+        let(:params) do
+          default_params.merge(
+            manage_logging: false
+          )
+        end
+
+        it {
+          expect(subject).not_to contain_file('/etc/elasticsearch/log4j2.properties')
+        }
+      end
+
       context 'with restart_on_change => true' do
         let(:params) do
           default_params.merge(
