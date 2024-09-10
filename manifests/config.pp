@@ -165,7 +165,7 @@ class elasticsearch::config {
 
     # Generate Elasticsearch config
     $data =
-      $elasticsearch::config + { 'path.data' => $elasticsearch::datadir } + { 'path.logs' => $elasticsearch::logdir } + $_tls_config
+      $elasticsearch::config + { 'path.data' => $elasticsearch::datadir } + { 'path.logs' => $elasticsearch::logdir } + { 'xpack.security.enabled' => $elasticsearch::password_enabled } + $_tls_config
 
     file { "${elasticsearch::configdir}/elasticsearch.yml":
       ensure  => 'file',

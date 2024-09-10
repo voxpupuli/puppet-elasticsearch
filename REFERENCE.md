@@ -184,6 +184,7 @@ The following parameters are available in the `elasticsearch` class:
 * [`users`](#-elasticsearch--users)
 * [`validate_tls`](#-elasticsearch--validate_tls)
 * [`version`](#-elasticsearch--version)
+* [`password_enabled`](#-elasticsearch--password_enabled)
 
 ##### <a name="-elasticsearch--ensure"></a>`ensure`
 
@@ -804,6 +805,14 @@ Enable TLS/SSL validation on API calls.
 Data type: `Variant[String, Boolean]`
 
 To set the specific version you want to install.
+
+##### <a name="-elasticsearch--password_enabled"></a>`password_enabled`
+
+Data type: `Boolean`
+
+To enable or disable password authentication.
+
+Default value: `false`
 
 ### <a name="elasticsearch--config"></a>`elasticsearch::config`
 
