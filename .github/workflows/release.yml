@@ -4,6 +4,7 @@
 
 name: Release
 
+# yamllint disable-line rule:truthy
 on:
   push:
     tags:
@@ -12,7 +13,7 @@ on:
 jobs:
   release:
     name: Release
-    uses: voxpupuli/gha-puppet/.github/workflows/release.yml@v2
+    uses: voxpupuli/gha-puppet/.github/workflows/release.yml@v3
     with:
       allowed_owner: 'voxpupuli'
     secrets:
@@ -20,10 +21,3 @@ jobs:
       #  https://docs.github.com/en/actions/security-guides/encrypted-secrets
       username: ${{ secrets.PUPPET_FORGE_USERNAME }}
       api_key: ${{ secrets.PUPPET_FORGE_API_KEY }}
-
-  create-github-release:
-    name: Create GitHub Release
-    runs-on: ubuntu-latest
-    steps:
-      - name: Create GitHub release
-        uses: voxpupuli/gha-create-a-github-release@v1
