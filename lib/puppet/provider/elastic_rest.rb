@@ -33,7 +33,7 @@ class Puppet::Provider::ElasticREST < Puppet::Provider
                 timeout = 10,
                 username = nil,
                 password = nil,
-                validate_tls: true)
+                validate_tls = true)
 
     if username && password
       req.basic_auth username, password
@@ -103,7 +103,7 @@ class Puppet::Provider::ElasticREST < Puppet::Provider
       http.send method, arg if arg && http.respond_to?(method)
     end
 
-    response = rest http, req, timeout, username, password, validate_tls: validate_tls
+    response = rest http, req, timeout, username, password, validate_tls
 
     results = []
 
@@ -231,7 +231,7 @@ class Puppet::Provider::ElasticREST < Puppet::Provider
       resource[:timeout],
       resource[:username],
       resource[:password],
-      validate_tls: resource[:validate_tls]
+      resource[:validate_tls]
     )
 
     # Attempt to return useful error output
