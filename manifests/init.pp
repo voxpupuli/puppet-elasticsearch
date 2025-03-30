@@ -343,6 +343,9 @@
 # @param version
 #   To set the specific version you want to install.
 #
+# @param password_enabled
+#   To enable or disable password authentication.
+#
 # @author Richard Pijnenburg <richard.pijnenburg@elasticsearch.com>
 # @author Tyler Langlois <tyler.langlois@elastic.co>
 # @author Gavin Williams <gavin.williams@elastic.co>
@@ -436,6 +439,7 @@ class elasticsearch (
   Boolean                                         $restart_package_change    = $restart_on_change,
   Boolean                                         $restart_plugin_change     = $restart_on_change,
   Stdlib::Filemode                                $logdir_mode               = '2750',
+  Boolean                                         $password_enabled          = false
 ) {
   #### Validate parameters
 
