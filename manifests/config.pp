@@ -163,6 +163,20 @@ class elasticsearch::config {
     #     before  => Class['elasticsearch::service'],
     # }
 
+    # Logging file
+    if $elasticsearch::manage_logging and !empty($elasticsearch::logging_content) {
+      file { $elasticsearch::logging_path:
+        ensure  => file,
+        content => $elasticsearch::logging_content,
+        group   => $elasticsearch::elasticsearch_group,
+        owner   => $elasticsearch::elasticsearch_user,
+        mode    => '0644',
+        notify  => $elasticsearch::_notify_service,
+        require => File[$elasticsearch::configdir],
+        before  => Class['elasticsearch::service'],
+      }
+    }
+
     # Generate Elasticsearch config
     $data =
       $elasticsearch::config + { 'path.data' => $elasticsearch::datadir } + { 'path.logs' => $elasticsearch::logdir } + $_tls_config

@@ -154,12 +154,18 @@
 # @param logging_config
 #   Representation of information to be included in the log4j.properties file.
 #
+# @param logging_content
+#   Representation of content to be included in the log4j2.properties file.
+#
 # @param logging_file
 #   Instead of a hash, you may supply a `puppet://` file source for the
 #   log4j.properties file.
 #
 # @param logging_level
 #   Default logging level for Elasticsearch.
+#
+# @param logging_path
+#   Custom path to the logging file.
 #
 # @param logging_template
 #   Use a custom logging template - just supply the relative path, i.e.
@@ -170,6 +176,9 @@
 #
 # @param manage_logdir
 #   Enable logdir management (default true).
+#
+# @param manage_logging
+#   Enable logging (log4j) management (default false).
 #
 # @param manage_repo
 #   Enable repo management by enabling official Elastic repositories.
@@ -430,6 +439,9 @@ class elasticsearch (
   String                                          $default_logging_level     = $logging_level,
   Optional[String]                                $keystore_password         = undef,
   Optional[Stdlib::Absolutepath]                  $keystore_path             = undef,
+  Optional[String]                                $logging_content           = undef,
+  Stdlib::Absolutepath                            $logging_path              = "${configdir}/log4j2.properties",
+  Boolean                                         $manage_logging            = false,
   Optional[Stdlib::Absolutepath]                  $private_key               = undef,
   Enum['rsa','dsa','ec']                          $private_key_type          = 'rsa',
   Boolean                                         $restart_config_change     = $restart_on_change,
