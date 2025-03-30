@@ -57,8 +57,8 @@
 
 ### Data types
 
-* [`Elasticsearch::Multipath`](#Elasticsearch--Multipath)
-* [`Elasticsearch::Status`](#Elasticsearch--Status)
+* [`Elasticsearch::Multipath`](#Elasticsearch--Multipath): Elasticsearch datadir multipath type
+* [`Elasticsearch::Status`](#Elasticsearch--Status): Elasticsearch service status type
 
 ## Classes
 
@@ -144,6 +144,7 @@ The following parameters are available in the `elasticsearch` class:
 * [`oss`](#-elasticsearch--oss)
 * [`package_dir`](#-elasticsearch--package_dir)
 * [`package_dl_timeout`](#-elasticsearch--package_dl_timeout)
+* [`package_hold`](#-elasticsearch--package_hold)
 * [`package_name`](#-elasticsearch--package_name)
 * [`package_provider`](#-elasticsearch--package_provider)
 * [`package_url`](#-elasticsearch--package_url)
@@ -507,6 +508,14 @@ Data type: `Integer`
 
 For http, https, and ftp downloads, you may set how long the exec resource
 may take.
+
+##### <a name="-elasticsearch--package_hold"></a>`package_hold`
+
+Data type: `Boolean`
+
+Set to hold to tell Debian apt/Solaris pkg to hold the package version.
+
+Default value: `false`
 
 ##### <a name="-elasticsearch--package_name"></a>`package_name`
 
@@ -3237,13 +3246,13 @@ Returns: `Any` String
 
 ### <a name="Elasticsearch--Multipath"></a>`Elasticsearch::Multipath`
 
-The Elasticsearch::Multipath data type.
+Elasticsearch datadir multipath type
 
 Alias of `Variant[Array[Stdlib::Absolutepath], Stdlib::Absolutepath]`
 
 ### <a name="Elasticsearch--Status"></a>`Elasticsearch::Status`
 
-The Elasticsearch::Status data type.
+Elasticsearch service status type
 
 Alias of `Enum['enabled', 'disabled', 'running', 'unmanaged']`
 

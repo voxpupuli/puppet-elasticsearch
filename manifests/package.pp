@@ -153,9 +153,19 @@ class elasticsearch::package {
   }
 
   if ($elasticsearch::package_provider == 'package') {
-    package { 'elasticsearch':
-      ensure => $package_ensure,
-      name   => $elasticsearch::_package_name,
+    # You cannot use "mark" property while "ensure" is one of ["absent", "purged", "held"]
+    if $package_ensure in ['absent', 'purged', 'held'] {
+      package { 'elasticsearch':
+        ensure => $package_ensure,
+        name   => $elasticsearch::_package_name,
+      }
+    } else {
+      # https://puppet.com/docs/puppet/7/types/package.html#package-attribute-mark
+      package { 'elasticsearch':
+        ensure => $package_ensure,
+        name   => $elasticsearch::_package_name,
+        mark   => ($elasticsearch::package_hold ? { true  => 'hold', false => 'none', }),
+      }
     }
 
     exec { 'remove_plugin_dir':

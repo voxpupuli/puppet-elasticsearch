@@ -435,6 +435,19 @@ describe 'elasticsearch', type: 'class' do
               with(ensure: 'latest')
           }
         end
+
+        describe 'with hold enabled' do
+          let(:params) do
+            default_params.merge(
+              package_hold: true
+            )
+          end
+
+          it {
+            expect(subject).to contain_package('elasticsearch').
+              with(mark: 'hold')
+          }
+        end
       end
 
       describe 'running a different user' do
