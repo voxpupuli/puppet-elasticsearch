@@ -59,7 +59,7 @@ appender.deprecation_rolling.strategy.max = 4
 
 logger.deprecation.name = org.elasticsearch.deprecation
 <%- if scope['elasticsearch::deprecation_logging'] -%>
-logger.deprecation.level = <%= scope['elasitcsearch::deprecation_logging_level'].downcase %>
+logger.deprecation.level = <%= scope['elasticsearch::deprecation_logging_level'].downcase %>
 <%- else -%>
 logger.deprecation.level = warn
 <%- end -%>

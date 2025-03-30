@@ -297,7 +297,9 @@ copying files from the `configdir` to instance `configdir`s.
 
 Data type: `String`
 
-File pattern for the file appender log when file_rolling_type is 'dailyRollingFile'.
+UNUSED, File pattern for the file appender log when file_rolling_type is 'dailyRollingFile'.
+
+Default value: `"'.'yyyy-MM-dd"`
 
 ##### <a name="-elasticsearch--datadir"></a>`datadir`
 
@@ -309,9 +311,9 @@ Allows you to set the data directory of Elasticsearch.
 
 Data type: `String`
 
-Default logging level for Elasticsearch.
+UNUSED, Default logging level for Elasticsearch.
 
-Default value: `$logging_level`
+Default value: `'INFO'`
 
 ##### <a name="-elasticsearch--defaults_location"></a>`defaults_location`
 
@@ -323,14 +325,18 @@ Absolute path to directory containing init defaults file.
 
 Data type: `Boolean`
 
-Whether to enable deprecation logging. If enabled, deprecation logs will be
+UNUSED, Whether to enable deprecation logging. If enabled, deprecation logs will be
 saved to ${cluster.name}_deprecation.log in the Elasticsearch log folder.
+
+Default value: `false`
 
 ##### <a name="-elasticsearch--deprecation_logging_level"></a>`deprecation_logging_level`
 
 Data type: `String`
 
-Default deprecation logging level for Elasticsearch.
+UNUSED, Default deprecation logging level for Elasticsearch.
+
+Default value: `'DEBUG'`
 
 ##### <a name="-elasticsearch--download_tool"></a>`download_tool`
 
@@ -369,9 +375,11 @@ The user Elasticsearch should run as. This also sets file ownership.
 
 Data type: `Enum['dailyRollingFile', 'rollingFile', 'file']`
 
-Configuration for the file appender rotation. It can be 'dailyRollingFile',
+UNUSED, Configuration for the file appender rotation. It can be 'dailyRollingFile',
 'rollingFile' or 'file'. The first rotates by name, the second one by size
 or third don't rotate automatically.
+
+Default value: `'dailyRollingFile'`
 
 ##### <a name="-elasticsearch--homedir"></a>`homedir`
 
@@ -449,27 +457,35 @@ Default value: `'2750'`
 
 Data type: `Hash`
 
-Representation of information to be included in the log4j.properties file.
+UNUSED, Representation of information to be included in the log4j.properties file.
+
+Default value: `{}`
 
 ##### <a name="-elasticsearch--logging_file"></a>`logging_file`
 
 Data type: `Optional[String]`
 
-Instead of a hash, you may supply a `puppet://` file source for the
+UNUSED, Instead of a hash, you may supply a `puppet://` file source for the
 log4j.properties file.
+
+Default value: `undef`
 
 ##### <a name="-elasticsearch--logging_level"></a>`logging_level`
 
 Data type: `String`
 
-Default logging level for Elasticsearch.
+UNUSED, Default logging level for Elasticsearch.
+
+Default value: `'INFO'`
 
 ##### <a name="-elasticsearch--logging_template"></a>`logging_template`
 
-Data type: `Optional[String]`
+Data type: `String`
 
-Use a custom logging template - just supply the relative path, i.e.
+UNUSED, Use a custom logging template - just supply the relative path, i.e.
 `$module/elasticsearch/logging.yml.erb`
+
+Default value: `"${module_name}/etc/elasticsearch/log4j2.properties.erb"`
 
 ##### <a name="-elasticsearch--manage_datadir"></a>`manage_datadir`
 
@@ -662,13 +678,17 @@ Define roles via a hash. This is mainly used with Hiera's auto binding.
 
 Data type: `Integer`
 
-Max number of logs to store whern file_rolling_type is 'rollingFile'
+UNUSED, Max number of logs to store whern file_rolling_type is 'rollingFile'
+
+Default value: `1`
 
 ##### <a name="-elasticsearch--rolling_file_max_file_size"></a>`rolling_file_max_file_size`
 
 Data type: `String`
 
-Max log file size when file_rolling_type is 'rollingFile'
+UNUSED, Max log file size when file_rolling_type is 'rollingFile'
+
+Default value: `'10MB'`
 
 ##### <a name="-elasticsearch--scripts"></a>`scripts`
 
@@ -687,15 +707,19 @@ Elasticsearch keystore file. If unset, the keystore is left unmanaged.
 
 Data type: `Optional[String]`
 
-File content for x-pack logging configuration file (will be placed
+UNUSED, File content for x-pack logging configuration file (will be placed
 into log4j2.properties file).
+
+Default value: `undef`
 
 ##### <a name="-elasticsearch--security_logging_source"></a>`security_logging_source`
 
 Data type: `Optional[String]`
 
-File source for x-pack logging configuration file (will be placed
+UNUSED, File source for x-pack logging configuration file (will be placed
 into log4j2.properties).
+
+Default value: `undef`
 
 ##### <a name="-elasticsearch--service_name"></a>`service_name`
 

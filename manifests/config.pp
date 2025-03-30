@@ -145,11 +145,7 @@ class elasticsearch::config {
     # if ($elasticsearch::logging_file != undef) {
     #   $_log4j_content = undef
     # } else {
-    #   if ($elasticsearch::logging_template != undef ) {
-    #     $_log4j_content = template($elasticsearch::logging_template)
-    #   } else {
-    #     $_log4j_content = template("${module_name}/etc/elasticsearch/log4j2.properties.erb")
-    #   }
+    #   $_log4j_content = template($elasticsearch::logging_template)
     #   $_logging_source = undef
     # }
     # file {

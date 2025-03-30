@@ -11,17 +11,11 @@ elasticsearch::autoupgrade: false
 elasticsearch::config: {}
 elasticsearch::configdir: "/etc/elasticsearch"
 elasticsearch::configdir_recurselimit: 2
-elasticsearch::default_logging_level: INFO
-elasticsearch::daily_rolling_date_pattern: |
-  "'.'yyyy-MM-dd"
 elasticsearch::defaults_location:
-elasticsearch::deprecation_logging: false
-elasticsearch::deprecation_logging_level: DEBUG
 elasticsearch::download_tool:
 elasticsearch::download_tool_insecure:
 elasticsearch::download_tool_verify_certificates: true
 elasticsearch::ensure: present
-elasticsearch::file_rolling_type: dailyRollingFile
 elasticsearch::indices: {}
 elasticsearch::init_defaults: {}
 elasticsearch::init_defaults_file:
@@ -30,10 +24,6 @@ elasticsearch::instances: {}
 elasticsearch::jvm_options: []
 elasticsearch::license:
 elasticsearch::logdir: "/var/log/elasticsearch"
-elasticsearch::logging_config: {}
-elasticsearch::logging_file:
-elasticsearch::logging_level: INFO
-elasticsearch::logging_template:
 elasticsearch::manage_datadir: true
 elasticsearch::manage_logdir: true
 elasticsearch::manage_repo: true
@@ -53,12 +43,8 @@ elasticsearch::purge_secrets: false
 elasticsearch::repo_stage: false
 elasticsearch::restart_on_change: false
 elasticsearch::roles: {}
-elasticsearch::rolling_file_max_backup_index: 1
-elasticsearch::rolling_file_max_file_size: 10MB
 elasticsearch::scripts: {}
 elasticsearch::secrets:
-elasticsearch::security_logging_content:
-elasticsearch::security_logging_source:
 elasticsearch::service_name: elasticsearch
 elasticsearch::service_provider: systemd
 elasticsearch::snapshot_repositories: {}
