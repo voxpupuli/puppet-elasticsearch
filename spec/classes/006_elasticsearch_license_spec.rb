@@ -53,11 +53,11 @@ describe 'elasticsearch::license', type: 'class' do
         it do
           expect(subject).to contain_es_instance_conn_validator(
             'license-conn-validator'
-          ).that_comes_before('elasticsearch_license[xpack]')
+          ).that_comes_before('elasticsearch_license[license]')
         end
 
         it do
-          expect(subject).to contain_elasticsearch_license('xpack').with(
+          expect(subject).to contain_elasticsearch_license('license').with(
             ensure: 'present',
             content: {
               'license' => {

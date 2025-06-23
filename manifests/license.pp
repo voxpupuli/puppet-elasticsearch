@@ -72,7 +72,7 @@ class elasticsearch::license (
     port    => $api_port,
     timeout => $api_timeout,
   }
-  -> elasticsearch_license { 'xpack':
+  -> elasticsearch_license { 'license':
     ensure       => $ensure,
     content      => $_content,
     protocol     => $api_protocol,
