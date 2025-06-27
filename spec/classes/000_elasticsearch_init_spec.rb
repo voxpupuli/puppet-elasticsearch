@@ -79,6 +79,8 @@ describe 'elasticsearch', type: 'class' do
         }
       end
 
+      it { expect(subject).not_to contain_file('/etc/elasticsearch/log4j2.properties') }
+
       context 'java installation' do
         let(:pre_condition) do
           <<-MANIFEST
@@ -344,6 +346,35 @@ describe 'elasticsearch', type: 'class' do
 
         it {
           expect(subject).not_to contain_file('/var/log/elasticsearch-log')
+        }
+      end
+
+      context 'When using custom logging_content String' do
+        let(:params) do
+          default_params.merge(
+            logging_content: '# Content'
+          )
+        end
+
+        it {
+          expect(subject).to contain_file('/etc/elasticsearch/log4j2.properties').
+            with(ensure: 'file', content: '# Content')
+        }
+      end
+
+      context 'When using custom logging_content Array' do
+        let(:params) do
+          default_params.merge(
+            logging_content: [
+              '# Content Line 1',
+              '# Content Line 2',
+            ]
+          )
+        end
+
+        it {
+          expect(subject).to contain_file('/etc/elasticsearch/log4j2.properties').
+            with(ensure: 'file', content: "# Content Line 1\n# Content Line 2")
         }
       end
     end

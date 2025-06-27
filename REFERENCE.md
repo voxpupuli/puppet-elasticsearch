@@ -129,6 +129,7 @@ The following parameters are available in the `elasticsearch` class:
 * [`license`](#-elasticsearch--license)
 * [`logdir`](#-elasticsearch--logdir)
 * [`logdir_mode`](#-elasticsearch--logdir_mode)
+* [`logging_content`](#-elasticsearch--logging_content)
 * [`manage_datadir`](#-elasticsearch--manage_datadir)
 * [`manage_logdir`](#-elasticsearch--manage_logdir)
 * [`manage_repo`](#-elasticsearch--manage_repo)
@@ -397,6 +398,14 @@ Data type: `Stdlib::Filemode`
 Mode directory that will be used for Elasticsearch logging (default 2750).
 
 Default value: `'2750'`
+
+##### <a name="-elasticsearch--logging_content"></a>`logging_content`
+
+Data type: `Optional[Variant[String, Array]]`
+
+Content to use for the logging configuration file (log4j2.properties).
+
+Default value: `undef`
 
 ##### <a name="-elasticsearch--manage_datadir"></a>`manage_datadir`
 
