@@ -111,18 +111,13 @@ The following parameters are available in the `elasticsearch` class:
 * [`config`](#-elasticsearch--config)
 * [`configdir`](#-elasticsearch--configdir)
 * [`configdir_recurselimit`](#-elasticsearch--configdir_recurselimit)
-* [`daily_rolling_date_pattern`](#-elasticsearch--daily_rolling_date_pattern)
 * [`datadir`](#-elasticsearch--datadir)
-* [`default_logging_level`](#-elasticsearch--default_logging_level)
 * [`defaults_location`](#-elasticsearch--defaults_location)
-* [`deprecation_logging`](#-elasticsearch--deprecation_logging)
-* [`deprecation_logging_level`](#-elasticsearch--deprecation_logging_level)
 * [`download_tool`](#-elasticsearch--download_tool)
 * [`download_tool_insecure`](#-elasticsearch--download_tool_insecure)
 * [`download_tool_verify_certificates`](#-elasticsearch--download_tool_verify_certificates)
 * [`elasticsearch_group`](#-elasticsearch--elasticsearch_group)
 * [`elasticsearch_user`](#-elasticsearch--elasticsearch_user)
-* [`file_rolling_type`](#-elasticsearch--file_rolling_type)
 * [`homedir`](#-elasticsearch--homedir)
 * [`indices`](#-elasticsearch--indices)
 * [`init_defaults`](#-elasticsearch--init_defaults)
@@ -134,10 +129,6 @@ The following parameters are available in the `elasticsearch` class:
 * [`license`](#-elasticsearch--license)
 * [`logdir`](#-elasticsearch--logdir)
 * [`logdir_mode`](#-elasticsearch--logdir_mode)
-* [`logging_config`](#-elasticsearch--logging_config)
-* [`logging_file`](#-elasticsearch--logging_file)
-* [`logging_level`](#-elasticsearch--logging_level)
-* [`logging_template`](#-elasticsearch--logging_template)
 * [`manage_datadir`](#-elasticsearch--manage_datadir)
 * [`manage_logdir`](#-elasticsearch--manage_logdir)
 * [`manage_repo`](#-elasticsearch--manage_repo)
@@ -164,12 +155,8 @@ The following parameters are available in the `elasticsearch` class:
 * [`restart_package_change`](#-elasticsearch--restart_package_change)
 * [`restart_plugin_change`](#-elasticsearch--restart_plugin_change)
 * [`roles`](#-elasticsearch--roles)
-* [`rolling_file_max_backup_index`](#-elasticsearch--rolling_file_max_backup_index)
-* [`rolling_file_max_file_size`](#-elasticsearch--rolling_file_max_file_size)
 * [`scripts`](#-elasticsearch--scripts)
 * [`secrets`](#-elasticsearch--secrets)
-* [`security_logging_content`](#-elasticsearch--security_logging_content)
-* [`security_logging_source`](#-elasticsearch--security_logging_source)
 * [`service_name`](#-elasticsearch--service_name)
 * [`service_provider`](#-elasticsearch--service_provider)
 * [`slm_policies`](#-elasticsearch--slm_policies)
@@ -294,44 +281,17 @@ Data type: `Integer`
 Dictates how deeply the file copy recursion logic should descend when
 copying files from the `configdir` to instance `configdir`s.
 
-##### <a name="-elasticsearch--daily_rolling_date_pattern"></a>`daily_rolling_date_pattern`
-
-Data type: `String`
-
-File pattern for the file appender log when file_rolling_type is 'dailyRollingFile'.
-
 ##### <a name="-elasticsearch--datadir"></a>`datadir`
 
 Data type: `Elasticsearch::Multipath`
 
 Allows you to set the data directory of Elasticsearch.
 
-##### <a name="-elasticsearch--default_logging_level"></a>`default_logging_level`
-
-Data type: `String`
-
-Default logging level for Elasticsearch.
-
-Default value: `$logging_level`
-
 ##### <a name="-elasticsearch--defaults_location"></a>`defaults_location`
 
 Data type: `Optional[Stdlib::Absolutepath]`
 
 Absolute path to directory containing init defaults file.
-
-##### <a name="-elasticsearch--deprecation_logging"></a>`deprecation_logging`
-
-Data type: `Boolean`
-
-Whether to enable deprecation logging. If enabled, deprecation logs will be
-saved to ${cluster.name}_deprecation.log in the Elasticsearch log folder.
-
-##### <a name="-elasticsearch--deprecation_logging_level"></a>`deprecation_logging_level`
-
-Data type: `String`
-
-Default deprecation logging level for Elasticsearch.
 
 ##### <a name="-elasticsearch--download_tool"></a>`download_tool`
 
@@ -365,14 +325,6 @@ permissions.
 Data type: `String`
 
 The user Elasticsearch should run as. This also sets file ownership.
-
-##### <a name="-elasticsearch--file_rolling_type"></a>`file_rolling_type`
-
-Data type: `Enum['dailyRollingFile', 'rollingFile', 'file']`
-
-Configuration for the file appender rotation. It can be 'dailyRollingFile',
-'rollingFile' or 'file'. The first rotates by name, the second one by size
-or third don't rotate automatically.
 
 ##### <a name="-elasticsearch--homedir"></a>`homedir`
 
@@ -445,32 +397,6 @@ Data type: `Stdlib::Filemode`
 Mode directory that will be used for Elasticsearch logging (default 2750).
 
 Default value: `'2750'`
-
-##### <a name="-elasticsearch--logging_config"></a>`logging_config`
-
-Data type: `Hash`
-
-Representation of information to be included in the log4j.properties file.
-
-##### <a name="-elasticsearch--logging_file"></a>`logging_file`
-
-Data type: `Optional[String]`
-
-Instead of a hash, you may supply a `puppet://` file source for the
-log4j.properties file.
-
-##### <a name="-elasticsearch--logging_level"></a>`logging_level`
-
-Data type: `String`
-
-Default logging level for Elasticsearch.
-
-##### <a name="-elasticsearch--logging_template"></a>`logging_template`
-
-Data type: `Optional[String]`
-
-Use a custom logging template - just supply the relative path, i.e.
-`$module/elasticsearch/logging.yml.erb`
 
 ##### <a name="-elasticsearch--manage_datadir"></a>`manage_datadir`
 
@@ -667,18 +593,6 @@ Data type: `Hash`
 
 Define roles via a hash. This is mainly used with Hiera's auto binding.
 
-##### <a name="-elasticsearch--rolling_file_max_backup_index"></a>`rolling_file_max_backup_index`
-
-Data type: `Integer`
-
-Max number of logs to store whern file_rolling_type is 'rollingFile'
-
-##### <a name="-elasticsearch--rolling_file_max_file_size"></a>`rolling_file_max_file_size`
-
-Data type: `String`
-
-Max log file size when file_rolling_type is 'rollingFile'
-
 ##### <a name="-elasticsearch--scripts"></a>`scripts`
 
 Data type: `Hash`
@@ -691,20 +605,6 @@ Data type: `Optional[Hash]`
 
 Optional default configuration hash of key/value pairs to store in the
 Elasticsearch keystore file. If unset, the keystore is left unmanaged.
-
-##### <a name="-elasticsearch--security_logging_content"></a>`security_logging_content`
-
-Data type: `Optional[String]`
-
-File content for x-pack logging configuration file (will be placed
-into log4j2.properties file).
-
-##### <a name="-elasticsearch--security_logging_source"></a>`security_logging_source`
-
-Data type: `Optional[String]`
-
-File source for x-pack logging configuration file (will be placed
-into log4j2.properties).
 
 ##### <a name="-elasticsearch--service_name"></a>`service_name`
 
