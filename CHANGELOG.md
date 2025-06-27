@@ -4,6 +4,43 @@ All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
 These should not affect the functionality of the module.
 
+## [v10.0.0](https://github.com/voxpupuli/puppet-elasticsearch/tree/v10.0.0) (2025-06-27)
+
+[Full Changelog](https://github.com/voxpupuli/puppet-elasticsearch/compare/v9.0.0...v10.0.0)
+
+**Breaking changes:**
+
+- Remove unused parameters \(logging\) [\#1259](https://github.com/voxpupuli/puppet-elasticsearch/pull/1259) ([h-haaks](https://github.com/h-haaks))
+- Drop Ubuntu 20.04 [\#1258](https://github.com/voxpupuli/puppet-elasticsearch/pull/1258) ([h-haaks](https://github.com/h-haaks))
+- Drop RedHat/OracleLinux 7 [\#1257](https://github.com/voxpupuli/puppet-elasticsearch/pull/1257) ([h-haaks](https://github.com/h-haaks))
+- Drop CentOS 7 and 8 [\#1256](https://github.com/voxpupuli/puppet-elasticsearch/pull/1256) ([h-haaks](https://github.com/h-haaks))
+- Drop SLES 12 [\#1255](https://github.com/voxpupuli/puppet-elasticsearch/pull/1255) ([thomas-merz](https://github.com/thomas-merz))
+- Drop Scientific Linux [\#1246](https://github.com/voxpupuli/puppet-elasticsearch/pull/1246) ([h-haaks](https://github.com/h-haaks))
+
+**Implemented enhancements:**
+
+- Add parameter to manage the content of log4j2.properties [\#1260](https://github.com/voxpupuli/puppet-elasticsearch/pull/1260) ([h-haaks](https://github.com/h-haaks))
+- Add SLES 15 [\#1254](https://github.com/voxpupuli/puppet-elasticsearch/pull/1254) ([thomas-merz](https://github.com/thomas-merz))
+- Allow puppetlabs/java 11.x [\#1253](https://github.com/voxpupuli/puppet-elasticsearch/pull/1253) ([h-haaks](https://github.com/h-haaks))
+- Allow puppet/elastic\_stack 10.x [\#1252](https://github.com/voxpupuli/puppet-elasticsearch/pull/1252) ([h-haaks](https://github.com/h-haaks))
+- Add Ubuntu 24.04 [\#1251](https://github.com/voxpupuli/puppet-elasticsearch/pull/1251) ([h-haaks](https://github.com/h-haaks))
+- Add Debian 12 [\#1250](https://github.com/voxpupuli/puppet-elasticsearch/pull/1250) ([h-haaks](https://github.com/h-haaks))
+- Add Rocky 8 and 9 [\#1249](https://github.com/voxpupuli/puppet-elasticsearch/pull/1249) ([h-haaks](https://github.com/h-haaks))
+- Add AlmaLinux 8 and 9 [\#1248](https://github.com/voxpupuli/puppet-elasticsearch/pull/1248) ([h-haaks](https://github.com/h-haaks))
+- Add RedHat/CentOS/OracleLinux 9 [\#1247](https://github.com/voxpupuli/puppet-elasticsearch/pull/1247) ([h-haaks](https://github.com/h-haaks))
+- metadata.json: Add OpenVox [\#1241](https://github.com/voxpupuli/puppet-elasticsearch/pull/1241) ([jstraw](https://github.com/jstraw))
+- Add a parameter to package mark hold [\#1232](https://github.com/voxpupuli/puppet-elasticsearch/pull/1232) ([phaedriel](https://github.com/phaedriel))
+- Change license endpoint [\#1231](https://github.com/voxpupuli/puppet-elasticsearch/pull/1231) ([phaedriel](https://github.com/phaedriel))
+
+**Fixed bugs:**
+
+- Correction option validate\_tls in elastic\_rest [\#1239](https://github.com/voxpupuli/puppet-elasticsearch/pull/1239) ([phaedriel](https://github.com/phaedriel))
+
+**Closed issues:**
+
+- why was log4j2.properties.erb configuration commented ? [\#1200](https://github.com/voxpupuli/puppet-elasticsearch/issues/1200)
+-  Elasticsearch API responded with: no handler found for uri \[/\_xpack/license?acknowledge=true\] and method \[PUT\] [\#1189](https://github.com/voxpupuli/puppet-elasticsearch/issues/1189)
+
 ## [v9.0.0](https://github.com/voxpupuli/puppet-elasticsearch/tree/v9.0.0) (2024-02-21)
 
 [Full Changelog](https://github.com/voxpupuli/puppet-elasticsearch/compare/v8.1.0...v9.0.0)
@@ -127,7 +164,7 @@ These should not affect the functionality of the module.
 - update metadata.json for Vox Pupuli namespace [\#1136](https://github.com/voxpupuli/puppet-elasticsearch/pull/1136) ([bastelfreak](https://github.com/bastelfreak))
 - Stop using Travis CI [\#1124](https://github.com/voxpupuli/puppet-elasticsearch/pull/1124) ([jmlrt](https://github.com/jmlrt))
 - Increase of the role-name length to 40 [\#1115](https://github.com/voxpupuli/puppet-elasticsearch/pull/1115) ([Kuermel](https://github.com/Kuermel))
-- Do not restart Elasticsearch on config change when restart\_config\_change is set to false [\#1114](https://github.com/voxpupuli/puppet-elasticsearch/pull/1114) ([scornelissen85](https://github.com/scornelissen85))
+- Do not restart Elasticsearch on config change when restart\_config\_change is set to false [\#1114](https://github.com/voxpupuli/puppet-elasticsearch/pull/1114) ([SndR85](https://github.com/SndR85))
 - make sure plugins installed before service is started [\#1106](https://github.com/voxpupuli/puppet-elasticsearch/pull/1106) ([shamil](https://github.com/shamil))
 - Bump module version to `7.0.0` and update docs [\#1105](https://github.com/voxpupuli/puppet-elasticsearch/pull/1105) ([fatmcgav](https://github.com/fatmcgav))
 - Bump Elasticsearch version and some cleanup [\#1104](https://github.com/voxpupuli/puppet-elasticsearch/pull/1104) ([fatmcgav](https://github.com/fatmcgav))
