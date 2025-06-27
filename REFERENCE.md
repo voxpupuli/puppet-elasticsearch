@@ -129,9 +129,9 @@ The following parameters are available in the `elasticsearch` class:
 * [`license`](#-elasticsearch--license)
 * [`logdir`](#-elasticsearch--logdir)
 * [`logdir_mode`](#-elasticsearch--logdir_mode)
+* [`logging_content`](#-elasticsearch--logging_content)
 * [`manage_datadir`](#-elasticsearch--manage_datadir)
 * [`manage_logdir`](#-elasticsearch--manage_logdir)
-* [`manage_logging`](#-elasticsearch--manage_logging)
 * [`manage_repo`](#-elasticsearch--manage_repo)
 * [`oss`](#-elasticsearch--oss)
 * [`package_dir`](#-elasticsearch--package_dir)
@@ -399,6 +399,14 @@ Mode directory that will be used for Elasticsearch logging (default 2750).
 
 Default value: `'2750'`
 
+##### <a name="-elasticsearch--logging_content"></a>`logging_content`
+
+Data type: `Optional[Variant[String, Array]]`
+
+Content to use for the logging configuration file (log4j2.properties).
+
+Default value: `undef`
+
 ##### <a name="-elasticsearch--manage_datadir"></a>`manage_datadir`
 
 Data type: `Boolean`
@@ -410,14 +418,6 @@ Enable datadir management (default true).
 Data type: `Boolean`
 
 Enable logdir management (default true).
-
-##### <a name="-elasticsearch--manage_logging"></a>`manage_logging`
-
-Data type: `Boolean`
-
-Enable logging (log4j) management (default false).
-
-Default value: `false`
 
 ##### <a name="-elasticsearch--manage_repo"></a>`manage_repo`
 

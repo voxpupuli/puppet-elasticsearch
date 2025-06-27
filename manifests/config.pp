@@ -142,16 +142,20 @@ class elasticsearch::config {
     }
 
     # Logging file
-    if $elasticsearch::manage_logging and !empty($elasticsearch::logging_content) {
-      file { $elasticsearch::logging_path:
+    if ! ($elasticsearch::logging_content =~ Undef) {
+      if $elasticsearch::logging_content =~ Array {
+        $_log4j_content = $elasticsearch::logging_content.join("\n")
+      } else {
+        $_log4j_content = $elasticsearch::logging_content
+      }
+      file { "${elasticsearch::configdir}/log4j2.properties":
         ensure  => file,
-        content => $elasticsearch::logging_content,
-        group   => $elasticsearch::elasticsearch_group,
-        owner   => $elasticsearch::elasticsearch_user,
-        mode    => '0644',
+        content => $_log4j_content,
         notify  => $elasticsearch::_notify_service,
-        require => File[$elasticsearch::configdir],
-        before  => Class['elasticsearch::service'],
+        require => Class['elasticsearch::package'],
+        owner   => 'root',
+        group   => $elasticsearch::elasticsearch_group,
+        mode    => '0640',
       }
     }
 
@@ -164,9 +168,9 @@ class elasticsearch::config {
       content => template("${module_name}/etc/elasticsearch/elasticsearch.yml.erb"),
       notify  => $elasticsearch::_notify_service,
       require => Class['elasticsearch::package'],
-      owner   => $elasticsearch::elasticsearch_user,
+      owner   => 'root',
       group   => $elasticsearch::elasticsearch_group,
-      mode    => '0440',
+      mode    => '0640',
     }
 
     file { "${elasticsearch::configdir}/jvm.options":
