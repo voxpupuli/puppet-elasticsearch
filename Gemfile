@@ -16,7 +16,7 @@ group :development do
 end
 
 group :system_tests do
-  gem 'voxpupuli-acceptance', '~> 3.5',  :require => false
+  gem 'voxpupuli-acceptance', '~> 4.0',  :require => false
   gem 'bcrypt',                          :require => false
   gem 'rspec-retry',                     :require => false
   gem 'simp-beaker-helpers',             :require => false
