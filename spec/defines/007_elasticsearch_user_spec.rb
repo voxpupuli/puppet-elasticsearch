@@ -86,6 +86,31 @@ describe 'elasticsearch::user' do
 
         include_examples 'class', :systemd
       end
+
+      context "with ensure => 'absent' and no password" do
+        let(:params) do
+          {
+            ensure: 'absent',
+            roles: []
+          }
+        end
+
+        it { is_expected.to compile }
+
+        it do
+          expect(subject).to contain_elasticsearch_user('elastic').with(
+            'ensure' => 'absent',
+            'configdir' => '/etc/elasticsearch'
+          )
+        end
+
+        it do
+          expect(subject).to contain_elasticsearch_user_roles('elastic').with(
+            'ensure' => 'absent',
+            'roles' => []
+          )
+        end
+      end
     end
   end
 end
