@@ -2179,12 +2179,14 @@ Default value: `'present'`
 
 ##### <a name="-elasticsearch--user--password"></a>`password`
 
-Data type: `String`
+Data type: `Optional[String]`
 
 Password for the given user. A plaintext password will be managed
 with the esusers utility and requires a refresh to update, while
 a hashed password from the esusers utility will be managed manually
 in the uses file.
+
+Default value: `undef`
 
 ##### <a name="-elasticsearch--user--roles"></a>`roles`
 
