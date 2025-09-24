@@ -24,23 +24,6 @@ class elasticsearch::package {
     }
     Package['elasticsearch'] ~> Exec['remove_plugin_dir']
 
-    # Create directory to place the package file
-    $package_dir = $elasticsearch::package_dir
-    exec { 'create_package_dir_elasticsearch':
-      cwd     => '/',
-      path    => ['/usr/bin', '/bin'],
-      command => "mkdir -p ${package_dir}",
-      creates => $package_dir,
-    }
-
-    file { $package_dir:
-      ensure  => 'directory',
-      purge   => $elasticsearch::purge_package_dir,
-      force   => $elasticsearch::purge_package_dir,
-      backup  => false,
-      require => Exec['create_package_dir_elasticsearch'],
-    }
-
     # Check if we want to install a specific version or not
     if $elasticsearch::version == false {
       $package_ensure = $elasticsearch::autoupgrade ? {
@@ -54,6 +37,23 @@ class elasticsearch::package {
 
     # action
     if ($elasticsearch::package_url != undef) {
+      # Create directory to place the package file
+      $package_dir = $elasticsearch::package_dir
+      exec { 'create_package_dir_elasticsearch':
+        cwd     => '/',
+        path    => ['/usr/bin', '/bin'],
+        command => "mkdir -p ${package_dir}",
+        creates => $package_dir,
+      }
+
+      file { $package_dir:
+        ensure  => 'directory',
+        purge   => $elasticsearch::purge_package_dir,
+        force   => $elasticsearch::purge_package_dir,
+        backup  => false,
+        require => Exec['create_package_dir_elasticsearch'],
+      }
+
       case $elasticsearch::package_provider {
         'package': { $before = Package['elasticsearch'] }
         default:   { fail("software provider \"${elasticsearch::package_provider}\".") }
