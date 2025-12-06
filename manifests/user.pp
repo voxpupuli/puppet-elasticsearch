@@ -23,11 +23,15 @@
 # @author Gavin Williams <gavin.williams@elastic.co>
 #
 define elasticsearch::user (
-  String                    $password,
+  Optional[String]          $password = undef,
   Enum['absent', 'present'] $ensure = 'present',
   Array                     $roles  = [],
 ) {
-  if $password =~ /^\$2a\$/ {
+  if $ensure == 'present' and $password == undef {
+    fail('Password must be specified when ensuring present')
+  }
+
+  if $password and $password =~ /^\$2a\$/ {
     elasticsearch_user_file { $name:
       ensure          => $ensure,
       configdir       => $elasticsearch::configdir,
@@ -35,11 +39,19 @@ define elasticsearch::user (
       before          => Elasticsearch_user_roles[$name],
     }
   } else {
-    elasticsearch_user { $name:
-      ensure    => $ensure,
-      configdir => $elasticsearch::configdir,
-      password  => $password,
-      before    => Elasticsearch_user_roles[$name],
+    if $password {
+      elasticsearch_user { $name:
+        ensure    => $ensure,
+        configdir => $elasticsearch::configdir,
+        password  => $password,
+        before    => Elasticsearch_user_roles[$name],
+      }
+    } else {
+      elasticsearch_user { $name:
+        ensure    => $ensure,
+        configdir => $elasticsearch::configdir,
+        before    => Elasticsearch_user_roles[$name],
+      }
     }
   }
 

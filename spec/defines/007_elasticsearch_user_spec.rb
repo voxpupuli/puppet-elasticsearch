@@ -12,15 +12,7 @@ describe 'elasticsearch::user' do
     EOS
   end
 
-  on_supported_os(
-    hardwaremodels: ['x86_64'],
-    supported_os: [
-      {
-        'operatingsystem' => 'CentOS',
-        'operatingsystemrelease' => ['7']
-      }
-    ]
-  ).each do |os, facts|
+  on_supported_os.each do |os, facts|
     context "on #{os}" do
       let(:facts) do
         facts.merge(
@@ -46,6 +38,27 @@ describe 'elasticsearch::user' do
             'roles' => %w[monitor user]
           )
         end
+      end
+
+      context 'ensure absent without password' do
+        let(:params) do
+          {
+            ensure: 'absent'
+          }
+        end
+
+        it { is_expected.to compile }
+        it { is_expected.to contain_elasticsearch_user('elastic').with_ensure('absent') }
+      end
+
+      context 'ensure present without password' do
+        let(:params) do
+          {
+            ensure: 'present'
+          }
+        end
+
+        it { is_expected.to compile.and_raise_error(%r{Password must be specified}) }
       end
 
       describe 'collector ordering' do

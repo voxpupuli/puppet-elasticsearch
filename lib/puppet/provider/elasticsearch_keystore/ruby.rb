@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'facter'
+
 Puppet::Type.type(:elasticsearch_keystore).provide(
   :elasticsearch_keystore
 ) do
