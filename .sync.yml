@@ -16,3 +16,7 @@ spec/spec_helper.rb:
   hiera_config: "'spec/fixtures/hiera.yaml'"
 spec/spec_helper_acceptance.rb:
   unmanaged: false
+
+.github/workflows/ci.yml:
+  with:
+    beaker_hypervisor: 'docker'
