@@ -1,6 +1,6 @@
 {
   "name": "puppet-elasticsearch",
-  "version": "10.0.1-rc0",
+  "version": "11.0.0",
   "source": "https://github.com/voxpupuli/puppet-elasticsearch",
   "author": "voxpupuli@groups.io",
   "license": "Apache-2.0",
