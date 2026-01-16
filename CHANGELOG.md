@@ -4,6 +4,24 @@ All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
 These should not affect the functionality of the module.
 
+## [v11.0.0](https://github.com/voxpupuli/puppet-elasticsearch/tree/v11.0.0) (2026-01-16)
+
+[Full Changelog](https://github.com/voxpupuli/puppet-elasticsearch/compare/v10.0.0...v11.0.0)
+
+**Breaking changes:**
+
+- Drop puppet, update openvox minimum version to 8.19 [\#1262](https://github.com/voxpupuli/puppet-elasticsearch/pull/1262) ([TheMeier](https://github.com/TheMeier))
+
+**Implemented enhancements:**
+
+- puppet/elastic\_stack: Allow 11.x [\#1275](https://github.com/voxpupuli/puppet-elasticsearch/pull/1275) ([bastelfreak](https://github.com/bastelfreak))
+- Add EL10 support [\#1273](https://github.com/voxpupuli/puppet-elasticsearch/pull/1273) ([bastelfreak](https://github.com/bastelfreak))
+- Switch from legacy to structured facts [\#1270](https://github.com/voxpupuli/puppet-elasticsearch/pull/1270) ([bastelfreak](https://github.com/bastelfreak))
+
+**Fixed bugs:**
+
+- Allow setting user ensure absent without password [\#1269](https://github.com/voxpupuli/puppet-elasticsearch/pull/1269) ([bwitt](https://github.com/bwitt))
+
 ## [v10.0.0](https://github.com/voxpupuli/puppet-elasticsearch/tree/v10.0.0) (2025-06-27)
 
 [Full Changelog](https://github.com/voxpupuli/puppet-elasticsearch/compare/v9.0.0...v10.0.0)
