@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require 'facter'
 require 'puppet/provider/elastic_plugin'
 
 Puppet::Type.type(:elasticsearch_plugin).provide(
@@ -11,7 +12,7 @@ Puppet::Type.type(:elasticsearch_plugin).provide(
     command operations.'
   END
 
-  case Facter.value('osfamily')
+  case Facter.value('os.family')
   when 'OpenBSD'
     commands plugin: '/usr/local/elasticsearch/bin/elasticsearch-plugin'
     commands es: '/usr/local/elasticsearch/bin/elasticsearch'
