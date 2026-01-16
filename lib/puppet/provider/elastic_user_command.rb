@@ -9,7 +9,7 @@ class Puppet::Provider::ElasticUserCommand < Puppet::Provider
   #
   # @return String
   def self.homedir
-    @homedir ||= case Facter.value('osfamily')
+    @homedir ||= case Facter.value('os.family')
                  when 'OpenBSD'
                    '/usr/local/elasticsearch'
                  else

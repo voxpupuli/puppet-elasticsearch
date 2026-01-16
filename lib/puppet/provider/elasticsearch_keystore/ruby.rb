@@ -8,7 +8,7 @@ Puppet::Type.type(:elasticsearch_keystore).provide(
   desc 'Provider for `elasticsearch-keystore` based secret management.'
 
   def self.defaults_dir
-    @defaults_dir ||= case Facter.value('osfamily')
+    @defaults_dir ||= case Facter.value('os.family')
                       when 'RedHat'
                         '/etc/sysconfig'
                       else
@@ -17,7 +17,7 @@ Puppet::Type.type(:elasticsearch_keystore).provide(
   end
 
   def self.home_dir
-    @home_dir ||= case Facter.value('osfamily')
+    @home_dir ||= case Facter.value('os.family')
                   when 'OpenBSD'
                     '/usr/local/elasticsearch'
                   else

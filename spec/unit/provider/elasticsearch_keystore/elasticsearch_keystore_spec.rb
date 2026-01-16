@@ -22,8 +22,7 @@ describe Puppet::Type.type(:elasticsearch_keystore).provider(:elasticsearch_keys
 
   before do
     Facter.clear
-    allow(Facter).to receive(:value).with('osfamily').and_return('Debian')
-    allow(Facter).to receive(:value).with(:osfamily).and_return('Debian')
+    allow(Facter).to receive(:value).with('os.family').and_return('Debian')
 
     # Clear memoized variables to ensure Facter values are respected
     described_class.instance_variable_set(:@defaults_dir, nil)
