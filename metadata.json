@@ -10,7 +10,7 @@
   "dependencies": [
     {
       "name": "puppet/elastic_stack",
-      "version_requirement": ">= 8.0.0 < 11.0.0"
+      "version_requirement": ">= 8.0.0 < 12.0.0"
     },
     {
       "name": "puppetlabs/java",
