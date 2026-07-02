@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
 These should not affect the functionality of the module.
 
+## [v11.1.0](https://github.com/voxpupuli/puppet-elasticsearch/tree/v11.1.0) (2026-07-02)
+
+[Full Changelog](https://github.com/voxpupuli/puppet-elasticsearch/compare/v11.0.0...v11.1.0)
+
+**Implemented enhancements:**
+
+- puppetlabs/java: Allow 12.x [\#1279](https://github.com/voxpupuli/puppet-elasticsearch/pull/1279) ([bastelfreak](https://github.com/bastelfreak))
+
 ## [v11.0.0](https://github.com/voxpupuli/puppet-elasticsearch/tree/v11.0.0) (2026-01-16)
 
 [Full Changelog](https://github.com/voxpupuli/puppet-elasticsearch/compare/v10.0.0...v11.0.0)
