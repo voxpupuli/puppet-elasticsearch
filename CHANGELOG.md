@@ -4,6 +4,19 @@ All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
 These should not affect the functionality of the module.
 
+## [v12.0.0](https://github.com/voxpupuli/puppet-elasticsearch/tree/v12.0.0) (2026-09-22)
+
+[Full Changelog](https://github.com/voxpupuli/puppet-elasticsearch/compare/v11.1.0...v12.0.0)
+
+**Implemented enhancements:**
+
+- Add Debian 13 support; Require puppetlabs/java 12.x [\#1283](https://github.com/voxpupuli/puppet-elasticsearch/pull/1283) ([marcusdots](https://github.com/marcusdots))
+- Accept Puppet-Datatype Sensitive [\#1119](https://github.com/voxpupuli/puppet-elasticsearch/pull/1119) ([cocker-cc](https://github.com/cocker-cc))
+
+**Merged pull requests:**
+
+- puppetlabs/java\_ks: allow 6.x [\#1282](https://github.com/voxpupuli/puppet-elasticsearch/pull/1282) ([marcusdots](https://github.com/marcusdots))
+
 ## [v11.1.0](https://github.com/voxpupuli/puppet-elasticsearch/tree/v11.1.0) (2026-07-02)
 
 [Full Changelog](https://github.com/voxpupuli/puppet-elasticsearch/compare/v11.0.0...v11.1.0)
