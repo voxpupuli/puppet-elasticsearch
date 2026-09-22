@@ -66,12 +66,6 @@ define elasticsearch::template (
   Optional[String]                             $source                  = undef,
   Boolean                                      $validate_tls            = $elasticsearch::validate_tls,
 ) {
-  $api_basic_auth_password_unsensitive = if $api_basic_auth_password =~ Sensitive {
-    $api_basic_auth_password.unwrap
-  } else {
-    $api_basic_auth_password
-  }
-
   if $content =~ String {
     $_content = parsejson($content)
   } else {
@@ -98,7 +92,7 @@ define elasticsearch::template (
     port         => $api_port,
     timeout      => $api_timeout,
     username     => $api_basic_auth_username,
-    password     => $api_basic_auth_password_unsensitive,
+    password     => $api_basic_auth_password.unwrap,
     ca_file      => $api_ca_file,
     ca_path      => $api_ca_path,
     validate_tls => $validate_tls,
