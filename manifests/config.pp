@@ -224,7 +224,7 @@ class elasticsearch::config {
     if $elasticsearch::secrets != undef {
       # unwrap Secrets of Datatype Sensitive
       $secrets = $elasticsearch::secrets.reduce({}) |Hash $memo, Array $value| {
-        $memo + { $value[0] => if $value[1] =~ Sensitive { $value[1].unwrap } else { $value[1] } }
+        $memo + { $value[0] => $value[1].unwrap }
       }
       elasticsearch_keystore { 'elasticsearch_secrets':
         configdir => $elasticsearch::configdir,
