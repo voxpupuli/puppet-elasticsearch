@@ -57,12 +57,6 @@ define elasticsearch::pipeline (
   Hash                                         $content                 = {},
   Boolean                                      $validate_tls            = $elasticsearch::validate_tls,
 ) {
-  $api_basic_auth_password_unsensitive = if $api_basic_auth_password =~ Sensitive {
-    $api_basic_auth_password.unwrap
-  } else {
-    $api_basic_auth_password
-  }
-
   es_instance_conn_validator { "${name}-ingest-pipeline":
     server  => $api_host,
     port    => $api_port,
@@ -76,7 +70,7 @@ define elasticsearch::pipeline (
     port         => $api_port,
     timeout      => $api_timeout,
     username     => $api_basic_auth_username,
-    password     => $api_basic_auth_password_unsensitive,
+    password     => $api_basic_auth_password.unwrap,
     ca_file      => $api_ca_file,
     ca_path      => $api_ca_path,
     validate_tls => $validate_tls,
