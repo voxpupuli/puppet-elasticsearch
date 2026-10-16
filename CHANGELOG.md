@@ -4,12 +4,15 @@ All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
 These should not affect the functionality of the module.
 
-## [v12.0.0](https://github.com/voxpupuli/puppet-elasticsearch/tree/v12.0.0) (2026-09-22)
+## [v11.2.0](https://github.com/voxpupuli/puppet-elasticsearch/tree/v11.2.0) (2026-10-16)
 
-[Full Changelog](https://github.com/voxpupuli/puppet-elasticsearch/compare/v11.1.0...v12.0.0)
+[Full Changelog](https://github.com/voxpupuli/puppet-elasticsearch/compare/v11.1.0...v11.2.0)
 
 **Implemented enhancements:**
 
+- puppetlabs/stdlib: Allow 10.x [\#1288](https://github.com/voxpupuli/puppet-elasticsearch/pull/1288) ([bastelfreak](https://github.com/bastelfreak))
+- Update requirements to allow OpenVox 9 [\#1287](https://github.com/voxpupuli/puppet-elasticsearch/pull/1287) ([sebastianrakel](https://github.com/sebastianrakel))
+- Simplify unwrap [\#1285](https://github.com/voxpupuli/puppet-elasticsearch/pull/1285) ([cocker-cc](https://github.com/cocker-cc))
 - Add Debian 13 support; Require puppetlabs/java 12.x [\#1283](https://github.com/voxpupuli/puppet-elasticsearch/pull/1283) ([marcusdots](https://github.com/marcusdots))
 - Accept Puppet-Datatype Sensitive [\#1119](https://github.com/voxpupuli/puppet-elasticsearch/pull/1119) ([cocker-cc](https://github.com/cocker-cc))
 

@@ -3258,4 +3258,3 @@ Alias of `Variant[Array[Stdlib::Absolutepath], Stdlib::Absolutepath]`
 Elasticsearch service status type
 
 Alias of `Enum['enabled', 'disabled', 'running', 'unmanaged']`
-
